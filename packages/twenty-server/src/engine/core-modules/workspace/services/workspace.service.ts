@@ -255,15 +255,23 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
     }
 
     if (
+      workspace.activationStatus === WorkspaceActivationStatus.ACTIVE
+    ) {
+      return await this.workspaceRepository.findOneBy({
+        id: workspace.id,
+      });
+    }
+
+    if (
       workspace.activationStatus === WorkspaceActivationStatus.ONGOING_CREATION
     ) {
-      throw new Error('Workspace is already being created');
+      throw new BadRequestException('Workspace is already being created');
     }
 
     if (
       workspace.activationStatus !== WorkspaceActivationStatus.PENDING_CREATION
     ) {
-      throw new Error('Workspace is not pending creation');
+      throw new BadRequestException('Workspace is not pending creation');
     }
 
     await this.workspaceRepository.update(workspace.id, {
