@@ -86,7 +86,7 @@ export class WorkflowVersionStepUpdateWorkspaceService {
       },
     );
 
-    return updatedStep;
+    return this.sanitizeStepPosition(updatedStep);
   }
 
   private async updateWorkflowVersionStepType({
@@ -144,5 +144,17 @@ export class WorkflowVersionStepUpdateWorkspaceService {
       workspaceId,
       workflowVersionId,
     });
+  }
+
+  private sanitizeStepPosition(step: WorkflowAction): WorkflowAction {
+    if (
+      isDefined(step.position) &&
+      (typeof step.position.x !== 'number' ||
+        typeof step.position.y !== 'number')
+    ) {
+      return { ...step, position: undefined } as WorkflowAction;
+    }
+
+    return step;
   }
 }
