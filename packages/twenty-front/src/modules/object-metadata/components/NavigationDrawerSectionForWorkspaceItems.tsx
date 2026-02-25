@@ -26,13 +26,13 @@ import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadat
 import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { getObjectPermissionsForObject } from '@/object-metadata/utils/getObjectPermissionsForObject';
 import { useObjectPermissions } from '@/object-record/hooks/useObjectPermissions';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
 import { NavigationDrawerAnimatedCollapseWrapper } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerAnimatedCollapseWrapper';
 import { NavigationDrawerItem } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerItem';
 import { NavigationDrawerSection } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerSection';
 import { NavigationDrawerSectionTitle } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerSectionTitle';
 import { useNavigationSection } from '@/ui/navigation/navigation-drawer/hooks/useNavigationSection';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { coreViewsState } from '@/views/states/coreViewState';
 import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 
@@ -81,6 +81,10 @@ export const NavigationDrawerSectionForWorkspaceItems = ({
     NavigationDropTargetContext,
   );
 
+  console.log({
+    items,
+  });
+
   const flatItems = items.filter((item) => !isDefined(item.folderId));
   const isAddToNavigationDropTargetVisible =
     addToNavigationFallbackDestination?.droppableId ===
@@ -100,6 +104,10 @@ export const NavigationDrawerSectionForWorkspaceItems = ({
   const folderCount = flatItems.filter(
     (item) => item.itemType === NavigationMenuItemType.FOLDER,
   ).length;
+
+  console.log({
+    flatItems,
+  });
 
   const filteredItems = flatItems.filter((item) => {
     const type = item.itemType;
@@ -159,6 +167,10 @@ export const NavigationDrawerSectionForWorkspaceItems = ({
   if (flatItems.length === 0 && !isAddToNavigationDropTargetVisible) {
     return null;
   }
+
+  console.log({
+    filteredItems,
+  });
 
   return (
     <NavigationDrawerSection>
