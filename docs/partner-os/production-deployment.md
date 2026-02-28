@@ -8,9 +8,10 @@ Do not deploy the public `twentycrm/twenty` image if you want these changes in p
 Use this when you want a single repeatable flow from your current branch.
 
 ```bash
-# 1) Build + push custom image
+# 1) Build + push custom image (production)
 IMAGE_REPO=ghcr.io/fuse-gtm/fuse-v1 \
 IMAGE_TAG=partner-os-$(git rev-parse --short HEAD) \
+WRITE_ENV_FILE=packages/twenty-docker/.env \
 bash packages/twenty-docker/scripts/build-push-fuse-image.sh
 
 # 2) Prepare env once
@@ -22,8 +23,26 @@ cp packages/twenty-docker/.env.fuse-prod.example packages/twenty-docker/.env
 # - PG_DATABASE_PASSWORD
 
 # 3) Deploy and bootstrap (set WORKSPACE_ID when known)
+# Optional private GHCR auth (read:packages)
+# export GHCR_USERNAME=your-github-username
+# export GHCR_TOKEN=your-read-packages-token
 WORKSPACE_ID=<workspace-id> \
 bash packages/twenty-docker/scripts/deploy-fuse-prod.sh
+```
+
+## Local Preview Path (Apple Silicon friendly)
+
+Use this when you want local app login quickly without GHCR push/pull.
+
+```bash
+# 1) Build local image and update env
+IMAGE_REPO=fuse-v1-local \
+IMAGE_TAG=partner-os-$(git rev-parse --short HEAD) \
+WRITE_ENV_FILE=packages/twenty-docker/.env \
+bash packages/twenty-docker/scripts/build-local-fuse-image.sh
+
+# 2) Local deploy (health checks localhost by default)
+bash packages/twenty-docker/scripts/deploy-fuse-local.sh
 ```
 
 ## Option A: Single-VM production (fastest)

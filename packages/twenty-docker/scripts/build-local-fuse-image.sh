@@ -6,35 +6,33 @@ cd "$REPO_ROOT"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-IMAGE_REPO="${IMAGE_REPO:-ghcr.io/fuse-gtm/fuse-v1}"
+IMAGE_REPO="${IMAGE_REPO:-fuse-v1-local}"
 IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
-PLATFORM="${PLATFORM:-linux/amd64}"
-VERIFY_IMAGE_EXISTS="${VERIFY_IMAGE_EXISTS:-true}"
 WRITE_ENV_FILE="${WRITE_ENV_FILE:-}"
 
+host_arch="$(uname -m)"
+case "$host_arch" in
+  arm64|aarch64) DEFAULT_PLATFORM="linux/arm64" ;;
+  x86_64|amd64) DEFAULT_PLATFORM="linux/amd64" ;;
+  *) DEFAULT_PLATFORM="linux/amd64" ;;
+esac
+
+PLATFORM="${PLATFORM:-$DEFAULT_PLATFORM}"
 IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
 
-MODE=prod \
+MODE=local \
 IMAGE_REF="$IMAGE_REF" \
 PLATFORM="$PLATFORM" \
 CHECK_IMAGE_EXISTS=false \
-CHECK_BUILD_RESOURCES=true \
+CHECK_BUILD_RESOURCES=false \
 bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
 
-echo "Building and pushing ${IMAGE_REF}"
+echo "Building local image ${IMAGE_REF} (${PLATFORM})"
 docker buildx build \
   --platform "${PLATFORM}" \
   -f packages/twenty-docker/twenty/Dockerfile \
   -t "${IMAGE_REF}" \
-  --push .
-
-if [ "${VERIFY_IMAGE_EXISTS}" = "true" ]; then
-  MODE=prod \
-  IMAGE_REF="$IMAGE_REF" \
-  CHECK_IMAGE_EXISTS=true \
-  CHECK_BUILD_RESOURCES=false \
-  bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
-fi
+  --load .
 
 if [ -n "${WRITE_ENV_FILE}" ]; then
   if [ ! -f "$WRITE_ENV_FILE" ]; then

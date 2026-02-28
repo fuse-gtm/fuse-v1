@@ -7,7 +7,6 @@ cd "$REPO_ROOT"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
-PLATFORM="${PLATFORM:-linux/amd64}"
 HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"
 MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
 
@@ -42,16 +41,11 @@ if [ -z "${PG_DATABASE_PASSWORD:-}" ]; then
   exit 1
 fi
 
-if [ -n "${GHCR_USERNAME:-}" ] && [ -n "${GHCR_TOKEN:-}" ]; then
-  echo "Authenticating to ghcr.io with GHCR_USERNAME/GHCR_TOKEN"
-  echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USERNAME}" --password-stdin
-fi
-
-MODE=prod \
+MODE=local \
 ENV_FILE="$ENV_FILE" \
 IMAGE_REF="$TWENTY_IMAGE" \
-PLATFORM="$PLATFORM" \
-CHECK_IMAGE_EXISTS=true \
+CHECK_IMAGE_EXISTS=false \
+CHECK_LOCAL_IMAGE_EXISTS=true \
 CHECK_BUILD_RESOURCES=false \
 bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
 
@@ -61,7 +55,7 @@ COMPOSE_ARGS=(
   --env-file "$ENV_FILE"
 )
 
-echo "Deploying ${TWENTY_IMAGE}"
+echo "Deploying local image ${TWENTY_IMAGE}"
 docker compose "${COMPOSE_ARGS[@]}" up -d
 
 START_TS="$(date +%s)"
