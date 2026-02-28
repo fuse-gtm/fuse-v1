@@ -3,6 +3,29 @@
 This repository now contains Partner OS code.
 Do not deploy the public `twentycrm/twenty` image if you want these changes in production.
 
+## One-Path Deploy (Fuse branch)
+
+Use this when you want a single repeatable flow from your current branch.
+
+```bash
+# 1) Build + push custom image
+IMAGE_REPO=ghcr.io/fuse-gtm/fuse-v1 \
+IMAGE_TAG=partner-os-$(git rev-parse --short HEAD) \
+bash packages/twenty-docker/scripts/build-push-fuse-image.sh
+
+# 2) Prepare env once
+cp packages/twenty-docker/.env.fuse-prod.example packages/twenty-docker/.env
+# Edit packages/twenty-docker/.env and set:
+# - TWENTY_IMAGE=ghcr.io/fuse-gtm/fuse-v1:partner-os-<sha>
+# - SERVER_URL
+# - APP_SECRET
+# - PG_DATABASE_PASSWORD
+
+# 3) Deploy and bootstrap (set WORKSPACE_ID when known)
+WORKSPACE_ID=<workspace-id> \
+bash packages/twenty-docker/scripts/deploy-fuse-prod.sh
+```
+
 ## Option A: Single-VM production (fastest)
 
 Use this when you want production quickly with one Linux VM and Docker.
