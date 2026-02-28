@@ -19,9 +19,10 @@
 		},
 		"ghcr.io/devcontainers/features/git-lfs:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {}
-	}
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	},
+
+	// Forward Twenty server and Postgres ports to your host.
+	"forwardPorts": [3000, 5432],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "docker --version",
