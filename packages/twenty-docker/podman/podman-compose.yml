@@ -29,9 +29,6 @@ services:
       APP_SECRET: ${APP_SECRET}
       NODE_ENV: production
       LOG_LEVEL: info
-      IS_MULTIWORKSPACE_ENABLED: ${IS_MULTIWORKSPACE_ENABLED:-true}
-      IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS: ${IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS:-true}
-      DEFAULT_SUBDOMAIN: ${DEFAULT_SUBDOMAIN:-app}
     volumes:
       - twenty-server-data:/app/docker-data:Z
     ports:
@@ -49,9 +46,6 @@ services:
       DISABLE_DB_MIGRATIONS: "true"
       NODE_ENV: production
       LOG_LEVEL: info
-      IS_MULTIWORKSPACE_ENABLED: ${IS_MULTIWORKSPACE_ENABLED:-true}
-      IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS: ${IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS:-true}
-      DEFAULT_SUBDOMAIN: ${DEFAULT_SUBDOMAIN:-app}
     volumes:
       - twenty-server-data:/app/docker-data:Z
     init: true
