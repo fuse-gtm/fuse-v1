@@ -1,0 +1,6 @@
+services:
+  server:
+    image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
+
+  worker:
+    image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
