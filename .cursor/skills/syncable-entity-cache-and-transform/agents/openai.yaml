@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Cache and Transform"
+  short_description: "Help with Syncable Entity Cache and Transform tasks"
+  default_prompt: "Use $syncable-entity-cache-and-transform to implement flat cache services and DTO-to-universal-flat transform utilities for a syncable entity in Twenty."

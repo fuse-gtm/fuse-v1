@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Types and Constants"
+  short_description: "Help with Syncable Entity Types and Constants tasks"
+  default_prompt: "Use $syncable-entity-types-and-constants to scaffold and register syncable entity types, action types, and core constants in Twenty."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Runner and Actions"
+  short_description: "Help with Syncable Entity Runner and Actions tasks"
+  default_prompt: "Use $syncable-entity-runner-and-actions to implement create, update, and delete migration runner action handlers for a syncable entity in Twenty."

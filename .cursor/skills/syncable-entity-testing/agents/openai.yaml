@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Testing"
+  short_description: "Help with Syncable Entity Testing tasks"
+  default_prompt: "Use $syncable-entity-testing to create mandatory integration tests for syncable entity validation, transpilation failures, and CRUD flows in Twenty."

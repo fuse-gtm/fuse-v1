@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CronRegisterAllCommand } from 'src/database/commands/cron-register-all.command';
 import { DataSeedWorkspaceCommand } from 'src/database/commands/data-seed-dev-workspace.command';
 import { ListOrphanedWorkspaceEntitiesCommand } from 'src/database/commands/list-and-delete-orphaned-workspace-entities.command';
+import { WorkspaceBootstrapPartnerOsCommand } from 'src/database/commands/workspace-bootstrap-partner-os.command';
 import { ConfirmationQuestion } from 'src/database/commands/questions/confirmation.question';
 import { UpgradeVersionCommandModule } from 'src/database/commands/upgrade-version-command/upgrade-version-command.module';
 import { TypeORMModule } from 'src/database/typeorm/typeorm.module';
@@ -26,6 +27,7 @@ import { WorkspaceManagerModule } from 'src/engine/workspace-manager/workspace-m
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { CalendarEventImportManagerModule } from 'src/modules/calendar/calendar-event-import-manager/calendar-event-import-manager.module';
 import { MessagingImportManagerModule } from 'src/modules/messaging/message-import-manager/messaging-import-manager.module';
+import { PartnerOsModule } from 'src/modules/partner-os/partner-os.module';
 import { WorkflowRunQueueModule } from 'src/modules/workflow/workflow-runner/workflow-run-queue/workflow-run-queue.module';
 import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/automated-trigger/automated-trigger.module';
 
@@ -55,12 +57,14 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     TrashCleanupModule,
     PublicDomainModule,
     EventLogCleanupModule,
+    PartnerOsModule,
   ],
   providers: [
     DataSeedWorkspaceCommand,
     ConfirmationQuestion,
     CronRegisterAllCommand,
     ListOrphanedWorkspaceEntitiesCommand,
+    WorkspaceBootstrapPartnerOsCommand,
     GenerateApiKeyCommand,
   ],
 })

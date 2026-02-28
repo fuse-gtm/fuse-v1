@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Builder and Validation"
+  short_description: "Help with Syncable Entity Builder and Validation tasks"
+  default_prompt: "Use $syncable-entity-builder-and-validation to add validator services and migration action builders for a syncable entity in Twenty."

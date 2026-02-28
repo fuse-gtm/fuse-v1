@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncable Entity Integration"
+  short_description: "Help with Syncable Entity Integration tasks"
+  default_prompt: "Use $syncable-entity-integration to wire syncable entity builders, validators, services, and resolvers into Twenty NestJS modules."
