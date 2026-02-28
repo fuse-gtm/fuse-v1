@@ -27,6 +27,32 @@ require_cmd() {
   fi
 }
 
+run_with_timeout() {
+  local seconds="$1"
+  shift
+  "$@" &
+  local command_pid="$!"
+
+  (
+    sleep "$seconds"
+    if kill -0 "$command_pid" >/dev/null 2>&1; then
+      kill "$command_pid" >/dev/null 2>&1 || true
+      sleep 2
+      if kill -0 "$command_pid" >/dev/null 2>&1; then
+        kill -9 "$command_pid" >/dev/null 2>&1 || true
+      fi
+    fi
+  ) &
+  local killer_pid="$!"
+
+  local command_code=0
+  wait "$command_pid" || command_code="$?"
+  kill "$killer_pid" >/dev/null 2>&1 || true
+  wait "$killer_pid" >/dev/null 2>&1 || true
+
+  return "$command_code"
+}
+
 as_bool() {
   case "${1:-false}" in
     true|TRUE|1|yes|YES) echo "true" ;;
@@ -173,6 +199,7 @@ PLATFORM="${PLATFORM:-linux/amd64}"
 CHECK_IMAGE_EXISTS="$(as_bool "${CHECK_IMAGE_EXISTS:-true}")"
 CHECK_LOCAL_IMAGE_EXISTS="$(as_bool "${CHECK_LOCAL_IMAGE_EXISTS:-false}")"
 CHECK_BUILD_RESOURCES="$(as_bool "${CHECK_BUILD_RESOURCES:-false}")"
+DOCKER_TIMEOUT_SECONDS="${DOCKER_TIMEOUT_SECONDS:-15}"
 
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -185,7 +212,7 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 require_cmd docker "docker is required."
-if ! docker info >/dev/null 2>&1; then
+if ! run_with_timeout "$DOCKER_TIMEOUT_SECONDS" docker version --format '{{.Server.Version}}' >/dev/null 2>&1; then
   fail 2 "Docker daemon is not reachable. Start Docker/Colima first."
 fi
 
