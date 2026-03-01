@@ -54,6 +54,35 @@ export class DevSeederService {
       appVersion,
     });
 
+    await this.seedWorkspaceData({
+      workspaceId,
+      profileWorkspaceId: workspaceId,
+    });
+  }
+
+  public async seedExistingWorkspace({
+    workspaceId,
+    profileWorkspaceId,
+  }: {
+    workspaceId: string;
+    profileWorkspaceId: SeededWorkspacesIds;
+  }): Promise<void> {
+    await this.seedWorkspaceData({
+      workspaceId,
+      profileWorkspaceId,
+      skipPermissionBootstrap: true,
+    });
+  }
+
+  private async seedWorkspaceData({
+    workspaceId,
+    profileWorkspaceId,
+    skipPermissionBootstrap = false,
+  }: {
+    workspaceId: string;
+    profileWorkspaceId: SeededWorkspacesIds;
+    skipPermissionBootstrap?: boolean;
+  }) {
     const schemaName =
       await this.workspaceDataSourceService.createWorkspaceDBSchema(
         workspaceId,
@@ -86,17 +115,21 @@ export class DevSeederService {
     await this.devSeederMetadataService.seed({
       dataSourceMetadata,
       workspaceId,
+      profileWorkspaceId,
     });
 
     await this.devSeederMetadataService.seedRelations({
       workspaceId,
+      profileWorkspaceId,
     });
 
-    await this.devSeederPermissionsService.initPermissions({
-      workspaceId,
-      twentyStandardFlatApplication,
-      workspaceCustomFlatApplication,
-    });
+    if (!skipPermissionBootstrap) {
+      await this.devSeederPermissionsService.initPermissions({
+        workspaceId,
+        twentyStandardFlatApplication,
+        workspaceCustomFlatApplication,
+      });
+    }
 
     await seedPageLayouts(
       this.coreDataSource,

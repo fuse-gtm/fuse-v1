@@ -1,6 +1,8 @@
 services:
   server:
     image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
+    platform: ${TWENTY_IMAGE_PLATFORM:-linux/amd64}
 
   worker:
     image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
+    platform: ${TWENTY_IMAGE_PLATFORM:-linux/amd64}

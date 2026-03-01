@@ -178,18 +178,35 @@ export class DevSeederMetadataService {
     },
   };
 
+  private getWorkspaceConfig({
+    workspaceId,
+    profileWorkspaceId,
+  }: {
+    workspaceId: string;
+    profileWorkspaceId?: string;
+  }) {
+    return (
+      this.workspaceConfigs[workspaceId] ??
+      (isDefined(profileWorkspaceId)
+        ? this.workspaceConfigs[profileWorkspaceId]
+        : undefined)
+    );
+  }
+
   public async seed({
     dataSourceMetadata,
     workspaceId,
+    profileWorkspaceId,
   }: {
     dataSourceMetadata: DataSourceEntity;
     workspaceId: string;
+    profileWorkspaceId?: string;
   }) {
-    const config = this.workspaceConfigs[workspaceId];
+    const config = this.getWorkspaceConfig({ workspaceId, profileWorkspaceId });
 
     if (!config) {
       throw new Error(
-        `Workspace configuration not found for workspaceId: ${workspaceId}`,
+        `Workspace configuration not found for workspaceId: ${workspaceId}${isDefined(profileWorkspaceId) ? ` (profile: ${profileWorkspaceId})` : ''}`,
       );
     }
 
@@ -266,12 +283,18 @@ export class DevSeederMetadataService {
     });
   }
 
-  public async seedRelations({ workspaceId }: { workspaceId: string }) {
-    const config = this.workspaceConfigs[workspaceId];
+  public async seedRelations({
+    workspaceId,
+    profileWorkspaceId,
+  }: {
+    workspaceId: string;
+    profileWorkspaceId?: string;
+  }) {
+    const config = this.getWorkspaceConfig({ workspaceId, profileWorkspaceId });
 
     if (!config) {
       throw new Error(
-        `Workspace configuration not found for workspaceId: ${workspaceId}`,
+        `Workspace configuration not found for workspaceId: ${workspaceId}${isDefined(profileWorkspaceId) ? ` (profile: ${profileWorkspaceId})` : ''}`,
       );
     }
 

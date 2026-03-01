@@ -222,7 +222,7 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
     fields: [
       {
         type: FieldMetadataType.TEXT,
-        name: 'role',
+        name: 'partnerRole',
         label: 'Role',
         icon: 'IconId',
       },

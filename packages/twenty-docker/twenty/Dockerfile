@@ -16,8 +16,9 @@ COPY ./packages/twenty-shared/package.json /app/packages/twenty-shared/
 COPY ./packages/twenty-front/package.json /app/packages/twenty-front/
 COPY ./packages/twenty-sdk/package.json /app/packages/twenty-sdk/
 
-# Install all dependencies
-RUN yarn && yarn cache clean && npx nx reset
+# Install all dependencies.
+# Disable hardened mode in Docker builds to avoid long/stuck resolution checks.
+RUN YARN_ENABLE_HARDENED_MODE=0 yarn && yarn cache clean
 
 
 # Build the back

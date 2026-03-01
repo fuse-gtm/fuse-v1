@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "${SELF_DIR}/../../.." && pwd)"
+SCRIPT_DIR="${SELF_DIR}"
 cd "$REPO_ROOT"
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
 HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"

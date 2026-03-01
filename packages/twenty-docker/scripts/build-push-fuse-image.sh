@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "${SELF_DIR}/../../.." && pwd)"
+SCRIPT_DIR="${SELF_DIR}"
 cd "$REPO_ROOT"
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 IMAGE_REPO="${IMAGE_REPO:-ghcr.io/fuse-gtm/fuse-v1}"
 IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
