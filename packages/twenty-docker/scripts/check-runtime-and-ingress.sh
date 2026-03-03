@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+# Fuse runtime watchdog: checks local server + public ingress health.
+# Restarts server container on local failure, Caddy on public failure.
+#
+# Usage:
+#   ENV_FILE=packages/twenty-docker/.env \
+#   VERIFY_PUBLIC_INGRESS=true \
+#   bash packages/twenty-docker/scripts/check-runtime-and-ingress.sh
+#
+# Cron (every 5 min):
+#   */5 * * * * ENV_FILE=/opt/fuse/packages/twenty-docker/.env VERIFY_PUBLIC_INGRESS=true /opt/fuse/packages/twenty-docker/scripts/check-runtime-and-ingress.sh >> /var/log/fuse-watchdog.log 2>&1
 set -euo pipefail
 
 SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -54,37 +64,30 @@ restart_server() {
   docker compose "${COMPOSE_ARGS[@]}" restart server >/dev/null
 }
 
-restart_cloudflared() {
+restart_caddy() {
   if command -v systemctl >/dev/null 2>&1; then
-    if systemctl restart "${CLOUDFLARED_SERVICE_NAME}.service" >/dev/null 2>&1; then
-      log_line "warn" "check=public status=failed action=restart_cloudflared_service service=${CLOUDFLARED_SERVICE_NAME}.service"
+    if systemctl restart "${CADDY_SERVICE_NAME}.service" >/dev/null 2>&1; then
+      log_line "warn" "check=public status=failed action=restart_caddy service=${CADDY_SERVICE_NAME}.service"
       return 0
     fi
   fi
 
-  if command -v cloudflared >/dev/null 2>&1 && [ -n "${CLOUDFLARE_TUNNEL_NAME}" ]; then
-    pkill -f "cloudflared.*tunnel run ${CLOUDFLARE_TUNNEL_NAME}" >/dev/null 2>&1 || true
-    nohup cloudflared tunnel run "${CLOUDFLARE_TUNNEL_NAME}" \
-      > "/tmp/cloudflared-${CLOUDFLARE_TUNNEL_NAME}.log" 2>&1 &
-    log_line "warn" "check=public status=failed action=restart_cloudflared_process tunnel=${CLOUDFLARE_TUNNEL_NAME}"
-    return 0
-  fi
-
-  log_line "error" "check=public status=failed action=restart_cloudflared unavailable=true"
+  log_line "error" "check=public status=failed action=restart_caddy unavailable=true"
   return 1
 }
 
+# --- Configuration ---
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
 LOCAL_HEALTHCHECK_URL="${LOCAL_HEALTHCHECK_URL:-http://localhost:3000/healthz}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
 PUBLIC_HEALTHCHECK_URL="${PUBLIC_HEALTHCHECK_URL:-}"
 VERIFY_PUBLIC_INGRESS="${VERIFY_PUBLIC_INGRESS:-auto}"
-CLOUDFLARE_TUNNEL_NAME="${CLOUDFLARE_TUNNEL_NAME:-}"
-CLOUDFLARED_SERVICE_NAME="${CLOUDFLARED_SERVICE_NAME:-cloudflared}"
+CADDY_SERVICE_NAME="${CADDY_SERVICE_NAME:-caddy}"
 CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
 RECOVERY_TIMEOUT_SECONDS="${RECOVERY_TIMEOUT_SECONDS:-180}"
 RECHECK_INTERVAL_SECONDS="${RECHECK_INTERVAL_SECONDS:-5}"
-CLOUDFLARED_RESTART_GRACE_SECONDS="${CLOUDFLARED_RESTART_GRACE_SECONDS:-8}"
+CADDY_RESTART_GRACE_SECONDS="${CADDY_RESTART_GRACE_SECONDS:-8}"
+EXTRA_COMPOSE_FILE="${EXTRA_COMPOSE_FILE:-}"
 
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -106,12 +109,17 @@ if [ "$VERIFY_PUBLIC_INGRESS" = "auto" ]; then
 fi
 VERIFY_PUBLIC_INGRESS="$(as_bool "$VERIFY_PUBLIC_INGRESS")"
 
+# --- Compose args (match prod shape) ---
 COMPOSE_ARGS=(
   -f packages/twenty-docker/docker-compose.yml
   -f packages/twenty-docker/docker-compose.fuse.yml
   --env-file "$ENV_FILE"
 )
+if [ -n "$EXTRA_COMPOSE_FILE" ]; then
+  COMPOSE_ARGS+=(-f "$EXTRA_COMPOSE_FILE")
+fi
 
+# --- Check local health ---
 if ! check_url "$LOCAL_HEALTHCHECK_URL" "$CURL_MAX_TIME_SECONDS"; then
   restart_server
   if ! wait_for_local_health "$RECOVERY_TIMEOUT_SECONDS" "$RECHECK_INTERVAL_SECONDS"; then
@@ -123,6 +131,7 @@ else
   log_line "info" "check=local status=ok url=${LOCAL_HEALTHCHECK_URL}"
 fi
 
+# --- Check public health (via Caddy) ---
 if [ "$VERIFY_PUBLIC_INGRESS" != "true" ]; then
   log_line "info" "check=public status=skipped reason=verification_disabled"
   exit 0
@@ -134,8 +143,8 @@ if [ -z "$PUBLIC_HEALTHCHECK_URL" ]; then
 fi
 
 if ! check_url "$PUBLIC_HEALTHCHECK_URL" "$CURL_MAX_TIME_SECONDS"; then
-  restart_cloudflared || exit 1
-  sleep "$CLOUDFLARED_RESTART_GRACE_SECONDS"
+  restart_caddy || exit 1
+  sleep "$CADDY_RESTART_GRACE_SECONDS"
   if ! check_url "$PUBLIC_HEALTHCHECK_URL" "$CURL_MAX_TIME_SECONDS"; then
     log_line "error" "check=public status=failed_recovery url=${PUBLIC_HEALTHCHECK_URL}"
     exit 1

@@ -184,6 +184,16 @@ export class AdminPanelService {
 
   async getVersionInfo(): Promise<VersionInfoDTO> {
     const currentVersion = this.twentyConfigService.get('APP_VERSION');
+    const isVersionCheckEnabled = this.twentyConfigService.get(
+      'ADMIN_VERSION_CHECK_ENABLED',
+    );
+
+    if (!isVersionCheckEnabled) {
+      return {
+        currentVersion,
+        latestVersion: currentVersion ?? 'latest',
+      };
+    }
 
     try {
       const httpClient = this.secureHttpClientService.getHttpClient();

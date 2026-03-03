@@ -1,0 +1,7 @@
+{
+  "url": "https://app.fusegtm.com/welcome",
+  "title": "Sign in or Create an account",
+  "authenticatedWorkspaceVisible": false,
+  "loginSurfaceDetected": true,
+  "sourceSnapshot": "output/playwright/fuse-phase2-production-sidebar-20260302T042030Z.yml"
+}

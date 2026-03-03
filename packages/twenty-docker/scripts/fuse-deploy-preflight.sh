@@ -27,6 +27,25 @@ require_cmd() {
   fi
 }
 
+require_strict_value() {
+  local key="$1"
+  local expected="$2"
+  local actual="${!key:-}"
+
+  if [ -z "$actual" ]; then
+    fail 2 "Strict sovereignty check failed: ${key} is unset (expected '${expected}')."
+  fi
+
+  local actual_lower
+  actual_lower="$(echo "$actual" | tr '[:upper:]' '[:lower:]')"
+  local expected_lower
+  expected_lower="$(echo "$expected" | tr '[:upper:]' '[:lower:]')"
+
+  if [ "$actual_lower" != "$expected_lower" ]; then
+    fail 2 "Strict sovereignty check failed: ${key}='${actual}' (expected '${expected}')."
+  fi
+}
+
 run_with_timeout() {
   local seconds="$1"
   shift
@@ -84,6 +103,19 @@ detect_mem_gb() {
     kb="$(awk '/MemTotal:/ {print $2}' /proc/meminfo)"
     if [ -n "${kb}" ]; then
       echo $((kb / 1024 / 1024))
+      return
+    fi
+  fi
+
+  echo 0
+}
+
+detect_available_mem_mb() {
+  if [ -r /proc/meminfo ]; then
+    local kb
+    kb="$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)"
+    if [ -n "${kb}" ]; then
+      echo $((kb / 1024))
       return
     fi
   fi
@@ -199,7 +231,10 @@ PLATFORM="${PLATFORM:-linux/amd64}"
 CHECK_IMAGE_EXISTS="$(as_bool "${CHECK_IMAGE_EXISTS:-true}")"
 CHECK_LOCAL_IMAGE_EXISTS="$(as_bool "${CHECK_LOCAL_IMAGE_EXISTS:-false}")"
 CHECK_BUILD_RESOURCES="$(as_bool "${CHECK_BUILD_RESOURCES:-false}")"
+CHECK_HOST_FREE_MEM="$(as_bool "${CHECK_HOST_FREE_MEM:-true}")"
+MIN_FREE_MEM_MB="${MIN_FREE_MEM_MB:-512}"
 DOCKER_TIMEOUT_SECONDS="${DOCKER_TIMEOUT_SECONDS:-15}"
+STRICT_SOVEREIGNTY_MODE="$(as_bool "${STRICT_SOVEREIGNTY_MODE:-true}")"
 
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -209,6 +244,21 @@ if [ -f "$ENV_FILE" ]; then
   if [ -z "${IMAGE_REF}" ] && [ -n "${TWENTY_IMAGE:-}" ]; then
     IMAGE_REF="$TWENTY_IMAGE"
   fi
+fi
+
+if [ "$STRICT_SOVEREIGNTY_MODE" = "true" ] && [ "$MODE" = "prod" ]; then
+  require_strict_value IS_CONFIG_VARIABLES_IN_DB_ENABLED false
+  require_strict_value TELEMETRY_ENABLED false
+  require_strict_value ANALYTICS_ENABLED false
+  require_strict_value AI_TELEMETRY_ENABLED false
+  require_strict_value ALLOW_REQUESTS_TO_TWENTY_ICONS false
+  require_strict_value COMPANY_ENRICHMENT_ENABLED false
+  require_strict_value COMPANY_ENRICHMENT_PROVIDER none
+  require_strict_value MARKETPLACE_REMOTE_FETCH_ENABLED false
+  require_strict_value ADMIN_VERSION_CHECK_ENABLED false
+  require_strict_value HELP_CENTER_SEARCH_ENABLED false
+  require_strict_value HELP_CENTER_SEARCH_PROVIDER none
+  require_strict_value SUPPORT_DRIVER none
 fi
 
 require_cmd docker "docker is required."
@@ -232,6 +282,13 @@ if [ "$CHECK_BUILD_RESOURCES" = "true" ] && is_arm_host && [ "$PLATFORM" = "linu
     fail 5 "Host is arm64 with ${mem_gb}GB RAM building ${PLATFORM}. This is frequently OOM-prone. Use CI image build workflow (.github/workflows/fuse-image-build.yml)."
   fi
   warn "arm64 host building ${PLATFORM}; emulation may be slow. Prefer CI for production images."
+fi
+
+if [ "$CHECK_HOST_FREE_MEM" = "true" ]; then
+  available_mem_mb="$(detect_available_mem_mb)"
+  if [ "$available_mem_mb" -gt 0 ] && [ "$available_mem_mb" -lt "$MIN_FREE_MEM_MB" ]; then
+    warn "Low free memory before deploy (${available_mem_mb}MB < ${MIN_FREE_MEM_MB}MB). Restart window may trigger crash loops on small hosts."
+  fi
 fi
 
 if [ "$MODE" = "prod" ]; then

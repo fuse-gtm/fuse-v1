@@ -9,6 +9,7 @@ import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { SecureHttpClientService } from 'src/engine/core-modules/secure-http-client/secure-http-client.service';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import {
   type CompanyToCreate,
@@ -123,6 +124,21 @@ describe('CreateCompanyService', () => {
             executeInWorkspaceContext: jest
               .fn()
               .mockImplementation((fn: () => any, _authContext?: any) => fn()),
+          },
+        },
+        {
+          provide: TwentyConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'COMPANY_ENRICHMENT_ENABLED') {
+                return true;
+              }
+              if (key === 'COMPANY_ENRICHMENT_PROVIDER') {
+                return 'twenty';
+              }
+
+              return undefined;
+            }),
           },
         },
         {

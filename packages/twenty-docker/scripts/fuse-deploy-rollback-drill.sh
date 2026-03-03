@@ -6,6 +6,7 @@ EXTRA_COMPOSE_FILE="${EXTRA_COMPOSE_FILE:-packages/twenty-docker/docker-compose.
 VERIFY_PUBLIC_URL="${VERIFY_PUBLIC_URL:-true}"
 LOCAL_HEALTH_URL="${LOCAL_HEALTH_URL:-http://localhost:3000/healthz}"
 PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/healthz}"
+CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
 LOG_FILE="${LOG_FILE:-}"
 
 TAG_A=""
@@ -85,13 +86,13 @@ health_check() {
   local local_status="PASS"
   local public_status="SKIPPED"
 
-  if ! curl -fsS "$LOCAL_HEALTH_URL" >/dev/null 2>&1; then
+  if ! curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$LOCAL_HEALTH_URL" >/dev/null 2>&1; then
     local_status="FAIL"
   fi
 
   if [ "$VERIFY_PUBLIC_URL" = "true" ]; then
     public_status="PASS"
-    if ! curl -fsS "$PUBLIC_HEALTH_URL" >/dev/null 2>&1; then
+    if ! curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$PUBLIC_HEALTH_URL" >/dev/null 2>&1; then
       public_status="FAIL"
     fi
   fi
@@ -146,6 +147,7 @@ run_deploy() {
   echo "- env_file: $ENV_FILE"
   echo "- extra_compose_file: $EXTRA_COMPOSE_FILE"
   echo "- verify_public_url: $VERIFY_PUBLIC_URL"
+  echo "- curl_max_time_seconds: $CURL_MAX_TIME_SECONDS"
   echo "- baseline_tag_a: $TAG_A"
   echo "- candidate_tag_b: $TAG_B"
 } > "$LOG_FILE"

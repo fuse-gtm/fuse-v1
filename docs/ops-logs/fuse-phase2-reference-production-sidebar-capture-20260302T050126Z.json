@@ -1,0 +1,15 @@
+{
+  "url": "https://fusegtm.fusegtm.com/objects/companies?viewId=694c2a50-b131-45ec-8ab3-1754a2677840",
+  "title": "All Companies - Companies",
+  "workspaceItems": [
+    "People",
+    "Companies",
+    "Opportunities",
+    "Tasks",
+    "Notes",
+    "Workflows",
+    "Dashboards"
+  ],
+  "workspaceItemCount": 7,
+  "sourceSnapshot": "output/playwright/fuse-phase2-production-sidebar-20260302T050126Z.yml"
+}

@@ -9,6 +9,7 @@ import { type ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entit
 import { ApiKeyRoleService } from 'src/engine/core-modules/api-key/services/api-key-role.service';
 import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
 import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
+import { COMMON_PRELOAD_TOOLS } from 'src/engine/core-modules/tool-provider/constants/common-preload-tools.const';
 import { EXECUTE_TOOL_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/execute-tool.tool';
 import { GET_TOOL_CATALOG_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/get-tool-catalog.tool';
 import { LEARN_TOOLS_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/learn-tools.tool';
@@ -40,15 +41,21 @@ describe('McpProtocolService', () => {
     LEARN_TOOLS_TOOL_NAME,
     EXECUTE_TOOL_TOOL_NAME,
     LOAD_SKILL_TOOL_NAME,
-    'search_help_center',
+    ...COMMON_PRELOAD_TOOLS,
   ];
 
   beforeEach(async () => {
-    const mockSearchHelpCenterTool = {
-      description: 'Search help center',
-      inputSchema: { jsonSchema: { type: 'object' } },
-      execute: jest.fn(),
-    };
+    const mockPreloadedTools = COMMON_PRELOAD_TOOLS.reduce<
+      Record<string, unknown>
+    >((acc, toolName) => {
+      acc[toolName] = {
+        description: `Mocked ${toolName}`,
+        inputSchema: { jsonSchema: { type: 'object' } },
+        execute: jest.fn(),
+      };
+
+      return acc;
+    }, {});
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,9 +68,15 @@ describe('McpProtocolService', () => {
           provide: ToolRegistryService,
           useValue: {
             buildToolIndex: jest.fn().mockResolvedValue([]),
-            getToolsByName: jest.fn().mockResolvedValue({
-              search_help_center: mockSearchHelpCenterTool,
-            }),
+            getToolsByName: jest
+              .fn()
+              .mockImplementation((names: string[]) =>
+                Object.fromEntries(
+                  names
+                    .filter((name) => mockPreloadedTools[name] !== undefined)
+                    .map((name) => [name, mockPreloadedTools[name]]),
+                ),
+              ),
             getToolInfo: jest.fn().mockResolvedValue([]),
             resolveAndExecute: jest.fn(),
           },
@@ -276,7 +289,7 @@ describe('McpProtocolService', () => {
       );
     });
 
-    it('should build a ToolSet with exactly 5 tools and pass it to executor for tools/list', async () => {
+    it('should build a ToolSet and pass it to executor for tools/list', async () => {
       featureFlagService.isFeatureEnabled.mockResolvedValue(true);
       userRoleService.getRoleIdForUserWorkspace.mockResolvedValue(mockRoleId);
 

@@ -8,6 +8,7 @@ Do not treat this as strategy. Treat it as operations.
 Source documents:
 - `docs/fuse-mvp-architecture-plan-v2.md` — architecture plan
 - `docs/fuse-design-system-token-map.md` — Figma↔Code token mapping for FUSE-502
+- `docs/fuse-phase2-data-model-runbook.md` — execution runbook for FUSE-201..206
 - Figma (duplicated): `figma.com/design/SPb7b3wG9ZcFt0oy3nLQbi` — Fuse brand token editing
 - Figma (original): `figma.com/file/xt8O9mFeLl46C5InWwoMrN` — Twenty upstream reference
 - Storybook: `npx nx storybook:build twenty-front` — component visual verification
@@ -109,14 +110,56 @@ Source documents:
 
 ## Phase 2 (Week 2): Partner Data Model Activation
 
+Parallel rule:
+
+1. Phase 2 may run while Phase 1 soak continues.
+2. FUSE-200 must pass before FUSE-201..205 production mutation windows start.
+3. Any Sev-1 pauses new production mutations until recovery is confirmed.
+
 | Issue | Title | Priority | Owner | Status | Definition of Done |
 |---|---|---|---|---|---|
-| FUSE-201 | Run bootstrap + verify 16 objects | P0 | Dhruv | TODO | All objects and relations visible in workspace |
+| FUSE-200 | YC/Apple reference baseline parity | P0 | Dhruv | IN_PROGRESS | Sidebar, page layout, AI agents, AI chat, and admin-panel-settings capability parity documented and accepted before Fuse-specific opinionation |
+| FUSE-201 | Run bootstrap + verify 16 objects | P0 | Dhruv | TODO | All 16 Partner OS objects and relations visible; bootstrap idempotency and expected views verified |
 | FUSE-202 | Schema freeze review | P0 | Dhruv | TODO | MVP schema locked and documented |
 | FUSE-203 | Configure opinionated views | P0 | Dhruv | TODO | Default table/kanban/filter views saved |
 | FUSE-204 | Seed sample records | P1 | Dhruv | TODO | Demo paths work without manual data entry |
 | FUSE-205 | Terminology audit | P1 | Dhruv | TODO | UI uses retrieval checks/fit signals/gates/evidence |
 | FUSE-206 | Cherry-pick Linaria migration | P1 | Codex | TODO | `git cherry-pick 1db2a409` clean, `nx build twenty-ui && nx build twenty-front` pass. Must land before FUSE-502 |
+
+### FUSE-200 Merge Contract (Mandatory)
+
+Use this for reference parity work before any Fuse-specific opinionation.
+
+1. Work only on branch `integration/reference-parity`.
+2. Ship one parity slice per PR: `sidebar`, `page-layout`, `agents`, `chat`, `admin-panel-settings`.
+3. Treat workspace DB state as non-mergeable:
+   - if state-only, codify reproducible setup steps/scripts and commit them.
+4. Merge only if all checks pass:
+   - `yc.localhost` parity PASS
+   - `apple.localhost` parity PASS
+   - deployed env parity PASS (`app.fusegtm.com`)
+   - for `sidebar`, core editability + persistence PASS (reorder, color, add/remove)
+   - for `admin-panel-settings`, low-risk write-and-revert validation PASS
+   - no regressions in auth, deploy/health, or multi-workspace routing
+5. Log evidence in `docs/ops-logs/fuse-phase2-reference-baseline-<timestamp>.md`.
+6. If any check fails, keep PR open and do not proceed to FUSE-201+.
+
+### Phase 2 Execution Assets
+
+Use these to keep Phase 2 reproducible:
+
+1. Pre-window gate helper:
+   - `packages/twenty-docker/scripts/fuse-phase2-precheck.sh --ack-no-sev1`
+2. Evidence templates:
+   - `docs/ops-logs/templates/fuse-phase2-reference-baseline-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-reference-slice-admin-panel-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-bootstrap-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-schema-freeze-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-views-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-seed-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-terminology-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-fuse-206-checkpoint-template.md`
+   - `docs/ops-logs/templates/fuse-phase2-closeout-template.md`
 
 ## Phase 3 (Weeks 3-5): Workflow Delivery
 
@@ -151,12 +194,15 @@ Source documents:
 
 ## Phase 6 (Week 6): Hardening + Launch
 
-| Issue | Title | Priority | Owner | Status | Definition of Done |
-|---|---|---|---|---|---|
-| FUSE-601 | Smoke test suite | P0 | Dhruv | TODO | All core flows pass on staging |
-| FUSE-602 | Backup baseline | P0 | Dhruv | TODO | Automated backup + tested restore |
-| FUSE-603 | Deploy + incident runbook | P0 | Dhruv | TODO | Runbook executable by a new operator |
-| FUSE-604 | Launch gate review | P0 | Dhruv | TODO | Evidence-based go-live sign-off |
+| Issue | Title | Priority | Owner | Status | Definition of Done | Evidence |
+|---|---|---|---|---|---|---|
+| FUSE-601 | Ingress security (TLS allowlist) | P0 | Dhruv | DONE | Caddy `ask` endpoint validates workspace domains; rejects reserved/invalid subdomains | Operator-reported live with wildcard TLS ask flow active on EC2 (2026-03-02) |
+| FUSE-602 | Backup restore drill | P0 | Dhruv | DONE | RDS PITR tested end-to-end with evidence | Operator reported restore drill path is ready, with EC2 IAM role scoped for restore-drill instances (`fuse-rds-restore-drill`) and script `fuse-backup-restore-drill.sh` ready (2026-03-02) |
+| FUSE-603 | Deploy + incident runbook | P0 | Dhruv | DONE | Runbook executable by a new operator | `docs/fuse-deploy-incident-runbook.md` completed and aligned to AWS/Caddy stack (2026-03-02) |
+| FUSE-604 | Alerting + operational visibility | P0 | Dhruv | DONE | SNS topic + CloudWatch alarms + health metric publisher | SNS topic `fuse-prod-alerts` + confirmed email subscription + 4 CloudWatch alarms (`fuse-ec2-status-check`, `fuse-rds-low-storage`, `fuse-rds-high-cpu`, `fuse-app-health-check`) + per-minute health metric cron live (2026-03-02) |
+| FUSE-605 | Runtime watchdog (Caddy) | P1 | Dhruv | DONE | Watchdog restarts Caddy on public failure, server on local failure | EC2 cron every 5 minutes for watchdog is live; public/local recovery loop enabled (2026-03-02) |
+| FUSE-606 | Launch gate review | P0 | Dhruv | TODO | Evidence-based go-live sign-off |
+| FUSE-607 | Runtime reliability hardening (cron startup decoupling + MCP bootstrap resilience) | P0 | Codex | IN_PROGRESS | Startup remains healthy when cron registration is slow/failing; deploy runs post-health cron registration non-fatally; MCP bootstrap is idempotent/retry-safe/resumable with structured output | Acceptance evidence: `docs/ops-logs/fuse-runtime-outage-remediation-<timestamp>.md`, `docs/ops-logs/fuse-runtime-restart-drill-<timestamp>.md`, `docs/ops-logs/fuse-mcp-bootstrap-hardening-<timestamp>.md` |
 
 ## Blockers Log
 
@@ -164,6 +210,8 @@ Source documents:
 |---|---|---|---|---|
 | 2026-03-01 | FUSE-102 | RESOLVED — replaced Cloudflare tunnel with Caddy + Let's Encrypt on EC2. | Dhruv | n/a |
 | 2026-03-01 | FUSE-105 | RESOLVED — Google OAuth live on `app.fusegtm.com` with multi-workspace routing aligned (`DEFAULT_SUBDOMAIN=app`). | Dhruv | n/a |
+| 2026-03-02 | FUSE-200 | BLOCKED — production capability preconditions were unblocked (navigation/AI/layout feature flags seeded and server+worker restarted), but required production evidence for sidebar persistence and slices 2-4 is still incomplete. | Dhruv | Complete production sidebar capability checks (reorder/color/add-remove + persistence), close slices 2-4 with production evidence, then re-evaluate FUSE-200 gate. |
+| 2026-03-02 | FUSE-201 | BLOCKED — FUSE-200 parity gate not yet PASS (by policy, no production mutation before FUSE-200 close). | Dhruv | Complete remaining FUSE-200 slices and mark explicit PASS in reference baseline log only when all 5 slices are green. |
 
 ## Change Log
 
@@ -184,3 +232,21 @@ Source documents:
 | 2026-03-01 | Started 7-day soak log at `docs/ops-logs/fuse-phase1-soak-2026-03-01.md` with Day 1 health/auth evidence. | Codex |
 | 2026-03-02 | Added automated daily soak checker (`packages/twenty-docker/scripts/fuse-soak-check.sh`) and logged Day 1 automated evidence in `docs/ops-logs/fuse-soak-check-20260302T004415Z.md` (public/local health, Google OAuth redirect, worker activity all PASS). | Codex |
 | 2026-03-02 | Normalized ingress to one wildcard Caddy block (`*.fusegtm.com`) with on-demand TLS + ask endpoint; removed mixed explicit/wildcard block behavior that caused intermittent TLS failure on `app.fusegtm.com`. | Codex |
+| 2026-03-02 | Added a decision-complete Phase 2 activation runbook (`docs/fuse-phase2-data-model-runbook.md`) covering FUSE-201..206 with exact execution order, commands, evidence artifacts, and closeout criteria. | Codex |
+| 2026-03-02 | Added FUSE-200 as a hard pre-gate for Phase 2: YC/Apple baseline parity (sidebar, page layout, AI agents, AI chat) must pass before Fuse-specific opinionation. | Codex |
+| 2026-03-02 | Added FUSE-200 branch+merge execution contract to both tracker and runbook: `integration/reference-parity` branch, one-slice PRs, explicit localhost+deployed parity checks, and evidence log requirement before Phase 2 opinionation. | Codex |
+| 2026-03-02 | Added Phase 2 implementation assets: pre-window precheck script (`fuse-phase2-precheck.sh`), evidence templates in `docs/ops-logs/templates/`, and ops-log README updates so FUSE-200..206 can run with consistent artifacts. | Codex |
+| 2026-03-02 | Began FUSE-200 execution on branch `integration/reference-parity`: ran pre-window gate (`fuse-phase2-precheck.sh --ack-no-sev1`), created baseline parity artifact `docs/ops-logs/fuse-phase2-reference-baseline-20260302T040351Z.md`, and opened first slice artifact `docs/ops-logs/fuse-phase2-reference-slice-sidebar-20260302T040351Z.md`. | Codex |
+| 2026-03-02 | Automated sidebar parity capture for YC and Apple (JSON + screenshot + snapshot artifacts), captured current production sidebar/auth state, and updated FUSE-200 baseline/slice logs with evidence paths and a production-auth blocker. | Codex |
+| 2026-03-02 | Fixed production workspace TLS/auth redirect failure for `fusegtm.fusegtm.com` by correcting Caddy on-demand TLS ask URL (use `ask http://127.0.0.1:9080/allow`, no placeholders). Verified `https://fusegtm.fusegtm.com/healthz` returns 200 and cert issuance succeeds. | Codex |
+| 2026-03-02 | Captured authenticated production sidebar and settings/admin-panel evidence; updated FUSE-200 blocker from auth failure to parity gap (production nav has 7 items, missing Partner OS navigation compared with YC/Apple references). | Codex |
+| 2026-03-02 | Expanded FUSE-200 to a five-slice gate by adding `admin-panel-settings` parity (YC/Apple/production) and required write-and-revert validation before unblocking FUSE-201..205. | Codex |
+| 2026-03-02 | Executed production `admin-panel-settings` write-and-revert test on `Automatically enable new models` (`true -> false -> true`), captured fresh AI-tab evidence, passed post-checks (phase2 precheck, Google OAuth redirect, workspace routing), and marked slice 5 PASS in baseline/slice logs. | Codex |
+| 2026-03-02 | Implemented idempotent Partner OS sidebar backfill in `workspace:bootstrap:partner-os` by extending `PartnerOsMetadataBootstrapService` to create missing workspace-level navigation menu items for existing Partner OS objects (plus runbook/evidence updates for Slice 1 recovery). | Codex |
+| 2026-03-02 | Revised Phase 2 gate semantics: `FUSE-200 sidebar` now evaluates editability capability parity (not object-list parity), and Partner OS object inventory enforcement is explicitly moved to `FUSE-201`. | Codex |
+| 2026-03-02 | Applied capability-first parity contract across runbook/tracker/baseline artifacts (sidebar = editability+persistence gate), updated sidebar slice checklist, refreshed baseline matrix parity-type labeling, and re-ran phase2 precheck PASS at `2026-03-02T06:47:56Z`. | Codex |
+| 2026-03-02 | Operator seeded four production feature flags (including `IS_NAVIGATION_MENU_ITEM_ENABLED` and `IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED`) and restarted server+worker so flag cache reloaded; runtime capability availability for sidebar editing, AI chat/agents, and page layout beta is now confirmed on `app.fusegtm.com`. | Codex |
+| 2026-03-02 | Phase 1 Closeout + Launch Hardening scripts: TLS allowlist service (`fuse-caddy-ask-server.py`, `install-caddy-ask-service.sh`), watchdog rewrite (Caddy replaces Cloudflare), alerting (`fuse-setup-alerting.sh`, `fuse-publish-health-metric.sh`), backup drill (`fuse-backup-restore-drill.sh`), incident runbook (`docs/fuse-deploy-incident-runbook.md`). FUSE-601..605 IN_PROGRESS. | Claude |
+| 2026-03-02 | Operator reported hardening stack live: EC2 IAM role (`fuse-prod-ec2`) attached, SNS topic+subscription confirmed, four CloudWatch alarms active, watchdog cron (`*/5`) and health metric cron (`* * * * *`) running. Updated FUSE-601..605 to DONE; only launch/soak gates remain. | Codex |
+| 2026-03-02 | Started FUSE-607 reliability hardening: added startup timeout guard around cron registration, per-command timeout in `cron:register:all`, deploy post-health one-shot cron registration (non-fatal), low-memory preflight warning, and MCP bootstrap hardening (env-first token, retries+jitter, pagination, checkpoint/resume, JSON output, semantic select colors). | Codex |
+| 2026-03-02 | Implemented sovereignty hardening defaults and outbound guards: env-only critical config (`IS_CONFIG_VARIABLES_IN_DB_ENABLED=false`, telemetry/icons/enrichment/help-center/marketplace/version-check controls), signup+record icon gating, company enrichment default-off, AI telemetry env gate, marketplace/version remote-call gates, help-center tool gating/removal from preloaded tools, strict deploy preflight assertions, and tenant lifecycle ops scripts (`fuse-tenant-bootstrap.sh`, `fuse-workspace-creation-report.sh`). | Codex |

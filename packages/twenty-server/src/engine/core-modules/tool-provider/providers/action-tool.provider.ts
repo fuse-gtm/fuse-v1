@@ -25,6 +25,7 @@ import { DraftEmailTool } from 'src/engine/core-modules/tool/tools/email-tool/dr
 import { SendEmailTool } from 'src/engine/core-modules/tool/tools/email-tool/send-email-tool';
 import { type ToolInput } from 'src/engine/core-modules/tool/types/tool-input.type';
 import { type Tool } from 'src/engine/core-modules/tool/types/tool.type';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
 
 @Injectable()
@@ -32,6 +33,7 @@ export class ActionToolProvider implements ToolProvider {
   readonly category = ToolCategory.ACTION;
 
   private readonly toolMap: Map<string, Tool>;
+  private readonly isHelpCenterSearchEnabled: boolean;
 
   constructor(
     private readonly httpTool: HttpTool,
@@ -39,16 +41,28 @@ export class ActionToolProvider implements ToolProvider {
     private readonly draftEmailTool: DraftEmailTool,
     private readonly searchHelpCenterTool: SearchHelpCenterTool,
     private readonly codeInterpreterTool: CodeInterpreterTool,
+    private readonly twentyConfigService: TwentyConfigService,
     private readonly permissionsService: PermissionsService,
     private readonly toolExecutorService: ToolExecutorService,
   ) {
+    const helpCenterSearchProvider = String(
+      this.twentyConfigService.get('HELP_CENTER_SEARCH_PROVIDER'),
+    ).toLowerCase();
+
+    this.isHelpCenterSearchEnabled =
+      this.twentyConfigService.get('HELP_CENTER_SEARCH_ENABLED') &&
+      helpCenterSearchProvider !== 'none';
+
     this.toolMap = new Map<string, Tool>([
       ['http_request', this.httpTool],
       ['send_email', this.sendEmailTool],
       ['draft_email', this.draftEmailTool],
-      ['search_help_center', this.searchHelpCenterTool],
       ['code_interpreter', this.codeInterpreterTool],
     ]);
+
+    if (this.isHelpCenterSearchEnabled) {
+      this.toolMap.set('search_help_center', this.searchHelpCenterTool);
+    }
 
     // Register each action tool as a static handler in the executor
     for (const [toolId, tool] of this.toolMap) {
@@ -108,13 +122,15 @@ export class ActionToolProvider implements ToolProvider {
       );
     }
 
-    descriptors.push(
-      this.buildDescriptor(
-        'search_help_center',
-        this.searchHelpCenterTool,
-        includeSchemas,
-      ),
-    );
+    if (this.isHelpCenterSearchEnabled) {
+      descriptors.push(
+        this.buildDescriptor(
+          'search_help_center',
+          this.searchHelpCenterTool,
+          includeSchemas,
+        ),
+      );
+    }
 
     const hasCodeInterpreterPermission =
       await this.permissionsService.hasToolPermission(

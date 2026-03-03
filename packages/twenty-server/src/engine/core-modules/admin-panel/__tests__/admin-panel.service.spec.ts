@@ -271,7 +271,17 @@ describe('AdminPanelService', () => {
     });
 
     it('should return current and latest version when everything works', async () => {
-      mockEnvironmentGet.mockReturnValue('1.0.0');
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return true;
+        }
+
+        if (key === 'APP_VERSION') {
+          return '1.0.0';
+        }
+
+        return undefined;
+      });
       mockHttpClientGet.mockResolvedValue({
         data: {
           results: [
@@ -292,7 +302,13 @@ describe('AdminPanelService', () => {
     });
 
     it('should handle undefined APP_VERSION', async () => {
-      mockEnvironmentGet.mockReturnValue(undefined);
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return true;
+        }
+
+        return undefined;
+      });
       mockHttpClientGet.mockResolvedValue({
         data: {
           results: [{ name: '2.0.0' }, { name: 'latest' }],
@@ -308,7 +324,17 @@ describe('AdminPanelService', () => {
     });
 
     it('should handle Docker Hub API error', async () => {
-      mockEnvironmentGet.mockReturnValue('1.0.0');
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return true;
+        }
+
+        if (key === 'APP_VERSION') {
+          return '1.0.0';
+        }
+
+        return undefined;
+      });
       mockHttpClientGet.mockRejectedValue(new Error('API Error'));
 
       const result = await service.getVersionInfo();
@@ -320,7 +346,17 @@ describe('AdminPanelService', () => {
     });
 
     it('should handle empty Docker Hub tags', async () => {
-      mockEnvironmentGet.mockReturnValue('1.0.0');
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return true;
+        }
+
+        if (key === 'APP_VERSION') {
+          return '1.0.0';
+        }
+
+        return undefined;
+      });
       mockHttpClientGet.mockResolvedValue({
         data: {
           results: [],
@@ -336,7 +372,17 @@ describe('AdminPanelService', () => {
     });
 
     it('should handle invalid semver tags', async () => {
-      mockEnvironmentGet.mockReturnValue('1.0.0');
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return true;
+        }
+
+        if (key === 'APP_VERSION') {
+          return '1.0.0';
+        }
+
+        return undefined;
+      });
       mockHttpClientGet.mockResolvedValue({
         data: {
           results: [
@@ -354,6 +400,28 @@ describe('AdminPanelService', () => {
         currentVersion: '1.0.0',
         latestVersion: '2.0.0',
       });
+    });
+
+    it('should return local-only version data when version checks are disabled', async () => {
+      mockEnvironmentGet.mockImplementation((key: string) => {
+        if (key === 'ADMIN_VERSION_CHECK_ENABLED') {
+          return false;
+        }
+
+        if (key === 'APP_VERSION') {
+          return '1.0.0';
+        }
+
+        return undefined;
+      });
+
+      const result = await service.getVersionInfo();
+
+      expect(result).toEqual({
+        currentVersion: '1.0.0',
+        latestVersion: '1.0.0',
+      });
+      expect(mockHttpClientGet).not.toHaveBeenCalled();
     });
   });
 

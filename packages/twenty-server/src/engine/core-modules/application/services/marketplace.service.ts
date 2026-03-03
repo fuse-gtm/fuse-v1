@@ -14,6 +14,7 @@ import {
   MarketplaceAppObjectDTO,
 } from 'src/engine/core-modules/application/dtos/marketplace-app.dto';
 import { MOCKED_MARKETPLACE_APP } from 'src/engine/core-modules/application/services/mocked-marketplace-app.constant';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
 type GitHubContent = {
   name: string;
@@ -36,7 +37,17 @@ export class MarketplaceService {
   private cachedApps: MarketplaceAppDTO[] | null = null;
   private cacheTimestamp: number | null = null;
 
+  constructor(private readonly twentyConfigService: TwentyConfigService) {}
+
   async findAllMarketplaceApps(): Promise<MarketplaceAppDTO[]> {
+    const isRemoteFetchEnabled = this.twentyConfigService.get(
+      'MARKETPLACE_REMOTE_FETCH_ENABLED',
+    );
+
+    if (!isRemoteFetchEnabled) {
+      return [MOCKED_MARKETPLACE_APP];
+    }
+
     if (this.isCacheValid()) {
       return this.cachedApps as MarketplaceAppDTO[];
     }
@@ -61,6 +72,10 @@ export class MarketplaceService {
     const apps: MarketplaceAppDTO[] = [];
 
     apps.push(MOCKED_MARKETPLACE_APP); // To remove once we have apps on marketplace
+
+    if (!this.twentyConfigService.get('MARKETPLACE_REMOTE_FETCH_ENABLED')) {
+      return apps;
+    }
 
     try {
       const appDirs = await this.getAppDirectoriesFromGitHub();

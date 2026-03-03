@@ -13,14 +13,44 @@ as_bool() {
   esac
 }
 
+run_with_timeout() {
+  local seconds="$1"
+  shift
+
+  "$@" &
+  local command_pid="$!"
+
+  (
+    sleep "$seconds"
+    if kill -0 "$command_pid" >/dev/null 2>&1; then
+      kill "$command_pid" >/dev/null 2>&1 || true
+      sleep 2
+      if kill -0 "$command_pid" >/dev/null 2>&1; then
+        kill -9 "$command_pid" >/dev/null 2>&1 || true
+      fi
+    fi
+  ) &
+  local killer_pid="$!"
+
+  local command_code=0
+  wait "$command_pid" || command_code="$?"
+  kill "$killer_pid" >/dev/null 2>&1 || true
+  wait "$killer_pid" >/dev/null 2>&1 || true
+
+  return "$command_code"
+}
+
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
 PLATFORM="${PLATFORM:-linux/amd64}"
 HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"
 MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
+CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
 PUBLIC_HEALTHCHECK_URL="${PUBLIC_HEALTHCHECK_URL:-}"
 PUBLIC_MAX_WAIT_SECONDS="${PUBLIC_MAX_WAIT_SECONDS:-180}"
 VERIFY_PUBLIC_URL_RAW="${VERIFY_PUBLIC_URL:-}"
+REGISTER_CRONS_POST_DEPLOY_RAW="${REGISTER_CRONS_POST_DEPLOY:-true}"
+REGISTER_CRONS_TIMEOUT_SECONDS="${REGISTER_CRONS_TIMEOUT_SECONDS:-90}"
 REQUESTED_IMAGE_TAG="${1:-}"
 
 PUBLIC_BASE_URL_OVERRIDE="$PUBLIC_BASE_URL"
@@ -95,6 +125,7 @@ if [ -z "$VERIFY_PUBLIC_URL_RAW" ]; then
 fi
 
 VERIFY_PUBLIC_URL="$(as_bool "$VERIFY_PUBLIC_URL_RAW")"
+REGISTER_CRONS_POST_DEPLOY="$(as_bool "$REGISTER_CRONS_POST_DEPLOY_RAW")"
 
 if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "$PUBLIC_BASE_URL" ]; then
   PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/healthz"
@@ -136,7 +167,7 @@ docker compose "${COMPOSE_ARGS[@]}" up -d
 START_TS="$(date +%s)"
 
 echo "Waiting for health: ${HEALTH_URL}"
-until curl -fsS "$HEALTH_URL" >/dev/null 2>&1; do
+until curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$HEALTH_URL" >/dev/null 2>&1; do
   NOW_TS="$(date +%s)"
   if [ $((NOW_TS - START_TS)) -ge "$MAX_WAIT_SECONDS" ]; then
     echo "Timed out waiting for ${HEALTH_URL}" >&2
@@ -157,7 +188,7 @@ if [ "$VERIFY_PUBLIC_URL" = "true" ]; then
 
   PUBLIC_START_TS="$(date +%s)"
   echo "Waiting for public health: ${PUBLIC_HEALTHCHECK_URL}"
-  until curl -fsS "$PUBLIC_HEALTHCHECK_URL" >/dev/null 2>&1; do
+  until curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$PUBLIC_HEALTHCHECK_URL" >/dev/null 2>&1; do
     NOW_TS="$(date +%s)"
     if [ $((NOW_TS - PUBLIC_START_TS)) -ge "$PUBLIC_MAX_WAIT_SECONDS" ]; then
       echo "Timed out waiting for ${PUBLIC_HEALTHCHECK_URL}" >&2
@@ -171,6 +202,18 @@ if [ "$VERIFY_PUBLIC_URL" = "true" ]; then
   echo "Public health check passed"
 else
   echo "Public health verification disabled (VERIFY_PUBLIC_URL=${VERIFY_PUBLIC_URL})"
+fi
+
+if [ "$REGISTER_CRONS_POST_DEPLOY" = "true" ]; then
+  echo "Registering cron jobs post-deploy (timeout=${REGISTER_CRONS_TIMEOUT_SECONDS}s)"
+  if run_with_timeout "$REGISTER_CRONS_TIMEOUT_SECONDS" \
+    docker compose "${COMPOSE_ARGS[@]}" exec -T server yarn command:prod cron:register:all; then
+    echo "Post-deploy cron registration succeeded"
+  else
+    echo "Warning: Post-deploy cron registration failed or timed out; continuing."
+  fi
+else
+  echo "Post-deploy cron registration skipped (REGISTER_CRONS_POST_DEPLOY=${REGISTER_CRONS_POST_DEPLOY})"
 fi
 
 if [ -n "${WORKSPACE_ID:-}" ]; then
