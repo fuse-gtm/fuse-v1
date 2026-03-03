@@ -1,6 +1,9 @@
 # Ops Logs
 
-This folder stores operational evidence logs for production drills and gates.
+This folder stores templates and guidance for operational evidence logs.
+
+Concrete run logs are intentionally excluded from version control in this repository.
+Store real evidence artifacts in your private operations workspace/repo.
 
 Current expected artifacts:
 
@@ -23,7 +26,8 @@ Current expected artifacts:
 - `fuse-runtime-restart-drill-<timestamp>.md`
 - `fuse-mcp-bootstrap-hardening-<timestamp>.md`
 
-Keep logs in git for auditability of release readiness decisions.
+Do not commit concrete run logs in this repository.
+Use private storage for audit artifacts and link to those records from internal trackers.
 
 ## Templates
 

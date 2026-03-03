@@ -15,8 +15,8 @@ If it does not make a partnerships rep faster, it waits.
 ## Issues by Day
 
 | Issue | Est. Days | Target Day(s) | Status (Linear) | Done When |
-|---|---:|---|---|---:|---|
-| `FUSE-900` Release + Repo Hygiene | 0.75 | Day 1 | In Progress | Branch pushed, deploy green, prod health checks pass, sensitive ops docs redacted/moved to private ops repo |
+|---|---:|---|---|---|
+| `FUSE-900` Release + Repo Hygiene | 0.75 | Day 1 | In Review | Branch pushed, deploy green, prod health checks pass, sensitive ops docs redacted/moved to private ops repo |
 | `FUSE-901` Internal Dogfood Workspace Setup | 0.75 | Day 1-2 | Backlog | `fuse-internal` workspace created, sandbox lane defined, default flags/config reproducible |
 | `FUSE-902` Event Ingestion for Internal Ops Signals | 0.75 | Day 2 | Backlog | GitHub + feature-flag events flow into Twenty custom objects via event-driven ingest |
 | `FUSE-903` Partner Brief Agent v1 | 1.00 | Day 3 | Backlog | Agent generates useful pre-call brief from CRM/context in under 60 seconds |
@@ -35,7 +35,7 @@ If it does not make a partnerships rep faster, it waits.
 
 | Day | Date | Review Summary | Status/Progress Updates | Blockers | Next Actions |
 |---|---|---|---|---|---|
-| Day 1 | 2026-03-03 | Branch cleaned and committed; repo noise controls added | `FUSE-900` -> `In Progress` | Deploy verification + doc redaction still pending | Finish `FUSE-900`, start `FUSE-901` |
+| Day 1 | 2026-03-03 | Branch cleaned, pushed to origin, production health checks passed, and sensitive ops artifacts were sanitized/removed from tracked docs | `FUSE-900` -> `In Review` | Explicit deploy-tag verification still needed for final close | Close `FUSE-900`, start `FUSE-901` |
 | Day 2 |  |  |  |  |  |
 | Day 3 |  |  |  |  |  |
 | Day 4 |  |  |  |  |  |
