@@ -2,6 +2,7 @@ import process from 'process';
 
 import opentelemetry from '@opentelemetry/api';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import {
   AggregationTemporality,
@@ -9,6 +10,8 @@ import {
   MeterProvider,
   PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node';
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
@@ -23,6 +26,36 @@ const meterDrivers = parseArrayEnvVar(
   Object.values(MeterDriver),
   [],
 );
+
+// Trace setup with OpenTelemetry
+if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+  const traceExporter = new OTLPTraceExporter({
+    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/traces',
+    headers: process.env.OTEL_EXPORTER_OTLP_HEADERS
+      ? Object.fromEntries(
+          process.env.OTEL_EXPORTER_OTLP_HEADERS.split(',').map((header) => {
+            const [key, value] = header.split('=');
+            return [key.trim(), value.trim()];
+          }),
+        )
+      : {},
+  });
+
+  const sdk = new NodeSDK({
+    traceExporter,
+    serviceName: process.env.OTEL_SERVICE_NAME || 'twenty-server',
+  });
+
+  sdk.start();
+
+  process.on('SIGTERM', () => {
+    sdk
+      .shutdown()
+      .then(() => console.log('Tracing terminated'))
+      .catch((log) => console.log('Failed to terminate tracing', log))
+      .finally(() => process.exit(0));
+  });
+}
 
 if (process.env.EXCEPTION_HANDLER_DRIVER === ExceptionHandlerDriver.SENTRY) {
   Sentry.init({
