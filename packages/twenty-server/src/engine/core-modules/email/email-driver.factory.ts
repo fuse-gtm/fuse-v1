@@ -4,6 +4,7 @@ import { type EmailDriverInterface } from 'src/engine/core-modules/email/drivers
 
 import { LoggerDriver } from 'src/engine/core-modules/email/drivers/logger.driver';
 import { SmtpDriver } from 'src/engine/core-modules/email/drivers/smtp.driver';
+import { ResendDriver } from 'src/engine/core-modules/email/drivers/resend.driver';
 import { EmailDriver } from 'src/engine/core-modules/email/enums/email-driver.enum';
 import { DriverFactoryBase } from 'src/engine/core-modules/twenty-config/dynamic-factory.base';
 import { ConfigVariablesGroup } from 'src/engine/core-modules/twenty-config/enums/config-variables-group.enum';
@@ -28,6 +29,11 @@ export class EmailDriverFactory extends DriverFactoryBase<EmailDriverInterface> 
       );
 
       return `smtp|${emailConfigHash}`;
+    }
+
+    if (driver === EmailDriver.RESEND) {
+      const resendApiKey = this.twentyConfigService.get('RESEND_API_KEY');
+      return `resend|${resendApiKey}`;
     }
 
     throw new Error(`Unsupported email driver: ${driver}`);
@@ -70,6 +76,16 @@ export class EmailDriverFactory extends DriverFactoryBase<EmailDriverInterface> 
         }
 
         return new SmtpDriver(options);
+      }
+
+      case EmailDriver.RESEND: {
+        const apiKey = this.twentyConfigService.get('RESEND_API_KEY');
+
+        if (!apiKey) {
+          throw new Error('RESEND driver requires RESEND_API_KEY to be defined');
+        }
+
+        return new ResendDriver(apiKey);
       }
 
       default:
