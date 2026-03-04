@@ -16,8 +16,8 @@ If it does not make a partnerships rep faster, it waits.
 
 | Issue | Est. Days | Target Day(s) | Status (Linear) | Done When |
 |---|---:|---|---|---|
-| `FUSE-900` Release + Repo Hygiene | 0.75 | Day 1 | In Review | Branch pushed, deploy green, prod health checks pass, sensitive ops docs redacted/moved to private ops repo |
-| `FUSE-905` Product Cleanup + Branding Baseline | 1.00 | Day 1-2 | Backlog | Dead references removed from user-facing paths; Fuse branding baseline applied |
+| `FUSE-900` Release + Repo Hygiene | 0.75 | Day 1 | Done | Branch pushed, deploy green, prod health checks pass, sensitive ops docs redacted/moved to private ops repo |
+| `FUSE-905` Product Cleanup + Branding Baseline | 1.00 | Day 1-2 | In Progress | Dead references removed from user-facing paths; Fuse branding baseline applied |
 | `FUSE-903` Partner Brief Agent v1 | 1.00 | Day 2-3 | Backlog | Agent generates useful pre-call brief from CRM/context in under 60 seconds |
 | `FUSE-904` AI Chat Guardrails (Token + Safety) | 0.75 | Day 3 | Backlog | Chat step/output limits enforced; MCP writes gated and auditable |
 | `FUSE-906` Launch Pack (Landing + Demo + Outreach) | 1.50 | Day 4-5 | Backlog | Landing page draft live, demo recorded, target list and outreach copy ready |
@@ -41,7 +41,7 @@ If it does not make a partnerships rep faster, it waits.
 | Day | Date | Review Summary | Status/Progress Updates | Blockers | Next Actions |
 |---|---|---|---|---|---|
 | Day 1 | 2026-03-03 | Branch cleaned, pushed to origin, production health checks passed, and sensitive ops artifacts were sanitized/removed from tracked docs | `FUSE-900` -> `In Review`; `FUSE-901/902` deferred post-launch | Explicit deploy-tag verification still needed for final close | Close `FUSE-900`, start `FUSE-905` |
-| Day 2 |  |  |  |  |  |
+| Day 2 | 2026-03-04 | Sev-1 host reachability incident. Recovered via EC2 reboot. Hardened deploy guardrails, added runtime guardrail installer + external health check script. Play→Track rename landed across all docs/schema. Schema evolution diagram created. Branding diff (emails, manifest, footers, field configs) ready but uncommitted. | `FUSE-900` -> `Done`; `FUSE-905` -> `In Progress` (branding diff staged, not committed); incident logged in ops-logs | Linear MCP not connected — cannot sync issue statuses automatically | Commit branding + track rename. Verify clean deploy with public health checks. Start `FUSE-903` (Partner Brief Agent) |
 | Day 3 |  |  |  |  |  |
 | Day 4 |  |  |  |  |  |
 | Day 5 |  |  |  |  |  |
