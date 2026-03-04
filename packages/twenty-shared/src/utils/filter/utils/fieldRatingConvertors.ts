@@ -1,4 +1,4 @@
-import { RATING_VALUES } from '@/constants';
+import { RATING_VALUES } from '../../../constants';
 import { type FieldRatingValue } from '@/types';
 
 export const convertGreaterThanOrEqualRatingToArrayOfRatingValues = (

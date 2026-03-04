@@ -1,5 +1,5 @@
-import { CURRENCY_CODE_LABELS } from '@/constants';
-import { type CurrencyCode } from '@/constants/CurrencyCode';
+import { CURRENCY_CODE_LABELS } from '../../constants';
+import { type CurrencyCode } from '../../constants/CurrencyCode';
 import {
   FieldMetadataType,
   ViewFilterOperand,
