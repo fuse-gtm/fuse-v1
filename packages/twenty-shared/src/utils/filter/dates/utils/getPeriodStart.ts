@@ -4,7 +4,7 @@ import { assertUnreachable, type DateTimePeriod } from '@/utils';
 import { type FirstDayOfTheWeekSchema } from '@/utils/filter/dates/utils/firstDayOfWeekSchema';
 import { getFirstDayOfTheWeekAsISONumber } from '@/utils/filter/dates/utils/getFirstDayOfTheWeekAsISONumber';
 import { FIRST_DAY_OF_WEEK_ISO_8601_MONDAY } from '@/utils/filter/dates/utils/getNextPeriodStart';
-import { isDefined } from '@/utils/validation';
+import { isDefined } from '../../../validation/isDefined';
 import { type Temporal } from 'temporal-polyfill';
 
 export const getPeriodStart = (

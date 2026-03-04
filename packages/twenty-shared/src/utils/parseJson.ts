@@ -1,4 +1,4 @@
-import { isDefined } from '@/utils/validation';
+import { isDefined } from './validation/isDefined';
 
 export const parseJson = <T>(
   rawJson: string | boolean | null | number | undefined,

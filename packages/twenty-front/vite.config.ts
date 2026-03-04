@@ -17,6 +17,26 @@ import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 type Checkers = Parameters<typeof checker>[0];
 
+// TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
+// inside source imports that are consumed directly by twenty-front.
+const resolveTwentySharedRootAlias = (): PluginOption => ({
+  name: 'resolve-twenty-shared-root-alias',
+  enforce: 'pre',
+  resolveId: (source, importer) => {
+    if (!importer || !source.startsWith('@/')) {
+      return null;
+    }
+
+    const normalizedImporter = importer.split('?')[0].split(path.sep).join('/');
+
+    if (!normalizedImporter.includes('/packages/twenty-shared/src/')) {
+      return null;
+    }
+
+    return path.resolve(__dirname, '../twenty-shared/src', source.slice(2));
+  },
+});
+
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, __dirname, '');
 
@@ -99,6 +119,7 @@ export default defineConfig(({ command, mode }) => {
         jsxImportSource: '@emotion/react',
         plugins: [['@lingui/swc-plugin', {}]],
       }),
+      resolveTwentySharedRootAlias(),
       tsconfigPaths({
         root: __dirname,
         projects: ['tsconfig.json'],

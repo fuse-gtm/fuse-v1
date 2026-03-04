@@ -1,4 +1,4 @@
-import { isDefined } from '@/utils/validation';
+import { isDefined } from './validation/isDefined';
 import deepEqual from 'deep-equal';
 
 type Diff<T extends { id: string }> = {
