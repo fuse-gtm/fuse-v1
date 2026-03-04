@@ -19,6 +19,27 @@ type Checkers = Parameters<typeof checker>[0];
 
 // TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
 // inside source imports that are consumed directly by twenty-front.
+const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
+  const sharedRoot = path.resolve(__dirname, '../twenty-shared/src');
+  const raw = path.resolve(sharedRoot, sourceFromSharedRoot);
+
+  const hasExtension = path.extname(raw) !== '';
+  const candidates = hasExtension
+    ? [raw]
+    : [
+        `${raw}.ts`,
+        `${raw}.tsx`,
+        `${raw}.js`,
+        `${raw}.mjs`,
+        `${raw}.cjs`,
+        path.join(raw, 'index.ts'),
+        path.join(raw, 'index.tsx'),
+        path.join(raw, 'index.js'),
+      ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
+};
+
 const resolveTwentySharedRootAlias = (): PluginOption => ({
   name: 'resolve-twenty-shared-root-alias',
   enforce: 'pre',
@@ -33,7 +54,7 @@ const resolveTwentySharedRootAlias = (): PluginOption => ({
       return null;
     }
 
-    return path.resolve(__dirname, '../twenty-shared/src', source.slice(2));
+    return resolveSharedSourceFile(source.slice(2));
   },
 });
 

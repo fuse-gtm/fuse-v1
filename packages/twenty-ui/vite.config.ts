@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import wyw from '@wyw-in-js/vite';
+import fs from 'fs';
 import * as path from 'path';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
@@ -38,6 +39,27 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
 
 // TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
 // inside source imports that are consumed directly by twenty-ui.
+const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
+  const sharedRoot = path.resolve(__dirname, '../twenty-shared/src');
+  const raw = path.resolve(sharedRoot, sourceFromSharedRoot);
+
+  const hasExtension = path.extname(raw) !== '';
+  const candidates = hasExtension
+    ? [raw]
+    : [
+        `${raw}.ts`,
+        `${raw}.tsx`,
+        `${raw}.js`,
+        `${raw}.mjs`,
+        `${raw}.cjs`,
+        path.join(raw, 'index.ts'),
+        path.join(raw, 'index.tsx'),
+        path.join(raw, 'index.js'),
+      ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
+};
+
 const resolveTwentySharedRootAlias = () => ({
   name: 'resolve-twenty-shared-root-alias',
   enforce: 'pre' as const,
@@ -52,7 +74,7 @@ const resolveTwentySharedRootAlias = () => ({
       return null;
     }
 
-    return path.resolve(__dirname, '../twenty-shared/src', source.slice(2));
+    return resolveSharedSourceFile(source.slice(2));
   },
 });
 
