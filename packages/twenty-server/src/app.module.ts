@@ -94,6 +94,27 @@ export class AppModule {
       modules.push(
         ServeStaticModule.forRoot({
           rootPath: frontPath,
+          serveStaticOptions: {
+            setHeaders: (res, filePath) => {
+              // Vite emits fingerprinted assets under /assets; they are safe to cache aggressively.
+              if (/[\\/]+assets[\\/]+/.test(filePath)) {
+                res.setHeader(
+                  'Cache-Control',
+                  'public, max-age=31536000, immutable',
+                );
+
+                return;
+              }
+
+              // Keep HTML revalidated so new deploys are picked up quickly.
+              if (filePath.endsWith('.html')) {
+                res.setHeader(
+                  'Cache-Control',
+                  'public, max-age=0, must-revalidate',
+                );
+              }
+            },
+          },
         }),
       );
     }
