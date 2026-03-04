@@ -421,13 +421,13 @@ COSELL_MODULE = MotionModule(
 
 DISCOVERY_MODULE = MotionModule(
     name="discovery",
-    description="Partner play execution, Exa webset discovery, scoring, and enrichment",
+    description="Partner track execution, Exa webset discovery, scoring, and enrichment",
     objects=[
         ObjectDef(
-            "partnerPlay", "partnerPlays",
-            "Partner Play", "Partner Plays",
-            "Reusable discovery and partner execution template",
-            "IconPlayCard",
+            "partnerTrack", "partnerTracks",
+            "Partner Track", "Partner Tracks",
+            "Reusable discovery and partner execution template — one track per PartnerType x Outcome",
+            "IconRoute",
             fields=[
                 FieldDef("SELECT", "partnerType", "Partner Type", "IconHierarchy3",
                          _select_options("INTEGRATION_TECH", "AGENCY_SI", "AFFILIATE",
@@ -444,13 +444,13 @@ DISCOVERY_MODULE = MotionModule(
             ],
             relations=[
                 RelationDef("owner", "Owner", "IconUserCircle",
-                            "workspaceMember", "MANY_TO_ONE", "Owned Partner Plays", "IconPlayCard"),
+                            "workspaceMember", "MANY_TO_ONE", "Owned Partner Tracks", "IconRoute"),
             ],
         ),
         ObjectDef(
-            "playCheck", "playChecks",
-            "Play Check", "Play Checks",
-            "Retrieval check and fit signal definition for a play",
+            "trackCheck", "trackChecks",
+            "Track Check", "Track Checks",
+            "Retrieval check and fit signal definition for a track",
             "IconChecklist",
             fields=[
                 FieldDef("TEXT", "checkLabel", "Check Label", "IconTextCaption"),
@@ -461,14 +461,14 @@ DISCOVERY_MODULE = MotionModule(
                 FieldDef("NUMBER", "position", "Position", "IconSortAscending"),
             ],
             relations=[
-                RelationDef("partnerPlay", "Partner Play", "IconPlayCard",
-                            "partnerPlay", "MANY_TO_ONE", "Checks", "IconChecklist"),
+                RelationDef("partnerTrack", "Partner Track", "IconRoute",
+                            "partnerTrack", "MANY_TO_ONE", "Checks", "IconChecklist"),
             ],
         ),
         ObjectDef(
-            "playEnrichment", "playEnrichments",
-            "Play Enrichment", "Play Enrichments",
-            "Enrichment column definition for a play",
+            "trackEnrichment", "trackEnrichments",
+            "Track Enrichment", "Track Enrichments",
+            "Enrichment column definition for a track",
             "IconTablePlus",
             fields=[
                 FieldDef("TEXT", "enrichmentName", "Enrichment Name", "IconTextCaption"),
@@ -478,14 +478,14 @@ DISCOVERY_MODULE = MotionModule(
                 FieldDef("NUMBER", "position", "Position", "IconSortAscending"),
             ],
             relations=[
-                RelationDef("partnerPlay", "Partner Play", "IconPlayCard",
-                            "partnerPlay", "MANY_TO_ONE", "Enrichments", "IconTablePlus"),
+                RelationDef("partnerTrack", "Partner Track", "IconRoute",
+                            "partnerTrack", "MANY_TO_ONE", "Enrichments", "IconTablePlus"),
             ],
         ),
         ObjectDef(
-            "playExclusion", "playExclusions",
-            "Play Exclusion", "Play Exclusions",
-            "Exclusion rule scoped to a partner play",
+            "trackExclusion", "trackExclusions",
+            "Track Exclusion", "Track Exclusions",
+            "Exclusion rule scoped to a partner track",
             "IconFilterX",
             fields=[
                 FieldDef("TEXT", "identifier", "Identifier", "IconHash"),
@@ -496,14 +496,14 @@ DISCOVERY_MODULE = MotionModule(
                 FieldDef("TEXT", "reason", "Reason", "IconNotes"),
             ],
             relations=[
-                RelationDef("partnerPlay", "Partner Play", "IconPlayCard",
-                            "partnerPlay", "MANY_TO_ONE", "Exclusions", "IconFilterX"),
+                RelationDef("partnerTrack", "Partner Track", "IconRoute",
+                            "partnerTrack", "MANY_TO_ONE", "Exclusions", "IconFilterX"),
             ],
         ),
         ObjectDef(
             "discoveryRun", "discoveryRuns",
             "Discovery Run", "Discovery Runs",
-            "Single webset-backed execution of a partner play",
+            "Single webset-backed execution of a partner track",
             "IconPlayerPlay",
             fields=[
                 FieldDef("TEXT", "queryRaw", "Query Raw", "IconMessageSearch"),
@@ -517,8 +517,8 @@ DISCOVERY_MODULE = MotionModule(
                 FieldDef("DATE_TIME", "completedAt", "Completed At", "IconCheck"),
             ],
             relations=[
-                RelationDef("partnerPlay", "Partner Play", "IconPlayCard",
-                            "partnerPlay", "MANY_TO_ONE", "Discovery Runs", "IconPlayerPlay"),
+                RelationDef("partnerTrack", "Partner Track", "IconRoute",
+                            "partnerTrack", "MANY_TO_ONE", "Discovery Runs", "IconPlayerPlay"),
                 RelationDef("createdByMember", "Created By", "IconUserCircle",
                             "workspaceMember", "MANY_TO_ONE", "Discovery Runs", "IconPlayerPlay"),
             ],
@@ -561,8 +561,8 @@ DISCOVERY_MODULE = MotionModule(
             relations=[
                 RelationDef("partnerCandidate", "Partner Candidate", "IconBuildingFactory2",
                             "partnerCandidate", "MANY_TO_ONE", "Check Evaluations", "IconChecklist"),
-                RelationDef("playCheck", "Play Check", "IconChecklist",
-                            "playCheck", "MANY_TO_ONE", "Evaluations", "IconChecklist"),
+                RelationDef("trackCheck", "Track Check", "IconChecklist",
+                            "trackCheck", "MANY_TO_ONE", "Evaluations", "IconChecklist"),
             ],
         ),
         ObjectDef(
@@ -578,8 +578,8 @@ DISCOVERY_MODULE = MotionModule(
             relations=[
                 RelationDef("partnerCandidate", "Partner Candidate", "IconBuildingFactory2",
                             "partnerCandidate", "MANY_TO_ONE", "Enrichment Evaluations", "IconTablePlus"),
-                RelationDef("playEnrichment", "Play Enrichment", "IconTablePlus",
-                            "playEnrichment", "MANY_TO_ONE", "Evaluations", "IconTablePlus"),
+                RelationDef("trackEnrichment", "Track Enrichment", "IconTablePlus",
+                            "trackEnrichment", "MANY_TO_ONE", "Evaluations", "IconTablePlus"),
             ],
         ),
     ],
@@ -607,11 +607,11 @@ OBJECT_CREATION_ORDER = [
     "partnerAttributionSnapshot",
     "customerEvent",
     "customerSnapshot",
-    # Discovery (partnerPlay first, then children)
-    "partnerPlay",
-    "playCheck",
-    "playEnrichment",
-    "playExclusion",
+    # Discovery (partnerTrack first, then children)
+    "partnerTrack",
+    "trackCheck",
+    "trackEnrichment",
+    "trackExclusion",
     "discoveryRun",
     "partnerCandidate",
     "checkEvaluation",

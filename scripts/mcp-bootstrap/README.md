@@ -11,7 +11,7 @@ Three motion modules, composed at onboarding time:
 |---|---|---|
 | **core** | partnerProfile, partnerContactAssignment, lead | Always included. Partner entity model. |
 | **cosell** | partnerCustomerMap, partnerAttributionEvent, partnerAttributionSnapshot, customerEvent, customerSnapshot | Pipeline mapping + attribution + reporting |
-| **discovery** | partnerPlay, playCheck, playEnrichment, playExclusion, discoveryRun, partnerCandidate, checkEvaluation, enrichmentEvaluation | AI-powered partner finding via Exa websets |
+| **discovery** | partnerTrack, trackCheck, trackEnrichment, trackExclusion, discoveryRun, partnerCandidate, checkEvaluation, enrichmentEvaluation | AI-powered partner finding via Exa websets |
 
 ## Usage
 

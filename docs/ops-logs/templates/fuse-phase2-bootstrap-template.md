@@ -49,10 +49,10 @@ docker compose \
 | partnerAttributionSnapshot | YES/NO | YES/NO |  |
 | customerEvent | YES/NO | YES/NO |  |
 | customerSnapshot | YES/NO | YES/NO |  |
-| partnerPlay | YES/NO | YES/NO |  |
-| playCheck | YES/NO | YES/NO |  |
-| playEnrichment | YES/NO | YES/NO |  |
-| playExclusion | YES/NO | YES/NO |  |
+| partnerTrack | YES/NO | YES/NO |  |
+| trackCheck | YES/NO | YES/NO |  |
+| trackEnrichment | YES/NO | YES/NO |  |
+| trackExclusion | YES/NO | YES/NO |  |
 | discoveryRun | YES/NO | YES/NO |  |
 | partnerCandidate | YES/NO | YES/NO |  |
 | checkEvaluation | YES/NO | YES/NO |  |

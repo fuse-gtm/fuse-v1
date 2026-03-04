@@ -23,7 +23,7 @@ The Organization Self-Hosted plan is not premature enterprise overhead. It is in
 ### Success Criteria
 
 1. Public URL stable for 7 days under normal use.
-2. Discovery workflow: play creation → Exa webset → candidates stream into UI in real-time → scored shortlist.
+2. Discovery workflow: track creation → Exa webset → candidates stream into UI in real-time → scored shortlist.
 3. Co-sell/referral handoff: partner-customer map → stage progression → lead/opportunity creation with owner assignment.
 4. Transcript insights: manual upload → extraction → partner profile update → task creation.
 5. Google + Microsoft auth working.
@@ -56,7 +56,7 @@ The Organization Self-Hosted plan is not premature enterprise overhead. It is in
 │  │  ┌─────────────────────────────────────────────────────┐  │ │
 │  │  │  Partner OS Schema (16 custom objects)               │  │ │
 │  │  │  PartnerProfile, Lead, PartnerCustomerMap,           │  │ │
-│  │  │  PartnerAttributionEvent, PartnerPlay, PlayCheck,    │  │ │
+│  │  │  PartnerAttributionEvent, PartnerTrack, TrackCheck,    │  │ │
 │  │  │  DiscoveryRun, PartnerCandidate, CheckEvaluation,    │  │ │
 │  │  │  EnrichmentEvaluation, ...                           │  │ │
 │  │  └─────────────────────────────────────────────────────┘  │ │
@@ -82,12 +82,12 @@ The Organization Self-Hosted plan is not premature enterprise overhead. It is in
 This is the core architectural pattern. No polling. No custom backend services. Everything runs through Twenty's native workflow engine + Exa's webhook delivery.
 
 ```
-User clicks "Run Discovery" on a PartnerPlay
+User clicks "Run Discovery" on a PartnerTrack
         │
         ▼
 [Workflow 1: MANUAL trigger]
   ├─ RECORD_CRUD: Create DiscoveryRun (status: PENDING)
-  ├─ CODE: Build Exa payload from PlayChecks + PlayEnrichments + PlayExclusions
+  ├─ CODE: Build Exa payload from TrackChecks + TrackEnrichments + TrackExclusions
   │         (uses PartnerDiscoveryAdapterService.toExaSearchPayload() logic)
   ├─ HTTP_REQUEST: POST https://api.exa.ai/v0/websets
   │         body: { search, enrichments, webhook_url }
@@ -101,8 +101,8 @@ Exa fires POST to Fuse webhook: webset.item.created / webset.item.enriched
         ▼
 [Workflow 2: WEBHOOK trigger]
   ├─ CODE: Parse Exa WebsetItem → extract entity URL, name, domain
-  │         Map enrichmentResults → one CheckEvaluation per PlayCheck
-  │         Map enrichmentResults → one EnrichmentEvaluation per PlayEnrichment
+  │         Map enrichmentResults → one CheckEvaluation per TrackCheck
+  │         Map enrichmentResults → one EnrichmentEvaluation per TrackEnrichment
   ├─ RECORD_CRUD: Upsert PartnerCandidate (keyed on entityUrl + discoveryRunId)
   ├─ RECORD_CRUD: Create CheckEvaluation records (batch)
   ├─ RECORD_CRUD: Create EnrichmentEvaluation records (batch)
@@ -204,7 +204,7 @@ Before scoping work, here is what exists in the `partner-os` module:
 |-----------|--------|----------|
 | **Schema constant** (16 objects, all fields, all relations) | Complete | `partner-os/constants/partner-os-schema.constant.ts` |
 | **Metadata bootstrap service** (creates objects, fields, relations, views) | Complete | `partner-os/services/partner-os-metadata-bootstrap.service.ts` |
-| **Discovery adapter** (PlayCheck → Exa payload mapping) | Complete | `partner-os/services/partner-discovery-adapter.service.ts` |
+| **Discovery adapter** (TrackCheck → Exa payload mapping) | Complete | `partner-os/services/partner-discovery-adapter.service.ts` |
 | **Scoring service** (weight-based fit scoring, must-pass gates, exclusion) | Complete | `partner-os/services/partner-scoring.service.ts` |
 | **Type definitions** (CandidateScore, CheckEvaluation, ExaSearchPayload, etc.) | Complete | `partner-os/types/partner-discovery.types.ts` |
 | **NestJS module** wiring | Complete | `partner-os/partner-os.module.ts` |
@@ -258,7 +258,7 @@ Before scoping work, here is what exists in the `partner-os` module:
 |----------|-------|----------|-------|-----------|
 | **Discovery Workflow** | | | | |
 | `FUSE-301` | Register Exa webhook endpoint | P0 | POST to Exa API to register account-level webhook subscribing to `webset.item.created`, `webset.item.enriched`, `webset.search.completed`, `webset.idle`. Webhook URL = Fuse inbound webhook endpoint. Store webhook secret for signature verification | Webhook registered and receiving test events |
-| `FUSE-302` | Build initiation workflow (MANUAL trigger) | P0 | MANUAL trigger on PartnerPlay → RECORD_CRUD create DiscoveryRun → CODE step builds Exa payload (port `PartnerDiscoveryAdapterService.toExaSearchPayload()` logic + add enrichments + webhook config) → HTTP_REQUEST to Exa create webset → RECORD_CRUD update DiscoveryRun with exaWebsetId + status=STREAMING | User triggers discovery, run created, Exa webset created |
+| `FUSE-302` | Build initiation workflow (MANUAL trigger) | P0 | MANUAL trigger on PartnerTrack → RECORD_CRUD create DiscoveryRun → CODE step builds Exa payload (port `PartnerDiscoveryAdapterService.toExaSearchPayload()` logic + add enrichments + webhook config) → HTTP_REQUEST to Exa create webset → RECORD_CRUD update DiscoveryRun with exaWebsetId + status=STREAMING | User triggers discovery, run created, Exa webset created |
 | `FUSE-303` | Build ingestion workflow (WEBHOOK trigger) | P0 | WEBHOOK trigger (Exa item events) → CODE step: verify webhook signature, parse WebsetItem, map to PartnerCandidate fields + CheckEvaluation + EnrichmentEvaluation records → RECORD_CRUD upsert PartnerCandidate → RECORD_CRUD create evaluation records | Candidates appear in real-time as Exa processes |
 | `FUSE-304` | Build completion workflow (WEBHOOK trigger) | P0 | WEBHOOK trigger (search.completed) → RECORD_CRUD find all candidates + evaluations for run → CODE step: run scoring logic per candidate (port `PartnerScoringService.scoreCandidate()`) → RECORD_CRUD batch update fitScore/confidence/gateStatus → RECORD_CRUD update DiscoveryRun status=COMPLETE | Scored shortlist with gate enforcement |
 | `FUSE-305` | Build reconciliation workflow (WEBHOOK trigger) | P1 | WEBHOOK trigger (webset.idle) → HTTP_REQUEST get Exa item count → RECORD_CRUD count local candidates → CODE compare → IF_ELSE backfill if mismatch | No silent data loss from dropped webhooks |
@@ -278,7 +278,7 @@ Before scoping work, here is what exists in the `partner-os` module:
 | Issue ID | Issue | Priority | Scope | Done when |
 |----------|-------|----------|-------|-----------|
 | `FUSE-401` | Partner pipeline report | P0 | Dashboard widget: partner-sourced vs. partner-influenced pipeline by partner type and stage. Query PartnerAttributionEvent + Opportunity data. Time filter (this month / quarter / all time). Group by partnerProfile | Report drives weekly partner review |
-| `FUSE-402` | Discovery funnel metrics | P1 | Dashboard widget: runs → total candidates → qualified → shortlisted. Conversion rates per play. Query DiscoveryRun + PartnerCandidate aggregations | Funnel bottlenecks visible |
+| `FUSE-402` | Discovery funnel metrics | P1 | Dashboard widget: runs → total candidates → qualified → shortlisted. Conversion rates per track. Query DiscoveryRun + PartnerCandidate aggregations | Funnel bottlenecks visible |
 
 **Deferred to post-MVP:**
 - Handoff latency report (FUSE-503)
@@ -424,10 +424,10 @@ POST https://api.exa.ai/v0/websets
   search: {
     query: string,           // from DiscoveryRun.queryOptimized
     entity: { type: "company" | "person" },
-    criteria: [{ description: string }],  // from PlayCheck.prompt
+    criteria: [{ description: string }],  // from TrackCheck.prompt
     count: number
   },
-  enrichments: [{ description: string, format: string }],  // from PlayEnrichment
+  enrichments: [{ description: string, format: string }],  // from TrackEnrichment
   metadata: { discoveryRunId: string },
   webhook: { url: string, secret: string }  // or account-level registration
 }
@@ -450,7 +450,7 @@ Headers: X-Exa-Webhook-Signature: <hmac>
 
 ```typescript
 // Discovery initiation: MANUAL trigger payload
-{ partnerPlayId: string }
+{ partnerTrackId: string }
 
 // Exa webhook: WEBHOOK trigger payload
 { type: string, data: { webset_id: string, item?: object } }

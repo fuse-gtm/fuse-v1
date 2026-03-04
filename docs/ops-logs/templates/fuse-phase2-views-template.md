@@ -16,8 +16,8 @@
 |---|---|---|---|---|---|---|
 | partnerProfile | Active Partners | Table | status=ACTIVE | lifecycleStage asc/desc | YES/NO | PASS/FAIL |
 | partnerCustomerMap | Active Handoffs | Table | stage not in CLOSED_WON,CLOSED_LOST | updatedAt desc | YES/NO | PASS/FAIL |
-| partnerPlay | Templates | Table | isTemplate=true | updatedAt desc | YES/NO | PASS/FAIL |
-| partnerPlay | Live Plays | Table | isTemplate=false | updatedAt desc | YES/NO | PASS/FAIL |
+| partnerTrack | Templates | Table | isTemplate=true | updatedAt desc | YES/NO | PASS/FAIL |
+| partnerTrack | Live Tracks | Table | isTemplate=false | updatedAt desc | YES/NO | PASS/FAIL |
 | discoveryRun | In Flight | Table | status in PENDING,STREAMING | startedAt desc | YES/NO | PASS/FAIL |
 | discoveryRun | Completed | Table | status=COMPLETE | startedAt desc | YES/NO | PASS/FAIL |
 | partnerCandidate | Qualified | Table | gateStatus=QUALIFIED | fitScore desc | YES/NO | PASS/FAIL |

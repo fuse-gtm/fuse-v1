@@ -33,10 +33,10 @@ Relations require both source and target objects to exist. The bootstrap creates
 6. partnerAttributionSnapshot
 7. customerEvent
 8. customerSnapshot
-9. partnerPlay
-10. playCheck
-11. playEnrichment
-12. playExclusion
+9. partnerTrack
+10. trackCheck
+11. trackEnrichment
+12. trackExclusion
 13. discoveryRun
 14. partnerCandidate
 15. checkEvaluation
@@ -87,7 +87,7 @@ The central Fuse object. Represents a partner role layered on top of a canonical
 
 **Views:** All Partner Profiles (TABLE), By Lifecycle Stage (KANBAN)
 
-**Design notes:** partnerType uses the same enum as partnerPlay.partnerType. This is intentional — it allows filtering plays by the partner types they target, and filtering profiles by what kind of partner they are. lifecycleStage tracks the recruitment funnel. status is the operational state (a partner can be ACTIVE in lifecycle but BLOCKED in status due to compliance).
+**Design notes:** partnerType uses the same enum as partnerTrack.partnerType. This is intentional — it allows filtering plays by the partner types they target, and filtering profiles by what kind of partner they are. lifecycleStage tracks the recruitment funnel. status is the operational state (a partner can be ACTIVE in lifecycle but BLOCKED in status due to compliance).
 
 ---
 
@@ -352,17 +352,17 @@ Materialized rollup of customer pipeline and revenue data. Computed periodically
 
 ## Module: Discovery
 
-> Partner play execution, Exa webset discovery, scoring, and enrichment
+> Partner track execution, Exa webset discovery, scoring, and enrichment
 
-### 9. Partner Play
+### 9. Partner Track
 
-The template that defines what kind of partner you're looking for and why. A play combines a partner type, an entity type (company or person), an outcome goal, retrieval checks, enrichment columns, and exclusion rules.
+The template that defines what kind of partner you're looking for and why. A track combines a partner type, an entity type (company or person), an outcome goal, retrieval checks, enrichment columns, and exclusion rules.
 
 | | |
 |---|---|
-| **Singular** | `partnerPlay` |
-| **Plural** | `partnerPlays` |
-| **Icon** | `IconPlayCard` |
+| **Singular** | `partnerTrack` |
+| **Plural** | `partnerTracks` |
+| **Icon** | `IconRoute` |
 | **Description** | Reusable discovery and partner execution template |
 
 **Fields:**
@@ -380,24 +380,24 @@ The template that defines what kind of partner you're looking for and why. A pla
 
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
-| `owner` | Owner | workspaceMember | MANY_TO_ONE | Owned Partner Plays |
+| `owner` | Owner | workspaceMember | MANY_TO_ONE | Owned Partner Tracks |
 
-**Views:** All Partner Plays (TABLE)
+**Views:** All Partner Tracks (TABLE)
 
-**Design notes:** isTemplate distinguishes reusable play templates from one-off plays. Templates can be cloned. outcome captures why this play exists — what business result it's designed to produce. This is not just metadata; the scoring service uses outcome to weight checks differently depending on what you're optimizing for. successMetrics is freeform JSON for now (MVP scope) — structured metric tracking comes later.
+**Design notes:** isTemplate distinguishes reusable track templates from one-off plays. Templates can be cloned. outcome captures why this track exists — what business result it's designed to produce. This is not just metadata; the scoring service uses outcome to weight checks differently depending on what you're optimizing for. successMetrics is freeform JSON for now (MVP scope) — structured metric tracking comes later.
 
 ---
 
-### 10. Play Check
+### 10. Track Check
 
-A retrieval check and fit signal definition. Each play has multiple checks, each with a natural language prompt, a weight, and a gate mode. SIGNAL checks contribute to the fit score. MUST_PASS checks are binary — if a candidate fails a must-pass, it's disqualified regardless of total score.
+A retrieval check and fit signal definition. Each track has multiple checks, each with a natural language prompt, a weight, and a gate mode. SIGNAL checks contribute to the fit score. MUST_PASS checks are binary — if a candidate fails a must-pass, it's disqualified regardless of total score.
 
 | | |
 |---|---|
-| **Singular** | `playCheck` |
-| **Plural** | `playChecks` |
+| **Singular** | `trackCheck` |
+| **Plural** | `trackChecks` |
 | **Icon** | `IconChecklist` |
-| **Description** | Retrieval check and fit signal definition for a play |
+| **Description** | Retrieval check and fit signal definition for a track |
 
 **Fields:**
 
@@ -413,24 +413,24 @@ A retrieval check and fit signal definition. Each play has multiple checks, each
 
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
-| `partnerPlay` | Partner Play | partnerPlay | MANY_TO_ONE | Checks |
+| `partnerTrack` | Partner Track | partnerTrack | MANY_TO_ONE | Checks |
 
-**Views:** All Play Checks (TABLE)
+**Views:** All Track Checks (TABLE)
 
 **Design notes:** prompt is the natural language instruction sent to the Exa adapter. "Does this company have a public API?" or "Is this person a decision-maker in partnerships?" weight determines how much this check contributes to fitScore. position controls the display order and (eventually) the evaluation order for short-circuit optimization.
 
 ---
 
-### 11. Play Enrichment
+### 11. Track Enrichment
 
 An enrichment column definition. After a candidate passes checks, enrichments extract additional structured data. Each enrichment has a prompt and a format (what shape the extracted value should take).
 
 | | |
 |---|---|
-| **Singular** | `playEnrichment` |
-| **Plural** | `playEnrichments` |
+| **Singular** | `trackEnrichment` |
+| **Plural** | `trackEnrichments` |
 | **Icon** | `IconTablePlus` |
-| **Description** | Enrichment column definition for a play |
+| **Description** | Enrichment column definition for a track |
 
 **Fields:**
 
@@ -445,24 +445,24 @@ An enrichment column definition. After a candidate passes checks, enrichments ex
 
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
-| `partnerPlay` | Partner Play | partnerPlay | MANY_TO_ONE | Enrichments |
+| `partnerTrack` | Partner Track | partnerTrack | MANY_TO_ONE | Enrichments |
 
-**Views:** All Play Enrichments (TABLE)
+**Views:** All Track Enrichments (TABLE)
 
 **Design notes:** Enrichments are the columns that appear in the discovery results table. "Company founding year" (NUMBER), "Partnerships page URL" (URL), "Tech stack" (TEXT). format constrains the extraction to help downstream processing.
 
 ---
 
-### 12. Play Exclusion
+### 12. Track Exclusion
 
-Exclusion rules scoped to a play. Prevents specific entities from appearing in discovery results. Covers competitors, do-not-contact lists, existing active partners, previously contacted entities, and explicit bad fits.
+Exclusion rules scoped to a track. Prevents specific entities from appearing in discovery results. Covers competitors, do-not-contact lists, existing active partners, previously contacted entities, and explicit bad fits.
 
 | | |
 |---|---|
-| **Singular** | `playExclusion` |
-| **Plural** | `playExclusions` |
+| **Singular** | `trackExclusion` |
+| **Plural** | `trackExclusions` |
 | **Icon** | `IconFilterX` |
-| **Description** | Exclusion rule scoped to a partner play |
+| **Description** | Exclusion rule scoped to a partner track |
 
 **Fields:**
 
@@ -476,9 +476,9 @@ Exclusion rules scoped to a play. Prevents specific entities from appearing in d
 
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
-| `partnerPlay` | Partner Play | partnerPlay | MANY_TO_ONE | Exclusions |
+| `partnerTrack` | Partner Track | partnerTrack | MANY_TO_ONE | Exclusions |
 
-**Views:** All Play Exclusions (TABLE)
+**Views:** All Track Exclusions (TABLE)
 
 **Design notes:** identifier is the matching key — typically a domain (for companies) or an email (for people). The discovery adapter checks candidates against exclusions before scoring. ALREADY_DISPLAYED prevents showing the same candidate across multiple runs of the same play.
 
@@ -486,14 +486,14 @@ Exclusion rules scoped to a play. Prevents specific entities from appearing in d
 
 ### 13. Discovery Run
 
-A single execution of a partner play against Exa's webset API. Captures the raw query, optimized query, Exa webset ID, execution status, and results metadata.
+A single execution of a partner track against Exa's webset API. Captures the raw query, optimized query, Exa webset ID, execution status, and results metadata.
 
 | | |
 |---|---|
 | **Singular** | `discoveryRun` |
 | **Plural** | `discoveryRuns` |
 | **Icon** | `IconPlayerPlay` |
-| **Description** | Single webset-backed execution of a partner play |
+| **Description** | Single webset-backed execution of a partner track |
 
 **Fields:**
 
@@ -512,7 +512,7 @@ A single execution of a partner play against Exa's webset API. Captures the raw 
 
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
-| `partnerPlay` | Partner Play | partnerPlay | MANY_TO_ONE | Discovery Runs |
+| `partnerTrack` | Partner Track | partnerTrack | MANY_TO_ONE | Discovery Runs |
 | `createdByMember` | Created By | workspaceMember | MANY_TO_ONE | Discovery Runs |
 
 **Views:** All Discovery Runs (TABLE)
@@ -583,7 +583,7 @@ Per-check evaluation result for a candidate. Every check in the play produces on
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
 | `partnerCandidate` | Partner Candidate | partnerCandidate | MANY_TO_ONE | Check Evaluations |
-| `playCheck` | Play Check | playCheck | MANY_TO_ONE | Evaluations |
+| `trackCheck` | Track Check | trackCheck | MANY_TO_ONE | Evaluations |
 
 **Views:** All Check Evaluations (TABLE)
 
@@ -615,7 +615,7 @@ Per-enrichment extracted value for a candidate. Every enrichment column in the p
 | Name | Label | Target | Cardinality | Inverse Label |
 |---|---|---|---|---|
 | `partnerCandidate` | Partner Candidate | partnerCandidate | MANY_TO_ONE | Enrichment Evaluations |
-| `playEnrichment` | Play Enrichment | playEnrichment | MANY_TO_ONE | Evaluations |
+| `trackEnrichment` | Track Enrichment | trackEnrichment | MANY_TO_ONE | Evaluations |
 
 **Views:** All Enrichment Evaluations (TABLE)
 
@@ -677,11 +677,11 @@ Standard Twenty Objects          Fuse Core                    Fuse Co-sell      
   ═══════════════════════════════════════
 
   ┌───────────────┐
-  │ Partner Play  │ (template)
+  │ Partner Track  │ (template)
   └──┬──┬──┬──┬───┘
      │  │  │  │
      │  │  │  └──→ ┌──────────────┐
-     │  │  │       │ Play Check   │←──┐
+     │  │  │       │ Track Check   │←──┐
      │  │  │       └──────────────┘   │
      │  │  │                          │
      │  │  └──────→ ┌──────────────┐  │  ┌──────────────────┐
@@ -689,7 +689,7 @@ Standard Twenty Objects          Fuse Core                    Fuse Co-sell      
      │  │           └──────────────┘  │  └────────┬─────────┘
      │  │                             │           │
      │  └─────────→ ┌──────────────┐  │  ┌────────┴─────────┐
-     │              │Play Exclusion│  └──┤ Check Evaluation │
+     │              │Track Exclusion│  └──┤ Check Evaluation │
      │              └──────────────┘     └────────┬─────────┘
      │                                            │
      └────────────→ ┌──────────────┐    ┌─────────┴────────┐
@@ -724,10 +724,10 @@ All SELECT fields use semantic color assignment:
 | partnerAttributionSnapshot | 6 | 3 | 1 |
 | customerEvent | 7 | 4 | 1 |
 | customerSnapshot | 9 | 3 | 1 |
-| partnerPlay | 6 | 1 | 1 |
-| playCheck | 5 | 1 | 1 |
-| playEnrichment | 4 | 1 | 1 |
-| playExclusion | 3 | 1 | 1 |
+| partnerTrack | 6 | 1 | 1 |
+| trackCheck | 5 | 1 | 1 |
+| trackEnrichment | 4 | 1 | 1 |
+| trackExclusion | 3 | 1 | 1 |
 | discoveryRun | 8 | 2 | 1 |
 | partnerCandidate | 9 | 1 | 1 |
 | checkEvaluation | 4 | 2 | 1 |

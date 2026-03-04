@@ -36,10 +36,10 @@ State gate is enforced in FUSE-201 bootstrap verification.
 | Object | YC count | Apple count | Production count | Notes |
 |---|---|---|---|---|
 | partnerProfile |  |  |  |  |
-| partnerPlay |  |  |  |  |
-| playCheck |  |  |  |  |
-| playEnrichment |  |  |  |  |
-| playExclusion |  |  |  |  |
+| partnerTrack |  |  |  |  |
+| trackCheck |  |  |  |  |
+| trackEnrichment |  |  |  |  |
+| trackExclusion |  |  |  |  |
 | discoveryRun |  |  |  |  |
 | partnerCandidate |  |  |  |  |
 | partnerAttributionEvent |  |  |  |  |

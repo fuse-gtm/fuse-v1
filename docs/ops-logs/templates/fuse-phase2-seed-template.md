@@ -17,10 +17,10 @@
 | partnerProfile | 4 |  | PASS/FAIL |  |
 | partnerContactAssignment | 6 |  | PASS/FAIL |  |
 | partnerCustomerMap | 4 |  | PASS/FAIL |  |
-| partnerPlay | 2 |  | PASS/FAIL |  |
-| playCheck | 8 |  | PASS/FAIL |  |
-| playEnrichment | 4 |  | PASS/FAIL |  |
-| playExclusion | 2 |  | PASS/FAIL |  |
+| partnerTrack | 2 |  | PASS/FAIL |  |
+| trackCheck | 8 |  | PASS/FAIL |  |
+| trackEnrichment | 4 |  | PASS/FAIL |  |
+| trackExclusion | 2 |  | PASS/FAIL |  |
 | discoveryRun | 1 completed |  | PASS/FAIL |  |
 | partnerCandidate | 8 |  | PASS/FAIL |  |
 | checkEvaluation | linked |  | PASS/FAIL |  |

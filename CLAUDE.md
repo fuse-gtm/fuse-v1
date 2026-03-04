@@ -22,7 +22,7 @@ Location: `packages/twenty-server/src/modules/partner-os/`
 Key files:
 - `constants/partner-os-schema.constant.ts` — 16 custom object definitions (fields, relations, views)
 - `services/partner-os-metadata-bootstrap.service.ts` — creates objects/fields/relations/views in a workspace
-- `services/partner-discovery-adapter.service.ts` — maps PlayChecks to Exa API payloads
+- `services/partner-discovery-adapter.service.ts` — maps TrackChecks to Exa API payloads
 - `services/partner-scoring.service.ts` — weight-based fit scoring with must-pass gates
 - `types/partner-discovery.types.ts` — shared type definitions
 
