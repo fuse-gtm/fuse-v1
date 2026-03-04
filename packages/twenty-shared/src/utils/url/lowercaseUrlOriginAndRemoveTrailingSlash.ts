@@ -1,4 +1,4 @@
-import { getURLSafely } from '@/utils/getURLSafely';
+import { getURLSafely } from '../getURLSafely';
 import { isDefined } from '../validation/isDefined';
 import { safeDecodeURIComponent } from './safeDecodeURIComponent';
 

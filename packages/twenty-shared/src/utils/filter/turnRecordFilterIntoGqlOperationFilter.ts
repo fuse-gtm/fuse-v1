@@ -34,7 +34,7 @@ import {
   generateILikeFiltersForCompositeFields,
   getEmptyRecordGqlOperationFilter,
   isExpectedSubFieldName,
-} from '@/utils/filter';
+} from '.';
 
 import { type DateTimeFilter } from '@/types/RecordGqlOperationFilter';
 import {
@@ -49,10 +49,10 @@ import {
   resolveDateTimeFilter,
   resolveRelativeDateFilterStringified,
   type RecordFilter,
-} from '@/utils';
-import { arrayOfStringsOrVariablesSchema } from '@/utils/filter/utils/validation-schemas/arrayOfStringsOrVariablesSchema';
-import { arrayOfUuidOrVariableSchema } from '@/utils/filter/utils/validation-schemas/arrayOfUuidsOrVariablesSchema';
-import { jsonRelationFilterValueSchema } from '@/utils/filter/utils/validation-schemas/jsonRelationFilterValueSchema';
+} from '..';
+import { arrayOfStringsOrVariablesSchema } from './utils/validation-schemas/arrayOfStringsOrVariablesSchema';
+import { arrayOfUuidOrVariableSchema } from './utils/validation-schemas/arrayOfUuidsOrVariablesSchema';
+import { jsonRelationFilterValueSchema } from './utils/validation-schemas/jsonRelationFilterValueSchema';
 
 type FieldShared = {
   id: string;

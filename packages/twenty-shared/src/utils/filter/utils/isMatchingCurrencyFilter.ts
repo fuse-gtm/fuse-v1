@@ -1,5 +1,5 @@
 import { type CurrencyFilter } from '@/types';
-import { isDefined } from '@/utils';
+import { isDefined } from '../..';
 import { isNonEmptyString } from '@sniptt/guards';
 
 const isMatchingCurrencyCodeFilter = (

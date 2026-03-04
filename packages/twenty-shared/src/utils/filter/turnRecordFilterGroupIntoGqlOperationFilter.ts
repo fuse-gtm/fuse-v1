@@ -8,8 +8,8 @@ import {
   type ViewFilterOperand,
 } from '@/types';
 
-import { isDefined } from '@/utils';
-import { turnRecordFilterIntoRecordGqlOperationFilter } from '@/utils/filter/turnRecordFilterIntoGqlOperationFilter';
+import { isDefined } from '..';
+import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
 
 export type RecordFilter = {
   id: string;

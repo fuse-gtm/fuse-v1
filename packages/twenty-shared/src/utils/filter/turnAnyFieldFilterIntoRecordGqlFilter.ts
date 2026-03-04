@@ -9,10 +9,10 @@ import {
 import {
   filterSelectOptionsOfFieldMetadataItem,
   type RecordFilter,
-} from '@/utils';
-import { isNonEmptyArray } from '@/utils/array/isNonEmptyArray';
-import { turnRecordFilterIntoRecordGqlOperationFilter } from '@/utils/filter/turnRecordFilterIntoGqlOperationFilter';
-import { createAnyFieldRecordFilterBaseProperties } from '@/utils/filter/utils/createAnyFieldRecordFilterBaseProperties';
+} from '..';
+import { isNonEmptyArray } from '../array/isNonEmptyArray';
+import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
+import { createAnyFieldRecordFilterBaseProperties } from './utils/createAnyFieldRecordFilterBaseProperties';
 import { isDefined } from '../validation/isDefined';
 import { isNonEmptyString } from '@sniptt/guards';
 

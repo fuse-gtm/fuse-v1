@@ -1,9 +1,9 @@
 import { type Nullable } from '@/types';
-import { assertUnreachable, type DateTimePeriod } from '@/utils';
+import { assertUnreachable, type DateTimePeriod } from '../../..';
 
-import { type FirstDayOfTheWeekSchema } from '@/utils/filter/dates/utils/firstDayOfWeekSchema';
-import { getFirstDayOfTheWeekAsISONumber } from '@/utils/filter/dates/utils/getFirstDayOfTheWeekAsISONumber';
-import { FIRST_DAY_OF_WEEK_ISO_8601_MONDAY } from '@/utils/filter/dates/utils/getNextPeriodStart';
+import { type FirstDayOfTheWeekSchema } from './firstDayOfWeekSchema';
+import { getFirstDayOfTheWeekAsISONumber } from './getFirstDayOfTheWeekAsISONumber';
+import { FIRST_DAY_OF_WEEK_ISO_8601_MONDAY } from './getNextPeriodStart';
 import { isDefined } from '../../../validation/isDefined';
 import { type Temporal } from 'temporal-polyfill';
 

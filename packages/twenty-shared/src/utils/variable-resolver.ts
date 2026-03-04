@@ -1,4 +1,4 @@
-import { evalFromContext } from '@/utils/evalFromContext';
+import { evalFromContext } from './evalFromContext';
 import { isDefined } from './validation/isDefined';
 
 const isString = (value: unknown): value is string => {

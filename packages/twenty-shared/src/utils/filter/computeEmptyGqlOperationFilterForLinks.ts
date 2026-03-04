@@ -3,9 +3,9 @@ import {
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
 } from '@/types';
-import { CustomError } from '@/utils/errors';
+import { CustomError } from '../errors';
 
-import { type RecordFilter } from '@/utils/filter/turnRecordFilterGroupIntoGqlOperationFilter';
+import { type RecordFilter } from './turnRecordFilterGroupIntoGqlOperationFilter';
 import { isNonEmptyString } from '@sniptt/guards';
 
 export const computeEmptyGqlOperationFilterForLinks = ({

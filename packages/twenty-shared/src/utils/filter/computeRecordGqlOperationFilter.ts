@@ -7,9 +7,9 @@ import {
   turnRecordFilterGroupsIntoGqlOperationFilter,
   type RecordFilter,
   type RecordFilterGroup,
-} from '@/utils/filter/turnRecordFilterGroupIntoGqlOperationFilter';
-import { turnRecordFilterIntoRecordGqlOperationFilter } from '@/utils/filter/turnRecordFilterIntoGqlOperationFilter';
-import { isDefined } from '@/utils/validation/isDefined';
+} from './turnRecordFilterGroupIntoGqlOperationFilter';
+import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
+import { isDefined } from '../validation/isDefined';
 
 export const computeRecordGqlOperationFilter = ({
   fields,
