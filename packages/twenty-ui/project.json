@@ -101,13 +101,18 @@
     "test": {},
     "typecheck": {},
     "storybook:build": {
+      "dependsOn": [],
       "configurations": {
         "test": {}
       }
     },
     "storybook:serve:dev": {
+      "dependsOn": [],
       "options": {
-        "port": 6007
+        "port": 6007,
+        "env": {
+          "VITE_DISABLE_TYPESCRIPT_CHECKER": "true"
+        }
       }
     },
     "storybook:serve:static": {
