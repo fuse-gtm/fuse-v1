@@ -33,6 +33,11 @@ const createMockStream = (): Readable => {
   return stream;
 };
 
+const createMockResponse = () =>
+  ({
+    setHeader: jest.fn(),
+  }) as any;
+
 describe('FileController', () => {
   let controller: FileController;
   let fileService: FileService;
@@ -90,7 +95,7 @@ describe('FileController', () => {
         workspaceId: 'workspace-id',
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await controller.getFile(mockResponse, mockRequest);
 
@@ -111,7 +116,7 @@ describe('FileController', () => {
         workspaceId: 'workspace-id',
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await controller.getFile(mockResponse, mockRequest);
 
@@ -132,7 +137,7 @@ describe('FileController', () => {
         .mockResolvedValue(mockStream);
 
       const mockRequest = { workspaceId: 'workspace-id' } as any;
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await controller.getFileById(
         mockResponse,
@@ -160,7 +165,7 @@ describe('FileController', () => {
         );
 
       const mockRequest = { workspaceId: 'workspace-id' } as any;
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await expect(
         controller.getFileById(
@@ -180,7 +185,7 @@ describe('FileController', () => {
         .mockRejectedValue(new Error('Storage unavailable'));
 
       const mockRequest = { workspaceId: 'workspace-id' } as any;
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await expect(
         controller.getFileById(
@@ -210,7 +215,7 @@ describe('FileController', () => {
         params: { path: ['images', 'logo.png'] },
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await controller.getPublicAssets(
         mockResponse,
@@ -239,7 +244,7 @@ describe('FileController', () => {
         params: { path: ['favicon.ico'] },
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await controller.getPublicAssets(
         mockResponse,
@@ -270,7 +275,7 @@ describe('FileController', () => {
         params: { path: ['missing-asset.png'] },
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await expect(
         controller.getPublicAssets(
@@ -293,7 +298,7 @@ describe('FileController', () => {
         params: { path: ['broken-asset.png'] },
       } as any;
 
-      const mockResponse = {} as any;
+      const mockResponse = createMockResponse();
 
       await expect(
         controller.getPublicAssets(

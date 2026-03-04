@@ -1,3 +1,5 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const computeStoriesGlob = () => {
@@ -22,7 +24,10 @@ const computeStoriesGlob = () => {
   }
 
   if (process.env.STORYBOOK_SCOPE === 'ui-docs') {
-    return ['../src/modules/ui/**/*.docs.mdx'];
+    return [
+      '../src/modules/ui/**/*.docs.mdx',
+      '../src/modules/ui/**/__stories__/FuseDesignScorecard.stories.@(js|jsx|ts|tsx)',
+    ];
   }
 
   return ['../src/**/*.docs.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'];
@@ -41,17 +46,15 @@ const config: StorybookConfig = {
   },
 
   addons: [
-    // '@chromatic-com/storybook',
-    '@storybook-community/storybook-addon-cookie',
-    '@storybook/addon-links',
-    '@storybook/addon-coverage',
-    'storybook-addon-pseudo-states',
-    // 'storybook-dark-mode',
-    'storybook-addon-mock-date',
-    '@storybook/addon-vitest',
+    getAbsolutePath('@storybook-community/storybook-addon-cookie'),
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-coverage'),
+    getAbsolutePath('storybook-addon-pseudo-states'),
+    getAbsolutePath('storybook-addon-mock-date'),
+    getAbsolutePath('@storybook/addon-vitest'),
   ],
 
-  framework: '@storybook/react-vite',
+  framework: getAbsolutePath('@storybook/react-vite'),
 
   viteFinal: async (viteConfig) => {
     const { mergeConfig } = await import('vite');
@@ -67,3 +70,7 @@ const config: StorybookConfig = {
 };
 
 export default config;
+
+function getAbsolutePath(value: string): string {
+  return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
+}

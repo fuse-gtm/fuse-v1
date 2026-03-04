@@ -10,7 +10,7 @@ import {
 
 import { join } from 'path';
 
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { FileFolder } from 'twenty-shared/types';
 
 import {
@@ -24,19 +24,36 @@ import {
 } from 'src/engine/core-modules/file/file.exception';
 import { FileApiExceptionFilter } from 'src/engine/core-modules/file/filters/file-api-exception.filter';
 import { FilePathGuard } from 'src/engine/core-modules/file/guards/file-path-guard';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { FileService } from 'src/engine/core-modules/file/services/file.service';
 import { extractFileInfoFromRequest } from 'src/engine/core-modules/file/utils/extract-file-info-from-request.utils';
 import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
 import {
   FileByIdGuard,
-  SupportedFileFolder,
+  type SupportedFileFolder,
 } from 'src/engine/core-modules/file/guards/file-by-id.guard';
+import { fileFolderConfigs } from 'src/engine/core-modules/file/interfaces/file-folder.interface';
 
 @Controller()
 @UseFilters(FileApiExceptionFilter)
 export class FileController {
   constructor(private readonly fileService: FileService) {}
+
+  private setCacheControlHeader({
+    res,
+    ignoreExpirationToken,
+  }: {
+    res: Response;
+    ignoreExpirationToken: boolean;
+  }) {
+    res.setHeader(
+      'Cache-Control',
+      ignoreExpirationToken
+        ? 'public, max-age=31536000, immutable'
+        : 'private, max-age=0, must-revalidate',
+    );
+  }
 
   @Get('public-assets/:workspaceId/:applicationId/*path')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -56,6 +73,8 @@ export class FileController {
         fileFolder: FileFolder.PublicAsset,
         filepath,
       });
+
+      res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
 
       fileStream.on('error', () => {
         throw new FileException(
@@ -86,10 +105,10 @@ export class FileController {
   @Get('files/*path')
   @UseGuards(FilePathGuard, NoPermissionGuard)
   async getFile(@Res() res: Response, @Req() req: Request) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const workspaceId = (req as any)?.workspaceId;
+    const workspaceId = (req as Request & { workspaceId?: string })?.workspaceId;
 
-    const { rawFolder, filename } = extractFileInfoFromRequest(req);
+    const { rawFolder, filename, ignoreExpirationToken } =
+      extractFileInfoFromRequest(req);
 
     try {
       const fileStream = await this.fileService.getFileStream(
@@ -97,6 +116,11 @@ export class FileController {
         filename,
         workspaceId,
       );
+
+      this.setCacheControlHeader({
+        res,
+        ignoreExpirationToken,
+      });
 
       fileStream.on('error', () => {
         throw new FileException(
@@ -132,14 +156,19 @@ export class FileController {
     @Param('fileFolder') fileFolder: SupportedFileFolder,
     @Param('id') fileId: string,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const workspaceId = (req as any)?.workspaceId;
+    const workspaceId = (req as Request & { workspaceId?: string })?.workspaceId;
 
     try {
       const fileStream = await this.fileService.getFileStreamById({
         fileId,
         workspaceId,
         fileFolder,
+      });
+
+      this.setCacheControlHeader({
+        res,
+        ignoreExpirationToken: fileFolderConfigs[fileFolder]
+          .ignoreExpirationToken,
       });
 
       fileStream.on('error', () => {
