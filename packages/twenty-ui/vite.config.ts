@@ -36,6 +36,26 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
   return `${moduleDirectory}.${extension}`;
 };
 
+// TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
+// inside source imports that are consumed directly by twenty-ui.
+const resolveTwentySharedRootAlias = () => ({
+  name: 'resolve-twenty-shared-root-alias',
+  enforce: 'pre' as const,
+  resolveId: (source: string, importer: string | undefined) => {
+    if (!importer || !source.startsWith('@/')) {
+      return null;
+    }
+
+    const normalizedImporter = importer.split('?')[0].split(path.sep).join('/');
+
+    if (!normalizedImporter.includes('/packages/twenty-shared/src/')) {
+      return null;
+    }
+
+    return path.resolve(__dirname, '../twenty-shared/src', source.slice(2));
+  },
+});
+
 export default defineConfig(({ command }) => {
   const isBuildCommand = command === 'build';
 
@@ -77,6 +97,7 @@ export default defineConfig(({ command }) => {
         jsxImportSource: '@emotion/react',
         plugins: [['@swc/plugin-emotion', {}]],
       }),
+      resolveTwentySharedRootAlias(),
       tsconfigPaths({
         root: __dirname,
         projects: ['tsconfig.json'],
