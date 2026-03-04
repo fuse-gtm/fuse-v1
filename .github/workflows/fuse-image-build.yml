@@ -103,6 +103,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha,scope=fuse-image-build
+          cache-to: type=gha,mode=max,scope=fuse-image-build
 
       - name: Persist image reference artifact
         run: |
