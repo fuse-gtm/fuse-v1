@@ -93,9 +93,8 @@ const FuseDesignScorecard = () => {
   const [scenario, setScenario] = useState(
     'Primary user: RevOps lead at a 20-200 person SaaS team evaluating a CRM migration.',
   );
-  const [scoresByOption, setScoresByOption] = useState<ScoreMatrix>(
-    createInitialScores,
-  );
+  const [scoresByOption, setScoresByOption] =
+    useState<ScoreMatrix>(createInitialScores);
 
   const weightedPercentByOption = useMemo(
     () =>
@@ -166,9 +165,8 @@ const FuseDesignScorecard = () => {
         Fuse Design Scorecard
       </h1>
       <p style={{ marginTop: '8px', color: theme.font.color.secondary }}>
-        Score each direction from 1 to 5 on criteria that predict adoption.
-        This is not a taste contest. It is a decision about who gets value
-        fastest.
+        Score each direction from 1 to 5 on criteria that predict adoption. This
+        is not a taste contest. It is a decision about who gets value fastest.
       </p>
 
       <label
