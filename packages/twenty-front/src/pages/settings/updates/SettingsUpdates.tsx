@@ -35,7 +35,7 @@ export const SettingsUpdates = () => {
             description={t`Check out our latest releases`}
           />
           <StyledCardLink
-            href="https://twenty.com/releases"
+            href="https://github.com/fuse-gtm/fuse-v1/releases"
             target="_blank"
             rel="noopener noreferrer"
           >
