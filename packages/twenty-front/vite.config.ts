@@ -37,7 +37,13 @@ const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
         path.join(raw, 'index.js'),
       ];
 
-  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
+  // In Docker builds fs.existsSync may miss files due to layer timing;
+  // default to .ts (the dominant extension in twenty-shared) instead of
+  // the raw extensionless path which always causes ENOENT.
+  return (
+    candidates.find((candidate) => fs.existsSync(candidate)) ??
+    (hasExtension ? raw : `${raw}.ts`)
+  );
 };
 
 const resolveTwentySharedRootAlias = (): PluginOption => ({
