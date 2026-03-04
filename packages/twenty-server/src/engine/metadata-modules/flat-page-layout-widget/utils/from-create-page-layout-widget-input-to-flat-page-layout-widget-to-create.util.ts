@@ -64,7 +64,6 @@ export const fromCreatePageLayoutWidgetInputToFlatPageLayoutWidgetToCreate = ({
   return {
     id: pageLayoutWidgetId,
     ...commonProperties,
-    isActive: true,
     workspaceId,
     createdAt,
     updatedAt: createdAt,
@@ -74,7 +73,6 @@ export const fromCreatePageLayoutWidgetInputToFlatPageLayoutWidgetToCreate = ({
     applicationId: flatApplication.id,
     applicationUniversalIdentifier: flatApplication.universalIdentifier,
     conditionalDisplay: null,
-    overrides: null,
     universalConfiguration:
       fromPageLayoutWidgetConfigurationToUniversalConfiguration({
         configuration: createPageLayoutWidgetInput.configuration,
