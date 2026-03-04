@@ -18,43 +18,43 @@ export const Footer = ({ i18n }: FooterProps) => {
         <Column>
           <ShadowText>
             <Link
-              href="https://twenty.com/"
+              href="https://fusegtm.com/"
               value={i18n._('Website')}
-              aria-label={i18n._("Visit Twenty's website")}
+              aria-label={i18n._("Visit Fuse's website")}
             />
           </ShadowText>
         </Column>
         <Column>
           <ShadowText>
             <Link
-              href="https://github.com/twentyhq/twenty"
+              href="https://github.com/fuse-gtm/fuse-v1"
               value={i18n._('Github')}
-              aria-label={i18n._("Visit Twenty's GitHub repository")}
+              aria-label={i18n._("Visit Fuse's GitHub repository")}
             />
           </ShadowText>
         </Column>
         <Column>
           <ShadowText>
             <Link
-              href="https://docs.twenty.com/user-guide/introduction"
+              href="https://fusegtm.com/docs/user-guide/introduction"
               value={i18n._('User guide')}
-              aria-label={i18n._("Read Twenty's user guide")}
+              aria-label={i18n._("Read Fuse's user guide")}
             />
           </ShadowText>
         </Column>
         <Column>
           <ShadowText>
             <Link
-              href="https://docs.twenty.com/"
+              href="https://fusegtm.com/docs/"
               value={i18n._('Developers')}
-              aria-label={i18n._("Visit Twenty's developer documentation")}
+              aria-label={i18n._("Visit Fuse's developer documentation")}
             />
           </ShadowText>
         </Column>
       </Row>
       <ShadowText>
         <>
-          {i18n._('Twenty.com, Public Benefit Corporation')}
+          {i18n._('Fuse GTM')}
           <br />
           {i18n._('San Francisco / Paris')}
         </>
