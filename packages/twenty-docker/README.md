@@ -194,6 +194,14 @@ Cron (every 5 min):
 */5 * * * * ENV_FILE=/opt/fuse/packages/twenty-docker/.env VERIFY_PUBLIC_INGRESS=true /opt/fuse/packages/twenty-docker/scripts/check-runtime-and-ingress.sh >> /var/log/fuse-watchdog.log 2>&1
 ```
 
+Install both watchdog + health metric cron jobs idempotently:
+
+```bash
+ENV_FILE=/opt/fuse/packages/twenty-docker/.env \
+EXTRA_COMPOSE_FILE=/opt/fuse/packages/twenty-docker/docker-compose.aws.yml \
+bash packages/twenty-docker/scripts/fuse-install-runtime-guardrails.sh
+```
+
 ## Alerting
 
 Set up CloudWatch alarms and SNS email alerts:
@@ -211,6 +219,14 @@ Health metric publisher (cron, every 1 min):
 * * * * * /opt/fuse/packages/twenty-docker/scripts/fuse-publish-health-metric.sh >> /var/log/fuse-health-metric.log 2>&1
 ```
 
+External synthetic checks (outside EC2) for `/healthz` and `/`:
+
+```bash
+APP_HOST=app.fusegtm.com \
+ALERT_TOPIC_ARN=<sns-topic-arn> \
+bash packages/twenty-docker/scripts/fuse-setup-external-health-check.sh
+```
+
 ## Backup restore drill
 
 Verify RDS point-in-time restore works end-to-end:
@@ -226,6 +242,7 @@ Writes evidence to `docs/ops-logs/`.
 ## Incident runbook
 
 See `docs/fuse-deploy-incident-runbook.md` for triage, rollback, and escalation procedures.
+Start with infrastructure reachability first: check EC2 `StatusCheckFailed` alarm and instance status checks before debugging app code.
 
 ## Local troubleshooting
 
