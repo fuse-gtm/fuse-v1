@@ -1,4 +1,4 @@
-import { ViewFilterOperand as RecordFilterOperand } from '@/types';
+import { ViewFilterOperand as RecordFilterOperand } from '../../types';
 import { isDefined } from '..';
 import { isEmptinessOperand, type RecordFilter } from '.';
 

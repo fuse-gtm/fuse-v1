@@ -3,7 +3,7 @@ import {
   type CompositeFieldSubFieldName,
   type LinksFilter,
   type PartialFieldMetadataItem,
-} from '@/types';
+} from '../../../../types';
 import { CustomError } from '../../../errors';
 import { type RecordFilter } from '../../turnRecordFilterGroupIntoGqlOperationFilter';
 import { isNonEmptyString } from '@sniptt/guards';

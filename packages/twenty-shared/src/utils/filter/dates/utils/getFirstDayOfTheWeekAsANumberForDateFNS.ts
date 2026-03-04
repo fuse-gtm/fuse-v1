@@ -1,4 +1,4 @@
-import { FirstDayOfTheWeek } from '@/types';
+import { FirstDayOfTheWeek } from '../../../../types';
 import { assertUnreachable } from '../../../assertUnreachable';
 import { type FirstDayOfTheWeekSchema } from './firstDayOfWeekSchema';
 

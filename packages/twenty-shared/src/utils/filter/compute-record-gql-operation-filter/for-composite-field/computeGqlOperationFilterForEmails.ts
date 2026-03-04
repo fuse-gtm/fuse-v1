@@ -4,7 +4,7 @@ import {
   type PartialFieldMetadataItem,
   ViewFilterOperand as RecordFilterOperand,
   type RecordGqlOperationFilter,
-} from '@/types';
+} from '../../../../types';
 import { CustomError } from '../../../errors';
 
 import { type RecordFilter } from '../../turnRecordFilterGroupIntoGqlOperationFilter';

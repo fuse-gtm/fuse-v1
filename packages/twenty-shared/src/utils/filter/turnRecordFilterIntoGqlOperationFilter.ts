@@ -23,7 +23,7 @@ import {
   type StringFilter,
   type TSVectorFilter,
   type UUIDFilter,
-} from '@/types';
+} from '../../types';
 
 import {
   computeGqlOperationFilterForEmails,
@@ -36,7 +36,7 @@ import {
   isExpectedSubFieldName,
 } from '.';
 
-import { type DateTimeFilter } from '@/types/RecordGqlOperationFilter';
+import { type DateTimeFilter } from '../../types/RecordGqlOperationFilter';
 import {
   checkIfShouldComputeEmptinessFilter,
   checkIfShouldSkipFiltering,

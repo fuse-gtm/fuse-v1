@@ -1,5 +1,5 @@
 import { CalendarStartDay } from '../../../../constants';
-import { FirstDayOfTheWeek } from '@/types';
+import { FirstDayOfTheWeek } from '../../../../types';
 import { assertUnreachable } from '../../../assertUnreachable';
 
 export const convertCalendarStartDayNonIsoNumberToFirstDayOfTheWeek = (

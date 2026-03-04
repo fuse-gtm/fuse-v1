@@ -2,7 +2,7 @@ import {
   type PartialFieldMetadataItem,
   type RecordFilterValueDependencies,
   type RecordGqlOperationFilter,
-} from '@/types';
+} from '../../types';
 import {
   turnRecordFilterGroupsIntoGqlOperationFilter,
   type RecordFilter,

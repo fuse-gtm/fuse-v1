@@ -5,7 +5,7 @@ import {
   ViewFilterOperand,
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
-} from '@/types';
+} from '../../types';
 import {
   filterSelectOptionsOfFieldMetadataItem,
   type RecordFilter,

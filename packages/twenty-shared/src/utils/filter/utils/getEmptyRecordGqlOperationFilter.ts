@@ -15,7 +15,7 @@ import {
   type RelationFilter,
   type SelectFilter,
   type StringFilter,
-} from '@/types';
+} from '../../../types';
 import { CustomError } from '../../errors';
 import { computeEmptyGqlOperationFilterForEmails } from '../computeEmptyGqlOperationFilterForEmails';
 import { computeEmptyGqlOperationFilterForLinks } from '../computeEmptyGqlOperationFilterForLinks';

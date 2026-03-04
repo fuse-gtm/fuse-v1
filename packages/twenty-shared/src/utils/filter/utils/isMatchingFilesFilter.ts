@@ -1,4 +1,4 @@
-import { type FilesFilter } from '@/types';
+import { type FilesFilter } from '../../../types';
 
 export const isMatchingFilesFilter = ({
   filesFilter,

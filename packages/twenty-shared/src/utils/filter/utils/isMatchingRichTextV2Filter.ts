@@ -1,4 +1,4 @@
-import { type RichTextV2Filter } from '@/types';
+import { type RichTextV2Filter } from '../../../types';
 import escapeRegExp from 'lodash.escaperegexp';
 
 export const isMatchingRichTextV2Filter = ({

@@ -1,4 +1,4 @@
-import { type CurrencyFilter } from '@/types';
+import { type CurrencyFilter } from '../../../types';
 import { isDefined } from '../..';
 import { isNonEmptyString } from '@sniptt/guards';
 

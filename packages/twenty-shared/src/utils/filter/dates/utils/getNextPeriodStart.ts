@@ -1,4 +1,4 @@
-import { type Nullable } from '@/types';
+import { type Nullable } from '../../../../types';
 import { assertUnreachable } from '../../../assertUnreachable';
 import { type DateTimePeriod } from '../types/DateTimePeriod';
 import { type FirstDayOfTheWeekSchema } from './firstDayOfWeekSchema';

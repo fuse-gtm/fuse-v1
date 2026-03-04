@@ -1,4 +1,4 @@
-import { type DateFilter } from '@/types';
+import { type DateFilter } from '../../../types';
 import { isAfter, isBefore, isEqual, parseISO } from 'date-fns';
 
 export const isMatchingDateFilter = ({

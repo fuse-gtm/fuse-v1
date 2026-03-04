@@ -6,7 +6,7 @@ import {
   type RecordFilterValueDependencies,
   type RecordGqlOperationFilter,
   type ViewFilterOperand,
-} from '@/types';
+} from '../../types';
 
 import { isDefined } from '..';
 import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';

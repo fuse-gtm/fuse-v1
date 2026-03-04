@@ -2,7 +2,7 @@ import {
   type FieldMetadataType,
   type FilterableAndTSVectorFieldType,
   type ViewFilterOperand,
-} from '@/types';
+} from '../../types';
 import { isEmptinessOperand } from './isEmptinessOperand';
 import { getFilterTypeFromFieldType } from './utils/getFilterTypeFromFieldType';
 

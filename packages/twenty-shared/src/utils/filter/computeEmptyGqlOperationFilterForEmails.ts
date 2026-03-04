@@ -2,7 +2,7 @@ import {
   type EmailsFilter,
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
-} from '@/types';
+} from '../../types';
 import { CustomError } from '../errors';
 
 import { type RecordFilter } from './turnRecordFilterGroupIntoGqlOperationFilter';
