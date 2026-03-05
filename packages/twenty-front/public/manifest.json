@@ -1,6 +1,7 @@
 {
   "short_name": "Fuse",
   "name": "Fuse",
+  "description": "Fuse — the partnerships operating system",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
