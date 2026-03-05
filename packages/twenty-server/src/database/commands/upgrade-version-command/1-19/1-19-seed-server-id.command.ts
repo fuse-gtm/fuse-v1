@@ -35,12 +35,14 @@ export class SeedServerIdCommand extends ActiveOrSuspendedWorkspacesMigrationCom
 
     const queryRunner = this.coreDataSource.createQueryRunner();
 
-    await seedServerId({ queryRunner, schemaName: 'core' });
+    try {
+      await seedServerId({ queryRunner, schemaName: 'core' });
 
-    this.hasRun = true;
+      this.hasRun = true;
 
-    await queryRunner.release();
-
-    this.logger.log(`SERVER_ID seeded successfully`);
+      this.logger.log(`SERVER_ID seeded successfully`);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

@@ -107,13 +107,23 @@ export class OAuthTokenController {
     if (await this.applyRateLimit(req, res)) return;
     this.setSecurityHeaders(res);
 
-    await this.oauthService.revokeToken({
+    const result = await this.oauthService.revokeToken({
       token: body.token,
       clientId: body.client_id,
       clientSecret: body.client_secret,
     });
 
-    // RFC 7009 §2.2: always return 200, even for invalid tokens
+    // Client authentication failure → 401 per RFC 7009 §2.1
+    if (!result.success && body.client_id) {
+      res.status(401);
+
+      return {
+        error: 'invalid_client',
+        error_description: 'Client authentication failed',
+      };
+    }
+
+    // RFC 7009 §2.2: always return 200 for invalid/unknown tokens
     return {};
   }
 
