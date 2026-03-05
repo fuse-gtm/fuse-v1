@@ -1,4 +1,4 @@
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { hasObjectMetadataItemPositionField } from '@/object-metadata/utils/hasObjectMetadataItemPositionField';
 
 import { RecordCalendarComponentInstanceContext } from '@/object-record/record-calendar/states/contexts/RecordCalendarComponentInstanceContext';
@@ -26,7 +26,7 @@ export const calendarDayRecordIdsComponentFamilySelector =
           recordIndexCalendarFieldMetadataIdState,
         );
 
-        const objectMetadataItems = get(objectMetadataItemsSelector);
+        const objectMetadataItems = get(objectMetadataItemsState);
         const objectMetadataItem = objectMetadataItems.find(
           (objectMetadataItem) =>
             objectMetadataItem.fields.some(

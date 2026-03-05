@@ -1,8 +1,14 @@
-import { RuleTester } from 'oxlint/plugins-dev';
+import { TSESLint } from '@typescript-eslint/utils';
 
 import { rule, RULE_NAME } from './no-direct-atom-family-in-selector';
 
-const ruleTester = new RuleTester();
+const ruleTester = new TSESLint.RuleTester({
+  parser: require.resolve('@typescript-eslint/parser'),
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: 'module',
+  },
+});
 
 ruleTester.run(RULE_NAME, rule, {
   valid: [
