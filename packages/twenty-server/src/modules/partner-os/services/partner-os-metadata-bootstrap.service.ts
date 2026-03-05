@@ -1,13 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { FieldMetadataType, ViewType, ViewVisibility } from 'twenty-shared/types';
+import {
+  FieldMetadataType,
+  ViewType,
+  ViewVisibility,
+} from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { FieldMetadataService } from 'src/engine/metadata-modules/field-metadata/services/field-metadata.service';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
@@ -15,10 +16,8 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object-metadata/utils/build-object-id-by-name-maps.util';
 import { type FlatView } from 'src/engine/metadata-modules/flat-view/types/flat-view.type';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ObjectMetadataService } from 'src/engine/metadata-modules/object-metadata/object-metadata.service';
 import { ViewCalendarLayout } from 'src/engine/metadata-modules/view/enums/view-calendar-layout.enum';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ViewService } from 'src/engine/metadata-modules/view/services/view.service';
 import {
   PARTNER_OS_OBJECT_SCHEMAS,
@@ -79,13 +78,17 @@ export class PartnerOsMetadataBootstrapService {
       );
 
     let maps = await this.getFreshFlatMaps(workspaceId);
+
     maps = await this.renameLegacyDiscoveryObjects({
       workspaceId,
       maps,
     });
 
     for (const schema of PARTNER_OS_OBJECT_SCHEMAS) {
-      const existingObject = this.findObjectByName(schema.object.nameSingular, maps);
+      const existingObject = this.findObjectByName(
+        schema.object.nameSingular,
+        maps,
+      );
 
       if (!isDefined(existingObject)) {
         await this.objectMetadataService.createOneObject({
@@ -149,7 +152,10 @@ export class PartnerOsMetadataBootstrapService {
     schema: PartnerOsObjectSchema;
     maps: BootstrapFlatMaps;
   }): Promise<boolean> {
-    const object = this.findObjectByNameOrFail(schema.object.nameSingular, maps);
+    const object = this.findObjectByNameOrFail(
+      schema.object.nameSingular,
+      maps,
+    );
     const existingFieldNames = new Set(
       this.getObjectFields(object, maps).map((field) => field.name),
     );
@@ -253,14 +259,17 @@ export class PartnerOsMetadataBootstrapService {
     schema: PartnerOsObjectSchema;
     maps: BootstrapFlatMaps;
   }): Promise<boolean> {
-    const object = this.findObjectByNameOrFail(schema.object.nameSingular, maps);
+    const object = this.findObjectByNameOrFail(
+      schema.object.nameSingular,
+      maps,
+    );
     const objectFields = this.getObjectFields(object, maps);
     const objectViews = Object.values(maps.flatViewMaps.byUniversalIdentifier)
       .filter(isDefined)
       .filter(
         (view) =>
-          view.objectMetadataUniversalIdentifier === object.universalIdentifier &&
-          view.deletedAt === null,
+          view.objectMetadataUniversalIdentifier ===
+            object.universalIdentifier && view.deletedAt === null,
       );
 
     let didCreateView = false;
@@ -293,7 +302,9 @@ export class PartnerOsMetadataBootstrapService {
 
         didCreateView = true;
         nextPosition += 1;
-        this.logger.log(`Created Kanban view for ${schema.object.nameSingular}`);
+        this.logger.log(
+          `Created Kanban view for ${schema.object.nameSingular}`,
+        );
       } else {
         this.logger.warn(
           `Skipped Kanban view for ${schema.object.nameSingular}: ${schema.kanbanFieldName} missing or not a SELECT field`,
@@ -330,7 +341,9 @@ export class PartnerOsMetadataBootstrapService {
         });
 
         didCreateView = true;
-        this.logger.log(`Created Calendar view for ${schema.object.nameSingular}`);
+        this.logger.log(
+          `Created Calendar view for ${schema.object.nameSingular}`,
+        );
       } else {
         this.logger.warn(
           `Skipped Calendar view for ${schema.object.nameSingular}: ${schema.calendarFieldName} missing or not a date field`,
@@ -357,7 +370,10 @@ export class PartnerOsMetadataBootstrapService {
     const legacyRelationName =
       LEGACY_RELATION_FIELD_ALIASES[schemaObjectName]?.[relationName];
 
-    return isDefined(legacyRelationName) && existingFieldNames.has(legacyRelationName);
+    return (
+      isDefined(legacyRelationName) &&
+      existingFieldNames.has(legacyRelationName)
+    );
   }
 
   private async renameLegacyDiscoveryObjects({
@@ -475,7 +491,9 @@ export class PartnerOsMetadataBootstrapService {
     return maxPosition + 1;
   }
 
-  private async getFreshFlatMaps(workspaceId: string): Promise<BootstrapFlatMaps> {
+  private async getFreshFlatMaps(
+    workspaceId: string,
+  ): Promise<BootstrapFlatMaps> {
     await this.flatEntityMapsCacheService.invalidateFlatEntityMaps({
       workspaceId,
       flatMapsKeys: [
@@ -497,7 +515,9 @@ export class PartnerOsMetadataBootstrapService {
         },
       );
 
-    const { idByNameSingular } = buildObjectIdByNameMaps(flatObjectMetadataMaps);
+    const { idByNameSingular } = buildObjectIdByNameMaps(
+      flatObjectMetadataMaps,
+    );
 
     return {
       flatObjectMetadataMaps,

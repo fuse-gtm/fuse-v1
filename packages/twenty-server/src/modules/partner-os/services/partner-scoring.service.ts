@@ -22,7 +22,9 @@ export class PartnerScoringService {
       };
     }
 
-    const signalById = new Map(input.signals.map((signal) => [signal.id, signal]));
+    const signalById = new Map(
+      input.signals.map((signal) => [signal.id, signal]),
+    );
     const contributionByCheckId = this.initializeContributionMap(input);
 
     const totalWeight = this.sumWeights(input);

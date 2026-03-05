@@ -746,7 +746,8 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
       namePlural: 'partnerTracks',
       labelSingular: 'Partner Track',
       labelPlural: 'Partner Tracks',
-      description: 'Reusable discovery and partner execution template — one track per PartnerType x Outcome',
+      description:
+        'Reusable discovery and partner execution template — one track per PartnerType x Outcome',
       icon: 'IconRoute',
       isRemote: false,
     },
