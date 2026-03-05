@@ -37,8 +37,9 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
   return `${moduleDirectory}.${extension}`;
 };
 
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
   const isBuildCommand = command === 'build';
+  const isCI = process.env.CI === 'true';
 
   const tsConfigPath = isBuildCommand
     ? path.resolve(__dirname, './tsconfig.lib.json')
@@ -81,7 +82,7 @@ export default defineConfig(({ command }) => {
       }),
       svgr(),
       dts(dtsConfig),
-      checker(checkersConfig),
+      !isCI && checker(checkersConfig),
       {
         ...wyw({
           include: [path.resolve(__dirname, 'src') + '/**/*.{ts,tsx}'],

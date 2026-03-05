@@ -29,7 +29,11 @@ export default defineConfig(({ command, mode }) => {
     SSL_KEY_PATH,
     REACT_APP_PORT,
     IS_DEBUG_MODE,
+    CI,
+    ANALYZE,
   } = env;
+
+  const isCI = CI === 'true';
 
   const port = isNonEmptyString(REACT_APP_PORT)
     ? parseInt(REACT_APP_PORT)
@@ -106,29 +110,27 @@ export default defineConfig(({ command, mode }) => {
       lingui({
         configPath: path.resolve(__dirname, './lingui.config.ts'),
       }),
-      checker(checkers),
+      !isCI && checker(checkers),
       {
         ...wyw({
-          include: ['**/*.{ts,tsx}'],
+          include: [
+            // Only scan directories that actually contain styled usage (~12% of source)
+            path.resolve(__dirname, 'src') + '/**/components/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/pages/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/loading/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/testing/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/blocknote-editor/blocks/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/advanced-text-editor/extensions/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/page-layout/widgets/graph/chart-core/layers/**/*.{ts,tsx}',
+          ],
           exclude: [
             '**/generated-metadata/**',
             '**/testing/mock-data/generated/**',
             '**/*.test.{ts,tsx}',
             '**/*.spec.{ts,tsx}',
-            '**/types/**',
-            '**/constants/**',
-            '**/states/**',
-            '**/selectors/**',
-            '**/guards/**',
-            '**/schemas/**',
-            '**/utils/**',
-            '**/contexts/**',
-            '**/hooks/**',
-            '**/enums/**',
-            '**/queries/**',
-            '**/mutations/**',
-            '**/fragments/**',
-            '**/graphql/**',
           ],
           babelOptions: {
             presets: ['@babel/preset-typescript', '@babel/preset-react'],
@@ -137,12 +139,13 @@ export default defineConfig(({ command, mode }) => {
         }),
         enforce: 'pre',
       },
-      visualizer({
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-        filename: 'dist/stats.html',
-      }) as PluginOption, // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
+      ANALYZE === 'true' &&
+        (visualizer({
+          open: !isCI,
+          gzipSize: true,
+          brotliSize: true,
+          filename: 'dist/stats.html',
+        }) as PluginOption), // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
     ],
 
     optimizeDeps: {
