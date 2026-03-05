@@ -1,15 +1,11 @@
 import { AIChatErrorUnderMessageList } from '@/ai/components/AIChatErrorUnderMessageList';
-import { AIChatLastMessageWithStreamingState } from '@/ai/components/AIChatLastMessageWithStreamingState';
-import { AIChatNonLastMessageIdsList } from '@/ai/components/AIChatNonLastMessageIdsList';
-import { AIChatScrollToBottomButton } from '@/ai/components/AIChatScrollToBottomButton';
-import { AgentChatScrollToBottomOnDisplayedThreadChangeLayoutEffect } from '@/ai/components/AgentChatScrollToBottomOnDisplayedThreadChangeLayoutEffect';
+import { AIChatMessage } from '@/ai/components/AIChatMessage';
 import { AI_CHAT_SCROLL_WRAPPER_ID } from '@/ai/constants/AiChatScrollWrapperId';
-import { agentChatHasMessageComponentSelector } from '@/ai/states/agentChatHasMessageComponentSelector';
-import { agentChatIsInitialScrollPendingOnThreadChangeState } from '@/ai/states/agentChatIsInitialScrollPendingOnThreadChangeState';
+import { agentChatMessageIdsComponentSelector } from '@/ai/states/agentChatMessageIdsComponentSelector';
 import { ScrollWrapper } from '@/ui/utilities/scroll/components/ScrollWrapper';
 import { useAtomComponentSelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentSelectorValue';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
+import { isNonEmptyArray } from '@sniptt/guards';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledScrollWrapperContainer = styled.div`
@@ -19,38 +15,28 @@ const StyledScrollWrapperContainer = styled.div`
   gap: ${themeCssVariables.spacing[2]};
   overflow-y: auto;
   padding: ${themeCssVariables.spacing[3]};
-  position: relative;
   width: calc(100% - 24px);
 `;
 
 export const AIChatTabMessageList = () => {
-  const agentChatHasMessage = useAtomComponentSelectorValue(
-    agentChatHasMessageComponentSelector,
+  const agentChatMessageIdsComponent = useAtomComponentSelectorValue(
+    agentChatMessageIdsComponentSelector,
   );
 
-  const agentChatIsInitialScrollPendingOnThreadChange = useAtomStateValue(
-    agentChatIsInitialScrollPendingOnThreadChangeState,
-  );
+  const hasMessages = isNonEmptyArray(agentChatMessageIdsComponent);
 
-  if (!agentChatHasMessage) {
+  if (!hasMessages) {
     return null;
   }
 
   return (
-    <StyledScrollWrapperContainer
-      style={{
-        visibility: agentChatIsInitialScrollPendingOnThreadChange
-          ? 'hidden'
-          : 'visible',
-      }}
-    >
+    <StyledScrollWrapperContainer>
       <ScrollWrapper componentInstanceId={AI_CHAT_SCROLL_WRAPPER_ID}>
-        <AIChatNonLastMessageIdsList />
-        <AIChatLastMessageWithStreamingState />
+        {agentChatMessageIdsComponent.map((messageId) => {
+          return <AIChatMessage messageId={messageId} key={messageId} />;
+        })}
         <AIChatErrorUnderMessageList />
-        <AgentChatScrollToBottomOnDisplayedThreadChangeLayoutEffect />
       </ScrollWrapper>
-      <AIChatScrollToBottomButton />
     </StyledScrollWrapperContainer>
   );
 };

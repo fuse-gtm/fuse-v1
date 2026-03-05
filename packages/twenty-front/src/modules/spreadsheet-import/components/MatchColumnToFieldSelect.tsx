@@ -36,7 +36,7 @@ const StyledMenuItemContainer = styled.div`
 
 const StyledMenuItem = (props: React.ComponentProps<typeof MenuItem>) => (
   <StyledMenuItemContainer>
-    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
     <MenuItem {...props} />
   </StyledMenuItemContainer>
 );

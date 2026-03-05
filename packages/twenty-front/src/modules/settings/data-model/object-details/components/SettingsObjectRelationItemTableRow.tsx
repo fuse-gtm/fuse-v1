@@ -2,8 +2,7 @@ import { useDeleteOneFieldMetadataItem } from '@/object-metadata/hooks/useDelete
 import { useFieldMetadataItem } from '@/object-metadata/hooks/useFieldMetadataItem';
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
-import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { isObjectMetadataReadOnly } from '@/object-record/read-only/utils/isObjectMetadataReadOnly';
 import { SettingsItemTypeTag } from '@/settings/components/SettingsItemTypeTag';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
@@ -11,7 +10,6 @@ import { SettingsObjectFieldInactiveActionDropdown } from '@/settings/data-model
 import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { styled } from '@linaria/react';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useLingui } from '@lingui/react/macro';
 import { useContext, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -24,34 +22,34 @@ import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 
 type SettingsObjectRelationItemTableRowProps = {
   fieldMetadataItem: FieldMetadataItem;
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
 };
 
 export const OBJECT_RELATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
   'minmax(0, 1fr) 148px 148px 36px';
 
 const StyledNameContainer = styled.div`
-  align-items: center;
   display: flex;
+  align-items: center;
   flex: 1;
-  gap: ${themeCssVariables.spacing[1]};
   min-width: 0;
+  gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledNameLabel = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const StyledInactiveLabel = styled.span`
   color: ${themeCssVariables.font.color.extraLight};
-  flex: 0 999 auto;
   font-size: ${themeCssVariables.font.size.sm};
-  min-width: 48px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 0 999 auto;
+  min-width: 48px;
 
   &::before {
     content: '·';
@@ -79,11 +77,11 @@ const StyledLinkContainer = styled.div`
 
   > a {
     color: ${themeCssVariables.font.color.primary};
-    overflow: hidden;
     text-decoration: underline;
     text-decoration-color: ${themeCssVariables.border.color.strong};
-    text-overflow: ellipsis;
     text-underline-offset: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 
     &:hover {
@@ -111,12 +109,9 @@ export const SettingsObjectRelationItemTableRow = ({
       [fieldMetadataItem, getRelationMetadata],
     ) ?? {};
 
-  const isDDLLocked = useAtomStateValue(isDDLLockedState);
-
-  const readonly =
-    isObjectMetadataReadOnly({
-      objectMetadataItem,
-    }) || isDDLLocked;
+  const readonly = isObjectMetadataReadOnly({
+    objectMetadataItem,
+  });
 
   const { activateMetadataField } = useFieldMetadataItem();
   const { deleteOneFieldMetadataItem } = useDeleteOneFieldMetadataItem();
@@ -126,7 +121,7 @@ export const SettingsObjectRelationItemTableRow = ({
     fieldName: fieldMetadataItem.name,
   });
 
-  // oxlint-disable-next-line twenty/no-navigate-prefer-link
+  // eslint-disable-next-line twenty/no-navigate-prefer-link
   const navigateToFieldEdit = () =>
     navigate(SettingsPath.ObjectFieldEdit, {
       objectNamePlural: objectMetadataItem.namePlural,
@@ -154,7 +149,7 @@ export const SettingsObjectRelationItemTableRow = ({
     : undefined;
 
   const targetObjectLabel =
-    isRelatedObjectLinkable && isDefined(relationObjectMetadataItem)
+    isRelatedObjectLinkable && relationObjectMetadataItem
       ? relationObjectMetadataItem.labelPlural
       : fieldMetadataItem.label;
 
@@ -167,7 +162,7 @@ export const SettingsObjectRelationItemTableRow = ({
         color={themeCssVariables.font.color.primary}
         gap={themeCssVariables.spacing[2]}
       >
-        {isDefined(Icon) && (
+        {!!Icon && (
           <Icon
             style={{
               minWidth: theme.icon.size.md,
@@ -247,6 +242,7 @@ export const SettingsObjectRelationItemTableRow = ({
             onDelete={() =>
               deleteOneFieldMetadataItem({
                 idToDelete: fieldMetadataItem.id,
+                objectMetadataId: objectMetadataItem.id,
               })
             }
           />

@@ -3,7 +3,6 @@ import { isDropdownOpenComponentState } from '@/ui/layout/dropdown/states/isDrop
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { styled } from '@linaria/react';
 import { type Nullable } from 'twenty-shared/types';
-import { isDefined } from 'twenty-shared/utils';
 import { Tag } from 'twenty-ui/components';
 import { AppTooltip, TooltipDelay } from 'twenty-ui/display';
 
@@ -37,7 +36,7 @@ export const RecordBoardColumnHeaderAggregateDropdownButton = ({
         <>
           <StyledTagContainer>
             <Tag
-              text={isDefined(value) ? value.toString() : '-'}
+              text={value ? value.toString() : '-'}
               color="transparent"
               weight="regular"
             />

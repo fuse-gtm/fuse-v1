@@ -1,5 +1,6 @@
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { settingsObjectIndexesFamilyState } from '@/settings/data-model/object-details/states/settingsObjectIndexesFamilyState';
+import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { SortableTableHeader } from '@/ui/layout/table/components/SortableTableHeader';
 import { Table } from '@/ui/layout/table/components/Table';
 import { TableCell } from '@/ui/layout/table/components/TableCell';
@@ -14,8 +15,7 @@ import { isNonEmptyArray } from '@sniptt/guards';
 import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilyStateValue';
 import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
 import { useEffect, useMemo, useState } from 'react';
-import { IconSquareKey } from 'twenty-ui/display';
-import { SearchInput } from 'twenty-ui/input';
+import { IconSearch, IconSquareKey } from 'twenty-ui/display';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { type SettingsObjectIndexesTableItem } from '~/pages/settings/data-model/types/SettingsObjectIndexesTableItem';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
@@ -28,7 +28,7 @@ const StyledSearchInputContainer = styled.div`
 `;
 
 export type SettingsObjectIndexTableProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
 };
 
 export const SettingsObjectIndexTable = ({
@@ -119,7 +119,9 @@ export const SettingsObjectIndexTable = ({
   return (
     <>
       <StyledSearchInputContainer>
-        <SearchInput
+        <SettingsTextInput
+          instanceId="object-index-table-search"
+          LeftIcon={IconSearch}
           placeholder={t`Search an index...`}
           value={searchTerm}
           onChange={setSearchTerm}

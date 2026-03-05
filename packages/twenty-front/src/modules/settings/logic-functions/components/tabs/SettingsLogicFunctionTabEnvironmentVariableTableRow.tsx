@@ -24,7 +24,7 @@ const StyledEditModeTableRow = (
 ) => (
   <TableRow
     gridTemplateColumns="180px auto 56px"
-    // oxlint-disable-next-line react/jsx-props-no-spreading
+    // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
 );
@@ -32,7 +32,7 @@ const StyledEditModeTableRow = (
 const StyledTableRow = (props: React.ComponentProps<typeof TableRow>) => (
   <TableRow
     gridTemplateColumns="180px 300px 32px"
-    // oxlint-disable-next-line react/jsx-props-no-spreading
+    // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
 );

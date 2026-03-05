@@ -1,4 +1,4 @@
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { isHiddenSystemField } from '@/object-metadata/utils/isHiddenSystemField';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import {
@@ -6,6 +6,7 @@ import {
   SettingsObjectFieldItemTableRow,
 } from '@/settings/data-model/object-details/components/SettingsObjectFieldItemTableRow';
 import { settingsObjectFieldsFamilyState } from '@/settings/data-model/object-details/states/settingsObjectFieldsFamilyState';
+import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
 import { DropdownContent } from '@/ui/layout/dropdown/components/DropdownContent';
 import { DropdownMenuItemsContainer } from '@/ui/layout/dropdown/components/DropdownMenuItemsContainer';
@@ -23,16 +24,28 @@ import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAto
 import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
 import { useEffect, useMemo, useState } from 'react';
 import { FieldMetadataType } from 'twenty-shared/types';
-import { IconArchive, IconSettings } from 'twenty-ui/display';
-import { SearchInput } from 'twenty-ui/input';
+import {
+  IconArchive,
+  IconFilter,
+  IconSearch,
+  IconSettings,
+} from 'twenty-ui/display';
+import { Button } from 'twenty-ui/input';
 import { MenuItemToggle } from 'twenty-ui/navigation';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useMapFieldMetadataItemToSettingsObjectDetailTableItem } from '~/pages/settings/data-model/hooks/useMapFieldMetadataItemToSettingsObjectDetailTableItem';
 import { type SettingsObjectDetailTableItem } from '~/pages/settings/data-model/types/SettingsObjectDetailTableItem';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
 
-const StyledSearchContainer = styled.div`
+const StyledSearchAndFilterContainer = styled.div`
+  display: flex;
+  gap: ${themeCssVariables.spacing[2]};
   padding-bottom: ${themeCssVariables.spacing[2]};
+  width: 100%;
+`;
+
+const StyledSearchInputContainer = styled.div`
+  flex: 1;
 `;
 
 const SETTINGS_OBJECT_FIELD_TABLE_METADATA: TableMetadata<SettingsObjectDetailTableItem> =
@@ -65,7 +78,7 @@ const SETTINGS_OBJECT_FIELD_TABLE_METADATA: TableMetadata<SettingsObjectDetailTa
   };
 
 export type SettingsObjectFieldTableProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
   mode: 'view' | 'new-field';
   excludeRelations?: boolean;
 };
@@ -150,45 +163,55 @@ export const SettingsObjectFieldTable = ({
 
   return (
     <>
-      <StyledSearchContainer>
-        <SearchInput
-          placeholder={t`Search a field...`}
-          value={searchTerm}
-          onChange={setSearchTerm}
-          filterDropdown={(filterButton) => (
-            <Dropdown
-              dropdownId="settings-fields-filter-dropdown"
-              dropdownPlacement="bottom-end"
-              dropdownOffset={{ x: 0, y: 8 }}
-              clickableComponent={filterButton}
-              dropdownComponents={
-                <DropdownContent>
-                  <DropdownMenuItemsContainer>
-                    <MenuItemToggle
-                      LeftIcon={IconArchive}
-                      onToggleChange={() => setShowInactive(!showInactive)}
-                      toggled={showInactive}
-                      text={t`Inactive`}
-                      toggleSize="small"
-                    />
-                    {isAdvancedModeEnabled && (
-                      <MenuItemToggle
-                        LeftIcon={IconSettings}
-                        onToggleChange={() =>
-                          setShowSystemFields(!showSystemFields)
-                        }
-                        toggled={showSystemFields}
-                        text={t`System fields`}
-                        toggleSize="small"
-                      />
-                    )}
-                  </DropdownMenuItemsContainer>
-                </DropdownContent>
-              }
+      <StyledSearchAndFilterContainer>
+        <StyledSearchInputContainer>
+          <SettingsTextInput
+            instanceId="object-field-table-search"
+            LeftIcon={IconSearch}
+            placeholder={t`Search a field...`}
+            value={searchTerm}
+            onChange={setSearchTerm}
+          />
+        </StyledSearchInputContainer>
+        <Dropdown
+          dropdownId="settings-fields-filter-dropdown"
+          dropdownPlacement="bottom-end"
+          dropdownOffset={{ x: 0, y: 8 }}
+          clickableComponent={
+            <Button
+              Icon={IconFilter}
+              size="medium"
+              variant="secondary"
+              accent="default"
+              ariaLabel={t`Filter`}
             />
-          )}
+          }
+          dropdownComponents={
+            <DropdownContent>
+              <DropdownMenuItemsContainer>
+                <MenuItemToggle
+                  LeftIcon={IconArchive}
+                  onToggleChange={() => setShowInactive(!showInactive)}
+                  toggled={showInactive}
+                  text={t`Inactive`}
+                  toggleSize="small"
+                />
+                {isAdvancedModeEnabled && (
+                  <MenuItemToggle
+                    LeftIcon={IconSettings}
+                    onToggleChange={() =>
+                      setShowSystemFields(!showSystemFields)
+                    }
+                    toggled={showSystemFields}
+                    text={t`System fields`}
+                    toggleSize="small"
+                  />
+                )}
+              </DropdownMenuItemsContainer>
+            </DropdownContent>
+          }
         />
-      </StyledSearchContainer>
+      </StyledSearchAndFilterContainer>
       <Table>
         <TableRow
           gridTemplateColumns={OBJECT_FIELD_TABLE_ROW_GRID_TEMPLATE_COLUMNS}

@@ -30,8 +30,8 @@ type SettingsDnsRecordsTableProps = {
 
 const StyledTableRowContainer = styled.div`
   > * > * {
-    max-width: 100%;
     min-width: 0;
+    max-width: 100%;
     overflow: hidden;
   }
 `;
@@ -46,7 +46,7 @@ export const SettingsDnsRecordsTable = ({
 }: SettingsDnsRecordsTableProps) => {
   const { copyToClipboard } = useCopyToClipboard();
 
-  if (records.length === 0) {
+  if (!records || records.length === 0) {
     return null;
   }
 

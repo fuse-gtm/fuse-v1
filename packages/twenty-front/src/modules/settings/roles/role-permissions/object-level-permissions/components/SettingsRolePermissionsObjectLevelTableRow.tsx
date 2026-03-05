@@ -1,4 +1,4 @@
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { SettingsRolePermissionsObjectLevelOverrideCellContainer } from '@/settings/roles/role-permissions/object-level-permissions/components/SettingsRolePermissionsObjectLevelOverrideCellContainer';
 import { SettingsRolePermissionsObjectLevelSeeFieldsValueForObject } from '@/settings/roles/role-permissions/object-level-permissions/components/SettingsRolePermissionsObjectLevelSeeFieldsValueForObject';
 import { SettingsRolePermissionsObjectLevelTableRowOptionsDropdown } from '@/settings/roles/role-permissions/object-level-permissions/components/SettingsRolePermissionsObjectLevelTableRowOptionsDropdown';
@@ -8,19 +8,19 @@ import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { styled } from '@linaria/react';
 import { SettingsPath } from 'twenty-shared/types';
-import { isDefined, getSettingsPath } from 'twenty-shared/utils';
+import { getSettingsPath } from 'twenty-shared/utils';
 import { OverflowingTextWithTooltip, useIcons } from 'twenty-ui/display';
 import { useContext } from 'react';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledNameLabel = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 type SettingsRolePermissionsObjectLevelTableRowProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
   roleId: string;
   isEditable?: boolean;
   fromAgentId?: string;
@@ -56,7 +56,7 @@ export const SettingsRolePermissionsObjectLevelTableRow = ({
         color={themeCssVariables.font.color.primary}
         gap={themeCssVariables.spacing[1]}
       >
-        {isDefined(Icon) && (
+        {!!Icon && (
           <Icon
             style={{
               minWidth: theme.icon.size.md,

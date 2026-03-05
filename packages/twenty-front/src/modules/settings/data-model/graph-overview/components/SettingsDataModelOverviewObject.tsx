@@ -3,7 +3,7 @@ import { styled } from '@linaria/react';
 import { type Node, type NodeProps } from '@xyflow/react';
 import { Link } from 'react-router-dom';
 
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { isHiddenSystemField } from '@/object-metadata/utils/isHiddenSystemField';
 import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 import { ObjectFieldRow } from '@/settings/data-model/graph-overview/components/SettingsDataModelOverviewField';
@@ -12,28 +12,25 @@ import { FieldMetadataType } from '~/generated-metadata/graphql';
 import { ObjectFieldRowWithoutRelation } from '@/settings/data-model/graph-overview/components/SettingsDataModelOverviewFieldWithoutRelation';
 import '@xyflow/react/dist/style.css';
 import { SettingsPath } from 'twenty-shared/types';
-import { isDefined, getSettingsPath } from 'twenty-shared/utils';
+import { getSettingsPath } from 'twenty-shared/utils';
 import { IconChevronDown, IconChevronUp, useIcons } from 'twenty-ui/display';
 import { SettingsItemTypeTag } from '@/settings/components/SettingsItemTypeTag';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
-type SettingsDataModelOverviewObjectNode = Node<
-  EnrichedObjectMetadataItem,
-  'object'
->;
+type SettingsDataModelOverviewObjectNode = Node<ObjectMetadataItem, 'object'>;
 type SettingsDataModelOverviewObjectProps =
   NodeProps<SettingsDataModelOverviewObjectNode>;
 
 const StyledNode = styled.div`
   background-color: ${themeCssVariables.background.secondary};
-  border: 1px solid ${themeCssVariables.border.color.medium};
   border-radius: ${themeCssVariables.border.radius.md};
-  box-shadow: ${themeCssVariables.boxShadow.light};
   display: flex;
   flex-direction: column;
-  gap: ${themeCssVariables.spacing[2]};
-  padding: ${themeCssVariables.spacing[2]};
   width: 220px;
+  padding: ${themeCssVariables.spacing[2]};
+  gap: ${themeCssVariables.spacing[2]};
+  border: 1px solid ${themeCssVariables.border.color.medium};
+  box-shadow: ${themeCssVariables.boxShadow.light};
 `;
 
 const StyledHeader = styled.div`
@@ -53,30 +50,30 @@ const StyledObjectName = styled.div`
 `;
 
 const StyledInnerCard = styled.div`
-  background-color: ${themeCssVariables.background.primary};
   border: 1px solid ${themeCssVariables.border.color.light};
+  background-color: ${themeCssVariables.background.primary};
   border-radius: ${themeCssVariables.border.radius.sm};
-  color: ${themeCssVariables.font.color.tertiary};
+  padding: ${themeCssVariables.spacing[2]} 0 ${themeCssVariables.spacing[2]} 0;
   display: flex;
   flex-flow: column nowrap;
   gap: ${themeCssVariables.spacing['0.5']};
-  padding: ${themeCssVariables.spacing[2]} 0 ${themeCssVariables.spacing[2]} 0;
+  color: ${themeCssVariables.font.color.tertiary};
 `;
 
 const StyledCardRow = styled.div`
   align-items: center;
   display: flex;
-  gap: ${themeCssVariables.spacing[1]};
   height: 24px;
+  gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledCardRowOther = styled.div`
   align-items: center;
   cursor: pointer;
   display: flex;
-  gap: ${themeCssVariables.spacing[2]};
   height: 24px;
   padding: 0 ${themeCssVariables.spacing[2]};
+  gap: ${themeCssVariables.spacing[2]};
 
   &:hover {
     background-color: ${themeCssVariables.background.tertiary};
@@ -92,10 +89,10 @@ const StyledObjectInstanceCount = styled.div`
 const StyledObjectLinkContainer = styled.div`
   > a {
     align-items: center;
-    color: ${themeCssVariables.font.color.primary};
     display: flex;
     gap: ${themeCssVariables.spacing[1]};
     text-decoration: none;
+    color: ${themeCssVariables.font.color.primary};
 
     &:hover {
       color: ${themeCssVariables.font.color.secondary};
@@ -134,7 +131,7 @@ export const SettingsDataModelOverviewObject = ({
                 objectNamePlural: objectMetadataItem.namePlural,
               })}
             >
-              {isDefined(Icon) && <Icon size={theme.icon.size.md} />}
+              {Icon && <Icon size={theme.icon.size.md} />}
               {objectMetadataItem.labelPlural}
             </Link>
           </StyledObjectLinkContainer>

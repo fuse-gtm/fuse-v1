@@ -4,7 +4,6 @@ import { type ReactNode } from 'react';
 import { StyledFormCardTitle } from '@/settings/data-model/fields/components/StyledFormCardTitle';
 import { Trans } from '@lingui/react/macro';
 import { Card, CardContent } from 'twenty-ui/layout';
-import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 type SettingsDataModelPreviewFormCardProps = {
@@ -33,14 +32,14 @@ export const SettingsDataModelPreviewFormCard = ({
 }: SettingsDataModelPreviewFormCardProps) => (
   <Card className={className} fullWidth rounded>
     <StyledPreviewContainerWrapper>
-      <CardContent divider={isDefined(form)}>
+      <CardContent divider={!!form}>
         <StyledFormCardTitle>
           <Trans>Preview</Trans>
         </StyledFormCardTitle>
         {preview}
       </CardContent>
     </StyledPreviewContainerWrapper>
-    {isDefined(form) && (
+    {!!form && (
       <StyledFormContainerWrapper>
         <CardContent>{form}</CardContent>
       </StyledFormContainerWrapper>

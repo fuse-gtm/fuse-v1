@@ -33,8 +33,8 @@ const StyledNameCell = styled.div`
 const StyledNameContainer = styled.div`
   align-items: center;
   display: flex;
-  gap: ${themeCssVariables.spacing[2]};
   overflow: hidden;
+  gap: ${themeCssVariables.spacing[2]};
   width: 100%;
 `;
 

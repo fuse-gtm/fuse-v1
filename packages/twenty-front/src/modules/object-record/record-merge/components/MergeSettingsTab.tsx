@@ -1,15 +1,15 @@
+import { t } from '@lingui/core/macro';
 import { useMergeRecordsSelectedRecords } from '@/object-record/record-merge/hooks/useMergeRecordsSelectedRecords';
 import { useMergeRecordsSettings } from '@/object-record/record-merge/hooks/useMergeRecordsSettings';
-import { getPositionNumberIcon } from '@/object-record/record-merge/utils/getPositionNumberIcon';
-import { getPositionWordLabel } from '@/object-record/record-merge/utils/getPositionWordLabel';
 import { Select } from '@/ui/input/components/Select';
 import { styled } from '@linaria/react';
-import { t } from '@lingui/core/macro';
 import { Section } from 'twenty-ui/layout';
+import { getPositionNumberIcon } from '@/object-record/record-merge/utils/getPositionNumberIcon';
+import { getPositionWordLabel } from '@/object-record/record-merge/utils/getPositionWordLabel';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledSectionContainer = styled.div`
-  padding: ${themeCssVariables.spacing[2]};
+  margin: ${themeCssVariables.spacing[4]};
   width: auto;
 `;
 

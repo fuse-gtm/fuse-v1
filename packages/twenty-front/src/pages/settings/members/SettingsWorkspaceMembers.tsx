@@ -3,32 +3,24 @@ import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomStat
 import { styled } from '@linaria/react';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { isNonEmptyArray } from '@sniptt/guards';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useDebounce } from 'use-debounce';
 
-import { useSnackBarOnQueryError } from '@/apollo/hooks/useSnackBarOnQueryError';
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 import { SettingsPageContainer } from '@/settings/components/SettingsPageContainer';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
-import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
-import { DropdownContent } from '@/ui/layout/dropdown/components/DropdownContent';
-import { DropdownMenuItemsContainer } from '@/ui/layout/dropdown/components/DropdownMenuItemsContainer';
-import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
+import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { Table } from '@/ui/layout/table/components/Table';
 import { TableHeader } from '@/ui/layout/table/components/TableHeader';
 import { type WorkspaceMember } from '@/workspace-member/types/WorkspaceMember';
 import { WorkspaceInviteLink } from '@/workspace/components/WorkspaceInviteLink';
 import { WorkspaceInviteTeam } from '@/workspace/components/WorkspaceInviteTeam';
-import { useQuery } from '@apollo/client/react';
-import {
-  AppPath,
-  CoreObjectNameSingular,
-  SettingsPath,
-} from 'twenty-shared/types';
+import { type ApolloError } from '@apollo/client';
+import { CoreObjectNameSingular, SettingsPath } from 'twenty-shared/types';
 import {
   generateILikeFiltersForCompositeFields,
   getSettingsPath,
@@ -38,20 +30,17 @@ import {
   AppTooltip,
   Avatar,
   H2Title,
-  IconArrowUpRight,
   IconChevronRight,
-  IconHierarchy2,
-  IconListDetails,
   IconMail,
   IconReload,
+  IconSearch,
   IconTrash,
   Status,
   TooltipDelay,
 } from 'twenty-ui/display';
-import { Button, IconButton, SearchInput } from 'twenty-ui/input';
+import { IconButton } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
-import { MenuItem } from 'twenty-ui/navigation';
-import { GetWorkspaceInvitationsDocument } from '~/generated-metadata/graphql';
+import { useGetWorkspaceInvitationsQuery } from '~/generated-metadata/graphql';
 
 import { SettingsRolesQueryEffect } from '@/settings/roles/components/SettingsRolesQueryEffect';
 import { useSettingsAllRoles } from '@/settings/roles/hooks/useSettingsAllRoles';
@@ -61,7 +50,6 @@ import { useDeleteWorkspaceInvitation } from '@/workspace-invitation/hooks/useDe
 import { useResendWorkspaceInvitation } from '@/workspace-invitation/hooks/useResendWorkspaceInvitation';
 import { workspaceInvitationsState } from '@/workspace-invitation/states/workspaceInvitationsStates';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
-import { useNavigateApp } from '~/hooks/useNavigateApp';
 import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
 
@@ -88,8 +76,8 @@ const StyledTableContainer = styled.div<{ hasMoreRows?: boolean }>`
 `;
 
 const StyledIconWrapper = styled.div`
-  align-items: center;
   display: flex;
+  align-items: center;
   margin-right: ${themeCssVariables.spacing[2]};
 `;
 
@@ -100,10 +88,14 @@ const StyledTextContainerWithEllipsis = styled.div`
 `;
 
 const StyledSearchContainer = styled.div`
-  align-items: center;
-  display: flex;
-  gap: ${themeCssVariables.spacing[2]};
   padding-bottom: ${themeCssVariables.spacing[2]};
+`;
+
+const StyledSearchInputContainer = styled.div`
+  input {
+    background: ${themeCssVariables.background.transparent.lighter};
+    border: 1px solid ${themeCssVariables.border.color.medium};
+  }
 `;
 
 const StyledTableRows = styled.div`
@@ -123,9 +115,7 @@ export const SettingsWorkspaceMembers = () => {
   const { theme } = useContext(ThemeContext);
   const { t } = useLingui();
   const { enqueueErrorSnackBar } = useSnackBar();
-  const navigateApp = useNavigateApp();
   const navigateSettings = useNavigateSettings();
-  const { closeDropdown } = useCloseDropdown();
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
   const currentWorkspaceMember = useAtomStateValue(currentWorkspaceMemberState);
@@ -178,21 +168,20 @@ export const SettingsWorkspaceMembers = () => {
     setSearchFilter(text);
   };
 
-  const { data: invitationsData, error: invitationsError } = useQuery(
-    GetWorkspaceInvitationsDocument,
-  );
-
-  useSnackBarOnQueryError(invitationsError);
-
-  useEffect(() => {
-    if (invitationsData) {
-      setWorkspaceInvitations(invitationsData?.findWorkspaceInvitations ?? []);
-    }
-  }, [invitationsData, setWorkspaceInvitations]);
+  useGetWorkspaceInvitationsQuery({
+    onError: (error: ApolloError) => {
+      enqueueErrorSnackBar({
+        apolloError: error,
+      });
+    },
+    onCompleted: (data) => {
+      setWorkspaceInvitations(data?.findWorkspaceInvitations ?? []);
+    },
+  });
 
   const handleRemoveWorkspaceInvitation = async (appTokenId: string) => {
     const result = await deleteWorkspaceInvitation({ appTokenId });
-    if (isDefined(result.error)) {
+    if (isDefined(result.errors)) {
       enqueueErrorSnackBar({
         message: t`Error deleting invitation`,
         options: {
@@ -204,7 +193,7 @@ export const SettingsWorkspaceMembers = () => {
 
   const handleResendWorkspaceInvitation = async (appTokenId: string) => {
     const result = await resendInvitation({ appTokenId });
-    if (isDefined(result.error)) {
+    if (isDefined(result.errors)) {
       enqueueErrorSnackBar({
         message: t`Error resending invitation`,
         options: {
@@ -394,50 +383,17 @@ export const SettingsWorkspaceMembers = () => {
               description={t`Manage the members of your workspace here`}
             />
             <StyledSearchContainer>
-              <SearchInput
-                value={searchFilter}
-                onChange={handleSearchChange}
-                placeholder={t`Search a team member...`}
-              />
-              <Dropdown
-                dropdownId="workspace-members-open-dropdown"
-                clickableComponent={
-                  <Button
-                    Icon={IconArrowUpRight}
-                    title={t`Open`}
-                    variant="secondary"
-                    size="medium"
-                  />
-                }
-                dropdownPlacement="bottom-end"
-                dropdownOffset={{ y: 8 }}
-                dropdownComponents={
-                  <DropdownContent>
-                    <DropdownMenuItemsContainer>
-                      <MenuItem
-                        LeftIcon={IconListDetails}
-                        text={t`See records`}
-                        onClick={() => {
-                          navigateApp(AppPath.RecordIndexPage, {
-                            objectNamePlural: 'workspaceMembers',
-                          });
-                          closeDropdown('workspace-members-open-dropdown');
-                        }}
-                      />
-                      <MenuItem
-                        LeftIcon={IconHierarchy2}
-                        text={t`See data model settings`}
-                        onClick={() => {
-                          navigateSettings(SettingsPath.ObjectDetail, {
-                            objectNamePlural: 'workspaceMembers',
-                          });
-                          closeDropdown('workspace-members-open-dropdown');
-                        }}
-                      />
-                    </DropdownMenuItemsContainer>
-                  </DropdownContent>
-                }
-              />
+              <StyledSearchInputContainer>
+                <SettingsTextInput
+                  instanceId="workspace-members-search"
+                  value={searchFilter}
+                  onChange={handleSearchChange}
+                  placeholder={t`Search a team member...`}
+                  fullWidth
+                  LeftIcon={IconSearch}
+                  sizeVariant="lg"
+                />
+              </StyledSearchInputContainer>
             </StyledSearchContainer>
             <StyledTableContainer hasMoreRows={hasNextPage}>
               <Table>

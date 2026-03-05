@@ -6,7 +6,7 @@ import { H2Title, IconArrowUp, IconLock } from 'twenty-ui/display';
 import { Card, Section } from 'twenty-ui/layout';
 
 import { billingState } from '@/client-config/states/billingState';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { SettingsOptionCardContentButton } from '@/settings/components/SettingsOptions/SettingsOptionCardContentButton';
 import { SettingsRolePermissionsObjectLevelRecordLevelPermissionFilterBuilder } from '@/settings/roles/role-permissions/object-level-permissions/record-level-permissions/components/SettingsRolePermissionsObjectLevelRecordLevelPermissionFilterBuilder';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
@@ -17,6 +17,7 @@ import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 
 const StyledContent = styled.div`
   padding-bottom: ${themeCssVariables.spacing[2]};
+  padding-top: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledCardContainer = styled.div`
@@ -37,7 +38,7 @@ const StyledPillContainer = styled.span`
 `;
 
 type SettingsRolePermissionsObjectLevelRecordLevelSectionProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
   roleId: string;
   hasOrganizationPlan: boolean;
 };
@@ -69,22 +70,18 @@ export const SettingsRolePermissionsObjectLevelRecordLevelSection = ({
             <SettingsOptionCardContentButton
               Icon={IconLock}
               title={t`Upgrade to access`}
-              description={t`This feature is part of the Enterprise Plan`}
+              description={t`This feature is part of the Organization Plan`}
               Button={
-                <Button
-                  title={t`Upgrade`}
-                  variant="primary"
-                  accent="blue"
-                  size="small"
-                  Icon={IconArrowUp}
-                  onClick={() =>
-                    navigateSettings(
-                      isBillingEnabled
-                        ? SettingsPath.Billing
-                        : SettingsPath.AdminPanelEnterprise,
-                    )
-                  }
-                />
+                isBillingEnabled && (
+                  <Button
+                    title={t`Upgrade`}
+                    variant="primary"
+                    accent="blue"
+                    size="small"
+                    Icon={IconArrowUp}
+                    onClick={() => navigateSettings(SettingsPath.Billing)}
+                  />
+                )
               }
             />
           </Card>

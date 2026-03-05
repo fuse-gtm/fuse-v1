@@ -23,15 +23,24 @@ import { IconChevronDown, IconForbid } from 'twenty-ui/display';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledFormSelectContainerWrapper = styled.div<{ readonly?: boolean }>`
-  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
-  display: flex;
+  align-items: center;
   height: 32px;
-  width: 100%;
+  justify-content: space-between;
+  padding-right: ${themeCssVariables.spacing[2]};
+
+  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
+
+  &:hover,
+  &[data-open='true'] {
+    background-color: ${({ readonly }) =>
+      readonly
+        ? 'transparent'
+        : themeCssVariables.background.transparent.light};
+  }
 `;
 
 const StyledIconButton = styled.div`
   display: flex;
-  padding-right: ${themeCssVariables.spacing[2]};
 `;
 
 export type RecordId = string;
@@ -79,7 +88,7 @@ export const FormSingleRecordPicker = ({
       }
     : {
         type: 'static',
-        value: (defaultValue as string | undefined) ?? '',
+        value: defaultValue || '',
       };
 
   if (objectNameSingulars.length === 0) {
@@ -184,7 +193,6 @@ export const FormSingleRecordPicker = ({
                 <FormFieldInputInnerContainer
                   formFieldInputInstanceId={componentId}
                   hasRightElement={isDefined(VariablePicker) && !disabled}
-                  hoverable
                   preventFocusStackUpdate={true}
                 >
                   <FormSingleRecordFieldChip

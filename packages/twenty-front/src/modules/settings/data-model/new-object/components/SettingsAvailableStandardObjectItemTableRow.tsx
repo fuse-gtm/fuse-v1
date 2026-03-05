@@ -1,5 +1,4 @@
-import { isDefined } from 'twenty-shared/utils';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { Checkbox } from 'twenty-ui/input';
@@ -13,7 +12,7 @@ export const AVAILABLE_STANDARD_OBJECTS_GRID_TEMPLATE_COLUMNS =
 
 type SettingsAvailableStandardObjectItemTableRowProps = {
   isSelected?: boolean;
-  objectItem: EnrichedObjectMetadataItem;
+  objectItem: ObjectMetadataItem;
   onClick?: () => void;
 };
 
@@ -49,7 +48,7 @@ export const SettingsAvailableStandardObjectItemTableRow = ({
         color={themeCssVariables.font.color.primary}
         gap={themeCssVariables.spacing[2]}
       >
-        {isDefined(Icon) && <Icon size={theme.icon.size.md} />}
+        {!!Icon && <Icon size={theme.icon.size.md} />}
         {objectItem.labelPlural}
       </TableCell>
       <TableCell>

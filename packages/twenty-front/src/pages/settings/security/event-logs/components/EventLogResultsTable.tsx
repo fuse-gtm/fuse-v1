@@ -1,4 +1,3 @@
-import { SettingsEmptyPlaceholder } from '@/settings/components/SettingsEmptyPlaceholder';
 import { styled } from '@linaria/react';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -80,28 +79,6 @@ const OBJECT_EVENT_COLUMNS: ColumnConfig[] = [
   },
 ];
 
-const USAGE_EVENT_COLUMNS: ColumnConfig[] = [
-  {
-    id: 'event',
-    label: msg`Resource Type`,
-    minWidth: 100,
-    defaultWidth: 130,
-  },
-  {
-    id: 'timestamp',
-    label: msg`Timestamp`,
-    minWidth: 100,
-    defaultWidth: 140,
-  },
-  { id: 'userId', label: msg`User`, minWidth: 100, defaultWidth: 130 },
-  {
-    id: 'properties',
-    label: msg`Details`,
-    minWidth: 200,
-    defaultWidth: 400,
-  },
-];
-
 const StyledScrollWrapperContainer = styled.div`
   height: 100%;
   overflow: hidden;
@@ -133,6 +110,12 @@ const StyledResizeHandle = styled.div<{ isResizing: boolean }>`
   }
 `;
 
+const StyledEmptyState = styled.div`
+  color: ${themeCssVariables.font.color.tertiary};
+  padding: ${themeCssVariables.spacing[8]};
+  text-align: center;
+`;
+
 const StyledLoadingMore = styled.div`
   color: ${themeCssVariables.font.color.tertiary};
   padding: ${themeCssVariables.spacing[4]};
@@ -159,7 +142,7 @@ const buildGridTemplateColumns = (
       const isLastColumn = index === columns.length - 1;
       const width = widths[col.id] ?? col.defaultWidth;
 
-      // oxlint-disable-next-line lingui/no-unlocalized-strings
+      // eslint-disable-next-line lingui/no-unlocalized-strings
       return isLastColumn ? `minmax(${width}px, 1fr)` : `${width}px`;
     })
     .join(' ');
@@ -176,12 +159,9 @@ export const EventLogResultsTable = ({
   const { t } = useLingui();
 
   const showObjectEventColumns = selectedTable === EventLogTable.OBJECT_EVENT;
-  const baseColumns =
-    selectedTable === EventLogTable.OBJECT_EVENT
-      ? OBJECT_EVENT_COLUMNS
-      : selectedTable === EventLogTable.USAGE_EVENT
-        ? USAGE_EVENT_COLUMNS
-        : DEFAULT_COLUMNS;
+  const baseColumns = showObjectEventColumns
+    ? OBJECT_EVENT_COLUMNS
+    : DEFAULT_COLUMNS;
 
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>(() =>
     Object.fromEntries(baseColumns.map((col) => [col.id, col.defaultWidth])),
@@ -287,9 +267,9 @@ export const EventLogResultsTable = ({
 
   if (!loading && records.length === 0) {
     return (
-      <SettingsEmptyPlaceholder>
+      <StyledEmptyState>
         <Trans>No event logs found</Trans>
-      </SettingsEmptyPlaceholder>
+      </StyledEmptyState>
     );
   }
 

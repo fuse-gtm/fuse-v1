@@ -7,7 +7,6 @@ import { FieldsWidgetCellHoveredPortal } from '@/page-layout/widgets/fields/comp
 import { FieldsWidgetFieldList } from '@/page-layout/widgets/fields/components/FieldsWidgetFieldList';
 import { FieldsWidgetGroupContainer } from '@/page-layout/widgets/fields/components/FieldsWidgetGroupContainer';
 import { useFieldsWidgetGroupsForDisplay } from '@/page-layout/widgets/fields/hooks/useFieldsWidgetGroupsForDisplay';
-import { useFieldsWidgetHiddenFieldsForDisplay } from '@/page-layout/widgets/fields/hooks/useFieldsWidgetHiddenFieldsForDisplay';
 import { useLayoutRenderingContext } from '@/ui/layout/contexts/LayoutRenderingContext';
 import { useTargetRecord } from '@/ui/layout/contexts/useTargetRecord';
 import { SidePanelProvider } from '@/ui/layout/side-panel/contexts/SidePanelContext';
@@ -37,21 +36,18 @@ const StyledPropertyBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[2]};
-  padding-bottom: ${themeCssVariables.spacing[3]};
   padding-top: ${themeCssVariables.spacing[3]};
+  padding-bottom: ${themeCssVariables.spacing[3]};
 `;
 
-const StyledInlineFieldsPropertyBox = styled.div<{
-  hasMoreGroup: boolean;
-}>`
+const StyledInlineFieldsPropertyBox = styled.div`
   align-self: stretch;
   border-radius: ${themeCssVariables.border.radius.sm};
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[2]};
-  padding-bottom: ${({ hasMoreGroup }) =>
-    hasMoreGroup ? themeCssVariables.spacing[3] : '0'};
   padding-top: 0;
+  padding-bottom: 0;
 `;
 
 type FieldsWidgetProps = {
@@ -76,31 +72,9 @@ export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
     objectNameSingular: targetRecord.targetObjectNameSingular,
   });
 
-  const { hiddenFields } = useFieldsWidgetHiddenFieldsForDisplay({
-    widgetId: widget.id,
-    viewId: fieldsConfiguration.viewId ?? null,
-    objectNameSingular: targetRecord.targetObjectNameSingular,
-  });
-
-  const shouldShowHiddenFields =
-    fieldsConfiguration.shouldAllowUserToSeeHiddenFields === true &&
-    hiddenFields.length > 0;
-
-  const visibleFields = groups.flatMap((group) => group.fields);
-
-  const hiddenFieldsWithOffsetGlobalIndex = shouldShowHiddenFields
-    ? hiddenFields.map((field) => ({
-        ...field,
-        globalIndex: field.globalIndex + visibleFields.length,
-      }))
-    : [];
-
-  const flattenedFieldMetadataItems = [
-    ...visibleFields.map((field) => field.fieldMetadataItem),
-    ...hiddenFieldsWithOffsetGlobalIndex.map(
-      (field) => field.fieldMetadataItem,
-    ),
-  ];
+  const flattenedFieldMetadataItems = groups.flatMap((group) =>
+    group.fields.map((field) => field.fieldMetadataItem),
+  );
 
   const hasFieldsToDisplay = groups.length > 0;
 
@@ -109,7 +83,7 @@ export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
       <SidePanelProvider value={{ isInSidePanel }}>
         <StyledContainer>
           <AnimatedPlaceholderEmptyContainer
-            // oxlint-disable-next-line react/jsx-props-no-spreading
+            // eslint-disable-next-line react/jsx-props-no-spreading
             {...EMPTY_PLACEHOLDER_TRANSITION_PROPS}
           >
             <AnimatedPlaceholder type="noRecord" />
@@ -136,9 +110,7 @@ export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
           }}
         >
           {displayMode === 'inline' ? (
-            <StyledInlineFieldsPropertyBox
-              hasMoreGroup={shouldShowHiddenFields}
-            >
+            <StyledInlineFieldsPropertyBox>
               <FieldsWidgetFieldList
                 fields={groups.flatMap((group) => group.fields)}
                 instanceId={instanceId}
@@ -155,20 +127,6 @@ export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
                 </StyledPropertyBox>
               </FieldsWidgetGroupContainer>
             ))
-          )}
-
-          {shouldShowHiddenFields && (
-            <FieldsWidgetGroupContainer
-              title={t`More (${hiddenFieldsWithOffsetGlobalIndex.length})`}
-              defaultExpanded={false}
-            >
-              <StyledPropertyBox>
-                <FieldsWidgetFieldList
-                  fields={hiddenFieldsWithOffsetGlobalIndex}
-                  instanceId={instanceId}
-                />
-              </StyledPropertyBox>
-            </FieldsWidgetGroupContainer>
           )}
 
           <FieldsWidgetCellHoveredPortal

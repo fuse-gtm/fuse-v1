@@ -54,17 +54,22 @@ const StyledDisplayModeContainer = styled.div`
   align-items: center;
   background: transparent;
   border: none;
-  cursor: pointer;
   display: flex;
   font-family: inherit;
   padding-inline: ${themeCssVariables.spacing[2]};
   width: 100%;
+  cursor: pointer;
+
+  &:hover,
+  &[data-open='true'] {
+    background-color: ${themeCssVariables.background.transparent.lighter};
+  }
 `;
 
 const StyledSelectInputContainer = styled.div`
   position: absolute;
-  top: ${themeCssVariables.spacing[9]};
   z-index: 1;
+  top: ${themeCssVariables.spacing[9]};
 `;
 
 const StyledPlaceholderContainer = styled.div`
@@ -215,7 +220,6 @@ export const FormMultiSelectFieldInput = ({
         <FormFieldInputInnerContainer
           formFieldInputInstanceId={instanceId}
           hasRightElement={isDefined(VariablePicker) && !readonly}
-          hoverable={!readonly}
         >
           {draftValue.type === 'static' ? (
             readonly ? (
