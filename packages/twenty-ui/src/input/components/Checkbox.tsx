@@ -37,6 +37,7 @@ type CheckboxProps = {
   className?: string;
   disabled?: boolean;
   accent?: CheckboxAccent;
+  'aria-label'?: string;
 };
 
 type InputProps = {
@@ -196,6 +197,7 @@ export const Checkbox = ({
   className,
   disabled = false,
   accent = CheckboxAccent.Blue,
+  'aria-label': ariaLabel,
 }: CheckboxProps) => {
   const [isInternalChecked, setIsInternalChecked] =
     React.useState<boolean>(false);
@@ -231,6 +233,8 @@ export const Checkbox = ({
         name="styled-checkbox"
         data-testid="input-checkbox"
         checked={isInternalChecked}
+        aria-checked={indeterminate ? 'mixed' : isInternalChecked}
+        aria-label={ariaLabel}
         onChange={handleChange}
         disabled={disabled}
       />

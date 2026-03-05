@@ -39,6 +39,8 @@ export { Card } from './card/components/Card';
 export { CardContent } from './card/components/CardContent';
 export { CardFooter } from './card/components/CardFooter';
 export { CardHeader } from './card/components/CardHeader';
+export type { ModalHeaderProps } from './modal/components/ModalHeader';
+export { ModalHeader } from './modal/components/ModalHeader';
 export {
   SectionAlignment,
   SectionFontColor,

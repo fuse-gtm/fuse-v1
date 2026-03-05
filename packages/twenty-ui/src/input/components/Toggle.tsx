@@ -56,6 +56,7 @@ export type ToggleProps = {
   className?: string;
   centered?: boolean;
   disabled?: boolean;
+  'aria-label'?: string;
 };
 
 export const Toggle = ({
@@ -67,6 +68,7 @@ export const Toggle = ({
   className,
   centered,
   disabled,
+  'aria-label': ariaLabel,
 }: ToggleProps) => {
   const circleVariants = {
     on: { x: toggleSize === 'small' ? 10 : 14 },
@@ -81,6 +83,9 @@ export const Toggle = ({
       className={className}
       centered={centered}
       data-disabled={disabled}
+      role="switch"
+      aria-checked={value}
+      aria-label={ariaLabel}
     >
       <VisibilityHiddenInput
         id={id}

@@ -98,6 +98,10 @@ export const MenuItem = ({
 
   return (
     <StyledHoverableMenuItemBase
+      role="menuitem"
+      tabIndex={focused ? 0 : -1}
+      aria-disabled={disabled || undefined}
+      aria-selected={selected || undefined}
       data-testid={testId ?? undefined}
       onClick={disabled ? undefined : handleMenuItemClick}
       disabled={disabled}
