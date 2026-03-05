@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useLayoutEffect } from 'react';
 
 import { type ThemeType } from '@ui/theme/types/ThemeType';
 
@@ -17,6 +17,17 @@ export const ThemeContextProvider = ({
   children: React.ReactNode;
   theme: ThemeType;
 }) => {
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const isDark = theme.name === 'dark';
+    root.classList.toggle('dark', isDark);
+    root.classList.toggle('light', !isDark);
+
+    return () => {
+      root.classList.remove('dark', 'light');
+    };
+  }, [theme.name]);
+
   return (
     <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>
   );

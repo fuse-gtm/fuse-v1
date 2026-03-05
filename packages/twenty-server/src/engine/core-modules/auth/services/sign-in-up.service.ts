@@ -28,6 +28,8 @@ import {
   type SignInUpNewUserPayload,
 } from 'src/engine/core-modules/auth/types/signInUp.type';
 import { SubdomainManagerService } from 'src/engine/core-modules/domain/subdomain-manager/services/subdomain-manager.service';
+import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
+import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { FileCorePictureService } from 'src/engine/core-modules/file/file-core-picture/services/file-core-picture.service';
 import { MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 import { MetricsKeys } from 'src/engine/core-modules/metrics/types/metrics-keys.type';
@@ -44,6 +46,7 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 import { getDomainNameByEmail } from 'src/utils/get-domain-name-by-email';
 import { isWorkEmail } from 'src/utils/is-work-email';
+import { TelemetryEventType } from 'src/engine/core-modules/telemetry/telemetry-event.type';
 
 @Injectable()
 // eslint-disable-next-line twenty/inject-workspace-repository
@@ -56,6 +59,7 @@ export class SignInUpService {
     private readonly workspaceInvitationService: WorkspaceInvitationService,
     private readonly userWorkspaceService: UserWorkspaceService,
     private readonly onboardingService: OnboardingService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
     private readonly secureHttpClientService: SecureHttpClientService,
     private readonly twentyConfigService: TwentyConfigService,
@@ -207,6 +211,7 @@ export class SignInUpService {
     const updatedUser = await this.signInUpOnExistingWorkspace({
       workspace: invitationValidation.workspace,
       userData: params.userData,
+      roleId: params.invitation.context?.roleId,
     });
 
     await this.workspaceInvitationService.invalidateWorkspaceInvitation(
@@ -255,6 +260,7 @@ export class SignInUpService {
   async signInUpOnExistingWorkspace(
     params: {
       workspace: WorkspaceEntity;
+      roleId?: string | null;
     } & ExistingUserOrPartialUserWithPicture,
   ) {
     await this.throwIfWorkspaceIsNotReadyForSignInUp(params.workspace, params);
@@ -281,6 +287,7 @@ export class SignInUpService {
       await this.userWorkspaceService.addUserToWorkspaceIfUserNotInWorkspace(
         user,
         params.workspace,
+        params.roleId,
       );
 
       return user;
@@ -296,6 +303,7 @@ export class SignInUpService {
     await this.userWorkspaceService.addUserToWorkspaceIfUserNotInWorkspace(
       user,
       params.workspace,
+      params.roleId,
     );
 
     return user;
@@ -334,6 +342,22 @@ export class SignInUpService {
         queryRunner,
       );
     }
+
+    const isPartnerOsEnabled = await this.featureFlagService.isFeatureEnabled(
+      FeatureFlagKey.IS_PARTNER_OS_ENABLED,
+      workspace.id,
+    );
+
+    if (isPartnerOsEnabled) {
+      await this.onboardingService.setOnboardingPartnerProfilePending(
+        {
+          userId: user.id,
+          workspaceId: workspace.id,
+          value: true,
+        },
+        queryRunner,
+      );
+    }
   }
 
   private async saveNewUser(
@@ -357,18 +381,19 @@ export class SignInUpService {
       ? await queryRunner.manager.save(UserEntity, userCreated)
       : await this.userRepository.save(userCreated);
 
-    const serverUrl = this.twentyConfigService.get('SERVER_URL');
-
-    this.workspaceEventEmitter.emitCustomBatchEvent(
+    this.workspaceEventEmitter.emitCustomBatchEvent<TelemetryEventType>(
       USER_SIGNUP_EVENT_NAME,
       [
         {
+          workspaceId: savedUser.currentWorkspace?.id,
+          userWorkspaceId: savedUser.currentUserWorkspace?.id,
           userId: savedUser.id,
           userEmail: newUserWithPicture.email,
           userFirstName: newUserWithPicture.firstName,
           userLastName: newUserWithPicture.lastName,
           locale: newUserWithPicture.locale,
-          serverUrl,
+          serverUrl: this.twentyConfigService.get('SERVER_URL'),
+          serverId: this.twentyConfigService.get('SERVER_ID'),
         },
       ],
       undefined,

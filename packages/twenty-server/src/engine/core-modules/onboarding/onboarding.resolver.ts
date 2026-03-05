@@ -38,6 +38,21 @@ export class OnboardingResolver {
 
   @Mutation(() => OnboardingStepSuccessDTO)
   @UseGuards(NoPermissionGuard)
+  async skipPartnerProfileOnboardingStep(
+    @AuthUser() user: UserEntity,
+    @AuthWorkspace() workspace: WorkspaceEntity,
+  ): Promise<OnboardingStepSuccessDTO> {
+    await this.onboardingService.setOnboardingPartnerProfilePending({
+      userId: user.id,
+      workspaceId: workspace.id,
+      value: false,
+    });
+
+    return { success: true };
+  }
+
+  @Mutation(() => OnboardingStepSuccessDTO)
+  @UseGuards(NoPermissionGuard)
   async skipBookOnboardingStep(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<OnboardingStepSuccessDTO> {

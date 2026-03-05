@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { Droppable, type DraggableProvided } from '@hello-pangea/dnd';
 import { useLingui } from '@lingui/react/macro';
 
@@ -9,6 +9,7 @@ import { FieldsConfigurationFieldEditor } from '@/page-layout/widgets/fields/com
 import { type FieldsWidgetGroup } from '@/page-layout/widgets/fields/types/FieldsWidgetGroup';
 import { IconDotsVertical, IconNewSection } from 'twenty-ui/display';
 import { MenuItem, MenuItemDraggable } from 'twenty-ui/navigation';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledFieldsDroppable = styled.div`
   display: flex;
@@ -16,12 +17,12 @@ const StyledFieldsDroppable = styled.div`
 `;
 
 const StyledGroupContainer = styled.div<{ isDragging: boolean }>`
-  background: ${({ isDragging, theme }) =>
-    isDragging ? theme.background.primary : 'transparent'};
+  background: ${({ isDragging }) =>
+    isDragging ? themeCssVariables.background.primary : 'transparent'};
   border: 1px solid
-    ${({ isDragging, theme }) =>
-      isDragging ? theme.color.blue : 'transparent'};
-  border-radius: ${({ theme }) => theme.border.radius.md};
+    ${({ isDragging }) =>
+      isDragging ? themeCssVariables.color.blue : 'transparent'};
+  border-radius: ${themeCssVariables.border.radius.md};
   display: flex;
   flex-direction: column;
   width: 100%;

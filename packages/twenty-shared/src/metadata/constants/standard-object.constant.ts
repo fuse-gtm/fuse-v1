@@ -2629,6 +2629,9 @@ export const STANDARD_OBJECTS = {
       numberFormat: {
         universalIdentifier: '20202020-7f40-4e7f-b126-11c0eda6b141',
       },
+      partnerRole: {
+        universalIdentifier: '20202020-a1b2-4c3d-9e4f-5a6b7c8d9e0f',
+      },
       createdBy: {
         universalIdentifier: '4a3f26d1-033e-4d84-b23a-9adc2fd0c2a8',
       },

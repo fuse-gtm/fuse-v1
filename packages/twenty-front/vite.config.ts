@@ -29,7 +29,11 @@ export default defineConfig(({ command, mode }) => {
     SSL_KEY_PATH,
     REACT_APP_PORT,
     IS_DEBUG_MODE,
+    CI,
+    ANALYZE,
   } = env;
+
+  const isCI = CI === 'true';
 
   const port = isNonEmptyString(REACT_APP_PORT)
     ? parseInt(REACT_APP_PORT)
@@ -96,7 +100,6 @@ export default defineConfig(({ command, mode }) => {
 
     plugins: [
       react({
-        jsxImportSource: '@emotion/react',
         plugins: [['@lingui/swc-plugin', {}]],
       }),
       tsconfigPaths({
@@ -107,55 +110,42 @@ export default defineConfig(({ command, mode }) => {
       lingui({
         configPath: path.resolve(__dirname, './lingui.config.ts'),
       }),
-      checker(checkers),
+      !isCI && checker(checkers),
       {
         ...wyw({
           include: [
-            '**/CurrencyDisplay.tsx',
-            '**/EllipsisDisplay.tsx',
-            '**/ContactLink.tsx',
-            '**/BooleanDisplay.tsx',
-            '**/LinksDisplay.tsx',
-            '**/RoundedLink.tsx',
-            '**/OverflowingTextWithTooltip.tsx',
-            '**/Chip.tsx',
-            '**/Tag.tsx',
-            '**/MultiSelectFieldDisplay.tsx',
-            '**/RatingInput.tsx',
-            '**/RecordTableCellContainer.tsx',
-            '**/RecordTableCellDisplayContainer.tsx',
-            '**/Avatar.tsx',
-            '**/RecordTableBodyDroppable.tsx',
-            '**/RecordTableCellBaseContainer.tsx',
-            '**/RecordTableCellTd.tsx',
-            '**/RecordTableCellStyleWrapper.tsx',
-            '**/RecordTableHeaderDragDropColumn.tsx',
-            '**/ActorDisplay.tsx',
-            '**/BooleanDisplay.tsx',
-            '**/CurrencyDisplay.tsx',
-            '**/TextDisplay.tsx',
-            '**/EllipsisDisplay.tsx',
-            '**/AvatarChip.tsx',
-            '**/URLDisplay.tsx',
-            '**/EmailsDisplay.tsx',
-            '**/PhonesDisplay.tsx',
-            '**/MultiSelectDisplay.tsx',
-            '**/RecordTableRowVirtualizedContainer.tsx',
-            '**/RecordTableVirtualizedBodyPlaceholder.tsx',
-            '**/RecordTableCellLoading.tsx',
+            // Only scan directories that actually contain styled usage (~12% of source)
+            path.resolve(__dirname, 'src') + '/**/components/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/pages/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/loading/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') + '/testing/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/blocknote-editor/blocks/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/advanced-text-editor/extensions/**/*.{ts,tsx}',
+            path.resolve(__dirname, 'src') +
+              '/modules/page-layout/widgets/graph/chart-core/layers/**/*.{ts,tsx}',
+          ],
+          exclude: [
+            '**/generated-metadata/**',
+            '**/testing/mock-data/generated/**',
+            '**/*.test.{ts,tsx}',
+            '**/*.spec.{ts,tsx}',
           ],
           babelOptions: {
             presets: ['@babel/preset-typescript', '@babel/preset-react'],
+            plugins: ['@babel/plugin-transform-export-namespace-from'],
           },
         }),
         enforce: 'pre',
       },
-      visualizer({
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-        filename: 'dist/stats.html',
-      }) as PluginOption, // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
+      ANALYZE === 'true' &&
+        (visualizer({
+          open: !isCI,
+          gzipSize: true,
+          brotliSize: true,
+          filename: 'dist/stats.html',
+        }) as PluginOption), // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
     ],
 
     optimizeDeps: {
@@ -170,13 +160,12 @@ export default defineConfig(({ command, mode }) => {
       minify: 'esbuild',
       outDir: 'build',
       sourcemap: VITE_BUILD_SOURCEMAP === 'true',
+      chunkSizeWarningLimit: CHUNK_SIZE_WARNING_LIMIT,
       rollupOptions: {
         //  Don't use manual chunks as it causes many issue
         // including this one we wasted a lot of time on:
         // https://github.com/rollup/rollup/issues/2793
         output: {
-          // Set chunk size warning limit (in bytes) - warns at 1MB
-          chunkSizeWarningLimit: CHUNK_SIZE_WARNING_LIMIT,
           // Custom plugin to fail build if chunks exceed max size
           plugins: [
             {
@@ -275,8 +264,6 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         path: 'rollup-plugin-node-polyfills/polyfills/path',
-        // https://github.com/twentyhq/twenty/pull/10782/files
-        // This will likely be migrated to twenty-ui package when built separately
         '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
       },
     },

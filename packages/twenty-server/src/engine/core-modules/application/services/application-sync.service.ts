@@ -136,18 +136,33 @@ export class ApplicationSyncService {
         application.applicationRegistrationId,
         manifest.application.universalIdentifier,
         applicationRegistrationMetadata,
+        workspaceId,
       );
 
-    await this.applicationRegistrationService.update({
-      id: applicationRegistrationId,
-      update: applicationRegistrationMetadata,
-    });
-
-    if (manifest.application.serverVariables) {
-      await this.applicationRegistrationVariableService.syncVariableSchemas(
+    // Only update registration metadata and variable schemas if this workspace
+    // owns the registration. Other workspaces that install the same app attach
+    // to the existing registration but must not be able to modify its metadata
+    // or overwrite/delete its variable definitions.
+    if (
+      await this.applicationRegistrationService.isOwnedByWorkspace(
         applicationRegistrationId,
-        manifest.application.serverVariables,
+        workspaceId,
+      )
+    ) {
+      await this.applicationRegistrationService.update(
+        {
+          id: applicationRegistrationId,
+          update: applicationRegistrationMetadata,
+        },
+        workspaceId,
       );
+
+      if (manifest.application.serverVariables) {
+        await this.applicationRegistrationVariableService.syncVariableSchemas(
+          applicationRegistrationId,
+          manifest.application.serverVariables,
+        );
+      }
     }
 
     return await this.applicationService.update(application.id, {
@@ -248,6 +263,7 @@ export class ApplicationSyncService {
       websiteUrl?: string;
       termsUrl?: string;
     },
+    workspaceId: string,
   ): Promise<string> {
     if (existingId) {
       return existingId;
@@ -265,6 +281,7 @@ export class ApplicationSyncService {
     const { applicationRegistration: newRegistration } =
       await this.applicationRegistrationService.create(
         { ...metadata, universalIdentifier },
+        workspaceId,
         null,
       );
 

@@ -1,20 +1,16 @@
-import styled from '@emotion/styled';
+import * as RadixDialog from '@radix-ui/react-dialog';
+import { styled } from '@linaria/react';
 import { motion } from 'framer-motion';
-import { Key } from 'ts-key-enum';
 
-import { DIALOG_CLICK_OUTSIDE_ID } from '@/ui/feedback/dialog-manager/constants/DialogClickOutsideId';
-import { DIALOG_FOCUS_ID } from '@/ui/feedback/dialog-manager/constants/DialogFocusId';
-import { DIALOG_LISTENER_ID } from '@/ui/feedback/dialog-manager/constants/DialogListenerId';
 import { RootStackingContextZIndices } from '@/ui/layout/constants/RootStackingContextZIndices';
-import { useHotkeysOnFocusedElement } from '@/ui/utilities/hotkey/hooks/useHotkeysOnFocusedElement';
-import { useListenClickOutside } from '@/ui/utilities/pointer-event/hooks/useListenClickOutside';
-import { useRef } from 'react';
+import React from 'react';
 import { isDefined } from 'twenty-shared/utils';
 import { Button } from 'twenty-ui/input';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const StyledDialogOverlay = styled(motion.div)`
+const StyledDialogOverlayBase = styled.div`
   align-items: center;
-  background: ${({ theme }) => theme.background.overlayPrimary};
+  background: ${themeCssVariables.background.overlayPrimary};
   display: flex;
   height: 100dvh;
   justify-content: center;
@@ -24,9 +20,10 @@ const StyledDialogOverlay = styled(motion.div)`
   width: 100vw;
   z-index: ${RootStackingContextZIndices.Dialog};
 `;
+const StyledDialogOverlay = motion.create(StyledDialogOverlayBase);
 
-const StyledDialogContainer = styled(motion.div)`
-  background: ${({ theme }) => theme.background.primary};
+const StyledDialogContainerBase = styled.div`
+  background: ${themeCssVariables.background.primary};
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -35,26 +32,27 @@ const StyledDialogContainer = styled(motion.div)`
   position: relative;
   width: 100%;
 `;
+const StyledDialogContainer = motion.create(StyledDialogContainerBase);
 
 const StyledDialogTitle = styled.span`
-  color: ${({ theme }) => theme.font.color.primary};
-  font-size: ${({ theme }) => theme.font.size.md};
-  font-weight: ${({ theme }) => theme.font.weight.semiBold};
-  margin-bottom: ${({ theme }) => theme.spacing(6)};
+  color: ${themeCssVariables.font.color.primary};
+  font-size: ${themeCssVariables.font.size.md};
+  font-weight: ${themeCssVariables.font.weight.semiBold};
+  margin-bottom: ${themeCssVariables.spacing[6]};
   text-align: center;
 `;
 
 const StyledDialogMessage = styled.span`
-  color: ${({ theme }) => theme.font.color.primary};
-  font-size: ${({ theme }) => theme.font.size.sm};
-  font-weight: ${({ theme }) => theme.font.weight.regular};
-  margin-bottom: ${({ theme }) => theme.spacing(6)};
+  color: ${themeCssVariables.font.color.primary};
+  font-size: ${themeCssVariables.font.size.sm};
+  font-weight: ${themeCssVariables.font.weight.regular};
+  margin-bottom: ${themeCssVariables.spacing[6]};
   text-align: center;
 `;
 
 const StyledDialogButton = styled(Button)`
   justify-content: center;
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
+  margin-bottom: ${themeCssVariables.spacing[2]};
 `;
 
 export type DialogButtonOptions = Omit<
@@ -95,77 +93,80 @@ export const Dialog = ({
     closed: { y: '50vh' },
   };
 
-  const handleEnter = (event: KeyboardEvent) => {
-    const confirmButton = buttons.find((button) => button.role === 'confirm');
-
-    event.preventDefault();
-
-    if (isDefined(confirmButton)) {
-      confirmButton?.onClick?.(event);
-      onClose?.();
+  // Handle Enter key to trigger the confirm button
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      const confirmButton = buttons.find((button) => button.role === 'confirm');
+      if (isDefined(confirmButton)) {
+        event.preventDefault();
+        confirmButton?.onClick?.(event.nativeEvent);
+        onClose?.();
+      }
     }
   };
 
-  const handleEscape = (event: KeyboardEvent) => {
-    event.preventDefault();
-    onClose?.();
-  };
-
-  useHotkeysOnFocusedElement({
-    keys: [Key.Enter],
-    callback: handleEnter,
-    focusId: DIALOG_FOCUS_ID,
-    dependencies: [buttons],
-  });
-
-  useHotkeysOnFocusedElement({
-    keys: [Key.Escape],
-    callback: handleEscape,
-    focusId: DIALOG_FOCUS_ID,
-    dependencies: [handleEscape],
-  });
-
-  const dialogRef = useRef<HTMLDivElement>(null);
-
-  useListenClickOutside({
-    refs: [dialogRef],
-    callback: () => {
-      onClose?.();
-    },
-    listenerId: DIALOG_LISTENER_ID,
-  });
-
+  // Radix Dialog handles focus trap, Escape, and click-outside natively.
+  // The Dialog is always rendered open (it's shown by the dialog manager),
+  // so we use open={true} and onOpenChange to handle dismissal.
   return (
-    <StyledDialogOverlay
-      variants={dialogVariants}
-      initial="closed"
-      animate="open"
-      exit="closed"
-      className={className}
-      data-click-outside-id={DIALOG_CLICK_OUTSIDE_ID}
+    <RadixDialog.Root
+      open={true}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose?.();
+        }
+      }}
     >
-      <StyledDialogContainer
-        variants={containerVariants}
-        transition={{ damping: 15, stiffness: 100 }}
-        id={id}
-        ref={dialogRef}
-      >
-        {title && <StyledDialogTitle>{title}</StyledDialogTitle>}
-        {message && <StyledDialogMessage>{message}</StyledDialogMessage>}
-        {children}
-        {buttons.map(({ accent, onClick, role, title: key, variant }) => (
-          <StyledDialogButton
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              onClose?.();
-              onClick?.(event);
-            }}
-            fullWidth={true}
-            variant={variant ?? 'secondary'}
-            title={key}
-            {...{ accent, key, role }}
-          />
-        ))}
-      </StyledDialogContainer>
-    </StyledDialogOverlay>
+      <RadixDialog.Portal forceMount>
+        <RadixDialog.Overlay asChild>
+          <StyledDialogOverlay
+            variants={dialogVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className={className}
+          >
+            <RadixDialog.Content
+              asChild
+              onOpenAutoFocus={(e) => e.preventDefault()}
+              onCloseAutoFocus={(e) => e.preventDefault()}
+              onKeyDown={handleKeyDown}
+            >
+              <StyledDialogContainer
+                variants={containerVariants}
+                transition={{ damping: 15, stiffness: 100 }}
+                id={id}
+              >
+                {title && (
+                  <RadixDialog.Title asChild>
+                    <StyledDialogTitle>{title}</StyledDialogTitle>
+                  </RadixDialog.Title>
+                )}
+                {message && (
+                  <RadixDialog.Description asChild>
+                    <StyledDialogMessage>{message}</StyledDialogMessage>
+                  </RadixDialog.Description>
+                )}
+                {children}
+                {buttons.map(
+                  ({ accent, onClick, role, title: key, variant }) => (
+                    <StyledDialogButton
+                      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                        onClose?.();
+                        onClick?.(event);
+                      }}
+                      fullWidth={true}
+                      variant={variant ?? 'secondary'}
+                      title={key}
+                      {...{ accent, key, role }}
+                    />
+                  ),
+                )}
+              </StyledDialogContainer>
+            </RadixDialog.Content>
+          </StyledDialogOverlay>
+        </RadixDialog.Overlay>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
   );
 };

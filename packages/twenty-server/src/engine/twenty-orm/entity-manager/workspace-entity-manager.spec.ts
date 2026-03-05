@@ -247,6 +247,7 @@ describe('WorkspaceEntityManager', () => {
         IS_DRAFT_EMAIL_ENABLED: false,
         IS_CORE_PICTURE_MIGRATED: false,
         IS_OTHER_FILE_MIGRATED: false,
+        IS_PARTNER_OS_ENABLED: false,
       },
       userWorkspaceRoleMap: {},
       eventEmitterService: {

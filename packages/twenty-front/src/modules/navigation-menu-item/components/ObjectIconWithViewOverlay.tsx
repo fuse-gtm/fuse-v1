@@ -1,6 +1,6 @@
-import { useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import type { IconComponent } from 'twenty-ui/display';
+import { ICON_STROKES, themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { getNavigationMenuItemIconStyleFromColor } from '@/navigation-menu-item/utils/get-navigation-menu-item-icon-style-from-color';
 
@@ -28,8 +28,8 @@ const StyledObjectIconWrapper = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ $borderColor }) =>
-    $borderColor ? `border: 1px solid ${$borderColor};` : ''}
+  border: ${({ $borderColor }) =>
+    $borderColor ? `1px solid ${$borderColor}` : 'none'};
 `;
 
 const StyledViewOverlay = styled.div<{ $backgroundColor: string }>`
@@ -38,11 +38,11 @@ const StyledViewOverlay = styled.div<{ $backgroundColor: string }>`
   border-radius: 4px;
   bottom: -7px;
   display: flex;
-  height: ${({ theme }) => theme.spacing(3.5)};
+  height: 14px;
   justify-content: center;
   position: absolute;
   right: -7px;
-  width: ${({ theme }) => theme.spacing(3.5)};
+  width: 14px;
 `;
 
 export type ObjectIconWithViewOverlayProps = {
@@ -56,11 +56,7 @@ export const ObjectIconWithViewOverlay = ({
   ViewIcon,
   objectColor,
 }: ObjectIconWithViewOverlayProps) => {
-  const theme = useTheme();
-  const objectStyle = getNavigationMenuItemIconStyleFromColor(
-    theme,
-    objectColor,
-  );
+  const objectStyle = getNavigationMenuItemIconStyleFromColor(objectColor);
 
   return (
     <StyledCompositeContainer>
@@ -69,16 +65,16 @@ export const ObjectIconWithViewOverlay = ({
         $borderColor={objectStyle.borderColor}
       >
         <ObjectIcon
-          size={theme.spacing(3.5)}
-          stroke={theme.icon.stroke.md}
+          size="14px"
+          stroke={ICON_STROKES.md}
           color={objectStyle.iconColor}
         />
       </StyledObjectIconWrapper>
-      <StyledViewOverlay $backgroundColor={theme.grayScale.gray4}>
+      <StyledViewOverlay $backgroundColor={themeCssVariables.grayScale.gray4}>
         <ViewIcon
-          size={theme.spacing(2.5)}
-          stroke={theme.icon.stroke.lg}
-          color={theme.grayScale.gray10}
+          size="10px"
+          stroke={ICON_STROKES.lg}
+          color={themeCssVariables.grayScale.gray10}
         />
       </StyledViewOverlay>
     </StyledCompositeContainer>

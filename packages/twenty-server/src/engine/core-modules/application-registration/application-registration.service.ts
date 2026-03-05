@@ -16,6 +16,7 @@ import {
 import { ALL_OAUTH_SCOPES } from 'src/engine/core-modules/application-registration/constants/oauth-scopes';
 import { type ApplicationRegistrationStatsDTO } from 'src/engine/core-modules/application-registration/dtos/application-registration-stats.dto';
 import { type CreateApplicationRegistrationInput } from 'src/engine/core-modules/application-registration/dtos/create-application-registration.input';
+import { type PublicApplicationRegistrationDTO } from 'src/engine/core-modules/application-registration/dtos/public-application-registration.dto';
 import { type UpdateApplicationRegistrationInput } from 'src/engine/core-modules/application-registration/dtos/update-application-registration.input';
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { validateRedirectUri } from 'src/engine/core-modules/auth/utils/validate-redirect-uri.util';
@@ -31,16 +32,52 @@ export class ApplicationRegistrationService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
-  async findMany(): Promise<ApplicationRegistrationEntity[]> {
-    return this.applicationRegistrationRepository.find({
-      order: { createdAt: 'DESC' },
-    });
+  async findMany(
+    workspaceId: string,
+  ): Promise<ApplicationRegistrationEntity[]> {
+    // Include directly-owned registrations and orphaned registrations
+    // whose creator belongs to this workspace (legacy migration edge case).
+    return this.applicationRegistrationRepository
+      .createQueryBuilder('ar')
+      .where(
+        '(ar."workspaceId" = :workspaceId OR ' +
+          '(ar."workspaceId" IS NULL AND EXISTS (' +
+          'SELECT 1 FROM "core"."userWorkspace" uw ' +
+          'WHERE uw."userId" = ar."createdByUserId" ' +
+          'AND uw."workspaceId" = :workspaceId ' +
+          'AND uw."deletedAt" IS NULL)))',
+        { workspaceId },
+      )
+      .andWhere('ar."deletedAt" IS NULL')
+      .orderBy('ar."createdAt"', 'DESC')
+      .getMany();
   }
 
-  async findOneById(id: string): Promise<ApplicationRegistrationEntity> {
-    const registration = await this.applicationRegistrationRepository.findOne({
-      where: { id },
+  async findOneById(
+    id: string,
+    workspaceId: string,
+  ): Promise<ApplicationRegistrationEntity> {
+    // Direct workspace ownership (fast path)
+    let registration = await this.applicationRegistrationRepository.findOne({
+      where: { id, workspaceId },
     });
+
+    // Orphaned registrations: accessible if creator is a member of this workspace
+    if (!registration) {
+      registration = await this.applicationRegistrationRepository
+        .createQueryBuilder('ar')
+        .where('ar."id" = :id', { id })
+        .andWhere('ar."workspaceId" IS NULL')
+        .andWhere('ar."deletedAt" IS NULL')
+        .andWhere(
+          'EXISTS (SELECT 1 FROM "core"."userWorkspace" uw ' +
+            'WHERE uw."userId" = ar."createdByUserId" ' +
+            'AND uw."workspaceId" = :workspaceId ' +
+            'AND uw."deletedAt" IS NULL)',
+          { workspaceId },
+        )
+        .getOne();
+    }
 
     if (!registration) {
       throw new ApplicationRegistrationException(
@@ -52,6 +89,7 @@ export class ApplicationRegistrationService {
     return registration;
   }
 
+  // Global lookup — used by OAuth flow (no workspace scoping)
   async findOneByClientId(
     clientId: string,
   ): Promise<ApplicationRegistrationEntity | null> {
@@ -60,6 +98,38 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Global lookup — used by OAuth authorize page (no workspace scoping)
+  async findPublicByClientId(
+    clientId: string,
+  ): Promise<PublicApplicationRegistrationDTO | null> {
+    const registration = await this.applicationRegistrationRepository.findOne({
+      where: { oAuthClientId: clientId },
+      select: ['id', 'name', 'logoUrl', 'websiteUrl', 'oAuthScopes'],
+    });
+
+    if (!registration) {
+      return null;
+    }
+
+    return {
+      id: registration.id,
+      name: registration.name,
+      logoUrl: registration.logoUrl,
+      websiteUrl: registration.websiteUrl,
+      oAuthScopes: registration.oAuthScopes,
+    };
+  }
+
+  async isOwnedByWorkspace(id: string, workspaceId: string): Promise<boolean> {
+    const registration = await this.applicationRegistrationRepository.findOne({
+      where: { id },
+      select: ['id', 'workspaceId'],
+    });
+
+    return registration?.workspaceId === workspaceId;
+  }
+
+  // Global lookup — used by app sync to find existing registrations
   async findOneByUniversalIdentifier(
     universalIdentifier: string,
   ): Promise<ApplicationRegistrationEntity | null> {
@@ -70,6 +140,7 @@ export class ApplicationRegistrationService {
 
   async create(
     input: CreateApplicationRegistrationInput,
+    workspaceId: string,
     createdByUserId: string | null,
   ): Promise<{
     applicationRegistration: ApplicationRegistrationEntity;
@@ -111,6 +182,7 @@ export class ApplicationRegistrationService {
         oAuthRedirectUris: input.oAuthRedirectUris ?? [],
         oAuthScopes: input.oAuthScopes ?? [],
         createdByUserId,
+        workspaceId,
         websiteUrl: input.websiteUrl ?? null,
         termsUrl: input.termsUrl ?? null,
       });
@@ -124,10 +196,11 @@ export class ApplicationRegistrationService {
 
   async update(
     input: UpdateApplicationRegistrationInput,
+    workspaceId: string,
   ): Promise<ApplicationRegistrationEntity> {
     const { id, update } = input;
 
-    await this.findOneById(id);
+    await this.findOneById(id, workspaceId);
 
     if (isDefined(update.oAuthRedirectUris)) {
       this.validateRedirectUris(update.oAuthRedirectUris);
@@ -155,18 +228,18 @@ export class ApplicationRegistrationService {
       await this.applicationRegistrationRepository.update(id, updateData);
     }
 
-    return this.findOneById(id);
+    return this.findOneById(id, workspaceId);
   }
 
-  async delete(id: string): Promise<boolean> {
-    await this.findOneById(id);
+  async delete(id: string, workspaceId: string): Promise<boolean> {
+    await this.findOneById(id, workspaceId);
     await this.applicationRegistrationRepository.softDelete(id);
 
     return true;
   }
 
-  async rotateClientSecret(id: string): Promise<string> {
-    await this.findOneById(id);
+  async rotateClientSecret(id: string, workspaceId: string): Promise<string> {
+    await this.findOneById(id, workspaceId);
 
     const { clientSecret, clientSecretHash } =
       await this.generateClientSecret();
@@ -191,8 +264,9 @@ export class ApplicationRegistrationService {
 
   async getStats(
     applicationRegistrationId: string,
+    workspaceId: string,
   ): Promise<ApplicationRegistrationStatsDTO> {
-    await this.findOneById(applicationRegistrationId);
+    await this.findOneById(applicationRegistrationId, workspaceId);
 
     const versionDistribution: { version: string; count: number }[] =
       await this.applicationRepository

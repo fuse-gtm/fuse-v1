@@ -1,12 +1,15 @@
-import type { Theme } from '@emotion/react';
 import type { ThemeColor } from 'twenty-ui/theme';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 export const getColorFromTheme = (
-  theme: Theme,
   themeColor: ThemeColor,
   shade: number,
 ): string => {
-  const colorMap = theme.color as unknown as Record<string, string>;
+  const colorMap = themeCssVariables.color as unknown as Record<string, string>;
+  const tagText = themeCssVariables.tag.text as unknown as Record<
+    string,
+    string
+  >;
   const key = `${themeColor}${shade}`;
-  return colorMap[key] ?? theme.tag.text[themeColor];
+  return colorMap[key] ?? tagText[themeColor];
 };
