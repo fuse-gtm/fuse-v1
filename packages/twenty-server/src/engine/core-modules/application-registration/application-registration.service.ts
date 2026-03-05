@@ -35,19 +35,49 @@ export class ApplicationRegistrationService {
   async findMany(
     workspaceId: string,
   ): Promise<ApplicationRegistrationEntity[]> {
-    return this.applicationRegistrationRepository.find({
-      where: { workspaceId },
-      order: { createdAt: 'DESC' },
-    });
+    // Include directly-owned registrations and orphaned registrations
+    // whose creator belongs to this workspace (legacy migration edge case).
+    return this.applicationRegistrationRepository
+      .createQueryBuilder('ar')
+      .where(
+        '(ar."workspaceId" = :workspaceId OR ' +
+          '(ar."workspaceId" IS NULL AND EXISTS (' +
+          'SELECT 1 FROM "core"."userWorkspace" uw ' +
+          'WHERE uw."userId" = ar."createdByUserId" ' +
+          'AND uw."workspaceId" = :workspaceId ' +
+          'AND uw."deletedAt" IS NULL)))',
+        { workspaceId },
+      )
+      .andWhere('ar."deletedAt" IS NULL')
+      .orderBy('ar."createdAt"', 'DESC')
+      .getMany();
   }
 
   async findOneById(
     id: string,
     workspaceId: string,
   ): Promise<ApplicationRegistrationEntity> {
-    const registration = await this.applicationRegistrationRepository.findOne({
+    // Direct workspace ownership (fast path)
+    let registration = await this.applicationRegistrationRepository.findOne({
       where: { id, workspaceId },
     });
+
+    // Orphaned registrations: accessible if creator is a member of this workspace
+    if (!registration) {
+      registration = await this.applicationRegistrationRepository
+        .createQueryBuilder('ar')
+        .where('ar."id" = :id', { id })
+        .andWhere('ar."workspaceId" IS NULL')
+        .andWhere('ar."deletedAt" IS NULL')
+        .andWhere(
+          'EXISTS (SELECT 1 FROM "core"."userWorkspace" uw ' +
+            'WHERE uw."userId" = ar."createdByUserId" ' +
+            'AND uw."workspaceId" = :workspaceId ' +
+            'AND uw."deletedAt" IS NULL)',
+          { workspaceId },
+        )
+        .getOne();
+    }
 
     if (!registration) {
       throw new ApplicationRegistrationException(

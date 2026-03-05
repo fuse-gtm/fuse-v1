@@ -10,18 +10,43 @@ export class AddWorkspaceIdToApplicationRegistration1772267875869
       `ALTER TABLE "core"."applicationRegistration" ADD "workspaceId" uuid`,
     );
 
-    // Backfill workspaceId from linked applications
+    // Backfill workspaceId from linked applications.
+    // A registration may be installed in multiple workspaces, so use
+    // DISTINCT ON to deterministically pick the earliest installation.
     await queryRunner.query(`
       UPDATE "core"."applicationRegistration" ar
-      SET "workspaceId" = a."workspaceId"
-      FROM "core"."application" a
-      WHERE a."applicationRegistrationId" = ar."id"
-        AND a."workspaceId" IS NOT NULL
+      SET "workspaceId" = earliest."workspaceId"
+      FROM (
+        SELECT DISTINCT ON ("applicationRegistrationId")
+          "applicationRegistrationId", "workspaceId"
+        FROM "core"."application"
+        WHERE "workspaceId" IS NOT NULL
+          AND "deletedAt" IS NULL
+        ORDER BY "applicationRegistrationId", "createdAt" ASC
+      ) earliest
+      WHERE earliest."applicationRegistrationId" = ar."id"
         AND ar."workspaceId" IS NULL
     `);
 
-    // Column stays nullable — standalone registrations may not yet
-    // be linked to any workspace and must be preserved during upgrade.
+    // Secondary backfill: for registrations still without a workspace,
+    // infer from the creator's earliest workspace membership.
+    await queryRunner.query(`
+      UPDATE "core"."applicationRegistration" ar
+      SET "workspaceId" = uw_first."workspaceId"
+      FROM (
+        SELECT DISTINCT ON ("userId")
+          "userId", "workspaceId"
+        FROM "core"."userWorkspace"
+        WHERE "deletedAt" IS NULL
+        ORDER BY "userId", "createdAt" ASC
+      ) uw_first
+      WHERE uw_first."userId" = ar."createdByUserId"
+        AND ar."workspaceId" IS NULL
+    `);
+
+    // Column stays nullable — any remaining registrations with no
+    // linked application and no identifiable creator workspace are
+    // preserved rather than dropped.
 
     await queryRunner.query(`
       CREATE INDEX "IDX_APPLICATION_REGISTRATION_WORKSPACE_ID"

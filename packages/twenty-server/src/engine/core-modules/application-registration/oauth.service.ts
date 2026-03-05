@@ -392,27 +392,30 @@ export class OAuthService {
   }): Promise<{ success: boolean }> {
     const { token, clientId, clientSecret } = params;
 
-    if (clientId) {
-      const clientValidation = await this.validateClient(clientId);
+    // RFC 7009 §2.1: the authorization server MUST validate the client
+    if (!clientId) {
+      return { success: false };
+    }
 
-      if ('error' in clientValidation) {
+    const clientValidation = await this.validateClient(clientId);
+
+    if ('error' in clientValidation) {
+      return { success: false };
+    }
+
+    // Confidential clients (those with a stored secret) must authenticate
+    if (clientValidation.oAuthClientSecretHash) {
+      if (!clientSecret) {
         return { success: false };
       }
 
-      // Confidential clients (those with a stored secret) must authenticate
-      if (clientValidation.oAuthClientSecretHash) {
-        if (!clientSecret) {
-          return { success: false };
-        }
+      const secretError = await this.validateClientSecret(
+        clientValidation,
+        clientSecret,
+      );
 
-        const secretError = await this.validateClientSecret(
-          clientValidation,
-          clientSecret,
-        );
-
-        if (secretError) {
-          return { success: false };
-        }
+      if (secretError) {
+        return { success: false };
       }
     }
 

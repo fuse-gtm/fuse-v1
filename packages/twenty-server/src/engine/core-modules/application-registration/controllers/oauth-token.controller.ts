@@ -114,7 +114,7 @@ export class OAuthTokenController {
     });
 
     // Client authentication failure → 401 per RFC 7009 §2.1
-    if (!result.success && body.client_id) {
+    if (!result.success) {
       res.status(401);
 
       return {
