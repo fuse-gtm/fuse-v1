@@ -19,6 +19,7 @@ import { type OnDragEndResponder } from '@hello-pangea/dnd';
 import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
 import { useEffect, useState } from 'react';
+import { DOCUMENTATION_BASE_URL } from 'twenty-shared/constants';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import {
@@ -246,7 +247,7 @@ export const WorkflowEditActionFormBuilder = ({
                 label: t`Learn more`,
                 onClick: () =>
                   window.open(
-                    'https://docs.twenty.com/user-guide/workflows/capabilities/workflow-actions#form',
+                    `${DOCUMENTATION_BASE_URL}/user-guide/workflows/capabilities/workflow-actions#form`,
                     '_blank',
                     'noopener,noreferrer',
                   ),

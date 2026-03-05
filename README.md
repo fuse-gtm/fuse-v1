@@ -25,8 +25,8 @@
 # Installation
 
 See:
-🚀 [Self-hosting](https://docs.twenty.com/developers/self-hosting/docker-compose)
-🖥️ [Local Setup](https://docs.twenty.com/developers/local-setup)
+🚀 [Self-hosting](https://docs.fusegtm.com/developers/self-hosting/docker-compose)
+🖥️ [Local Setup](https://docs.fusegtm.com/developers/local-setup)
 
 # Why Twenty
 

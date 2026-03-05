@@ -1,4 +1,7 @@
-import { CalendarStartDay } from 'twenty-shared/constants';
+import {
+  CalendarStartDay,
+  DOCUMENTATION_BASE_URL,
+} from 'twenty-shared/constants';
 import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 import {
   AggregateOperations,
@@ -188,7 +191,7 @@ const createWelcomeRichText = ({
             },
             {
               type: 'link',
-              href: 'https://docs.twenty.com/user-guide/introduction',
+              href: `${DOCUMENTATION_BASE_URL}/user-guide/introduction`,
               content: [
                 {
                   type: 'text',
