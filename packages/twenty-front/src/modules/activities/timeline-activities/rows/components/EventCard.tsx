@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Card } from 'twenty-ui/layout';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
 
 type EventCardProps = {
   children: React.ReactNode;

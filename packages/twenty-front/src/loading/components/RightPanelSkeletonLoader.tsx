@@ -2,7 +2,8 @@ import { SKELETON_LOADER_HEIGHT_SIZES } from '@/activities/components/SkeletonLo
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { BORDER_COMMON, MOBILE_VIEWPORT } from 'twenty-ui/theme';
+import { BORDER_COMMON } from 'twenty-ui/theme';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
 
 const StyledMainContainer = styled.div`
   background: ${({ theme }) => theme.background.noisy};

@@ -16,7 +16,7 @@ import {
   OverflowingTextWithTooltip,
 } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
 
 const StyledTopBarContainer = styled.div<{ isMobile: boolean }>`
   align-items: center;

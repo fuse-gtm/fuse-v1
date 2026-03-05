@@ -35,7 +35,7 @@ import {
   type DraggableStateSnapshot,
 } from '@hello-pangea/dnd';
 import { isDefined } from 'twenty-shared/utils';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
 
 // TODO: see how we can merge this with RecordTableStyleWrapper,
 // because we have not decided a strategy for sharing CSS bits yet

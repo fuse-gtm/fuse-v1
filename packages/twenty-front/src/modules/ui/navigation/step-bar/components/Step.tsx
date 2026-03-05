@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { AnimatedCheckmark } from 'twenty-ui/display';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div<{ isLast: boolean }>`
   align-items: center;
