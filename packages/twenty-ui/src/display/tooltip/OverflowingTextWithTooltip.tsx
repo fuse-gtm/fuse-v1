@@ -1,6 +1,5 @@
 import { styled } from '@linaria/react';
 import { type ReactNode, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 
 import { isNonEmptyString } from '@sniptt/guards';
 import { THEME_COMMON } from '@ui/theme';
@@ -83,31 +82,21 @@ export const OverflowingTextWithTooltip = ({
   tooltipContent,
   tooltipDelay = TooltipDelay.mediumDelay,
 }: OverflowingTextWithTooltipProps) => {
-  const textElementId = `title-id-${+new Date()}`;
-
   const textRef = useRef<HTMLDivElement>(null);
 
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
-  const [shouldRenderTooltip, setShouldRenderTooltip] = useState(false);
 
-  const handleMouseEnter = () => {
-    const isOverflowing = textRef.current
-      ? textRef.current?.scrollHeight > textRef.current?.clientHeight ||
-        textRef.current.scrollWidth > textRef.current.clientWidth
-      : false;
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      const isOverflowing = textRef.current
+        ? textRef.current?.scrollHeight > textRef.current?.clientHeight ||
+          textRef.current.scrollWidth > textRef.current.clientWidth
+        : false;
 
-    setIsTitleOverflowing(isOverflowing);
-    setShouldRenderTooltip(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsTitleOverflowing(false);
-    setShouldRenderTooltip(false);
-  };
-
-  const handleTooltipClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+      setIsTitleOverflowing(isOverflowing);
+    } else {
+      setIsTitleOverflowing(false);
+    }
   };
 
   const tooltipText = isNonEmptyString(tooltipContent)
@@ -116,58 +105,49 @@ export const OverflowingTextWithTooltip = ({
       ? text
       : null;
 
-  return (
-    <>
-      {isDefined(displayedMaxRows) ? (
-        <StyledOverflowingMultilineText
-          data-testid="tooltip"
-          isContentOverflowing={isTitleOverflowing}
-          size={size}
-          displayedMaxRows={displayedMaxRows}
-          ref={textRef}
-          id={textElementId}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {text}
-        </StyledOverflowingMultilineText>
-      ) : (
-        <StyledOverflowingText
-          data-testid="tooltip"
-          isContentOverflowing={isTitleOverflowing}
-          size={size}
-          ref={textRef}
-          id={textElementId}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {text}
-        </StyledOverflowingText>
-      )}
+  const tooltipBody =
+    isDefined(tooltipText) && isTooltipMultiline ? (
+      <StyledPre>{tooltipText}</StyledPre>
+    ) : (
+      tooltipText
+    );
 
-      {shouldRenderTooltip &&
-        isTitleOverflowing &&
-        isDefined(tooltipText) &&
-        createPortal(
-          <div onClick={handleTooltipClick}>
-            <AppTooltip
-              anchorSelect={`#${textElementId}`}
-              offset={5}
-              noArrow
-              place="bottom"
-              positionStrategy="absolute"
-              delay={tooltipDelay}
-              isOpen={true}
-            >
-              {isTooltipMultiline ? (
-                <StyledPre>{tooltipText}</StyledPre>
-              ) : (
-                tooltipText
-              )}
-            </AppTooltip>
-          </div>,
-          document.body,
-        )}
-    </>
+  const textElement = isDefined(displayedMaxRows) ? (
+    <StyledOverflowingMultilineText
+      data-testid="tooltip"
+      isContentOverflowing={isTitleOverflowing}
+      size={size}
+      displayedMaxRows={displayedMaxRows}
+      ref={textRef}
+    >
+      {text}
+    </StyledOverflowingMultilineText>
+  ) : (
+    <StyledOverflowingText
+      data-testid="tooltip"
+      isContentOverflowing={isTitleOverflowing}
+      size={size}
+      ref={textRef}
+    >
+      {text}
+    </StyledOverflowingText>
+  );
+
+  if (!isDefined(tooltipText)) {
+    return textElement;
+  }
+
+  return (
+    <AppTooltip
+      content={tooltipBody}
+      offset={5}
+      noArrow
+      place="bottom"
+      delay={tooltipDelay}
+      isOpen={isTitleOverflowing}
+      onOpenChange={handleOpenChange}
+    >
+      {textElement}
+    </AppTooltip>
   );
 };

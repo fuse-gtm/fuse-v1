@@ -2,7 +2,7 @@ import { currentWorkspaceMembersState } from '@/auth/states/currentWorkspaceMemb
 import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { styled } from '@linaria/react';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
@@ -102,8 +102,14 @@ export const SettingsRolesTableRow = ({ role }: SettingsRolesTableRowProps) => {
       <TableCell align="right">
         <StyledAvatarGroup>
           {enrichedWorkspaceMembers.slice(0, 5).map((workspaceMember) => (
-            <React.Fragment key={workspaceMember.id}>
-              <div id={`avatar-${workspaceMember.id}`}>
+            <AppTooltip
+              key={workspaceMember.id}
+              content={`${workspaceMember.name.firstName} ${workspaceMember.name.lastName}`}
+              noArrow
+              place="top"
+              delay={TooltipDelay.shortDelay}
+            >
+              <div>
                 <Avatar
                   avatarUrl={workspaceMember.avatarUrl}
                   placeholderColorSeed={workspaceMember.id}
@@ -112,15 +118,7 @@ export const SettingsRolesTableRow = ({ role }: SettingsRolesTableRowProps) => {
                   size="md"
                 />
               </div>
-              <AppTooltip
-                anchorSelect={`#avatar-${workspaceMember.id}`}
-                content={`${workspaceMember.name.firstName} ${workspaceMember.name.lastName}`}
-                noArrow
-                place="top"
-                positionStrategy="fixed"
-                delay={TooltipDelay.shortDelay}
-              />
-            </React.Fragment>
+            </AppTooltip>
           ))}
         </StyledAvatarGroup>
       </TableCell>

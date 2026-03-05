@@ -11,7 +11,6 @@ const StyledNoDataContainer = styled.div`
 `;
 export const PageLayoutWidgetNoDataDisplay = () => {
   const widget = useCurrentWidget();
-  const tooltipId = `widget-incomplete-tooltip-${widget.id}`;
 
   const text = widget.type === WidgetType.IFRAME ? t`Invalid URL` : t`No Data`;
   const tooltipContent =
@@ -21,14 +20,11 @@ export const PageLayoutWidgetNoDataDisplay = () => {
 
   return (
     <StyledNoDataContainer>
-      <div id={tooltipId}>
-        <Status color="red" text={text} />
-      </div>
-      <AppTooltip
-        anchorSelect={`#${tooltipId}`}
-        content={tooltipContent}
-        place="top"
-      />
+      <AppTooltip content={tooltipContent} place="top">
+        <div>
+          <Status color="red" text={text} />
+        </div>
+      </AppTooltip>
     </StyledNoDataContainer>
   );
 };

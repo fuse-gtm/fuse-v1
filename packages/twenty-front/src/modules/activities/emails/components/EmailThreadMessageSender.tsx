@@ -33,19 +33,18 @@ export const EmailThreadMessageSender = ({
   sentAt,
 }: EmailThreadMessageSenderProps) => {
   const { localeCatalog } = useAtomStateValue(dateLocaleState);
-  const tooltipId = `date-tooltip-${sentAt.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
   return (
     <StyledEmailThreadMessageSender>
       <ParticipantChip participant={sender} variant="bold" />
-      <StyledThreadMessageSentAt id={tooltipId}>
-        {beautifyPastDateRelativeToNow(sentAt, localeCatalog)}
-      </StyledThreadMessageSentAt>
       <AppTooltip
-        anchorSelect={`#${tooltipId}`}
         content={formatToHumanReadableDate(sentAt)}
         place={TooltipPosition.Top}
-      />
+      >
+        <StyledThreadMessageSentAt>
+          {beautifyPastDateRelativeToNow(sentAt, localeCatalog)}
+        </StyledThreadMessageSentAt>
+      </AppTooltip>
     </StyledEmailThreadMessageSender>
   );
 };

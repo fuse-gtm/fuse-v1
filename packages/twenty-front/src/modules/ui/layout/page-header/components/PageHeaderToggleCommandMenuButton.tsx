@@ -28,10 +28,6 @@ const StyledButtonWrapper = styled.div<{ alignToTop: boolean }>`
   z-index: ${RootStackingContextZIndices.CommandMenuButton};
 `;
 
-const StyledTooltipWrapper = styled.div`
-  font-size: ${themeCssVariables.font.size.md};
-`;
-
 const xPaths = {
   topLeft: `M12 12 L6 6`,
   topRight: `M12 12 L18 6`,
@@ -138,39 +134,38 @@ export const PageHeaderToggleCommandMenuButton = () => {
 
   return (
     <StyledButtonWrapper alignToTop={alignWithCommandMenuTopBar}>
-      <div id="toggle-command-menu-button">
-        <AnimatedButton
-          animatedSvg={
-            <AnimatedIcon isCommandMenuOpened={isCommandMenuOpened} />
-          }
-          dataClickOutsideId={PAGE_HEADER_COMMAND_MENU_BUTTON_CLICK_OUTSIDE_ID}
-          dataTestId="page-header-command-menu-button"
-          size={isMobile ? 'medium' : 'small'}
-          variant="secondary"
-          accent="default"
-          hotkeys={[getOsControlSymbol(), 'K']}
-          ariaLabel={ariaLabel}
-          onClick={toggleCommandMenu}
-          animate={{
-            rotate: isCommandMenuOpened ? 90 : 0,
-          }}
-          transition={{
-            duration: theme.animation.duration.normal,
-            ease: 'easeInOut',
-          }}
-        />
-      </div>
-
-      <StyledTooltipWrapper>
-        <AppTooltip
-          anchorSelect="#toggle-command-menu-button"
-          content={i18n._(ariaLabel)}
-          delay={TooltipDelay.longDelay}
-          place={TooltipPosition.Bottom}
-          offset={5}
-          noArrow
-        />
-      </StyledTooltipWrapper>
+      <AppTooltip
+        content={i18n._(ariaLabel)}
+        delay={TooltipDelay.longDelay}
+        place={TooltipPosition.Bottom}
+        offset={5}
+        noArrow
+      >
+        <div>
+          <AnimatedButton
+            animatedSvg={
+              <AnimatedIcon isCommandMenuOpened={isCommandMenuOpened} />
+            }
+            dataClickOutsideId={
+              PAGE_HEADER_COMMAND_MENU_BUTTON_CLICK_OUTSIDE_ID
+            }
+            dataTestId="page-header-command-menu-button"
+            size={isMobile ? 'medium' : 'small'}
+            variant="secondary"
+            accent="default"
+            hotkeys={[getOsControlSymbol(), 'K']}
+            ariaLabel={ariaLabel}
+            onClick={toggleCommandMenu}
+            animate={{
+              rotate: isCommandMenuOpened ? 90 : 0,
+            }}
+            transition={{
+              duration: theme.animation.duration.normal,
+              ease: 'easeInOut',
+            }}
+          />
+        </div>
+      </AppTooltip>
     </StyledButtonWrapper>
   );
 };

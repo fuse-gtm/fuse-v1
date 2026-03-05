@@ -53,13 +53,8 @@ export const SidePanelInformationBanner = ({
   variant = 'default',
   tooltipMessage,
 }: SidePanelInformationBannerProps) => {
-  const tooltipId = 'side-panel-information-banner-tooltip';
-
-  return (
-    <StyledBanner
-      className={className}
-      data-tooltip-id={tooltipMessage ? tooltipId : undefined}
-    >
+  const bannerContent = (
+    <StyledBanner className={className}>
       <StyledIconContainer>
         {variant === 'default' ? (
           <IconInfoCircle size={16} />
@@ -68,13 +63,16 @@ export const SidePanelInformationBanner = ({
         )}
       </StyledIconContainer>
       <StyledMessage>{message}</StyledMessage>
-      {isDefined(tooltipMessage) && (
-        <AppTooltip
-          anchorSelect={`[data-tooltip-id='${tooltipId}']`}
-          content={tooltipMessage}
-          place="bottom"
-        />
-      )}
     </StyledBanner>
   );
+
+  if (isDefined(tooltipMessage)) {
+    return (
+      <AppTooltip content={tooltipMessage} place="bottom">
+        {bannerContent}
+      </AppTooltip>
+    );
+  }
+
+  return bannerContent;
 };

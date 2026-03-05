@@ -15,7 +15,6 @@ import { useCanPersistViewChanges } from '@/views/hooks/useCanPersistViewChanges
 import { useGetCurrentViewOnly } from '@/views/hooks/useGetCurrentViewOnly';
 import { useUpdateCurrentView } from '@/views/hooks/useUpdateCurrentView';
 import { useLingui } from '@lingui/react/macro';
-import { createPortal } from 'react-dom';
 import {
   AppTooltip,
   IconChevronLeft,
@@ -90,8 +89,11 @@ export const ObjectOptionsDropdownVisibilityContent = () => {
               handleVisibilityChange(ViewVisibility.WORKSPACE)
             }
           >
-            <>
-              <div id="workspace-visibility-option">
+            <AppTooltip
+              content={t`Workspace views require manage views permission`}
+              hidden={hasViewsPermission}
+            >
+              <div>
                 <MenuItemSelect
                   LeftIcon={IconCircle}
                   text={t`Workspace`}
@@ -104,16 +106,7 @@ export const ObjectOptionsDropdownVisibilityContent = () => {
                   disabled={!hasViewsPermission || !canPersistChanges}
                 />
               </div>
-              {!hasViewsPermission &&
-                createPortal(
-                  <AppTooltip
-                    anchorSelect="#workspace-visibility-option"
-                    content={t`Workspace views require manage views permission`}
-                    positionStrategy="fixed"
-                  />,
-                  document.body,
-                )}
-            </>
+            </AppTooltip>
           </SelectableListItem>
           <SelectableListItem
             itemId={ViewVisibility.UNLISTED}

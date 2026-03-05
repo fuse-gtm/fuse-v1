@@ -10,11 +10,8 @@ type PageLayoutWidgetForbiddenDisplayProps = {
 };
 
 export const PageLayoutWidgetForbiddenDisplay = ({
-  widgetId,
   restriction,
 }: PageLayoutWidgetForbiddenDisplayProps) => {
-  const tooltipId = `widget-forbidden-tooltip-${widgetId}`;
-
   const getTooltipContent = () => {
     if (restriction.type === 'object' && isDefined(restriction.objectName)) {
       const objectName = restriction.objectName;
@@ -37,15 +34,10 @@ export const PageLayoutWidgetForbiddenDisplay = ({
   };
 
   return (
-    <>
-      <div id={tooltipId}>
+    <AppTooltip content={getTooltipContent()} place="top">
+      <div>
         <ForbiddenFieldDisplay />
       </div>
-      <AppTooltip
-        anchorSelect={`#${tooltipId}`}
-        content={getTooltipContent()}
-        place="top"
-      />
-    </>
+    </AppTooltip>
   );
 };

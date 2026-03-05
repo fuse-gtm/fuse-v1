@@ -204,36 +204,32 @@ export const SettingsRolePermissionsObjectLevelRecordLevelPermissionValueInput =
     };
 
     if (isDynamicMode) {
-      const tooltipId = `record-level-permission-value-${recordFilterId}`;
       const fullLabel = isDefined(workspaceMemberFieldLabel)
         ? `Me / ${workspaceMemberFieldLabel}`
         : 'Me';
 
       return (
-        <>
-          <StyledContainer>
-            <StyledReadOnlyInput id={tooltipId}>
+        <StyledContainer>
+          <AppTooltip
+            content={fullLabel}
+            delay={TooltipDelay.shortDelay}
+            noArrow
+            place="bottom"
+          >
+            <StyledReadOnlyInput>
               <StyledMeText>{t`Me`}</StyledMeText>
               {isDefined(workspaceMemberFieldLabel) && (
                 <StyledFieldLabel>{` / ${workspaceMemberFieldLabel}`}</StyledFieldLabel>
               )}
             </StyledReadOnlyInput>
-            <StyledIconContainer
-              onClick={handleResetToStaticValue}
-              aria-label={t`Reset to static value`}
-            >
-              <IconEraser size={theme.icon.size.sm} />
-            </StyledIconContainer>
-          </StyledContainer>
-          <AppTooltip
-            anchorSelect={`#${tooltipId}`}
-            content={fullLabel}
-            delay={TooltipDelay.shortDelay}
-            noArrow
-            place="bottom"
-            positionStrategy="fixed"
-          />
-        </>
+          </AppTooltip>
+          <StyledIconContainer
+            onClick={handleResetToStaticValue}
+            aria-label={t`Reset to static value`}
+          >
+            <IconEraser size={theme.icon.size.sm} />
+          </StyledIconContainer>
+        </StyledContainer>
       );
     }
 

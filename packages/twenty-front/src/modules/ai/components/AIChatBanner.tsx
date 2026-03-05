@@ -74,13 +74,8 @@ export const AIChatBanner = ({
   isButtonDisabled = false,
   isButtonLoading = false,
 }: AIChatBannerProps) => {
-  const tooltipId = 'ai-chat-banner-tooltip';
-
-  return (
-    <StyledBanner
-      variant={variant}
-      data-tooltip-id={tooltipMessage ? tooltipId : undefined}
-    >
+  const bannerContent = (
+    <StyledBanner variant={variant}>
       <StyledIconContainer variant={variant}>
         {variant === 'default' ? (
           <IconInfoCircle size={16} />
@@ -99,13 +94,16 @@ export const AIChatBanner = ({
           title={buttonTitle}
         />
       )}
-      {isDefined(tooltipMessage) && (
-        <AppTooltip
-          anchorSelect={`[data-tooltip-id='${tooltipId}']`}
-          content={tooltipMessage}
-          place="bottom"
-        />
-      )}
     </StyledBanner>
   );
+
+  if (isDefined(tooltipMessage)) {
+    return (
+      <AppTooltip content={tooltipMessage} place="bottom">
+        {bannerContent}
+      </AppTooltip>
+    );
+  }
+
+  return bannerContent;
 };

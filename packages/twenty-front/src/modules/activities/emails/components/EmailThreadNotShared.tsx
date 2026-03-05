@@ -36,25 +36,20 @@ export const EmailThreadNotShared = ({
 }: EmailThreadNotSharedProps) => {
   const { t } = useLingui();
   const { theme } = useContext(ThemeContext);
-  const containerId = 'email-thread-not-shared';
   const isCompact = visibility === MessageChannelVisibility.SUBJECT;
 
   return (
-    <>
-      <StyledContainer id={containerId} isCompact={isCompact}>
+    <AppTooltip
+      content={t`Only the subject is shared`}
+      delay={TooltipDelay.mediumDelay}
+      noArrow
+      place="bottom"
+      hidden={visibility !== MessageChannelVisibility.SUBJECT}
+    >
+      <StyledContainer isCompact={isCompact}>
         <IconLock size={theme.icon.size.sm} />
         {t`Not shared`}
       </StyledContainer>
-      {visibility === MessageChannelVisibility.SUBJECT && (
-        <AppTooltip
-          anchorSelect={`#${containerId}`}
-          content={t`Only the subject is shared`}
-          delay={TooltipDelay.mediumDelay}
-          noArrow
-          place="bottom"
-          positionStrategy="fixed"
-        />
-      )}
-    </>
+    </AppTooltip>
   );
 };

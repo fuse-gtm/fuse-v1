@@ -58529,7 +58529,6 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-responsive: "npm:^9.0.2"
     react-router-dom: "npm:^6.4.4"
-    react-tooltip: "npm:^5.13.1"
     tsx: "npm:^4.19.3"
     twenty-shared: "workspace:*"
     vite-plugin-checker: "npm:^0.10.2"

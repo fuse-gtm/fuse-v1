@@ -194,40 +194,34 @@ export const SettingsDataModelFieldIconLabelForm = ({
                     control={control}
                     defaultValue={fieldMetadataItem?.name}
                     render={({ field: { onChange, value } }) => (
-                      <>
-                        <SettingsTextInput
-                          instanceId={nameTextInputId}
-                          label={t`API Name`}
-                          placeholder={t`employees`}
-                          value={value}
-                          onChange={onChange}
-                          readOnly={readonly}
-                          disabled={!isNameEditEnabled}
-                          fullWidth
-                          maxLength={DATABASE_IDENTIFIER_MAXIMUM_LENGTH}
-                          RightIcon={() =>
-                            apiNameTooltipText && (
-                              <>
-                                <IconInfoCircle
-                                  id="info-circle-id-name"
-                                  size={theme.icon.size.md}
-                                  color={theme.font.color.tertiary}
-                                  style={{ outline: 'none' }}
-                                />
-                                <AppTooltip
-                                  anchorSelect="#info-circle-id-name"
-                                  content={apiNameTooltipText}
-                                  offset={5}
-                                  noArrow
-                                  place="bottom"
-                                  positionStrategy="fixed"
-                                  delay={TooltipDelay.shortDelay}
-                                />
-                              </>
-                            )
-                          }
-                        />
-                      </>
+                      <SettingsTextInput
+                        instanceId={nameTextInputId}
+                        label={t`API Name`}
+                        placeholder={t`employees`}
+                        value={value}
+                        onChange={onChange}
+                        readOnly={readonly}
+                        disabled={!isNameEditEnabled}
+                        fullWidth
+                        maxLength={DATABASE_IDENTIFIER_MAXIMUM_LENGTH}
+                        RightIcon={() =>
+                          apiNameTooltipText && (
+                            <AppTooltip
+                              content={apiNameTooltipText}
+                              offset={5}
+                              noArrow
+                              place="bottom"
+                              delay={TooltipDelay.shortDelay}
+                            >
+                              <IconInfoCircle
+                                size={theme.icon.size.md}
+                                color={theme.font.color.tertiary}
+                                style={{ outline: 'none' }}
+                              />
+                            </AppTooltip>
+                          )
+                        }
+                      />
                     )}
                   />
                 </StyledInputsContainer>

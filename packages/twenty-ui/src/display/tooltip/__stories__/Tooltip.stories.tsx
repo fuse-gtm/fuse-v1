@@ -26,40 +26,22 @@ export const Default: Story = {
     delay: TooltipDelay.mediumDelay,
     content: 'Tooltip Test',
     hidden: false,
-    anchorSelect: '#hover-text',
   },
   decorators: [ComponentDecorator],
-  render: ({
-    anchorSelect,
-    className,
-    content,
-    delay,
-    hidden,
-    noArrow,
-    offset,
-    place,
-    positionStrategy,
-    clickable,
-  }) => (
-    <>
-      <p id="hover-text" data-testid="tooltip">
-        Hover me!
-      </p>
-      <Tooltip
-        {...{
-          anchorSelect,
-          className,
-          content,
-          delay,
-          hidden,
-          noArrow,
-          offset,
-          place,
-          positionStrategy,
-          clickable,
-        }}
-      />
-    </>
+  render: ({ className, content, delay, hidden, noArrow, offset, place }) => (
+    <Tooltip
+      {...{
+        className,
+        content,
+        delay,
+        hidden,
+        noArrow,
+        offset,
+        place,
+      }}
+    >
+      <p data-testid="tooltip">Hover me!</p>
+    </Tooltip>
   ),
 };
 
@@ -69,36 +51,21 @@ export const Hoverable: Story = {
     delay: TooltipDelay.mediumDelay,
     content: 'Tooltip Test',
     hidden: false,
-    anchorSelect: '#hover-text',
   },
   decorators: [ComponentDecorator],
-  render: ({
-    anchorSelect,
-    className,
-    content,
-    delay,
-    noArrow,
-    offset,
-    place,
-    positionStrategy,
-  }) => (
-    <>
-      <p id="hover-text" data-testid="tooltip">
-        Hover me!
-      </p>
-      <Tooltip
-        {...{
-          anchorSelect,
-          className,
-          content,
-          delay,
-          noArrow,
-          offset,
-          place,
-          positionStrategy,
-        }}
-      />
-    </>
+  render: ({ className, content, delay, noArrow, offset, place }) => (
+    <Tooltip
+      {...{
+        className,
+        content,
+        delay,
+        noArrow,
+        offset,
+        place,
+      }}
+    >
+      <p data-testid="tooltip">Hover me!</p>
+    </Tooltip>
   ),
 };
 
@@ -108,39 +75,23 @@ export const WithWidth: Story = {
     delay: TooltipDelay.mediumDelay,
     content: 'Tooltip with custom width',
     hidden: false,
-    anchorSelect: '#width-text',
     width: '200px',
   },
   decorators: [ComponentDecorator],
-  render: ({
-    anchorSelect,
-    className,
-    content,
-    delay,
-    noArrow,
-    offset,
-    place,
-    positionStrategy,
-    width,
-  }) => (
-    <>
-      <p id="width-text" data-testid="tooltip">
-        Hover me to see custom width!
-      </p>
-      <Tooltip
-        {...{
-          anchorSelect,
-          className,
-          content,
-          delay,
-          noArrow,
-          offset,
-          place,
-          positionStrategy,
-          width,
-        }}
-      />
-    </>
+  render: ({ className, content, delay, noArrow, offset, place, width }) => (
+    <Tooltip
+      {...{
+        className,
+        content,
+        delay,
+        noArrow,
+        offset,
+        place,
+        width,
+      }}
+    >
+      <p data-testid="tooltip">Hover me to see custom width!</p>
+    </Tooltip>
   ),
 };
 
@@ -151,18 +102,19 @@ export const Catalog: CatalogStory<Story, typeof Tooltip> = {
       const element = canvasElement.querySelector(
         `#${position}`,
       ) as HTMLElement;
-      element.style.margin = '75px';
+      if (element) {
+        element.style.margin = '75px';
+      }
     });
   },
   parameters: {
     catalog: {
       dimensions: [
         {
-          name: 'anchorSelect',
+          name: 'place',
           values: Object.values(TooltipPosition),
-          props: (anchorSelect: TooltipPosition) => ({
-            anchorSelect: `#${anchorSelect}`,
-            place: anchorSelect,
+          props: (place: TooltipPosition) => ({
+            place,
           }),
         },
       ],

@@ -62,28 +62,23 @@ export const SettingsRolePermissionsObjectLevelOverrideCell = ({
   const humanReadableAction =
     objectPermissionKeyToHumanReadable(objectPermissionKey);
 
-  const containerId = `object-level-permission-override-${roleId}-${objectPermissionKey}-${objectMetadataItem.id}`;
-
   return (
-    <>
-      <StyledContainer id={containerId}>
+    <AppTooltip
+      content={
+        permissionValue === false
+          ? t`${roleLabel} can't ${humanReadableAction} ${objectLabel} records`
+          : t`${roleLabel} can ${humanReadableAction} ${objectLabel} records`
+      }
+      delay={TooltipDelay.shortDelay}
+      noArrow
+      place="bottom"
+    >
+      <StyledContainer>
         <PermissionIcon
           permission={objectPermissionKey}
           state={permissionValue === false ? 'revoked' : 'granted'}
         />
       </StyledContainer>
-      <AppTooltip
-        anchorSelect={`#${containerId}`}
-        content={
-          permissionValue === false
-            ? t`${roleLabel} can't ${humanReadableAction} ${objectLabel} records`
-            : t`${roleLabel} can ${humanReadableAction} ${objectLabel} records`
-        }
-        delay={TooltipDelay.shortDelay}
-        noArrow
-        place="bottom"
-        positionStrategy="fixed"
-      />
-    </>
+    </AppTooltip>
   );
 };

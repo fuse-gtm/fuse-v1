@@ -107,8 +107,6 @@ const StyledConflictButton = styled(Button)`
   }
 `;
 
-const infoCircleElementId = 'info-circle-id';
-
 export const SettingsDataModelObjectAboutForm = ({
   disableEdition = false,
   onNewDirtyField,
@@ -339,43 +337,37 @@ export const SettingsDataModelObjectAboutForm = ({
                         field: { onChange, value },
                         formState: { errors },
                       }) => (
-                        <>
-                          <SettingsTextInput
-                            instanceId={`${objectMetadataItem?.id}-${fieldName}`}
-                            label={label}
-                            placeholder={placeholder}
-                            value={value}
-                            onChange={onChange}
-                            disabled={disableEdition}
-                            fullWidth
-                            maxLength={OBJECT_NAME_MAXIMUM_LENGTH}
-                            onBlur={() => onNewDirtyField?.()}
-                            error={errors[fieldName]?.message}
-                            // TODO we should discuss on how to notify user about form validation schema issue, from now just displaying red borders
-                            noErrorHelper={true}
-                            RightIcon={() =>
-                              tooltip && (
-                                <>
-                                  <IconInfoCircle
-                                    id={infoCircleElementId + fieldName}
-                                    size={theme.icon.size.md}
-                                    color={theme.font.color.tertiary}
-                                    style={{ outline: 'none' }}
-                                  />
-                                  <AppTooltip
-                                    anchorSelect={`#${infoCircleElementId}${fieldName}`}
-                                    content={tooltip}
-                                    offset={5}
-                                    noArrow
-                                    place="bottom"
-                                    positionStrategy="fixed"
-                                    delay={TooltipDelay.shortDelay}
-                                  />
-                                </>
-                              )
-                            }
-                          />
-                        </>
+                        <SettingsTextInput
+                          instanceId={`${objectMetadataItem?.id}-${fieldName}`}
+                          label={label}
+                          placeholder={placeholder}
+                          value={value}
+                          onChange={onChange}
+                          disabled={disableEdition}
+                          fullWidth
+                          maxLength={OBJECT_NAME_MAXIMUM_LENGTH}
+                          onBlur={() => onNewDirtyField?.()}
+                          error={errors[fieldName]?.message}
+                          // TODO we should discuss on how to notify user about form validation schema issue, from now just displaying red borders
+                          noErrorHelper={true}
+                          RightIcon={() =>
+                            tooltip && (
+                              <AppTooltip
+                                content={tooltip}
+                                offset={5}
+                                noArrow
+                                place="bottom"
+                                delay={TooltipDelay.shortDelay}
+                              >
+                                <IconInfoCircle
+                                  size={theme.icon.size.md}
+                                  color={theme.font.color.tertiary}
+                                  style={{ outline: 'none' }}
+                                />
+                              </AppTooltip>
+                            )
+                          }
+                        />
                       )}
                     />
                   </StyledInputContainer>

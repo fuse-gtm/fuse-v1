@@ -65,27 +65,33 @@ export const RoleAssignmentSection = ({
           dropdownId={config.dropdownId}
           dropdownOffset={{ x: 0, y: 4 }}
           clickableComponent={
-            <>
-              <div id={config.tooltip?.anchorId}>
-                <Button
-                  Icon={IconPlus}
-                  title={config.buttonTitle()}
-                  variant="secondary"
-                  size="small"
-                  disabled={allWorkspaceMembersHaveThisRole}
-                />
-              </div>
-              {config.tooltip && (
-                <AppTooltip
-                  anchorSelect={`#${config.tooltip.anchorId}`}
-                  content={config.tooltip.content()}
-                  delay={TooltipDelay.noDelay}
-                  hidden={
-                    !config.tooltip.shouldShow(allWorkspaceMembersHaveThisRole)
-                  }
-                />
-              )}
-            </>
+            config.tooltip ? (
+              <AppTooltip
+                content={config.tooltip.content()}
+                delay={TooltipDelay.noDelay}
+                hidden={
+                  !config.tooltip.shouldShow(allWorkspaceMembersHaveThisRole)
+                }
+              >
+                <div>
+                  <Button
+                    Icon={IconPlus}
+                    title={config.buttonTitle()}
+                    variant="secondary"
+                    size="small"
+                    disabled={allWorkspaceMembersHaveThisRole}
+                  />
+                </div>
+              </AppTooltip>
+            ) : (
+              <Button
+                Icon={IconPlus}
+                title={config.buttonTitle()}
+                variant="secondary"
+                size="small"
+                disabled={allWorkspaceMembersHaveThisRole}
+              />
+            )
           }
           dropdownComponents={
             roleTargetType === 'member' ? (

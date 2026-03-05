@@ -513,23 +513,19 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
                         fullWidth
                         RightIcon={() =>
                           apiNameTooltipText && (
-                            <>
+                            <AppTooltip
+                              content={apiNameTooltipText}
+                              offset={5}
+                              noArrow
+                              place="bottom"
+                              delay={TooltipDelay.shortDelay}
+                            >
                               <IconInfoCircle
-                                id="info-circle-id-skill-name"
                                 size={theme.icon.size.md}
                                 color={theme.font.color.tertiary}
                                 style={{ outline: 'none' }}
                               />
-                              <AppTooltip
-                                anchorSelect="#info-circle-id-skill-name"
-                                content={apiNameTooltipText}
-                                offset={5}
-                                noArrow
-                                place="bottom"
-                                positionStrategy="fixed"
-                                delay={TooltipDelay.shortDelay}
-                              />
-                            </>
+                            </AppTooltip>
                           )
                         }
                       />

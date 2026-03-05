@@ -123,28 +123,23 @@ export const WidgetActionFieldSeeAll = () => {
     filterQueryParams,
   );
 
-  const tooltipId = `widget-see-all-${widget.id}`;
   const relationLabelPlural =
     relationObjectMetadataItem.labelPlural.toLowerCase();
   const tooltipContent = t`See all ${relationLabelPlural} linked to this record`;
 
   return (
-    <>
-      <div id={tooltipId}>
-        <StyledLink to={filterLinkHref} data-testid="widget-see-all-link">
-          <StyledSeeAllButtonWrapper isMobile={isMobile}>
-            <LightIconButton Icon={IconArrowUpRight} accent="secondary" />
-          </StyledSeeAllButtonWrapper>
-        </StyledLink>
-      </div>
-      <AppTooltip
-        anchorSelect={`#${tooltipId}`}
-        content={tooltipContent}
-        place={TooltipPosition.Top}
-        delay={TooltipDelay.mediumDelay}
-        offset={5}
-        noArrow
-      />
-    </>
+    <AppTooltip
+      content={tooltipContent}
+      place={TooltipPosition.Top}
+      delay={TooltipDelay.mediumDelay}
+      offset={5}
+      noArrow
+    >
+      <StyledLink to={filterLinkHref} data-testid="widget-see-all-link">
+        <StyledSeeAllButtonWrapper isMobile={isMobile}>
+          <LightIconButton Icon={IconArrowUpRight} accent="secondary" />
+        </StyledSeeAllButtonWrapper>
+      </StyledLink>
+    </AppTooltip>
   );
 };

@@ -3,7 +3,6 @@ import { styled } from '@linaria/react';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 // @ts-expect-error // Todo: remove usage of react-data-grid
 import { type Column, useRowSelection } from 'react-data-grid';
-import { createPortal } from 'react-dom';
 
 import {
   type ImportedStructuredRow,
@@ -11,7 +10,6 @@ import {
 } from '@/spreadsheet-import/types';
 import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 
-import camelCase from 'lodash.camelcase';
 import { isDefined } from 'twenty-shared/utils';
 import { AppTooltip, TooltipDelay } from 'twenty-ui/display';
 import { Checkbox, CheckboxVariant, Toggle } from 'twenty-ui/input';
@@ -69,10 +67,6 @@ const StyledSelectReadonlyValueContianer = styled.div`
 
 const SELECT_COLUMN_KEY = 'select-row';
 
-const formatSafeId = (columnKey: string) => {
-  return camelCase(columnKey.replace('(', '').replace(')', ''));
-};
-
 export const generateColumns = (
   fields: SpreadsheetImportFields,
 ): Column<ImportedStructuredRow & ImportedStructuredRowMetadata>[] => [
@@ -117,20 +111,13 @@ export const generateColumns = (
       resizable: true,
       headerRenderer: () => (
         <StyledHeaderContainer>
-          <StyledHeaderLabel id={formatSafeId(column.key)}>
-            {column.label}
-          </StyledHeaderLabel>
-          <>
-            {column.description &&
-              createPortal(
-                <AppTooltip
-                  anchorSelect={`#${formatSafeId(column.key)}`}
-                  place="top"
-                  content={column.description}
-                />,
-                document.body,
-              )}
-          </>
+          {column.description ? (
+            <AppTooltip place="top" content={column.description}>
+              <StyledHeaderLabel>{column.label}</StyledHeaderLabel>
+            </AppTooltip>
+          ) : (
+            <StyledHeaderLabel>{column.label}</StyledHeaderLabel>
+          )}
         </StyledHeaderContainer>
       ),
       editable: column.fieldType.type !== 'checkbox',
@@ -178,7 +165,6 @@ export const generateColumns = (
           case 'checkbox':
             component = (
               <StyledToggleContainer
-                id={formatSafeId(`${columnKey}-${row.__index}`)}
                 onClick={(event) => {
                   event.stopPropagation();
                 }}
@@ -197,9 +183,7 @@ export const generateColumns = (
             break;
           case 'select':
             component = (
-              <StyledDefaultContainer
-                id={formatSafeId(`${columnKey}-${row.__index}`)}
-              >
+              <StyledDefaultContainer>
                 {column.fieldType.options.find(
                   (option) => option.value === row[columnKey],
                 )?.label || null}
@@ -208,28 +192,19 @@ export const generateColumns = (
             break;
           default:
             component = (
-              <StyledDefaultContainer
-                id={formatSafeId(`${columnKey}-${row.__index}`)}
-              >
-                {row[columnKey]}
-              </StyledDefaultContainer>
+              <StyledDefaultContainer>{row[columnKey]}</StyledDefaultContainer>
             );
         }
 
         if (isDefined(row.__errors?.[columnKey])) {
           return (
-            <>
+            <AppTooltip
+              place="top"
+              content={row.__errors?.[columnKey]?.message}
+              delay={TooltipDelay.shortDelay}
+            >
               {component}
-              {createPortal(
-                <AppTooltip
-                  anchorSelect={`#${formatSafeId(`${columnKey}-${row.__index}`)}`}
-                  place="top"
-                  content={row.__errors?.[columnKey]?.message}
-                  delay={TooltipDelay.shortDelay}
-                />,
-                document.body,
-              )}
-            </>
+            </AppTooltip>
           );
         }
 

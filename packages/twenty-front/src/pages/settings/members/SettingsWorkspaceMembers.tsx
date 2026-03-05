@@ -328,19 +328,16 @@ export const SettingsWorkspaceMembers = () => {
                             stroke={theme.icon.stroke.sm}
                           />
                         </StyledIconWrapper>
-                        <StyledTextContainerWithEllipsis
-                          id={`invitation-email-${workspaceInvitation.id}`}
-                        >
-                          {workspaceInvitation.email}
-                        </StyledTextContainerWithEllipsis>
                         <AppTooltip
-                          anchorSelect={`#invitation-email-${workspaceInvitation.id}`}
                           content={workspaceInvitation.email}
                           noArrow
                           place="top"
-                          positionStrategy="fixed"
                           delay={TooltipDelay.shortDelay}
-                        />
+                        >
+                          <StyledTextContainerWithEllipsis>
+                            {workspaceInvitation.email}
+                          </StyledTextContainerWithEllipsis>
+                        </AppTooltip>
                       </StyledInvitationTableCell>
                       <StyledInvitationTableCell>
                         <StyledTextContainerWithEllipsis>
@@ -439,21 +436,18 @@ export const SettingsWorkspaceMembers = () => {
                             size="sm"
                           />
                         </StyledIconWrapper>
-                        <StyledTextContainerWithEllipsis
-                          id={`hover-text-${workspaceMember.id}`}
-                        >
-                          {workspaceMember.name.firstName +
-                            ' ' +
-                            workspaceMember.name.lastName}
-                        </StyledTextContainerWithEllipsis>
                         <AppTooltip
-                          anchorSelect={`#hover-text-${workspaceMember.id}`}
                           content={`${workspaceMember.name.firstName} ${workspaceMember.name.lastName}`}
                           noArrow
                           place="top"
-                          positionStrategy="fixed"
                           delay={TooltipDelay.shortDelay}
-                        />
+                        >
+                          <StyledTextContainerWithEllipsis>
+                            {workspaceMember.name.firstName +
+                              ' ' +
+                              workspaceMember.name.lastName}
+                          </StyledTextContainerWithEllipsis>
+                        </AppTooltip>
                       </TableCell>
                       <TableCell>
                         <StyledTextContainerWithEllipsis>
