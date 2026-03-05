@@ -68,6 +68,14 @@ export class OAuthService {
 
     const applicationRegistration = clientValidation;
 
+    // Confidential clients (those with a stored secret) must authenticate
+    if (applicationRegistration.oAuthClientSecretHash && !clientSecret) {
+      return this.errorResponse(
+        'invalid_client',
+        'Client authentication required for confidential clients',
+      );
+    }
+
     if (clientSecret) {
       const secretError = await this.validateClientSecret(
         applicationRegistration,
@@ -391,7 +399,12 @@ export class OAuthService {
         return { success: false };
       }
 
-      if (clientSecret) {
+      // Confidential clients (those with a stored secret) must authenticate
+      if (clientValidation.oAuthClientSecretHash) {
+        if (!clientSecret) {
+          return { success: false };
+        }
+
         const secretError = await this.validateClientSecret(
           clientValidation,
           clientSecret,
@@ -434,7 +447,12 @@ export class OAuthService {
       return { active: false };
     }
 
-    if (clientSecret) {
+    // Confidential clients (those with a stored secret) must authenticate
+    if (clientValidation.oAuthClientSecretHash) {
+      if (!clientSecret) {
+        return { active: false };
+      }
+
       const secretError = await this.validateClientSecret(
         clientValidation,
         clientSecret,

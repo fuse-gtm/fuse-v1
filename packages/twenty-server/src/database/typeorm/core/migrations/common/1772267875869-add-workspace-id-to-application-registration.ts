@@ -10,7 +10,17 @@ export class AddWorkspaceIdToApplicationRegistration1772267875869
       `ALTER TABLE "core"."applicationRegistration" ADD "workspaceId" uuid`,
     );
 
-    // Delete any orphaned registrations that can't be assigned a workspace
+    // Backfill workspaceId from linked applications
+    await queryRunner.query(`
+      UPDATE "core"."applicationRegistration" ar
+      SET "workspaceId" = a."workspaceId"
+      FROM "core"."application" a
+      WHERE a."applicationRegistrationId" = ar."id"
+        AND a."workspaceId" IS NOT NULL
+        AND ar."workspaceId" IS NULL
+    `);
+
+    // Only delete registrations that genuinely have no linked application
     await queryRunner.query(`
       DELETE FROM "core"."applicationRegistration"
       WHERE "workspaceId" IS NULL
