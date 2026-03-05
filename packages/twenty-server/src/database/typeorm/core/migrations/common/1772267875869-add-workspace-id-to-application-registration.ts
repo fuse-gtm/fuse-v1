@@ -20,15 +20,8 @@ export class AddWorkspaceIdToApplicationRegistration1772267875869
         AND ar."workspaceId" IS NULL
     `);
 
-    // Only delete registrations that genuinely have no linked application
-    await queryRunner.query(`
-      DELETE FROM "core"."applicationRegistration"
-      WHERE "workspaceId" IS NULL
-    `);
-
-    await queryRunner.query(
-      `ALTER TABLE "core"."applicationRegistration" ALTER COLUMN "workspaceId" SET NOT NULL`,
-    );
+    // Column stays nullable — standalone registrations may not yet
+    // be linked to any workspace and must be preserved during upgrade.
 
     await queryRunner.query(`
       CREATE INDEX "IDX_APPLICATION_REGISTRATION_WORKSPACE_ID"

@@ -87,12 +87,12 @@ export class ApplicationRegistrationEntity {
   @JoinColumn({ name: 'createdByUserId' })
   createdByUser: Relation<UserEntity> | null;
 
-  @Column({ nullable: false, type: 'uuid' })
-  workspaceId: string;
+  @Column({ nullable: true, type: 'uuid' })
+  workspaceId: string | null;
 
-  @ManyToOne(() => WorkspaceEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkspaceEntity, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'workspaceId' })
-  workspace: Relation<WorkspaceEntity>;
+  workspace: Relation<WorkspaceEntity> | null;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true, type: 'text' })
