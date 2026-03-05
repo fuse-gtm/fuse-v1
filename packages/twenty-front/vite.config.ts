@@ -135,7 +135,7 @@ export default defineConfig(({ command, mode }) => {
             '**/CurrencyDisplay.tsx',
             '**/TextDisplay.tsx',
             '**/EllipsisDisplay.tsx',
-            '**/AvatarOrIcon.tsx',
+            '**/AvatarChip.tsx',
             '**/URLDisplay.tsx',
             '**/EmailsDisplay.tsx',
             '**/PhonesDisplay.tsx',

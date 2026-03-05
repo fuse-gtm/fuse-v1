@@ -6,7 +6,7 @@ import { useTheme } from '@emotion/react';
 import { t } from '@lingui/core/macro';
 import { type FileUIPart } from 'ai';
 import { isDefined } from 'twenty-shared/utils';
-import { AvatarOrIcon, Chip, ChipVariant, LinkChip } from 'twenty-ui/components';
+import { AvatarChip, Chip, ChipVariant, LinkChip } from 'twenty-ui/components';
 import { type IconComponent, IconX } from 'twenty-ui/display';
 import { Loader } from 'twenty-ui/feedback';
 
@@ -36,14 +36,14 @@ export const AgentChatFilePreview = ({
   const leftComponent = isUploading ? (
     <Loader color="yellow" />
   ) : (
-    <AvatarOrIcon
+    <AvatarChip
       Icon={FileCategoryIcon}
       IconBackgroundColor={iconBackgroundColor}
     />
   );
 
   const rightComponent = onRemove ? (
-    <AvatarOrIcon
+    <AvatarChip
       Icon={IconX}
       IconColor={theme.font.color.secondary}
       onClick={onRemove}

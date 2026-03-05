@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { AvatarOrIcon } from 'twenty-ui/components';
+import { AvatarChip } from 'twenty-ui/components';
 import { MenuItemSuggestion } from 'twenty-ui/navigation';
 
 import type { MentionSearchResult } from '@/mention/types/MentionSearchResult';
@@ -16,7 +16,7 @@ const renderItem = (
 ) => (
   <MenuItemSuggestion
     LeftIcon={() => (
-      <AvatarOrIcon
+      <AvatarChip
         placeholder={item.label}
         placeholderColorSeed={item.recordId}
         avatarType="rounded"

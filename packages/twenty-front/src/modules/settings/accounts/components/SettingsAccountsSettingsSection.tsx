@@ -8,7 +8,7 @@ import { getSettingsPath } from 'twenty-shared/utils';
 import { H2Title, IconCalendarEvent, IconMailCog } from 'twenty-ui/display';
 import { Section } from 'twenty-ui/layout';
 import { UndecoratedLink } from 'twenty-ui/navigation';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
 
 const StyledCardsContainer = styled.div`
   display: flex;

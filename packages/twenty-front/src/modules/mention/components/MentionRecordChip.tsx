@@ -1,7 +1,7 @@
 import { getLinkToShowPage } from '@/object-metadata/utils/getLinkToShowPage';
 import { t } from '@lingui/core/macro';
 import { isNonEmptyString } from '@sniptt/guards';
-import { AvatarOrIcon, Chip, ChipVariant, LinkChip } from 'twenty-ui/components';
+import { AvatarChip, Chip, ChipVariant, LinkChip } from 'twenty-ui/components';
 
 type MentionRecordChipProps = {
   recordId: string;
@@ -50,7 +50,7 @@ export const MentionRecordChip = ({
       variant={ChipVariant.Highlighted}
       className={className}
       leftComponent={
-        <AvatarOrIcon
+        <AvatarChip
           placeholder={label}
           placeholderColorSeed={recordId}
           avatarType="rounded"

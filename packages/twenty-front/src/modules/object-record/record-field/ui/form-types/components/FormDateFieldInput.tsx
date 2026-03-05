@@ -30,7 +30,7 @@ import {
 } from 'react';
 import { Key } from 'ts-key-enum';
 import { isDefined } from 'twenty-shared/utils';
-import { TEXT_INPUT_STYLE } from 'twenty-ui/theme-constants';
+import { TEXT_INPUT_STYLE } from 'twenty-ui/theme';
 import { type Nullable } from 'twenty-ui/utilities';
 import { getDateFormatStringForDatePickerInputMask } from '~/utils/date-utils';
 

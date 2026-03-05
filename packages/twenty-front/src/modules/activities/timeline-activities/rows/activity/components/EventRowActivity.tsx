@@ -12,7 +12,7 @@ import { type CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectN
 import { useGetRecordFromCache } from '@/object-record/cache/hooks/useGetRecordFromCache';
 import { isNonEmptyString } from '@sniptt/guards';
 import { OverflowingTextWithTooltip } from 'twenty-ui/display';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
 
 type EventRowActivityProps = EventRowDynamicComponentProps;
 

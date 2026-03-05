@@ -2,7 +2,7 @@ import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadata
 import { getLinkToShowPage } from '@/object-metadata/utils/getLinkToShowPage';
 import { t } from '@lingui/core/macro';
 import { isNonEmptyString } from '@sniptt/guards';
-import { AvatarOrIcon, ChipVariant, LinkChip } from 'twenty-ui/components';
+import { AvatarChip, ChipVariant, LinkChip } from 'twenty-ui/components';
 
 type RecordLinkProps = {
   objectNameSingular: string;
@@ -34,7 +34,7 @@ export const RecordLink = ({
       to={linkToShowPage}
       variant={ChipVariant.Highlighted}
       leftComponent={
-        <AvatarOrIcon
+        <AvatarChip
           placeholder={displayName}
           placeholderColorSeed={recordId}
           avatarType="rounded"

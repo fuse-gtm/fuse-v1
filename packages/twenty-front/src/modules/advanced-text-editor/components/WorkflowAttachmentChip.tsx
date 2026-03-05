@@ -4,7 +4,7 @@ import { IconMapping } from '@/file/utils/fileIconMappings';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { type WorkflowAttachment } from 'twenty-shared/workflow';
-import { AvatarOrIcon } from 'twenty-ui/components';
+import { AvatarChip } from 'twenty-ui/components';
 import { IconX } from 'twenty-ui/display';
 
 type WorkflowAttachmentChipProps = {
@@ -68,7 +68,7 @@ export const WorkflowAttachmentChip = ({
 
   return (
     <StyledChip data-chip deletable={!readonly}>
-      <AvatarOrIcon
+      <AvatarChip
         Icon={IconMapping[getFileType(file.name)]}
         IconBackgroundColor={iconColors[getFileType(file.name)]}
       />

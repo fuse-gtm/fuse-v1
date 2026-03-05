@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { type IconComponent } from 'twenty-ui/display';
 import { LightIconButtonGroup } from 'twenty-ui/input';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
 import { AnimatedContainer } from 'twenty-ui/utilities';
 
 const StyledButtonContainer = styled.div`

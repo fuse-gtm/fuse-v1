@@ -6,7 +6,7 @@ import {
 import { EventRowMainObjectUpdated } from '@/activities/timeline-activities/rows/main-object/components/EventRowMainObjectUpdated';
 import styled from '@emotion/styled';
 import { t } from '@lingui/core/macro';
-import { MOBILE_VIEWPORT } from 'twenty-ui/theme-constants';
+import { MOBILE_VIEWPORT } from 'twenty-ui/theme';
 
 type EventRowMainObjectProps = EventRowDynamicComponentProps;
 

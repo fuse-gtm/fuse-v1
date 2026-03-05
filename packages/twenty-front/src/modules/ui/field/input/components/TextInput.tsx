@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 
 import { LightCopyIconButton } from '@/object-record/record-field/ui/components/LightCopyIconButton';
 import { useRegisterInputEvents } from '@/object-record/record-field/ui/meta-types/input/hooks/useRegisterInputEvents';
-import { TEXT_INPUT_STYLE } from 'twenty-ui/theme-constants';
+import { TEXT_INPUT_STYLE } from 'twenty-ui/theme';
 
 export const StyledTextInput = styled.input`
   margin: 0;
