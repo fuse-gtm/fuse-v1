@@ -74,6 +74,9 @@ const createSignInUpServiceForTests = () => {
       createOnboardingStatusForWorkspaceMember: jest.fn(),
     } as any,
     {
+      isFeatureEnabled: jest.fn(),
+    } as any,
+    {
       emitCustomBatchEvent: jest.fn(),
     } as any,
     {

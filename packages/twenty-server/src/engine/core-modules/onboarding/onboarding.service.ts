@@ -6,6 +6,8 @@ import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
 import { type QueryRunner } from 'typeorm';
 
 import { BillingService } from 'src/engine/core-modules/billing/services/billing.service';
+import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
+import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { OnboardingStatus } from 'src/engine/core-modules/onboarding/enums/onboarding-status.enum';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { UserVarsService } from 'src/engine/core-modules/user/user-vars/services/user-vars.service';
@@ -16,6 +18,7 @@ export enum OnboardingStepKeys {
   ONBOARDING_CONNECT_ACCOUNT_PENDING = 'ONBOARDING_CONNECT_ACCOUNT_PENDING',
   ONBOARDING_INVITE_TEAM_PENDING = 'ONBOARDING_INVITE_TEAM_PENDING',
   ONBOARDING_CREATE_PROFILE_PENDING = 'ONBOARDING_CREATE_PROFILE_PENDING',
+  ONBOARDING_PARTNER_PROFILE_PENDING = 'ONBOARDING_PARTNER_PROFILE_PENDING',
   ONBOARDING_BOOK_ONBOARDING_PENDING = 'ONBOARDING_BOOK_ONBOARDING_PENDING',
 }
 
@@ -23,6 +26,7 @@ export type OnboardingKeyValueTypeMap = {
   [OnboardingStepKeys.ONBOARDING_CONNECT_ACCOUNT_PENDING]: boolean;
   [OnboardingStepKeys.ONBOARDING_INVITE_TEAM_PENDING]: boolean;
   [OnboardingStepKeys.ONBOARDING_CREATE_PROFILE_PENDING]: boolean;
+  [OnboardingStepKeys.ONBOARDING_PARTNER_PROFILE_PENDING]: boolean;
   [OnboardingStepKeys.ONBOARDING_BOOK_ONBOARDING_PENDING]: boolean;
 };
 
@@ -30,6 +34,7 @@ export type OnboardingKeyValueTypeMap = {
 export class OnboardingService {
   constructor(
     private readonly billingService: BillingService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly userVarsService: UserVarsService<OnboardingKeyValueTypeMap>,
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
@@ -75,6 +80,28 @@ export class OnboardingService {
 
     if (isProfileCreationPending) {
       return OnboardingStatus.PROFILE_CREATION;
+    }
+
+    const isPartnerProfilePending =
+      userVars.get(OnboardingStepKeys.ONBOARDING_PARTNER_PROFILE_PENDING) ===
+      true;
+
+    if (isPartnerProfilePending) {
+      const isPartnerOsEnabled = await this.featureFlagService.isFeatureEnabled(
+        FeatureFlagKey.IS_PARTNER_OS_ENABLED,
+        workspace.id,
+      );
+
+      if (isPartnerOsEnabled) {
+        return OnboardingStatus.PARTNER_PROFILE;
+      }
+
+      // Flag is off — clear the pending step silently
+      await this.userVarsService.delete({
+        userId: user.id,
+        workspaceId: workspace.id,
+        key: OnboardingStepKeys.ONBOARDING_PARTNER_PROFILE_PENDING,
+      });
     }
 
     if (isConnectAccountPending) {
@@ -206,6 +233,42 @@ export class OnboardingService {
         userId,
         workspaceId,
         key: OnboardingStepKeys.ONBOARDING_CREATE_PROFILE_PENDING,
+        value: true,
+      },
+      queryRunner,
+    );
+  }
+
+  async setOnboardingPartnerProfilePending(
+    {
+      userId,
+      workspaceId,
+      value,
+    }: {
+      userId: string;
+      workspaceId: string;
+      value: boolean;
+    },
+    queryRunner?: QueryRunner,
+  ) {
+    if (!value) {
+      await this.userVarsService.delete(
+        {
+          userId,
+          workspaceId,
+          key: OnboardingStepKeys.ONBOARDING_PARTNER_PROFILE_PENDING,
+        },
+        queryRunner,
+      );
+
+      return;
+    }
+
+    await this.userVarsService.set(
+      {
+        userId,
+        workspaceId,
+        key: OnboardingStepKeys.ONBOARDING_PARTNER_PROFILE_PENDING,
         value: true,
       },
       queryRunner,
