@@ -28,6 +28,8 @@ import {
   type SignInUpNewUserPayload,
 } from 'src/engine/core-modules/auth/types/signInUp.type';
 import { SubdomainManagerService } from 'src/engine/core-modules/domain/subdomain-manager/services/subdomain-manager.service';
+import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
+import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { FileCorePictureService } from 'src/engine/core-modules/file/file-core-picture/services/file-core-picture.service';
 import { MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 import { MetricsKeys } from 'src/engine/core-modules/metrics/types/metrics-keys.type';
@@ -56,6 +58,7 @@ export class SignInUpService {
     private readonly workspaceInvitationService: WorkspaceInvitationService,
     private readonly userWorkspaceService: UserWorkspaceService,
     private readonly onboardingService: OnboardingService,
+    private readonly featureFlagService: FeatureFlagService,
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
     private readonly secureHttpClientService: SecureHttpClientService,
     private readonly twentyConfigService: TwentyConfigService,
@@ -326,6 +329,22 @@ export class SignInUpService {
 
     if (user.firstName === '' && user.lastName === '') {
       await this.onboardingService.setOnboardingCreateProfilePending(
+        {
+          userId: user.id,
+          workspaceId: workspace.id,
+          value: true,
+        },
+        queryRunner,
+      );
+    }
+
+    const isPartnerOsEnabled = await this.featureFlagService.isFeatureEnabled(
+      FeatureFlagKey.IS_PARTNER_OS_ENABLED,
+      workspace.id,
+    );
+
+    if (isPartnerOsEnabled) {
+      await this.onboardingService.setOnboardingPartnerProfilePending(
         {
           userId: user.id,
           workspaceId: workspace.id,

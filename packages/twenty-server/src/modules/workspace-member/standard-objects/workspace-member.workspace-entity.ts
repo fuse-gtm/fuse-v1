@@ -88,4 +88,5 @@ export class WorkspaceMemberWorkspaceEntity extends BaseWorkspaceEntity {
   ownedOpportunities: Relation<OpportunityWorkspaceEntity[]>;
   searchVector: string;
   numberFormat: string;
+  partnerRole: string | null;
 }
