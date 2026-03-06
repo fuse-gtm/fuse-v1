@@ -15,19 +15,20 @@ import {
 } from 'react-router-dom';
 import { Authorize } from '~/pages/auth/Authorize';
 import { PasswordReset } from '~/pages/auth/PasswordReset';
-import { SignInUp } from '~/pages/auth/SignInUp';
+import { FuseCheckInbox } from '~/pages/auth/FuseCheckInbox';
+import { FuseSignInUp } from '~/pages/auth/FuseSignInUp';
 import { NotFound } from '~/pages/not-found/NotFound';
 import { RecordIndexPage } from '~/pages/object-record/RecordIndexPage';
 import { RecordShowPage } from '~/pages/object-record/RecordShowPage';
 import { BookCall } from '~/pages/onboarding/BookCall';
 import { BookCallDecision } from '~/pages/onboarding/BookCallDecision';
 import { ChooseYourPlan } from '~/pages/onboarding/ChooseYourPlan';
-import { CreateProfile } from '~/pages/onboarding/CreateProfile';
-import { CreateWorkspace } from '~/pages/onboarding/CreateWorkspace';
-import { InviteTeam } from '~/pages/onboarding/InviteTeam';
-import { PaymentSuccess } from '~/pages/onboarding/PaymentSuccess';
+import { FuseCreateProfile } from '~/pages/onboarding/FuseCreateProfile';
+import { FuseCreateWorkspace } from '~/pages/onboarding/FuseCreateWorkspace';
+import { FuseInviteTeam } from '~/pages/onboarding/FuseInviteTeam';
+import { FuseSyncEmails } from '~/pages/onboarding/FuseSyncEmails';
 import { PartnerProfile } from '~/pages/onboarding/PartnerProfile';
-import { SyncEmails } from '~/pages/onboarding/SyncEmails';
+import { PaymentSuccess } from '~/pages/onboarding/PaymentSuccess';
 
 export const useCreateAppRouter = (
   isFunctionSettingsEnabled?: boolean,
@@ -44,14 +45,18 @@ export const useCreateAppRouter = (
         <Route element={<DefaultLayout />}>
           <Route path={AppPath.Verify} element={<VerifyLoginTokenEffect />} />
           <Route path={AppPath.VerifyEmail} element={<VerifyEmailEffect />} />
-          <Route path={AppPath.SignInUp} element={<SignInUp />} />
-          <Route path={AppPath.Invite} element={<SignInUp />} />
+          <Route path={AppPath.SignInUp} element={<FuseSignInUp />} />
+          <Route path={AppPath.Invite} element={<FuseSignInUp />} />
+          <Route path={AppPath.CheckInbox} element={<FuseCheckInbox />} />
           <Route path={AppPath.ResetPassword} element={<PasswordReset />} />
-          <Route path={AppPath.CreateWorkspace} element={<CreateWorkspace />} />
-          <Route path={AppPath.CreateProfile} element={<CreateProfile />} />
+          <Route
+            path={AppPath.CreateWorkspace}
+            element={<FuseCreateWorkspace />}
+          />
+          <Route path={AppPath.CreateProfile} element={<FuseCreateProfile />} />
           <Route path={AppPath.PartnerProfile} element={<PartnerProfile />} />
-          <Route path={AppPath.SyncEmails} element={<SyncEmails />} />
-          <Route path={AppPath.InviteTeam} element={<InviteTeam />} />
+          <Route path={AppPath.SyncEmails} element={<FuseSyncEmails />} />
+          <Route path={AppPath.InviteTeam} element={<FuseInviteTeam />} />
           <Route path={AppPath.PlanRequired} element={<ChooseYourPlan />} />
           <Route
             path={AppPath.PlanRequiredSuccess}

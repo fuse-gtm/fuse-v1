@@ -21,7 +21,9 @@ export const useShowAuthModal = () => {
       isMatchingLocation(location, AppPath.PlanRequired) ||
       isMatchingLocation(location, AppPath.PlanRequiredSuccess) ||
       isMatchingLocation(location, AppPath.BookCallDecision) ||
-      isMatchingLocation(location, AppPath.BookCall)
+      isMatchingLocation(location, AppPath.BookCall) ||
+      isMatchingLocation(location, AppPath.CheckInbox) ||
+      isMatchingLocation(location, AppPath.PartnerProfile)
     ) {
       return true;
     }

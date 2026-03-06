@@ -11,8 +11,9 @@ import { WorkspaceLogoUploader } from '@/settings/workspace/components/Workspace
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { useLoadCurrentUser } from '@/users/hooks/useLoadCurrentUser';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { ApolloError } from '@apollo/client';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
 import { motion } from 'framer-motion';
@@ -32,20 +33,20 @@ const StyledContentContainer = styled.div`
 `;
 
 const StyledSectionContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing(6)};
+  margin-top: ${themeCssVariables.spacing[6]};
 `;
 
 const StyledButtonContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing(8)};
+  margin-top: ${themeCssVariables.spacing[8]};
 `;
 
 const StyledLoaderContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(4)};
+  gap: ${themeCssVariables.spacing[4]};
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing(10)} 0;
+  padding: ${themeCssVariables.spacing[10]} 0;
   width: 100%;
 `;
 

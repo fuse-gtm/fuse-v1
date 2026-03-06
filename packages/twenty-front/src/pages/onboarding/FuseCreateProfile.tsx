@@ -11,8 +11,9 @@ import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { ApolloError } from '@apollo/client';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -29,19 +30,19 @@ const StyledContentContainer = styled.div`
 `;
 
 const StyledSectionContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing(6)};
+  margin-top: ${themeCssVariables.spacing[6]};
 `;
 
 const StyledComboInputContainer = styled.div`
   display: flex;
   flex-direction: row;
   > * + * {
-    margin-left: ${({ theme }) => theme.spacing(4)};
+    margin-left: ${themeCssVariables.spacing[4]};
   }
 `;
 
 const StyledButtonContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing(8)};
+  margin-top: ${themeCssVariables.spacing[8]};
 `;
 
 const firstNameErrorMessage = msg`First name can not be empty`;

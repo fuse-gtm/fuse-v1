@@ -3,25 +3,27 @@ import { FuseOnboardingPreview } from '@/auth/components/FuseOnboardingPreview';
 import { FooterNote } from '@/auth/sign-in-up/components/FooterNote';
 import { useAuth } from '@/auth/hooks/useAuth';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MainButton, TextInput } from 'twenty-ui/input';
+import { TextInput } from '@/ui/input/components/TextInput';
+import { MainButton } from 'twenty-ui/input';
 import { IconMail } from 'twenty-ui/display';
 
 const StyledFormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(4)};
+  gap: ${themeCssVariables.spacing[4]};
   width: 100%;
 `;
 
 const StyledDescription = styled.p`
-  color: ${({ theme }) => theme.font.color.tertiary};
-  font-size: ${({ theme }) => theme.font.size.sm};
+  color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.sm};
   margin: 0;
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
+  margin-bottom: ${themeCssVariables.spacing[4]};
   line-height: 1.5;
 `;
 
@@ -29,23 +31,23 @@ const StyledBottomLinks = styled.div`
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: ${({ theme }) => theme.spacing(2)};
+  gap: ${themeCssVariables.spacing[2]};
   justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing(4)};
+  margin-top: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledLinkButton = styled.button`
   background: none;
   border: none;
-  font-family: ${({ theme }) => theme.font.family};
-  font-size: ${({ theme }) => theme.font.size.xs};
-  font-weight: ${({ theme }) => theme.font.weight.regular};
-  color: ${({ theme }) => theme.font.color.tertiary};
+  font-family: ${themeCssVariables.font.family};
+  font-size: ${themeCssVariables.font.size.xs};
+  font-weight: ${themeCssVariables.font.weight.regular};
+  color: ${themeCssVariables.font.color.tertiary};
   cursor: pointer;
   padding: 0;
 
   &:hover {
-    color: ${({ theme }) => theme.font.color.secondary};
+    color: ${themeCssVariables.font.color.secondary};
   }
 `;
 

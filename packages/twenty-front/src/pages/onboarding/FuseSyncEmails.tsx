@@ -12,9 +12,10 @@ import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboard
 import { useTriggerApisOAuth } from '@/settings/accounts/hooks/useTriggerApiOAuth';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { useTheme } from '@emotion/react';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useState } from 'react';
 import { AppPath, ConnectedAccountProvider } from 'twenty-shared/types';
 import { IconGoogle, IconMicrosoft } from 'twenty-ui/display';
@@ -30,21 +31,21 @@ const StyledSyncEmailsContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  margin: ${({ theme }) => theme.spacing(4)} 0;
-  gap: ${({ theme }) => theme.spacing(2)};
+  margin: ${themeCssVariables.spacing[4]} 0;
+  gap: ${themeCssVariables.spacing[2]};
 `;
 
 const StyledProviderContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(3)};
+  gap: ${themeCssVariables.spacing[3]};
 `;
 
 const StyledActionLinkContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin: ${({ theme }) => theme.spacing(3)} 0 0;
-  padding-top: ${({ theme }) => theme.spacing(2)};
+  margin: ${themeCssVariables.spacing[3]} 0 0;
+  padding-top: ${themeCssVariables.spacing[2]};
 `;
 
 export const FuseSyncEmails = () => {

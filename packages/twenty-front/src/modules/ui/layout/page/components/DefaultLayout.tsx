@@ -21,6 +21,7 @@ const SignInBackgroundMockPage = lazy(() =>
 );
 import { useShowFullscreen } from '@/ui/layout/fullscreen/hooks/useShowFullscreen';
 import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
+import { useShowFuseAuthLayout } from '@/ui/layout/hooks/useShowFuseAuthLayout';
 import { NAVIGATION_DRAWER_CONSTRAINTS } from '@/ui/layout/resizable-panel/constants/NavigationDrawerConstraints';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { Global, css, useTheme } from '@emotion/react';
@@ -71,6 +72,7 @@ export const DefaultLayout = () => {
   const theme = useTheme();
   const windowsWidth = useScreenSize().width;
   const showAuthModal = useShowAuthModal();
+  const showFuseAuthLayout = useShowFuseAuthLayout();
   const useShowFullScreen = useShowFullscreen();
 
   return (
@@ -104,13 +106,13 @@ export const DefaultLayout = () => {
             >
               <PageDragDropProvider>
                 {!showAuthModal && <KeyboardShortcutMenu />}
-                {showAuthModal ? (
-                  <StyledAppNavigationDrawerMock />
-                ) : useShowFullScreen ? null : (
-                  <StyledAppNavigationDrawer />
-                )}
-                {showAuthModal ? (
+                {showFuseAuthLayout ? (
+                  <StyledMainContainer>
+                    <Outlet />
+                  </StyledMainContainer>
+                ) : showAuthModal ? (
                   <>
+                    <StyledAppNavigationDrawerMock />
                     <StyledMainContainer>
                       <Suspense fallback={null}>
                         <SignInBackgroundMockPage />
@@ -125,11 +127,16 @@ export const DefaultLayout = () => {
                     </AnimatePresence>
                   </>
                 ) : (
-                  <StyledMainContainer>
-                    <AppErrorBoundary FallbackComponent={AppPageErrorFallback}>
-                      <Outlet />
-                    </AppErrorBoundary>
-                  </StyledMainContainer>
+                  <>
+                    {useShowFullScreen ? null : <StyledAppNavigationDrawer />}
+                    <StyledMainContainer>
+                      <AppErrorBoundary
+                        FallbackComponent={AppPageErrorFallback}
+                      >
+                        <Outlet />
+                      </AppErrorBoundary>
+                    </StyledMainContainer>
+                  </>
                 )}
               </PageDragDropProvider>
             </StyledPageContainer>

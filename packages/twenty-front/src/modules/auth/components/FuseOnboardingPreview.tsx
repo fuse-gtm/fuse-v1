@@ -1,5 +1,6 @@
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { Trans } from '@lingui/react/macro';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledPreviewContainer = styled.div`
   align-items: center;
@@ -7,7 +8,7 @@ const StyledPreviewContainer = styled.div`
   flex-direction: column;
   height: 100%;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing(10)};
+  padding: ${themeCssVariables.spacing[10]};
   width: 100%;
 `;
 
@@ -17,16 +18,16 @@ const StyledWelcomeText = styled.div`
 `;
 
 const StyledWelcomeTitle = styled.h2`
-  font-size: ${({ theme }) => theme.font.size.xl};
-  font-weight: ${({ theme }) => theme.font.weight.semiBold};
-  color: ${({ theme }) => theme.font.color.primary};
+  font-size: ${themeCssVariables.font.size.xl};
+  font-weight: ${themeCssVariables.font.weight.semiBold};
+  color: ${themeCssVariables.font.color.primary};
   margin: 0;
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
+  margin-bottom: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledWelcomeDescription = styled.p`
-  color: ${({ theme }) => theme.font.color.tertiary};
-  font-size: ${({ theme }) => theme.font.size.md};
+  color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.md};
   line-height: 1.6;
   margin: 0;
 `;
@@ -36,36 +37,36 @@ const StyledDashboardSkeleton = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 560px;
-  gap: ${({ theme }) => theme.spacing(3)};
+  gap: ${themeCssVariables.spacing[3]};
 `;
 
 const StyledSkeletonRow = styled.div<{ width?: string; height?: string }>`
-  background: ${({ theme }) => theme.background.transparent.lighter};
-  border-radius: ${({ theme }) => theme.border.radius.sm};
+  background: ${themeCssVariables.background.transparent.lighter};
+  border-radius: ${themeCssVariables.border.radius.sm};
   height: ${({ height }) => height ?? '12px'};
   width: ${({ width }) => width ?? '100%'};
 `;
 
 const StyledSkeletonCard = styled.div`
-  background: ${({ theme }) => theme.background.primary};
-  border: 1px solid ${({ theme }) => theme.border.color.light};
-  border-radius: ${({ theme }) => theme.border.radius.md};
+  background: ${themeCssVariables.background.primary};
+  border: 1px solid ${themeCssVariables.border.color.light};
+  border-radius: ${themeCssVariables.border.radius.md};
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
-  padding: ${({ theme }) => theme.spacing(4)};
+  gap: ${themeCssVariables.spacing[2]};
+  padding: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledSkeletonHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing(3)};
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  gap: ${themeCssVariables.spacing[3]};
+  margin-bottom: ${themeCssVariables.spacing[3]};
 `;
 
 const StyledSkeletonAvatar = styled.div`
-  background: ${({ theme }) => theme.background.transparent.light};
-  border-radius: ${({ theme }) => theme.border.radius.rounded};
+  background: ${themeCssVariables.background.transparent.light};
+  border-radius: ${themeCssVariables.border.radius.rounded};
   flex-shrink: 0;
   height: 32px;
   width: 32px;

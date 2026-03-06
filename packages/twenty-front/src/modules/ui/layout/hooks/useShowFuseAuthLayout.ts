@@ -16,7 +16,8 @@ export const useShowFuseAuthLayout = () => {
       isMatchingLocation(location, AppPath.CreateProfile) ||
       isMatchingLocation(location, AppPath.SyncEmails) ||
       isMatchingLocation(location, AppPath.InviteTeam) ||
-      isMatchingLocation(location, AppPath.CheckInbox)
+      isMatchingLocation(location, AppPath.CheckInbox) ||
+      isMatchingLocation(location, AppPath.PartnerProfile)
     ) {
       return true;
     }

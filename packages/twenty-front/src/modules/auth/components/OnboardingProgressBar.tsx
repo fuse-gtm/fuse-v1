@@ -30,14 +30,16 @@ const StyledSegment = styled.div<{ isActive: boolean; isCompleted: boolean }>`
       ? themeCssVariables.color.blue
       : themeCssVariables.background.quaternary};
   opacity: ${({ isActive }) => (isActive ? 0.7 : 1)};
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
 `;
 
 const StyledStepCounter = styled.span`
-  font-size: ${themeCssVariables.font.size.xs};
   color: ${themeCssVariables.font.color.tertiary};
-  white-space: nowrap;
+  font-size: ${themeCssVariables.font.size.xs};
   user-select: none;
+  white-space: nowrap;
 `;
 
 export const OnboardingProgressBar = ({
@@ -45,7 +47,11 @@ export const OnboardingProgressBar = ({
   currentStep,
 }: OnboardingProgressBarProps) => {
   return (
-    <StyledContainer role="progressbar" aria-valuenow={currentStep + 1} aria-valuemax={totalSteps}>
+    <StyledContainer
+      role="progressbar"
+      aria-valuenow={currentStep + 1}
+      aria-valuemax={totalSteps}
+    >
       <StyledBarContainer>
         {Array.from({ length: totalSteps }, (_, index) => (
           <StyledSegment

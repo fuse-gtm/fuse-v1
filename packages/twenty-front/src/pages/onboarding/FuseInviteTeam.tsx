@@ -8,8 +8,9 @@ import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useCreateWorkspaceInvitation } from '@/workspace-invitation/hooks/useCreateWorkspaceInvitation';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
 import {
@@ -28,9 +29,9 @@ import { useCopyToClipboard } from '~/hooks/useCopyToClipboard';
 const StyledEmailsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(4)};
+  gap: ${themeCssVariables.spacing[4]};
   width: 100%;
-  padding: ${({ theme }) => theme.spacing(4)} 0;
+  padding: ${themeCssVariables.spacing[4]} 0;
 `;
 
 const StyledActionLinkContainer = styled.div`
@@ -44,7 +45,7 @@ const StyledButtonContainer = styled.div`
 `;
 
 const StyledSkipContainer = styled.div`
-  margin: ${({ theme }) => theme.spacing(3)} 0 0;
+  margin: ${themeCssVariables.spacing[3]} 0 0;
 `;
 
 const validationSchema = z.object({

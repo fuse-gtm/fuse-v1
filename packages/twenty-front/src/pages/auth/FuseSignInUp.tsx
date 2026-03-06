@@ -21,8 +21,9 @@ import { useIsCurrentLocationOnAWorkspace } from '@/domain-manager/hooks/useIsCu
 import { useIsCurrentLocationOnDefaultDomain } from '@/domain-manager/hooks/useIsCurrentLocationOnDefaultDomain';
 import { Modal } from '@/ui/layout/modal/components/Modal';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { isDefined } from 'twenty-shared/utils';
@@ -32,9 +33,9 @@ const StyledLoaderContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing(8)};
+  margin-top: ${themeCssVariables.spacing[8]};
   width: 100%;
-  margin-bottom: ${({ theme }) => theme.spacing(8)};
+  margin-bottom: ${themeCssVariables.spacing[8]};
 `;
 
 export const FuseSignInUp = () => {
