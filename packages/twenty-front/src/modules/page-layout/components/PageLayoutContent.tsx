@@ -4,19 +4,19 @@ import { PageLayoutVerticalListEditor } from '@/page-layout/components/PageLayou
 import { PageLayoutVerticalListViewer } from '@/page-layout/components/PageLayoutVerticalListViewer';
 import { usePageLayoutContentContext } from '@/page-layout/contexts/PageLayoutContentContext';
 import { useCurrentPageLayoutOrThrow } from '@/page-layout/hooks/useCurrentPageLayoutOrThrow';
-import { useIsPageLayoutInEditMode } from '@/page-layout/hooks/useIsPageLayoutInEditMode';
 import { usePageLayoutTabWithVisibleWidgetsOrThrow } from '@/page-layout/hooks/usePageLayoutTabWithVisibleWidgetsOrThrow';
 import { useReorderPageLayoutWidgets } from '@/page-layout/hooks/useReorderPageLayoutWidgets';
-import { RecordPageAddWidgetSection } from '@/page-layout/widgets/components/RecordPageAddWidgetSection';
-import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
+import { isPageLayoutInEditModeComponentState } from '@/page-layout/states/isPageLayoutInEditModeComponentState';
+import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import {
-  FeatureFlagKey,
   PageLayoutTabLayoutMode,
   PageLayoutType,
 } from '~/generated-metadata/graphql';
 
 export const PageLayoutContent = () => {
-  const isPageLayoutInEditMode = useIsPageLayoutInEditMode();
+  const isPageLayoutInEditMode = useAtomComponentStateValue(
+    isPageLayoutInEditModeComponentState,
+  );
 
   const { tabId } = usePageLayoutContentContext();
 
@@ -31,10 +31,6 @@ export const PageLayoutContent = () => {
   const isRecordPageLayout =
     currentPageLayout.type === PageLayoutType.RECORD_PAGE;
 
-  const isRecordPageGlobalEditionEnabled = useIsFeatureEnabled(
-    FeatureFlagKey.IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED,
-  );
-
   const isCanvasLayout = layoutMode === PageLayoutTabLayoutMode.CANVAS;
   const isVerticalList = layoutMode === PageLayoutTabLayoutMode.VERTICAL_LIST;
 
@@ -43,19 +39,12 @@ export const PageLayoutContent = () => {
   }
 
   if (isVerticalList) {
-    if (
-      isPageLayoutInEditMode &&
-      isRecordPageLayout &&
-      isRecordPageGlobalEditionEnabled
-    ) {
+    if (!isRecordPageLayout && isPageLayoutInEditMode) {
       return (
         <PageLayoutVerticalListEditor
           widgets={activeTab.widgets}
           onReorder={reorderWidgets}
           isReorderEnabled={true}
-          trailingElement={
-            isRecordPageLayout ? <RecordPageAddWidgetSection /> : undefined
-          }
         />
       );
     }
