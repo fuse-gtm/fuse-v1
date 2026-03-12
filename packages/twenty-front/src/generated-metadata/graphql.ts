@@ -1603,7 +1603,7 @@ export type Field = {
   settings?: Maybe<Scalars['JSON']>;
   standardOverrides?: Maybe<StandardOverrides>;
   type: FieldMetadataType;
-  universalIdentifier: Scalars['UUID'];
+  universalIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };
 
@@ -1636,7 +1636,6 @@ export type FieldFilter = {
   isSystem?: InputMaybe<BooleanFieldComparison>;
   isUIReadOnly?: InputMaybe<BooleanFieldComparison>;
   or?: InputMaybe<Array<FieldFilter>>;
-  universalIdentifier?: InputMaybe<UuidFilterComparison>;
 };
 
 /** Type of the field */
@@ -4777,7 +4776,7 @@ export type UpdateFieldInput = {
   name?: InputMaybe<Scalars['String']>;
   options?: InputMaybe<Scalars['JSON']>;
   settings?: InputMaybe<Scalars['JSON']>;
-  universalIdentifier?: InputMaybe<Scalars['UUID']>;
+  universalIdentifier?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateFrontComponentInput = {
