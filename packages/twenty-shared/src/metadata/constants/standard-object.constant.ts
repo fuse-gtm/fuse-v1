@@ -1367,6 +1367,9 @@ export const STANDARD_OBJECTS = {
           createdBy: {
             universalIdentifier: '20202020-af05-4a05-8a05-a0be5a115203',
           },
+          noteTargets: {
+            universalIdentifier: '20202020-af05-4a05-8a05-a0be5a115204',
+          },
         },
       },
     },
@@ -1964,6 +1967,9 @@ export const STANDARD_OBJECTS = {
           },
           createdBy: {
             universalIdentifier: '20202020-af06-4a06-8a06-ba5ca11a6206',
+          },
+          taskTargets: {
+            universalIdentifier: '20202020-af06-4a06-8a06-ba5ca11a6207',
           },
         },
       },
