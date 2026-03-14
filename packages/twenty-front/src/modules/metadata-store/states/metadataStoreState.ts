@@ -30,9 +30,6 @@ export const ALL_METADATA_ENTITY_KEYS = [
   'skills',
   'rowLevelPermissionPredicates',
   'rowLevelPermissionPredicateGroups',
-  // TODO: clarify what really is metadata  (syncable entity?)
-  // vs 'core engine entity' or 'broadcastable entity'
-  'agentChatThreads',
 ] as const;
 
 export type MetadataEntityKey = (typeof ALL_METADATA_ENTITY_KEYS)[number];
@@ -41,8 +38,6 @@ export type MetadataStoreItem = {
   current: object[];
   draft: object[];
   status: MetadataEntityStoreStatus;
-  currentCollectionHash?: string;
-  draftCollectionHash?: string;
 };
 
 const METADATA_STORE_ITEM_INITIAL_VALUE: MetadataStoreItem = {

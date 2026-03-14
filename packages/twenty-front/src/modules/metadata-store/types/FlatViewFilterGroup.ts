@@ -1,7 +1,7 @@
-import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
+import { type CoreViewWithRelations } from '@/views/types/CoreViewWithRelations';
 
 type ViewFilterGroupRelation = NonNullable<
-  ViewWithRelations['viewFilterGroups']
+  CoreViewWithRelations['viewFilterGroups']
 >[number];
 
 export type FlatViewFilterGroup = ViewFilterGroupRelation;

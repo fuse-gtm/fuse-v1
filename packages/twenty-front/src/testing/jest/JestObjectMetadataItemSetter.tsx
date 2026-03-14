@@ -1,32 +1,36 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { useUpdateMetadataStoreDraft } from '@/metadata-store/hooks/useUpdateMetadataStoreDraft';
-import { splitCompositeObjectMetadataItems } from '@/metadata-store/utils/splitCompositeObjectMetadataItems';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
+import { useMetadataStore } from '@/metadata-store/hooks/useMetadataStore';
+import { splitObjectMetadataItemWithRelated } from '@/metadata-store/utils/splitObjectMetadataItemWithRelated';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
 
 export const JestObjectMetadataItemSetter = ({
   children,
   objectMetadataItems,
 }: {
   children: ReactNode;
-  objectMetadataItems?: EnrichedObjectMetadataItem[];
+  objectMetadataItems?: ObjectMetadataItem[];
 }) => {
-  const { replaceDraft, applyChanges } = useUpdateMetadataStoreDraft();
+  const { updateDraft, applyChanges, resetMetadataStore } = useMetadataStore();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const items =
-      objectMetadataItems ?? getTestEnrichedObjectMetadataItemsMock();
+    const items = objectMetadataItems ?? generatedMockObjectMetadataItems;
     const { flatObjects, flatFields, flatIndexes } =
-      splitCompositeObjectMetadataItems(items);
+      splitObjectMetadataItemWithRelated(items);
 
-    replaceDraft('objectMetadataItems', flatObjects);
-    replaceDraft('fieldMetadataItems', flatFields);
-    replaceDraft('indexMetadataItems', flatIndexes);
+    // Reset first so updateDraft always proceeds and writes to localStorage.
+    // Without this, atomWithStorage's onMount re-reads from empty localStorage
+    // and overwrites in-memory values when the store is reused across tests.
+    resetMetadataStore();
+
+    updateDraft('objectMetadataItems', flatObjects);
+    updateDraft('fieldMetadataItems', flatFields);
+    updateDraft('indexMetadataItems', flatIndexes);
     applyChanges();
     setIsLoaded(true);
-  }, [objectMetadataItems, replaceDraft, applyChanges]);
+  }, [objectMetadataItems, updateDraft, applyChanges, resetMetadataStore]);
 
   return isLoaded ? <>{children}</> : null;
 };

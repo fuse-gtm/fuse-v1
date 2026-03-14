@@ -20,8 +20,7 @@ export class MinimalMetadataResolver {
   @Query(() => MinimalMetadataDTO)
   async minimalMetadata(
     @AuthWorkspace() workspace: WorkspaceEntity,
-    @AuthUserWorkspaceId({ allowUndefined: true })
-    userWorkspaceId: string | undefined,
+    @AuthUserWorkspaceId() userWorkspaceId: string | undefined,
   ): Promise<MinimalMetadataDTO> {
     return this.minimalMetadataService.getMinimalMetadata(
       workspace.id,

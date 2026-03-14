@@ -21,10 +21,7 @@ export const FIND_MINIMAL_METADATA = gql`
         key
         objectMetadataId
       }
-      collectionHashes {
-        collectionName
-        hash
-      }
+      metadataVersion
     }
   }
 `;
