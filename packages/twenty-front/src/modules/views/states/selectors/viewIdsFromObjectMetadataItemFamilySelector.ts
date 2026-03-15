@@ -1,13 +1,15 @@
+import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
+import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 import { createAtomFamilySelector } from '@/ui/utilities/state/jotai/utils/createAtomFamilySelector';
-import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 
-export const viewIdsFromObjectMetadataItemFamilySelector =
+export const coreViewIdsFromObjectMetadataItemFamilySelector =
   createAtomFamilySelector<string[], { objectMetadataItemId: string }>({
-    key: 'viewIdsFromObjectMetadataItemFamilySelector',
+    key: 'coreViewIdsFromObjectMetadataItemFamilySelector',
     get:
       ({ objectMetadataItemId }) =>
       ({ get }) => {
-        const views = get(viewsSelector);
+        const coreViews = get(coreViewsSelector);
+        const views = coreViews.map(convertCoreViewToView);
         return views
           .filter((view) => view.objectMetadataId === objectMetadataItemId)
           .map((view) => view.id);

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useUpdateMetadataStoreDraft } from '@/metadata-store/hooks/useUpdateMetadataStoreDraft';
+import { useMetadataStore } from '@/metadata-store/hooks/useMetadataStore';
 import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
 import { useApolloCoreClient } from '@/object-metadata/hooks/useApolloCoreClient';
 import {
@@ -14,7 +14,7 @@ export const useRemoveNavigationMenuItemByTargetRecordId = () => {
   const store = useStore();
   const apolloCoreClient = useApolloCoreClient();
   const cache = apolloCoreClient.cache;
-  const { replaceDraft, applyChanges } = useUpdateMetadataStoreDraft();
+  const { updateDraft, applyChanges } = useMetadataStore();
 
   const removeNavigationMenuItemsByTargetRecordIds = useCallback(
     (targetRecordIds: string[]) => {
@@ -31,7 +31,7 @@ export const useRemoveNavigationMenuItemByTargetRecordId = () => {
           !targetRecordIdsSet.has(item.targetRecordId),
       );
 
-      replaceDraft('navigationMenuItems', updatedNavigationMenuItems);
+      updateDraft('navigationMenuItems', updatedNavigationMenuItems);
       applyChanges();
 
       cache.updateQuery(
@@ -48,7 +48,7 @@ export const useRemoveNavigationMenuItemByTargetRecordId = () => {
         },
       );
     },
-    [cache, store, replaceDraft, applyChanges],
+    [cache, store, updateDraft, applyChanges],
   );
 
   return {

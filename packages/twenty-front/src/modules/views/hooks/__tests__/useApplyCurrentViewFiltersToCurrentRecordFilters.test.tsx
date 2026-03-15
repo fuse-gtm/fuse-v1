@@ -6,25 +6,25 @@ import { type RecordFilter } from '@/object-record/record-filter/types/RecordFil
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { resetJotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
 import { useApplyCurrentViewFiltersToCurrentRecordFilters } from '@/views/hooks/useApplyCurrentViewFiltersToCurrentRecordFilters';
-import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
+import { type CoreViewWithRelations } from '@/views/types/CoreViewWithRelations';
 import { type View } from '@/views/types/View';
 import { type ViewFilter } from '@/views/types/ViewFilter';
 import { act } from 'react';
 import { ViewFilterOperand } from 'twenty-shared/types';
 import { getFilterTypeFromFieldType, isDefined } from 'twenty-shared/utils';
 import {
-  type ViewFilter as GqlViewFilter,
-  ViewFilterOperand as GqlViewFilterOperand,
+  type CoreViewFilter,
+  ViewFilterOperand as CoreViewFilterOperand,
 } from '~/generated-metadata/graphql';
 import { getJestMetadataAndApolloMocksAndCommandMenuWrapper } from '~/testing/jest/getJestMetadataAndApolloMocksAndCommandMenuWrapper';
-import { mockedViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
-import { setTestViewsInMetadataStore } from '~/testing/utils/setTestViewsInMetadataStore';
+import { mockedCoreViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
+import { setTestCoreViewsInMetadataStore } from '~/testing/utils/setTestCoreViewsInMetadataStore';
 
 const mockObjectMetadataItemNameSingular = 'company';
 
 describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
-  const mockObjectMetadataItem = getTestEnrichedObjectMetadataItemsMock().find(
+  const mockObjectMetadataItem = generatedMockObjectMetadataItems.find(
     (item) => item.nameSingular === mockObjectMetadataItemNameSingular,
   );
 
@@ -38,14 +38,15 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
     resetJotaiStore();
   });
 
-  const allCompaniesViewData = mockedViews.find(
+  const allCompaniesCoreView = mockedCoreViews.find(
     (v) => v.name === 'All Companies',
   )!;
-  const allCompaniesView = allCompaniesViewData as unknown as View;
+  const allCompaniesView = allCompaniesCoreView as unknown as View;
 
   const mockFieldMetadataItem = mockObjectMetadataItem.fields[0];
 
   const mockViewFilter: ViewFilter = {
+    __typename: 'ViewFilter',
     id: 'filter-1',
     fieldMetadataId: mockFieldMetadataItem.id,
     operand: ViewFilterOperand.CONTAINS,
@@ -56,14 +57,15 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
     subFieldName: null,
   };
 
-  const mockGqlViewFilter: Omit<GqlViewFilter, 'workspaceId'> = {
+  const mockCoreViewFilter: Omit<CoreViewFilter, 'workspaceId'> = {
+    __typename: 'CoreViewFilter',
     id: 'filter-1',
     fieldMetadataId: mockFieldMetadataItem.id,
-    operand: GqlViewFilterOperand.CONTAINS,
+    operand: CoreViewFilterOperand.CONTAINS,
     value: 'test',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    viewId: allCompaniesViewData.id,
+    viewId: allCompaniesCoreView.id,
     positionInViewFilterGroup: 0,
     viewFilterGroupId: 'group-1',
     subFieldName: null,
@@ -74,10 +76,10 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
     viewFilters: [mockViewFilter],
   } satisfies View;
 
-  const mockViewWithRelations = {
-    ...allCompaniesViewData,
-    viewFilters: [mockGqlViewFilter],
-  } satisfies ViewWithRelations;
+  const mockCoreView = {
+    ...allCompaniesCoreView,
+    viewFilters: [mockCoreViewFilter],
+  } satisfies CoreViewWithRelations;
 
   it('should apply filters from current view', () => {
     const { result } = renderHook(
@@ -103,7 +105,7 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
             mockObjectMetadataItemNameSingular,
           contextStoreCurrentViewId: mockView.id,
           onInitializeJotaiStore: (store) => {
-            setTestViewsInMetadataStore(store, [mockViewWithRelations]);
+            setTestCoreViewsInMetadataStore(store, [mockCoreView]);
           },
         }),
       },
@@ -118,9 +120,9 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
         id: mockViewFilter.id,
         fieldMetadataId: mockViewFilter.fieldMetadataId,
         value: mockViewFilter.value,
-        displayValue: mockViewFilter.displayValue ?? mockViewFilter.value,
+        displayValue: mockViewFilter.displayValue,
         operand: mockViewFilter.operand,
-        recordFilterGroupId: mockViewFilter.viewFilterGroupId ?? undefined,
+        recordFilterGroupId: mockViewFilter.viewFilterGroupId,
         positionInRecordFilterGroup: mockViewFilter.positionInViewFilterGroup,
         label: mockFieldMetadataItem.label,
         type: getFilterTypeFromFieldType(mockFieldMetadataItem.type),
@@ -193,8 +195,8 @@ describe('useApplyCurrentViewFiltersToCurrentRecordFilters', () => {
           contextStoreCurrentObjectMetadataNameSingular:
             mockObjectMetadataItemNameSingular,
           onInitializeJotaiStore: (store) => {
-            setTestViewsInMetadataStore(store, [
-              { ...mockViewWithRelations, viewFilters: [] },
+            setTestCoreViewsInMetadataStore(store, [
+              { ...mockCoreView, viewFilters: [] },
             ]);
             store.set(
               contextStoreCurrentViewIdComponentState.atomFamily({

@@ -1,14 +1,15 @@
 import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/contextStoreCurrentViewIdComponentState';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { useLoadRecordIndexStates } from '@/object-record/record-index/hooks/useLoadRecordIndexStates';
 import { type ExtendedAggregateOperations } from '@/object-record/record-table/types/ExtendedAggregateOperations';
 import { convertExtendedAggregateOperationToAggregateOperation } from '@/object-record/utils/convertExtendedAggregateOperationToAggregateOperation';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { usePerformViewAPIUpdate } from '@/views/hooks/internal/usePerformViewAPIUpdate';
 import { useCanPersistViewChanges } from '@/views/hooks/useCanPersistViewChanges';
+import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
-import { type View as GqlView } from '~/generated-metadata/graphql';
+import { type CoreView } from '~/generated-metadata/graphql';
 
 export const useUpdateViewAggregate = () => {
   const { canPersistChanges } = useCanPersistViewChanges();
@@ -26,7 +27,7 @@ export const useUpdateViewAggregate = () => {
     }: {
       kanbanAggregateOperationFieldMetadataId: string | null;
       kanbanAggregateOperation: ExtendedAggregateOperations | null;
-      objectMetadataItem: EnrichedObjectMetadataItem;
+      objectMetadataItem: ObjectMetadataItem;
     }) => {
       if (!canPersistChanges) {
         return;
@@ -53,12 +54,14 @@ export const useUpdateViewAggregate = () => {
       });
 
       if (updatedViewResult.status === 'successful') {
-        const updatedView = updatedViewResult.response.data
-          ?.updateView as GqlView;
+        const updatedCoreView = updatedViewResult.response.data
+          ?.updateCoreView as CoreView;
 
-        if (!isDefined(updatedView)) {
+        if (!isDefined(updatedCoreView)) {
           return;
         }
+
+        const updatedView = convertCoreViewToView(updatedCoreView);
 
         loadRecordIndexStates(updatedView, objectMetadataItem);
       }

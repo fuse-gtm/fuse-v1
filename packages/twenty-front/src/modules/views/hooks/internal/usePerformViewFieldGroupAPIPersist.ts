@@ -3,59 +3,59 @@ import { useCallback } from 'react';
 import { useMetadataErrorHandler } from '@/metadata-error-handler/hooks/useMetadataErrorHandler';
 import { type MetadataRequestResult } from '@/object-metadata/types/MetadataRequestResult.type';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
-import { CREATE_MANY_VIEW_FIELD_GROUPS } from '@/views/graphql/mutations/createManyViewFieldGroups';
-import { DELETE_VIEW_FIELD_GROUP } from '@/views/graphql/mutations/deleteViewFieldGroup';
-import { UPDATE_VIEW_FIELD_GROUP } from '@/views/graphql/mutations/updateViewFieldGroup';
+import { CREATE_MANY_CORE_VIEW_FIELD_GROUPS } from '@/views/graphql/mutations/createManyCoreViewFieldGroups';
+import { DELETE_CORE_VIEW_FIELD_GROUP } from '@/views/graphql/mutations/deleteCoreViewFieldGroup';
+import { UPDATE_CORE_VIEW_FIELD_GROUP } from '@/views/graphql/mutations/updateCoreViewFieldGroup';
 import { useMutation } from '@apollo/client/react';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import {
-  type ViewFieldGroup,
-  type MutationCreateManyViewFieldGroupsArgs,
-  type MutationDeleteViewFieldGroupArgs,
-  type MutationUpdateViewFieldGroupArgs,
+  type CoreViewFieldGroup,
+  type MutationCreateManyCoreViewFieldGroupsArgs,
+  type MutationDeleteCoreViewFieldGroupArgs,
+  type MutationUpdateCoreViewFieldGroupArgs,
 } from '~/generated-metadata/graphql';
 
-type CreateManyViewFieldGroupsMutationResult = {
-  createManyViewFieldGroups: ViewFieldGroup[];
+type CreateManyCoreViewFieldGroupsMutationResult = {
+  createManyCoreViewFieldGroups: CoreViewFieldGroup[];
 };
 
-type UpdateViewFieldGroupMutationResult = {
-  updateViewFieldGroup: ViewFieldGroup;
+type UpdateCoreViewFieldGroupMutationResult = {
+  updateCoreViewFieldGroup: CoreViewFieldGroup;
 };
 
-type DeleteViewFieldGroupMutationResult = {
-  deleteViewFieldGroup: ViewFieldGroup;
+type DeleteCoreViewFieldGroupMutationResult = {
+  deleteCoreViewFieldGroup: CoreViewFieldGroup;
 };
 
 export const usePerformViewFieldGroupAPIPersist = () => {
-  const [createManyViewFieldGroupsMutation] = useMutation<
-    CreateManyViewFieldGroupsMutationResult,
-    MutationCreateManyViewFieldGroupsArgs
-  >(CREATE_MANY_VIEW_FIELD_GROUPS);
-  const [updateViewFieldGroupMutation] = useMutation<
-    UpdateViewFieldGroupMutationResult,
-    MutationUpdateViewFieldGroupArgs
-  >(UPDATE_VIEW_FIELD_GROUP);
-  const [deleteViewFieldGroupMutation] = useMutation<
-    DeleteViewFieldGroupMutationResult,
-    MutationDeleteViewFieldGroupArgs
-  >(DELETE_VIEW_FIELD_GROUP);
+  const [createManyCoreViewFieldGroupsMutation] = useMutation<
+    CreateManyCoreViewFieldGroupsMutationResult,
+    MutationCreateManyCoreViewFieldGroupsArgs
+  >(CREATE_MANY_CORE_VIEW_FIELD_GROUPS);
+  const [updateCoreViewFieldGroupMutation] = useMutation<
+    UpdateCoreViewFieldGroupMutationResult,
+    MutationUpdateCoreViewFieldGroupArgs
+  >(UPDATE_CORE_VIEW_FIELD_GROUP);
+  const [deleteCoreViewFieldGroupMutation] = useMutation<
+    DeleteCoreViewFieldGroupMutationResult,
+    MutationDeleteCoreViewFieldGroupArgs
+  >(DELETE_CORE_VIEW_FIELD_GROUP);
 
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
 
   const performViewFieldGroupAPICreate = useCallback(
     async (
-      createViewFieldGroupInputs: MutationCreateManyViewFieldGroupsArgs,
+      createCoreViewFieldGroupInputs: MutationCreateManyCoreViewFieldGroupsArgs,
     ): Promise<
-      MetadataRequestResult<CreateManyViewFieldGroupsMutationResult | null>
+      MetadataRequestResult<CreateManyCoreViewFieldGroupsMutationResult | null>
     > => {
       if (
-        !Array.isArray(createViewFieldGroupInputs.inputs) ||
-        createViewFieldGroupInputs.inputs.length === 0
+        !Array.isArray(createCoreViewFieldGroupInputs.inputs) ||
+        createCoreViewFieldGroupInputs.inputs.length === 0
       ) {
         return {
           status: 'successful',
@@ -64,8 +64,8 @@ export const usePerformViewFieldGroupAPIPersist = () => {
       }
 
       try {
-        const result = await createManyViewFieldGroupsMutation({
-          variables: createViewFieldGroupInputs,
+        const result = await createManyCoreViewFieldGroupsMutation({
+          variables: createCoreViewFieldGroupInputs,
         });
 
         return {
@@ -89,7 +89,7 @@ export const usePerformViewFieldGroupAPIPersist = () => {
       }
     },
     [
-      createManyViewFieldGroupsMutation,
+      createManyCoreViewFieldGroupsMutation,
       handleMetadataError,
       enqueueErrorSnackBar,
     ],
@@ -97,11 +97,11 @@ export const usePerformViewFieldGroupAPIPersist = () => {
 
   const performViewFieldGroupAPIUpdate = useCallback(
     async (
-      updateViewFieldGroupInputs: MutationUpdateViewFieldGroupArgs[],
+      updateCoreViewFieldGroupInputs: MutationUpdateCoreViewFieldGroupArgs[],
     ): Promise<
-      MetadataRequestResult<UpdateViewFieldGroupMutationResult[] | null>
+      MetadataRequestResult<UpdateCoreViewFieldGroupMutationResult[] | null>
     > => {
-      if (updateViewFieldGroupInputs.length === 0) {
+      if (updateCoreViewFieldGroupInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -110,8 +110,8 @@ export const usePerformViewFieldGroupAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          updateViewFieldGroupInputs.map((variables) =>
-            updateViewFieldGroupMutation({
+          updateCoreViewFieldGroupInputs.map((variables) =>
+            updateCoreViewFieldGroupMutation({
               variables,
             }),
           ),
@@ -121,7 +121,7 @@ export const usePerformViewFieldGroupAPIPersist = () => {
           status: 'successful',
           response: results
             .map((r) => r.data)
-            .filter(isDefined) as UpdateViewFieldGroupMutationResult[],
+            .filter(isDefined) as UpdateCoreViewFieldGroupMutationResult[],
         };
       } catch (error) {
         if (CombinedGraphQLErrors.is(error)) {
@@ -139,16 +139,20 @@ export const usePerformViewFieldGroupAPIPersist = () => {
         };
       }
     },
-    [updateViewFieldGroupMutation, handleMetadataError, enqueueErrorSnackBar],
+    [
+      updateCoreViewFieldGroupMutation,
+      handleMetadataError,
+      enqueueErrorSnackBar,
+    ],
   );
 
   const performViewFieldGroupAPIDelete = useCallback(
     async (
-      deleteViewFieldGroupInputs: MutationDeleteViewFieldGroupArgs[],
+      deleteCoreViewFieldGroupInputs: MutationDeleteCoreViewFieldGroupArgs[],
     ): Promise<
-      MetadataRequestResult<DeleteViewFieldGroupMutationResult[] | null>
+      MetadataRequestResult<DeleteCoreViewFieldGroupMutationResult[] | null>
     > => {
-      if (deleteViewFieldGroupInputs.length === 0) {
+      if (deleteCoreViewFieldGroupInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -157,8 +161,8 @@ export const usePerformViewFieldGroupAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          deleteViewFieldGroupInputs.map((variables) =>
-            deleteViewFieldGroupMutation({
+          deleteCoreViewFieldGroupInputs.map((variables) =>
+            deleteCoreViewFieldGroupMutation({
               variables,
             }),
           ),
@@ -168,7 +172,7 @@ export const usePerformViewFieldGroupAPIPersist = () => {
           status: 'successful',
           response: results
             .map((r) => r.data)
-            .filter(isDefined) as DeleteViewFieldGroupMutationResult[],
+            .filter(isDefined) as DeleteCoreViewFieldGroupMutationResult[],
         };
       } catch (error) {
         if (CombinedGraphQLErrors.is(error)) {
@@ -186,7 +190,11 @@ export const usePerformViewFieldGroupAPIPersist = () => {
         };
       }
     },
-    [deleteViewFieldGroupMutation, handleMetadataError, enqueueErrorSnackBar],
+    [
+      deleteCoreViewFieldGroupMutation,
+      handleMetadataError,
+      enqueueErrorSnackBar,
+    ],
   );
 
   return {

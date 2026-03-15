@@ -1,27 +1,31 @@
 import { isDefined } from 'twenty-shared/utils';
 
-import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/common/utils/getObjectMetadataIdsInDraft';
+import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/utils/getObjectMetadataIdsInDraft';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
 import { ViewKey } from '@/views/types/ViewKey';
-import { type NavigationMenuItem } from '~/generated-metadata/graphql';
+import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 
-type NavigationMenuItemDraft = Pick<
-  NavigationMenuItem,
-  'id' | 'type' | 'viewId' | 'targetObjectMetadataId'
->;
+type NavigationMenuItemDraft = {
+  id?: string;
+  viewId?: string | null;
+  targetObjectMetadataId?: string | null;
+};
 
 export const useNavigationMenuObjectMetadataFromDraft = (
   currentDraft: NavigationMenuItemDraft[],
 ) => {
-  const views = useAtomStateValue(viewsSelector);
+  const coreViews = useAtomStateValue(coreViewsSelector);
+  const views = coreViews.map(convertCoreViewToView);
 
-  const objectMetadataIdsInWorkspace =
-    getObjectMetadataIdsInDraft(currentDraft);
+  const objectMetadataIdsInWorkspace = getObjectMetadataIdsInDraft(
+    currentDraft,
+    views,
+  );
 
   const objectMetadataIdsWithIndexView = new Set(
     views
-      .filter((view) => view.key === ViewKey.INDEX)
+      .filter((view) => view.key === ViewKey.Index)
       .map((view) => view.objectMetadataId),
   );
 

@@ -5,9 +5,10 @@ import { useRecordIndexContextOrThrow } from '@/object-record/record-index/conte
 import { useLoadRecordIndexStates } from '@/object-record/record-index/hooks/useLoadRecordIndexStates';
 import { recordIndexViewTypeState } from '@/object-record/record-index/states/recordIndexViewTypeState';
 import { useUpdateCurrentView } from '@/views/hooks/useUpdateCurrentView';
-import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
 import { type GraphQLView } from '@/views/types/GraphQLView';
 import { ViewType, viewTypeIconMapping } from '@/views/types/ViewType';
+import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 import { useGetAvailableFieldsForCalendar } from '@/views/view-picker/hooks/useGetAvailableFieldsForCalendar';
 import { useGetAvailableFieldsToGroupRecordsBy } from '@/views/view-picker/hooks/useGetAvailableFieldsToGroupRecordsBy';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
@@ -37,25 +38,27 @@ export const useSetViewTypeFromLayoutOptionsMenu = () => {
         }),
       );
 
-      const existingViews = store.get(viewsSelector.atom);
+      const existingCoreViews = store.get(coreViewsSelector.atom);
 
       if (!isDefined(currentViewId)) {
         throw new Error('No view id found');
       }
 
-      const currentView = existingViews.find(
-        (view) => view.id === currentViewId,
+      const currentCoreView = existingCoreViews.find(
+        (coreView) => coreView.id === currentViewId,
       );
 
-      if (!isDefined(currentView)) {
+      if (!isDefined(currentCoreView)) {
         throw new Error('No current view found');
       }
+
+      const currentView = convertCoreViewToView(currentCoreView);
 
       const updateCurrentViewParams: Partial<GraphQLView> = {};
       updateCurrentViewParams.type = viewType;
 
       switch (viewType) {
-        case ViewType.KANBAN: {
+        case ViewType.Kanban: {
           if (availableFieldsForGrouping.length === 0) {
             throw new Error('No fields for kanban - should not happen');
           }
@@ -73,7 +76,7 @@ export const useSetViewTypeFromLayoutOptionsMenu = () => {
           await updateCurrentView(updateCurrentViewParams);
           return;
         }
-        case ViewType.TABLE: {
+        case ViewType.Table: {
           if (shouldChangeIcon(currentView.icon, currentView.type)) {
             updateCurrentViewParams.icon =
               viewTypeIconMapping(viewType).displayName;
@@ -83,7 +86,7 @@ export const useSetViewTypeFromLayoutOptionsMenu = () => {
           setRecordIndexViewType(viewType);
           return;
         }
-        case ViewType.CALENDAR: {
+        case ViewType.Calendar: {
           if (availableFieldsForCalendar.length === 0) {
             throw new Error('No date fields for calendar');
           }
@@ -112,7 +115,7 @@ export const useSetViewTypeFromLayoutOptionsMenu = () => {
           updateCurrentViewParams.mainGroupByFieldMetadataId = null;
           return await updateCurrentView(updateCurrentViewParams);
         }
-        case ViewType.FIELDS_WIDGET: {
+        case ViewType.FieldsWidget: {
           return;
         }
         default: {
@@ -136,20 +139,20 @@ export const useSetViewTypeFromLayoutOptionsMenu = () => {
     oldViewType: ViewType,
   ): boolean => {
     if (
-      oldViewType === ViewType.KANBAN &&
-      oldIcon === viewTypeIconMapping(ViewType.KANBAN).displayName
+      oldViewType === ViewType.Kanban &&
+      oldIcon === viewTypeIconMapping(ViewType.Kanban).displayName
     ) {
       return true;
     }
     if (
-      oldViewType === ViewType.TABLE &&
-      oldIcon === viewTypeIconMapping(ViewType.TABLE).displayName
+      oldViewType === ViewType.Table &&
+      oldIcon === viewTypeIconMapping(ViewType.Table).displayName
     ) {
       return true;
     }
     if (
-      oldViewType === ViewType.CALENDAR &&
-      oldIcon === viewTypeIconMapping(ViewType.CALENDAR).displayName
+      oldViewType === ViewType.Calendar &&
+      oldIcon === viewTypeIconMapping(ViewType.Calendar).displayName
     ) {
       return true;
     }

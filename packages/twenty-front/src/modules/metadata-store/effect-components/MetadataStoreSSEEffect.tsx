@@ -1,15 +1,11 @@
 import { useListenToMetadataOperationBrowserEvent } from '@/browser-event/hooks/useListenToMetadataOperationBrowserEvent';
-import { useUpdateMetadataStoreDraft } from '@/metadata-store/hooks/useUpdateMetadataStoreDraft';
-import { type MetadataEntityKey } from '@/metadata-store/states/metadataStoreState';
-import { type MetadataEntityTypeMap } from '@/metadata-store/types/MetadataEntityTypeMap';
+import { patchMetadataStoreFromSSEEvent } from '@/metadata-store/utils/patchMetadataStoreFromSSEEvent';
 import { mapAllMetadataNameToEntityKey } from '@/metadata-store/utils/mapAllMetadataNameToEntityKey';
+import { useStore } from 'jotai';
 import { isDefined } from 'twenty-shared/utils';
 
-type AnyMetadataEntity = MetadataEntityTypeMap[MetadataEntityKey];
-
 export const MetadataStoreSSEEffect = () => {
-  const { addToDraft, removeFromDraft, applyChanges } =
-    useUpdateMetadataStoreDraft();
+  const store = useStore();
 
   useListenToMetadataOperationBrowserEvent({
     onMetadataOperationBrowserEvent: (eventDetail) => {
@@ -19,42 +15,12 @@ export const MetadataStoreSSEEffect = () => {
         return;
       }
 
-      const collectionHash = eventDetail.updatedCollectionHash;
-
-      switch (eventDetail.operation.type) {
-        case 'create': {
-          addToDraft({
-            key: entityKey,
-            items: [
-              eventDetail.operation
-                .createdRecord as unknown as AnyMetadataEntity,
-            ],
-            collectionHash,
-          });
-          break;
-        }
-        case 'update': {
-          addToDraft({
-            key: entityKey,
-            items: [
-              eventDetail.operation
-                .updatedRecord as unknown as AnyMetadataEntity,
-            ],
-            collectionHash,
-          });
-          break;
-        }
-        case 'delete': {
-          removeFromDraft({
-            key: entityKey,
-            itemIds: [eventDetail.operation.deletedRecordId],
-            collectionHash,
-          });
-          break;
-        }
-      }
-
-      applyChanges();
+      patchMetadataStoreFromSSEEvent({
+        store,
+        entityKey,
+        operation: eventDetail.operation,
+        updatedCollectionHash: eventDetail.updatedCollectionHash,
+      });
     },
   });
 

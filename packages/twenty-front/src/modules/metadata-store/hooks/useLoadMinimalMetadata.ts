@@ -1,9 +1,12 @@
 import { FIND_MINIMAL_METADATA } from '@/metadata-store/graphql/queries/findMinimalMetadata';
-import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
-import { metadataVersionState } from '@/metadata-store/states/metadataVersionState';
+import {
+  metadataStoreState,
+  type MetadataEntityKey,
+} from '@/metadata-store/states/metadataStoreState';
 import { type FlatObjectMetadataItem } from '@/metadata-store/types/FlatObjectMetadataItem';
 import { type FlatView } from '@/metadata-store/types/FlatView';
 import { type FindMinimalMetadataQuery } from '@/metadata-store/types/MinimalMetadata';
+import { mapAllMetadataNameToEntityKey } from '@/metadata-store/utils/mapAllMetadataNameToEntityKey';
 import { useApolloClient } from '@apollo/client/react';
 import { useStore } from 'jotai';
 import { useCallback } from 'react';
@@ -23,17 +26,30 @@ export const useLoadMinimalMetadata = () => {
       return null;
     }
 
-    const { objectMetadataItems, views, metadataVersion } =
+    const { objectMetadataItems, views, collectionHashes } =
       result.data.minimalMetadata;
 
-    const localMetadataVersion = store.get(metadataVersionState.atom);
+    const staleEntityKeys: MetadataEntityKey[] = [];
 
-    // Skip hydration if data already loaded with same or newer version
-    if (
-      isDefined(localMetadataVersion) &&
-      localMetadataVersion >= metadataVersion
-    ) {
-      return { metadataVersion, isStale: false };
+    if (isDefined(collectionHashes)) {
+      for (const { collectionName, hash } of collectionHashes) {
+        const entityKey = mapAllMetadataNameToEntityKey(collectionName);
+
+        if (!isDefined(entityKey)) {
+          continue;
+        }
+
+        const entry = store.get(metadataStoreState.atomFamily(entityKey));
+
+        if (entry.currentCollectionHash !== hash) {
+          staleEntityKeys.push(entityKey);
+        }
+
+        store.set(metadataStoreState.atomFamily(entityKey), (prev) => ({
+          ...prev,
+          draftCollectionHash: hash,
+        }));
+      }
     }
 
     const objectsEntry = store.get(
@@ -41,29 +57,31 @@ export const useLoadMinimalMetadata = () => {
     );
 
     if (objectsEntry.status === 'empty') {
-      store.set(metadataStoreState.atomFamily('objectMetadataItems'), {
-        current: objectMetadataItems as unknown as FlatObjectMetadataItem[],
-        draft: [],
-        status: 'up-to-date',
-      });
+      store.set(
+        metadataStoreState.atomFamily('objectMetadataItems'),
+        (prev) => ({
+          ...prev,
+          current: objectMetadataItems as unknown as FlatObjectMetadataItem[],
+          status: 'up-to-date',
+          currentCollectionHash: prev.draftCollectionHash,
+          draftCollectionHash: undefined,
+        }),
+      );
     }
 
     const viewsEntry = store.get(metadataStoreState.atomFamily('views'));
 
     if (viewsEntry.status === 'empty') {
-      store.set(metadataStoreState.atomFamily('views'), {
+      store.set(metadataStoreState.atomFamily('views'), (prev) => ({
+        ...prev,
         current: views as unknown as FlatView[],
-        draft: [],
         status: 'up-to-date',
-      });
+        currentCollectionHash: prev.draftCollectionHash,
+        draftCollectionHash: undefined,
+      }));
     }
 
-    store.set(metadataVersionState.atom, metadataVersion);
-
-    const isStale =
-      isDefined(localMetadataVersion) && localMetadataVersion < metadataVersion;
-
-    return { metadataVersion, isStale };
+    return { staleEntityKeys };
   }, [client, store]);
 
   return { loadMinimalMetadata };

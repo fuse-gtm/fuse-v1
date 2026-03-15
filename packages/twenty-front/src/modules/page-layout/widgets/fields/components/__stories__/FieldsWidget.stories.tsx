@@ -21,13 +21,13 @@ import { FieldsWidget } from '@/page-layout/widgets/fields/components/FieldsWidg
 import { WidgetComponentInstanceContext } from '@/page-layout/widgets/states/contexts/WidgetComponentInstanceContext';
 import { LayoutRenderingProvider } from '@/ui/layout/contexts/LayoutRenderingContext';
 import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
-import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
+import { type CoreViewWithRelations } from '@/views/types/CoreViewWithRelations';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { ComponentDecorator } from 'twenty-ui/testing';
 import {
-  ViewOpenRecordIn,
-  ViewType,
-  ViewVisibility,
+  ViewOpenRecordIn as CoreViewOpenRecordIn,
+  ViewType as CoreViewType,
+  ViewVisibility as CoreViewVisibility,
   PageLayoutTabLayoutMode,
   PageLayoutType,
   WidgetConfigurationType,
@@ -36,10 +36,10 @@ import {
 import { ChipGeneratorsDecorator } from '~/testing/decorators/ChipGeneratorsDecorator';
 import { FileUploadDecorator } from '~/testing/decorators/FileUploadDecorator';
 import { getJestMetadataAndApolloMocksWrapper } from '~/testing/jest/getJestMetadataAndApolloMocksWrapper';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
 import { getMockFieldMetadataItemOrThrow } from '~/testing/utils/getMockFieldMetadataItemOrThrow';
 import { getMockObjectMetadataItemOrThrow } from '~/testing/utils/getMockObjectMetadataItemOrThrow';
-import { setTestViewsInMetadataStore } from '~/testing/utils/setTestViewsInMetadataStore';
+import { setTestCoreViewsInMetadataStore } from '~/testing/utils/setTestCoreViewsInMetadataStore';
 import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 
 const companyObjectMetadataItem = getMockObjectMetadataItemOrThrow(
@@ -147,6 +147,7 @@ const createPageLayoutWithWidget = (
       position: 0,
       pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       widgets: [widget],
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -176,30 +177,32 @@ const createFieldsWidget = (viewId: string | null): PageLayoutWidget => ({
     configurationType: WidgetConfigurationType.FIELDS,
     viewId,
   },
+  isOverridden: false,
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-01T00:00:00Z',
   deletedAt: null,
 });
 
-const createView = (
-  overrides: Partial<ViewWithRelations> = {},
-): ViewWithRelations => ({
+const createCoreView = (
+  overrides: Partial<CoreViewWithRelations> = {},
+): CoreViewWithRelations => ({
   id: FIELDS_VIEW_ID,
   name: 'Company Fields',
   objectMetadataId: companyObjectMetadataItem.id,
-  type: ViewType.FIELDS_WIDGET,
+  type: CoreViewType.FIELDS_WIDGET,
   icon: 'IconList',
   key: null,
   shouldHideEmptyGroups: false,
   position: 0,
   isCompact: false,
-  openRecordIn: ViewOpenRecordIn.SIDE_PANEL,
+  openRecordIn: CoreViewOpenRecordIn.SIDE_PANEL,
   viewFields: [],
   viewGroups: [],
   viewFilters: [],
   viewSorts: [],
-  visibility: ViewVisibility.WORKSPACE,
+  visibility: CoreViewVisibility.WORKSPACE,
   createdByUserWorkspaceId: null,
+  __typename: 'CoreView',
   ...overrides,
 });
 
@@ -215,6 +218,7 @@ const createViewField = (
   isVisible: true,
   size: 200,
   aggregateOperation: null,
+  isOverridden: false,
   viewId: FIELDS_VIEW_ID,
   ...(viewFieldGroupId !== undefined && { viewFieldGroupId }),
 });
@@ -230,6 +234,7 @@ const createViewFieldGroup = (
   name,
   position,
   isVisible,
+  isOverridden: false,
   viewId: FIELDS_VIEW_ID,
   viewFields,
 });
@@ -279,7 +284,7 @@ export const WithViewFieldGroups: Story = {
       ),
     ];
 
-    const view = createView({
+    const coreView = createCoreView({
       viewFields: [...contactInfoFields, ...businessFields],
       viewFieldGroups: [
         createViewFieldGroup(
@@ -301,10 +306,10 @@ export const WithViewFieldGroups: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestViewsInMetadataStore(jotaiStore, [view]);
+    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
@@ -370,7 +375,7 @@ export const WithViewFieldGroups: Story = {
 
 export const WithInlineViewFields: Story = {
   render: () => {
-    const view = createView({
+    const coreView = createCoreView({
       viewFields: [
         createViewField('vf-name', nameField.id, 0),
         createViewField('vf-employees', employeesField.id, 1),
@@ -387,10 +392,10 @@ export const WithInlineViewFields: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestViewsInMetadataStore(jotaiStore, [view]);
+    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
@@ -456,7 +461,7 @@ export const WithInlineViewFields: Story = {
 
 export const Empty: Story = {
   render: () => {
-    const view = createView({
+    const coreView = createCoreView({
       viewFieldGroups: [
         createViewFieldGroup('group-empty', 'Empty Group', 0, [], false),
       ],
@@ -471,10 +476,10 @@ export const Empty: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestViewsInMetadataStore(jotaiStore, [view]);
+    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,

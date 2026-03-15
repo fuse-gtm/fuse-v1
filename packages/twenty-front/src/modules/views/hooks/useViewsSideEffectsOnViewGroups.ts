@@ -1,11 +1,11 @@
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { type ViewGroup } from '@/views/types/ViewGroup';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { isDefined } from 'twenty-shared/utils';
 import { v4 } from 'uuid';
 
 const useViewsSideEffectsOnViewGroups = () => {
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsState);
 
   const triggerViewGroupOptimisticEffectAtViewCreation = ({
     mainGroupByFieldMetadataId,
@@ -35,6 +35,7 @@ const useViewsSideEffectsOnViewGroups = () => {
           (option, index) =>
             ({
               id: v4(),
+              __typename: 'ViewGroup',
               fieldValue: option.value,
               isVisible: true,
               position: index,
@@ -47,6 +48,7 @@ const useViewsSideEffectsOnViewGroups = () => {
       )?.isNullable === true
     ) {
       viewGroupsToCreate.push({
+        __typename: 'ViewGroup',
         id: v4(),
         fieldValue: '',
         position: viewGroupsToCreate.length,

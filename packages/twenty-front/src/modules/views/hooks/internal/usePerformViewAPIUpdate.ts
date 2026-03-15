@@ -8,24 +8,24 @@ import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { useMutation } from '@apollo/client/react';
 import {
-  type UpdateViewMutationVariables,
-  UpdateViewDocument,
+  type UpdateCoreViewMutationVariables,
+  UpdateCoreViewDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewAPIUpdate = () => {
-  const [updateViewMutation] = useMutation(UpdateViewDocument);
+  const [updateCoreViewMutation] = useMutation(UpdateCoreViewDocument);
 
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
 
   const performViewAPIUpdate = useCallback(
     async (
-      variables: UpdateViewMutationVariables,
+      variables: UpdateCoreViewMutationVariables,
     ): Promise<
-      MetadataRequestResult<Awaited<ReturnType<typeof updateViewMutation>>>
+      MetadataRequestResult<Awaited<ReturnType<typeof updateCoreViewMutation>>>
     > => {
       try {
-        const result = await updateViewMutation({
+        const result = await updateCoreViewMutation({
           variables,
         });
 
@@ -49,7 +49,7 @@ export const usePerformViewAPIUpdate = () => {
         };
       }
     },
-    [updateViewMutation, handleMetadataError, enqueueErrorSnackBar],
+    [updateCoreViewMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   return { performViewAPIUpdate };

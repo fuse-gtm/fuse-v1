@@ -1,18 +1,14 @@
-import { useApolloClient, useMutation } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 import {
   type UpdateOneObjectInput,
-  FindManyCommandMenuItemsDocument,
   UpdateOneObjectMetadataItemDocument,
 } from '~/generated-metadata/graphql';
 
 import { useMetadataErrorHandler } from '@/metadata-error-handler/hooks/useMetadataErrorHandler';
-import { useUpdateMetadataStoreDraft } from '@/metadata-store/hooks/useUpdateMetadataStoreDraft';
-import { type FlatObjectMetadataItem } from '@/metadata-store/types/FlatObjectMetadataItem';
 import { type MetadataRequestResult } from '@/object-metadata/types/MetadataRequestResult.type';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { t } from '@lingui/core/macro';
-import { isDefined } from 'twenty-shared/utils';
 import { CrudOperationType } from 'twenty-shared/types';
 
 // TODO: Slice the Apollo store synchronously in the update function instead of subscribing, so we can use update after read in the same function call
@@ -21,11 +17,8 @@ export const useUpdateOneObjectMetadataItem = () => {
     UpdateOneObjectMetadataItemDocument,
   );
 
-  const client = useApolloClient();
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
-  const { updateInDraft, replaceDraft, applyChanges } =
-    useUpdateMetadataStoreDraft();
 
   const updateOneObjectMetadataItem = async ({
     idToUpdate,
@@ -45,28 +38,6 @@ export const useUpdateOneObjectMetadataItem = () => {
           updatePayload,
         },
       });
-
-      const updatedObject = response.data?.updateOneObject;
-
-      if (isDefined(updatedObject)) {
-        const { __typename, ...objectData } = updatedObject;
-
-        updateInDraft('objectMetadataItems', [
-          objectData as FlatObjectMetadataItem,
-        ]);
-        applyChanges();
-
-        const commandMenuItemsResult = await client.query({
-          query: FindManyCommandMenuItemsDocument,
-          fetchPolicy: 'network-only',
-        });
-
-        replaceDraft(
-          'commandMenuItems',
-          commandMenuItemsResult.data?.commandMenuItems ?? [],
-        );
-        applyChanges();
-      }
 
       return {
         status: 'successful',

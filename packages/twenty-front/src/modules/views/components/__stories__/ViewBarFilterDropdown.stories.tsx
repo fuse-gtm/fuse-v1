@@ -24,19 +24,18 @@ import { ContextStoreDecorator } from '~/testing/decorators/ContextStoreDecorato
 import { IconsProviderDecorator } from '~/testing/decorators/IconsProviderDecorator';
 import { ObjectMetadataItemsDecorator } from '~/testing/decorators/ObjectMetadataItemsDecorator';
 import { SnackBarDecorator } from '~/testing/decorators/SnackBarDecorator';
-import { mockedViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
-import { setTestViewsInMetadataStore } from '~/testing/utils/setTestViewsInMetadataStore';
+import { mockedCoreViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
+import { setTestCoreViewsInMetadataStore } from '~/testing/utils/setTestCoreViewsInMetadataStore';
 
 const meta: Meta<typeof ViewBarFilterDropdown> = {
   title: 'Modules/Views/ViewBarFilterDropdown',
   component: ViewBarFilterDropdown,
   decorators: [
     (Story) => {
-      const companyObjectMetadataItem =
-        getTestEnrichedObjectMetadataItemsMock().find(
-          (item) => item.nameSingular === CoreObjectNameSingular.Company,
-        )!;
+      const companyObjectMetadataItem = generatedMockObjectMetadataItems.find(
+        (item) => item.nameSingular === CoreObjectNameSingular.Company,
+      )!;
       const instanceId = companyObjectMetadataItem.id;
 
       const setCurrentRecordFields = useSetAtomComponentState(
@@ -44,7 +43,9 @@ const meta: Meta<typeof ViewBarFilterDropdown> = {
         instanceId,
       );
 
-      const mockView = mockedViews.find((v) => v.name === 'All Companies')!;
+      const mockCoreView = mockedCoreViews.find(
+        (v) => v.name === 'All Companies',
+      )!;
 
       const setContextStoreCurrentViewId = useSetAtomComponentState(
         contextStoreCurrentViewIdComponentState,
@@ -69,14 +70,14 @@ const meta: Meta<typeof ViewBarFilterDropdown> = {
       const [isLoaded, setIsLoaded] = useState(false);
 
       useEffect(() => {
-        setTestViewsInMetadataStore(jotaiStore, [mockView]);
-        setContextStoreCurrentViewId(mockView.id);
+        setTestCoreViewsInMetadataStore(jotaiStore, [mockCoreView]);
+        setContextStoreCurrentViewId(mockCoreView.id);
         setCurrentRecordFields(columns);
         setIsLoaded(true);
       }, [
         setContextStoreCurrentViewId,
         setCurrentRecordFields,
-        mockView,
+        mockCoreView,
         columns,
       ]);
 

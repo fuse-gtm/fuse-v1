@@ -13,6 +13,7 @@ import {
 import {
   combineFilters,
   isDefined,
+  isNonEmptyArray,
   isRecordGqlOperationSignature,
 } from 'twenty-shared/utils';
 import { FindOptionsRelations, ObjectLiteral } from 'typeorm';
@@ -24,6 +25,7 @@ import { GraphqlQueryParser } from 'src/engine/api/graphql/graphql-query-runner/
 import { type SerializableAuthContext } from 'src/engine/core-modules/auth/types/auth-context.type';
 import { type WorkspaceAuthContext } from 'src/engine/core-modules/auth/types/workspace-auth-context.type';
 import { type FlatWorkspaceMemberMaps } from 'src/engine/core-modules/user/types/flat-workspace-member-maps.type';
+import { type MetadataEventBatch } from 'src/engine/metadata-event-emitter/types/metadata-event-batch.type';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
@@ -32,6 +34,8 @@ import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object
 import { UserWorkspaceRoleMap } from 'src/engine/metadata-modules/role-target/types/user-workspace-role-map';
 import { type FlatRowLevelPermissionPredicateGroupMaps } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-group-maps.type';
 import { type FlatRowLevelPermissionPredicateMaps } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-maps.type';
+import { transformEventToWebhookEvent } from 'src/engine/metadata-modules/webhook/utils/transform-event-to-webhook-event';
+import { SubscriptionChannel } from 'src/engine/subscriptions/enums/subscription-channel.enum';
 import { EventStreamService } from 'src/engine/subscriptions/event-stream.service';
 import { SubscriptionService } from 'src/engine/subscriptions/subscription.service';
 import {
@@ -47,9 +51,8 @@ import { isRecordMatchingRLSRowLevelPermissionPredicate } from 'src/engine/twent
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { WorkspaceEventBatch } from 'src/engine/workspace-event-emitter/types/workspace-event-batch.type';
 import { parseEventNameOrThrow } from 'src/engine/workspace-event-emitter/utils/parse-event-name';
-
 @Injectable()
-export class ObjectRecordEventPublisher {
+export class WorkspaceEventEmitterService {
   constructor(
     private readonly subscriptionService: SubscriptionService,
     private readonly eventStreamService: EventStreamService,
@@ -61,9 +64,53 @@ export class ObjectRecordEventPublisher {
   ) {}
 
   async publish(
+    eventBatch: WorkspaceEventBatch<ObjectRecordEvent> | MetadataEventBatch,
+  ): Promise<void> {
+    if (!this.isMetadataEventBatch(eventBatch)) {
+      await this.publishToLegacyChannel(eventBatch);
+    }
+
+    await this.publishToEventStreams(eventBatch);
+  }
+
+  private isMetadataEventBatch(
+    eventBatch: WorkspaceEventBatch<ObjectRecordEvent> | MetadataEventBatch,
+  ): eventBatch is MetadataEventBatch {
+    return 'metadataName' in eventBatch;
+  }
+
+  private async publishToLegacyChannel(
     eventBatch: WorkspaceEventBatch<ObjectRecordEvent>,
   ): Promise<void> {
+    const [nameSingular, operation] = eventBatch.name.split('.');
+
+    for (const eventData of eventBatch.events) {
+      const { record, updatedFields } = transformEventToWebhookEvent({
+        eventName: eventBatch.name,
+        event: eventData,
+      });
+
+      const event = {
+        action: operation,
+        objectNameSingular: nameSingular,
+        eventDate: new Date(),
+        record,
+        ...(updatedFields && { updatedFields }),
+      };
+
+      await this.subscriptionService.publish({
+        channel: SubscriptionChannel.DATABASE_EVENT_CHANNEL,
+        workspaceId: eventBatch.workspaceId,
+        payload: { onDbEvent: event },
+      });
+    }
+  }
+
+  private async publishToEventStreams(
+    eventBatch: WorkspaceEventBatch<ObjectRecordEvent> | MetadataEventBatch,
+  ): Promise<void> {
     const workspaceId = eventBatch.workspaceId;
+    const isMetadata = this.isMetadataEventBatch(eventBatch);
 
     const activeStreamIds =
       await this.eventStreamService.getActiveStreamIds(workspaceId);
@@ -77,10 +124,11 @@ export class ObjectRecordEventPublisher {
       activeStreamIds,
     );
 
-    const { permissionsContext, flatWorkspaceMemberMaps } =
-      await this.fetchObjectRecordStreamContext(workspaceId);
-
     const streamIdsToRemove: string[] = [];
+
+    const objectRecordStreamContext = !isMetadata
+      ? await this.fetchObjectRecordStreamContext(workspaceId)
+      : undefined;
 
     for (const [streamChannelId, streamData] of streamsData) {
       if (!isDefined(streamData)) {
@@ -92,13 +140,25 @@ export class ObjectRecordEventPublisher {
         continue;
       }
 
-      await this.processObjectRecordStreamEvents({
-        streamChannelId,
-        streamData,
-        workspaceEventBatch: eventBatch,
-        permissionsContext,
-        flatWorkspaceMemberMaps,
-      });
+      if (isMetadata) {
+        await this.processMetadataStreamEvents(
+          streamChannelId,
+          streamData,
+          eventBatch as MetadataEventBatch,
+        );
+      } else {
+        if (!isDefined(objectRecordStreamContext)) {
+          continue;
+        }
+
+        await this.processObjectRecordStreamEvents(
+          streamChannelId,
+          streamData,
+          eventBatch as WorkspaceEventBatch<ObjectRecordEvent>,
+          objectRecordStreamContext.permissionsContext,
+          objectRecordStreamContext.flatWorkspaceMemberMaps,
+        );
+      }
     }
 
     await this.eventStreamService.removeFromActiveStreams(
@@ -117,25 +177,50 @@ export class ObjectRecordEventPublisher {
     return { permissionsContext, flatWorkspaceMemberMaps };
   }
 
-  private async processObjectRecordStreamEvents({
-    streamChannelId,
-    streamData,
-    workspaceEventBatch,
-    permissionsContext,
-    flatWorkspaceMemberMaps,
-  }: {
-    streamChannelId: string;
-    streamData: EventStreamData;
-    workspaceEventBatch: WorkspaceEventBatch<ObjectRecordEvent>;
+  private async processMetadataStreamEvents(
+    streamChannelId: string,
+    _streamData: EventStreamData,
+    metadataEventBatch: MetadataEventBatch,
+  ): Promise<void> {
+    if (!isNonEmptyArray(metadataEventBatch.events)) {
+      return;
+    }
+
+    const metadataEventsWithQueryIds = metadataEventBatch.events.map(
+      (metadataEvent) => ({
+        queryIds: [] as string[],
+        metadataEvent: {
+          ...metadataEvent,
+          updatedCollectionHash: metadataEventBatch.updatedCollectionHash,
+        },
+      }),
+    );
+
+    const payload: EventStreamPayload = {
+      objectRecordEventsWithQueryIds: [],
+      metadataEventsWithQueryIds,
+    };
+
+    await this.subscriptionService.publishToEventStream({
+      workspaceId: metadataEventBatch.workspaceId,
+      eventStreamChannelId: streamChannelId,
+      payload,
+    });
+  }
+
+  private async processObjectRecordStreamEvents(
+    streamChannelId: string,
+    streamData: EventStreamData,
+    workspaceEventBatch: WorkspaceEventBatch<ObjectRecordEvent>,
     permissionsContext: {
       flatRowLevelPermissionPredicateMaps: FlatRowLevelPermissionPredicateMaps;
       flatRowLevelPermissionPredicateGroupMaps: FlatRowLevelPermissionPredicateGroupMaps;
       flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>;
       userWorkspaceRoleMap: Record<string, string>;
       rolesPermissions: ObjectsPermissionsByRoleId;
-    };
-    flatWorkspaceMemberMaps: FlatWorkspaceMemberMaps;
-  }): Promise<void> {
+    },
+    flatWorkspaceMemberMaps: FlatWorkspaceMemberMaps,
+  ): Promise<void> {
     const { userWorkspaceId } = streamData.authContext;
 
     if (!isDefined(userWorkspaceId)) {
@@ -221,9 +306,7 @@ export class ObjectRecordEventPublisher {
     if (matchedEvents.length > 0) {
       await this.enrichEventBatchWithNestedRelations({
         objectMetadata: workspaceEventBatch.objectMetadata,
-        events: matchedEvents.map(
-          (matchedEvent) => matchedEvent.objectRecordEvent,
-        ),
+        events: matchedEvents.map((e) => e.objectRecordEvent),
         streamData,
         permissionsContext,
         workspaceId: workspaceEventBatch.workspaceId,
@@ -232,7 +315,7 @@ export class ObjectRecordEventPublisher {
 
       const payload: EventStreamPayload = {
         objectRecordEventsWithQueryIds: matchedEvents,
-        metadataEvents: [],
+        metadataEventsWithQueryIds: [],
       };
 
       await this.subscriptionService.publishToEventStream({

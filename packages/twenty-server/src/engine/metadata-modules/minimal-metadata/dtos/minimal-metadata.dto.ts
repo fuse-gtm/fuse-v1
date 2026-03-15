@@ -1,5 +1,6 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+import { CollectionHashDTO } from 'src/engine/metadata-modules/minimal-metadata/dtos/collection-hash.dto';
 import { MinimalObjectMetadataDTO } from 'src/engine/metadata-modules/minimal-metadata/dtos/minimal-object-metadata.dto';
 import { MinimalViewDTO } from 'src/engine/metadata-modules/minimal-metadata/dtos/minimal-view.dto';
 
@@ -11,6 +12,6 @@ export class MinimalMetadataDTO {
   @Field(() => [MinimalViewDTO])
   views: MinimalViewDTO[];
 
-  @Field(() => Int)
-  metadataVersion: number;
+  @Field(() => [CollectionHashDTO])
+  collectionHashes: CollectionHashDTO[];
 }
