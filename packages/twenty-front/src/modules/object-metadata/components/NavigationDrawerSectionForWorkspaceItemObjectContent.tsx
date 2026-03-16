@@ -1,5 +1,4 @@
 import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/utils/getObjectMetadataForNavigationMenuItem';
-import type { ProcessedNavigationMenuItem } from '@/navigation-menu-item/utils/sortNavigationMenuItems';
 import { NavigationDrawerItemForObjectMetadataItem } from '@/object-metadata/components/NavigationDrawerItemForObjectMetadataItem';
 import type { WorkspaceSectionItemContentProps } from '@/object-metadata/components/WorkspaceSectionItemContentProps';
 import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
@@ -20,7 +19,7 @@ export const NavigationDrawerSectionForWorkspaceItemObjectContent = ({
   const coreViews = useAtomStateValue(coreViewsSelector);
   const views = coreViews.map(convertCoreViewToView);
   const objectMetadataItem = getObjectMetadataForNavigationMenuItem(
-    item as ProcessedNavigationMenuItem,
+    item,
     objectMetadataItems,
     views,
   );
@@ -30,7 +29,7 @@ export const NavigationDrawerSectionForWorkspaceItemObjectContent = ({
   return (
     <NavigationDrawerItemForObjectMetadataItem
       objectMetadataItem={objectMetadataItem}
-      navigationMenuItem={item as ProcessedNavigationMenuItem}
+      navigationMenuItem={item}
       isSelectedInEditMode={editModeProps.isSelectedInEditMode}
       onEditModeClick={editModeProps.onEditModeClick}
       isDragging={isDragging}

@@ -1,7 +1,7 @@
 import { isDefined } from 'twenty-shared/utils';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
-import { NavigationMenuItemFolderContent } from '@/navigation-menu-item/display/folder/components/NavigationMenuItemFolderContent';
+import { NavigationMenuItemFolderContent } from '@/navigation-menu-item/components/NavigationMenuItemFolderContent';
 
 type NavigationMenuItemFolderContentDispatcherEffectProps = {
   folderName: string;

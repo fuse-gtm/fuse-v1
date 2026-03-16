@@ -3,20 +3,20 @@ import { isDefined } from 'twenty-shared/utils';
 import { useIcons } from 'twenty-ui/display';
 
 import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
-import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
+import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/components/NavigationMenuItemStyleIcon';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import { useDraftNavigationMenuItems } from '@/navigation-menu-item/edit/hooks/useDraftNavigationMenuItems';
-import { useNavigationMenuObjectMetadataFromDraft } from '@/navigation-menu-item/edit/hooks/useNavigationMenuObjectMetadataFromDraft';
-import { getObjectColorWithFallback } from '@/object-metadata/utils/getObjectColorWithFallback';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { useDraftNavigationMenuItems } from '@/navigation-menu-item/hooks/useDraftNavigationMenuItems';
+import { useNavigationMenuObjectMetadataFromDraft } from '@/navigation-menu-item/hooks/useNavigationMenuObjectMetadataFromDraft';
+import { getStandardObjectIconColor } from '@/navigation-menu-item/utils/getStandardObjectIconColor';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { SidePanelItemWithAddToNavigationDrag } from '@/side-panel/components/SidePanelItemWithAddToNavigationDrag';
 import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
 import { indexViewIdFromObjectMetadataItemFamilySelector } from '@/views/states/selectors/indexViewIdFromObjectMetadataItemFamilySelector';
 
 type SidePanelObjectMenuItemProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
-  onSelect: (objectMetadataItem: EnrichedObjectMetadataItem) => void;
+  objectMetadataItem: ObjectMetadataItem;
+  onSelect: (objectMetadataItem: ObjectMetadataItem) => void;
   variant: 'add' | 'edit';
   dragIndex?: number;
   disableDrag?: boolean;
@@ -42,7 +42,7 @@ export const SidePanelObjectMenuItem = ({
     { objectMetadataItemId: objectMetadataItem.id },
   );
   const Icon = getIcon(objectMetadataItem.icon);
-  const iconColor = getObjectColorWithFallback(objectMetadataItem);
+  const iconColor = getStandardObjectIconColor(objectMetadataItem.nameSingular);
   const isDisabled = isAlreadyInNavbar || !isDefined(defaultViewId);
 
   const handleClick = () => {

@@ -10,15 +10,15 @@ import {
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
-import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
+import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/components/NavigationMenuItemStyleIcon';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import { pendingInsertionNavigationMenuItemState } from '@/navigation-menu-item/common/states/pendingInsertionNavigationMenuItemState';
+import { addMenuItemInsertionContextState } from '@/navigation-menu-item/states/addMenuItemInsertionContextState';
 import { SidePanelAddToNavigationDroppable } from '@/side-panel/components/SidePanelAddToNavigationDroppable';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelItemWithAddToNavigationDrag } from '@/side-panel/components/SidePanelItemWithAddToNavigationDrag';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
-import { useAddFolderToNavigationMenu } from '@/navigation-menu-item/edit/side-panel/hooks/useAddFolderToNavigationMenu';
-import { useAddLinkToNavigationMenu } from '@/navigation-menu-item/edit/side-panel/hooks/useAddLinkToNavigationMenu';
+import { useAddFolderToNavigationMenu } from '@/side-panel/pages/navigation-menu-item/hooks/useAddFolderToNavigationMenu';
+import { useAddLinkToNavigationMenu } from '@/side-panel/pages/navigation-menu-item/hooks/useAddLinkToNavigationMenu';
 import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
@@ -42,15 +42,16 @@ export const SidePanelNewSidebarItemMainMenu = ({
   onSelectRecord,
 }: SidePanelNewSidebarItemMainMenuProps) => {
   const { t } = useLingui();
-  const pendingInsertionNavigationMenuItem = useAtomStateValue(
-    pendingInsertionNavigationMenuItemState,
+  const addMenuItemInsertionContext = useAtomStateValue(
+    addMenuItemInsertionContextState,
   );
   const { handleAddFolder } = useAddFolderToNavigationMenu();
   const { handleAddLink } = useAddLinkToNavigationMenu();
 
   const isAddingToFolder = isDefined(
-    pendingInsertionNavigationMenuItem?.folderId,
+    addMenuItemInsertionContext?.targetFolderId,
   );
+  const isDragDisabled = addMenuItemInsertionContext?.disableDrag === true;
   const selectableItemIds = isAddingToFolder
     ? MAIN_MENU_ITEM_TYPES.filter(
         (type) => type !== NavigationMenuItemType.FOLDER,
@@ -127,13 +128,14 @@ export const SidePanelNewSidebarItemMainMenu = ({
                   label={t`Folder`}
                   id={NavigationMenuItemType.FOLDER}
                   onClick={handleAddFolder}
-                  dragIndex={3}
+                  dragIndex={isDragDisabled ? undefined : 3}
                   payload={{
                     type: NavigationMenuItemType.FOLDER,
                     folderId: 'new',
                     name: t`New folder`,
                   }}
                   disabled={isAddingToFolder}
+                  disableDrag={isDragDisabled}
                 />
               </SelectableListItem>
               <SelectableListItem
@@ -145,13 +147,14 @@ export const SidePanelNewSidebarItemMainMenu = ({
                   label={t`Link`}
                   id={NavigationMenuItemType.LINK}
                   onClick={handleAddLink}
-                  dragIndex={4}
+                  dragIndex={isDragDisabled ? undefined : 4}
                   payload={{
                     type: NavigationMenuItemType.LINK,
                     linkId: 'new',
                     name: t`Link label`,
                     link: 'https://www.example.com',
                   }}
+                  disableDrag={isDragDisabled}
                 />
               </SelectableListItem>
             </SidePanelGroup>

@@ -1,5 +1,5 @@
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import { isLocationMatchingNavigationMenuItem } from '@/navigation-menu-item/common/utils/isLocationMatchingNavigationMenuItem';
+import { isLocationMatchingNavigationMenuItem } from '@/navigation-menu-item/utils/isLocationMatchingNavigationMenuItem';
 
 describe('isLocationMatchingNavigationMenuItem', () => {
   it('should return true when item link matches current path (non-view) or current view path (view)', () => {

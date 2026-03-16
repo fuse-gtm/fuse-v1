@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { IconLink, IconWorld } from 'twenty-ui/display';
 
-import { LinkIconWithLinkOverlay } from '@/navigation-menu-item/display/link/components/LinkIconWithLinkOverlay';
+import { LinkIconWithLinkOverlay } from '@/navigation-menu-item/components/LinkIconWithLinkOverlay';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import { useUpdateLinkInDraft } from '@/navigation-menu-item/edit/link/hooks/useUpdateLinkInDraft';
-import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
-import { selectedNavigationMenuItemIdInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemIdInEditModeState';
+import { useUpdateLinkInDraft } from '@/navigation-menu-item/hooks/useUpdateLinkInDraft';
+import { useWorkspaceSectionItems } from '@/navigation-menu-item/hooks/useWorkspaceSectionItems';
+import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/states/selectedNavigationMenuItemInEditModeState';
 import { SidePanelPageInfoLayout } from '@/side-panel/components/SidePanelPageInfoLayout';
 import { sidePanelPageInfoState } from '@/side-panel/states/sidePanelPageInfoState';
 import { sidePanelShouldFocusTitleInputComponentState } from '@/side-panel/states/sidePanelShouldFocusTitleInputComponentState';
@@ -21,20 +21,20 @@ export const SidePanelLinkInfo = () => {
       sidePanelShouldFocusTitleInputComponentState,
       sidePanelPageInfo.instanceId,
     );
-  const selectedNavigationMenuItemIdInEditMode = useAtomStateValue(
-    selectedNavigationMenuItemIdInEditModeState,
+  const selectedNavigationMenuItemInEditMode = useAtomStateValue(
+    selectedNavigationMenuItemInEditModeState,
   );
-  const items = useNavigationMenuItemSectionItems();
+  const items = useWorkspaceSectionItems();
   const { updateLinkInDraft } = useUpdateLinkInDraft();
 
   const defaultLabel = t`Link label`;
   const placeholder = t`Link label`;
 
-  const selectedItem = selectedNavigationMenuItemIdInEditMode
+  const selectedItem = selectedNavigationMenuItemInEditMode
     ? items.find(
         (item) =>
           item.type === NavigationMenuItemType.LINK &&
-          item.id === selectedNavigationMenuItemIdInEditMode,
+          item.id === selectedNavigationMenuItemInEditMode,
       )
     : undefined;
 

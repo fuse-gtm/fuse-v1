@@ -4,10 +4,10 @@ import { isDefined } from 'twenty-shared/utils';
 import { IconGripVertical, type IconComponent } from 'twenty-ui/display';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
-import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
+import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/components/NavigationMenuItemStyleIcon';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import type { AddToNavigationDragPayload } from '@/navigation-menu-item/common/types/add-to-navigation-drag-payload';
-import { getNavigationMenuItemColor } from '@/navigation-menu-item/common/utils/getNavigationMenuItemColor';
+import type { AddToNavigationDragPayload } from '@/navigation-menu-item/types/add-to-navigation-drag-payload';
+import { getEffectiveNavigationMenuItemColor } from '@/navigation-menu-item/utils/getEffectiveNavigationMenuItemColor';
 
 const StyledIconSlot = styled.div<{
   $hasFixedSize: boolean;
@@ -81,18 +81,18 @@ export const AddToNavigationDragHandle = ({
   disableDrag = false,
 }: AddToNavigationDragHandleProps) => {
   const { theme } = useContext(ThemeContext);
-  const effectiveColor = getNavigationMenuItemColor(
+  const objectColor =
+    payload.type === NavigationMenuItemType.OBJECT
+      ? payload.iconColor
+      : undefined;
+  const effectiveColor = getEffectiveNavigationMenuItemColor(
     { type: payload.type as NavigationMenuItemType },
-    payload.type === NavigationMenuItemType.OBJECT && payload.iconColor
-      ? {
-          nameSingular: '',
-          color: payload.iconColor,
-          isSystem: false,
-        }
-      : undefined,
+    objectColor,
   );
   const hasBackgroundColor =
-    payload.type !== NavigationMenuItemType.RECORD && !isHovered;
+    payload.type !== NavigationMenuItemType.RECORD &&
+    isDefined(effectiveColor) &&
+    !isHovered;
   const showCustomContentWithoutWrapper = isDefined(customIconContent);
 
   return (

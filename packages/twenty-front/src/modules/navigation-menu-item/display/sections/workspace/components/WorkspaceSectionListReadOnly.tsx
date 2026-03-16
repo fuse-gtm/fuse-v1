@@ -3,8 +3,8 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 import type { NavigationMenuItem } from '~/generated-metadata/graphql';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import type { NavigationMenuItemSectionListDndKitProps } from '@/navigation-menu-item/display/sections/types/NavigationMenuItemSectionListDndKitProps';
-import { NavigationMenuItemDisplay } from '@/navigation-menu-item/display/components/NavigationMenuItemDisplay';
+import type { WorkspaceSectionListDndKitProps } from '@/object-metadata/components/WorkspaceSectionListDndKitProps';
+import { NavigationDrawerSectionForWorkspaceItemContent } from '@/object-metadata/components/NavigationDrawerSectionForWorkspaceItemContent';
 
 const StyledList = styled.div`
   display: flex;
@@ -13,8 +13,8 @@ const StyledList = styled.div`
   padding-top: ${themeCssVariables.betweenSiblingsGap};
 `;
 
-type WorkspaceSectionListReadOnlyProps = Pick<
-  NavigationMenuItemSectionListDndKitProps,
+type NavigationDrawerSectionForWorkspaceItemsListReadOnlyProps = Pick<
+  WorkspaceSectionListDndKitProps,
   'filteredItems' | 'folderChildrenById' | 'onActiveObjectMetadataItemClick'
 >;
 
@@ -23,11 +23,11 @@ const READ_ONLY_EDIT_MODE_PROPS = {
   onEditModeClick: undefined,
 } as const;
 
-export const WorkspaceSectionListReadOnly = ({
+export const NavigationDrawerSectionForWorkspaceItemsListReadOnly = ({
   filteredItems,
   folderChildrenById,
   onActiveObjectMetadataItemClick,
-}: WorkspaceSectionListReadOnlyProps) => {
+}: NavigationDrawerSectionForWorkspaceItemsListReadOnlyProps) => {
   const folderCount = filteredItems.filter(
     (item) => item.type === NavigationMenuItemType.FOLDER,
   ).length;
@@ -35,13 +35,14 @@ export const WorkspaceSectionListReadOnly = ({
   return (
     <StyledList>
       {filteredItems.map((item: NavigationMenuItem) => (
-        <NavigationMenuItemDisplay
+        <NavigationDrawerSectionForWorkspaceItemContent
           key={item.id}
           item={item}
           editModeProps={READ_ONLY_EDIT_MODE_PROPS}
           isDragging={false}
           folderChildrenById={folderChildrenById}
           folderCount={folderCount}
+          selectedNavigationMenuItemId={null}
           onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
           readOnly
         />
