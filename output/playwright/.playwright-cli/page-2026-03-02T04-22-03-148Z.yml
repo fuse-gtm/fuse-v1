@@ -1,0 +1,1513 @@
+- generic [ref=e43]:
+  - generic [ref=e45]:
+    - generic [ref=e46]:
+      - button "A Apple" [ref=e47]:
+        - generic [ref=e48] [cursor=pointer]:
+          - generic [ref=e50]: A
+          - generic [ref=e52]: Apple
+          - img [ref=e54]
+      - generic [ref=e56]:
+        - button "Search" [ref=e57] [cursor=pointer]:
+          - img [ref=e58]
+        - button [ref=e62] [cursor=pointer]:
+          - img [ref=e63]
+    - generic [ref=e69]:
+      - tablist "Navigation tabs" [ref=e71]:
+        - tab "Home" [selected] [ref=e72] [cursor=pointer]:
+          - img [ref=e74]
+        - tab "Chat" [ref=e78] [cursor=pointer]:
+          - img [ref=e80]
+      - button "New chat" [ref=e83] [cursor=pointer]:
+        - img [ref=e84]
+        - text: New chat
+    - generic [ref=e89]:
+      - generic [ref=e91]:
+        - generic [ref=e93]:
+          - generic [ref=e95]: Workspace
+          - button [ref=e98] [cursor=pointer]:
+            - img [ref=e99]
+        - generic [ref=e101]:
+          - button "Companies" [ref=e105] [cursor=pointer]:
+            - generic [ref=e106]:
+              - img [ref=e109]
+              - generic [ref=e113]: Companies
+          - link "People" [ref=e117] [cursor=pointer]:
+            - /url: /objects/people?viewId=1684b753-d364-4ddc-9897-506b6f068016
+            - generic [ref=e118]:
+              - img [ref=e121]
+              - generic [ref=e125]: People
+          - link "Opportunities" [ref=e129] [cursor=pointer]:
+            - /url: /objects/opportunities?viewId=899a82dc-c85c-40c2-8170-5ed93532089d
+            - generic [ref=e130]:
+              - img [ref=e133]
+              - generic [ref=e140]: Opportunities
+          - link "Tasks" [ref=e144] [cursor=pointer]:
+            - /url: /objects/tasks?viewId=26c5e517-47ef-4f15-b178-67357d0bb7de
+            - generic [ref=e145]:
+              - img [ref=e148]
+              - generic [ref=e152]: Tasks
+          - link "Notes" [ref=e156] [cursor=pointer]:
+            - /url: /objects/notes?viewId=946a4e7c-860f-4497-ba81-1b19049a4f86
+            - generic [ref=e157]:
+              - img [ref=e160]
+              - generic [ref=e163]: Notes
+          - link "Dashboards" [ref=e167] [cursor=pointer]:
+            - /url: /objects/dashboards?viewId=1659f6fb-6618-4dab-89f3-aa8eebd52f60
+            - generic [ref=e168]:
+              - img [ref=e171]
+              - generic [ref=e177]: Dashboards
+          - button "Workflows" [ref=e185] [cursor=pointer]:
+            - generic [ref=e186]:
+              - img [ref=e189]
+              - generic [ref=e193]: Workflows
+              - img [ref=e195]
+          - link "Pets" [ref=e200] [cursor=pointer]:
+            - /url: /objects/pets?viewId=33b6da42-934f-428b-b9bd-107b904cee61
+            - generic [ref=e201]:
+              - img [ref=e204]
+              - generic [ref=e210]: Pets
+          - link "Survey results" [ref=e214] [cursor=pointer]:
+            - /url: /objects/surveyResults?viewId=549ebd9e-49a8-411d-b990-fbe44243318e
+            - generic [ref=e215]:
+              - img [ref=e218]
+              - generic [ref=e221]: Survey results
+          - link "Employment Histories" [ref=e225] [cursor=pointer]:
+            - /url: /objects/employmentHistories?viewId=98fac7ed-a581-4763-a610-a22fec3dbd54
+            - generic [ref=e226]:
+              - img [ref=e229]
+              - generic [ref=e234]: Employment Histories
+          - link "Pet Care Agreements" [ref=e238] [cursor=pointer]:
+            - /url: /objects/petCareAgreements?viewId=fc83aaf8-7328-4dec-a10a-9557435611b6
+            - generic [ref=e239]:
+              - img [ref=e242]
+              - generic [ref=e249]: Pet Care Agreements
+          - link "Leads" [ref=e253] [cursor=pointer]:
+            - /url: /objects/leads?viewId=afdbd53e-9252-4f18-ac59-573d1334a8e5
+            - generic [ref=e254]:
+              - img [ref=e257]
+              - generic [ref=e261]: Leads
+          - link "Partner Profiles" [ref=e265] [cursor=pointer]:
+            - /url: /objects/partnerProfiles?viewId=b6cfc0f2-f4b6-4933-8c1a-a5da7e0c1835
+            - generic [ref=e266]:
+              - img [ref=e269]
+              - generic [ref=e274]: Partner Profiles
+          - link "Partner Contact Assignments" [ref=e278] [cursor=pointer]:
+            - /url: /objects/partnerContactAssignments?viewId=e93f094e-4d74-46a0-a4ed-9a53af4b5ee9
+            - generic [ref=e279]:
+              - img [ref=e282]
+              - generic [ref=e287]: Partner Contact Assignments
+          - link "Partner Customer Maps" [ref=e291] [cursor=pointer]:
+            - /url: /objects/partnerCustomerMaps?viewId=0b7c57fd-19dd-403f-a033-7fd6c7655351
+            - generic [ref=e292]:
+              - img [ref=e295]
+              - generic [ref=e300]: Partner Customer Maps
+          - link "Partner Attribution Events" [ref=e304] [cursor=pointer]:
+            - /url: /objects/partnerAttributionEvents?viewId=d2df9a87-f614-451e-8d87-99649c7f37ba
+            - generic [ref=e305]:
+              - img [ref=e308]
+              - generic [ref=e312]: Partner Attribution Events
+          - link "Partner Attribution Snapshots" [ref=e316] [cursor=pointer]:
+            - /url: /objects/partnerAttributionSnapshots?viewId=42a6a028-b618-4669-9982-e01f240182ef
+            - generic [ref=e317]:
+              - img [ref=e320]
+              - generic [ref=e324]: Partner Attribution Snapshots
+          - link "Customer Events" [ref=e328] [cursor=pointer]:
+            - /url: /objects/customerEvents?viewId=4dae63e5-973e-4db3-8e9c-4c33722cdf76
+            - generic [ref=e329]:
+              - img [ref=e332]
+              - generic [ref=e336]: Customer Events
+          - link "Customer Snapshots" [ref=e340] [cursor=pointer]:
+            - /url: /objects/customerSnapshots?viewId=271a3631-60fe-4301-99b8-8bedd49d9bb2
+            - generic [ref=e341]:
+              - img [ref=e344]
+              - generic [ref=e348]: Customer Snapshots
+          - link "Partner Plays" [ref=e352] [cursor=pointer]:
+            - /url: /objects/partnerPlays?viewId=c006c923-7a67-4b48-a94c-a66acdf0ed6f
+            - generic [ref=e353]:
+              - img [ref=e356]
+              - generic [ref=e360]: Partner Plays
+          - link "Play Checks" [ref=e364] [cursor=pointer]:
+            - /url: /objects/playChecks?viewId=dde215e8-4887-450e-a76d-a9e173ee68c9
+            - generic [ref=e365]:
+              - img [ref=e368]
+              - generic [ref=e372]: Play Checks
+          - link "Play Enrichments" [ref=e376] [cursor=pointer]:
+            - /url: /objects/playEnrichments?viewId=75d27912-6681-4dcb-80b8-83c8be9be83f
+            - generic [ref=e377]:
+              - img [ref=e380]
+              - generic [ref=e383]: Play Enrichments
+          - link "Play Exclusions" [ref=e387] [cursor=pointer]:
+            - /url: /objects/playExclusions?viewId=cafe7254-0cec-4640-a619-7446dcebd1be
+            - generic [ref=e388]:
+              - img [ref=e391]
+              - generic [ref=e396]: Play Exclusions
+          - link "Discovery Runs" [ref=e400] [cursor=pointer]:
+            - /url: /objects/discoveryRuns?viewId=0e711078-1bc6-4072-9f77-575a87bc02ef
+            - generic [ref=e401]:
+              - img [ref=e404]
+              - generic [ref=e407]: Discovery Runs
+          - link "Partner Candidates" [ref=e411] [cursor=pointer]:
+            - /url: /objects/partnerCandidates?viewId=dcda7023-4ed6-48b9-99a7-9640abb891cc
+            - generic [ref=e412]:
+              - img [ref=e415]
+              - generic [ref=e419]: Partner Candidates
+          - link "Check Evaluations" [ref=e423] [cursor=pointer]:
+            - /url: /objects/checkEvaluations?viewId=36a8be1c-35cb-41cd-ba01-980fc229f3c7
+            - generic [ref=e424]:
+              - img [ref=e427]
+              - generic [ref=e431]: Check Evaluations
+          - link "Enrichment Evaluations" [ref=e435] [cursor=pointer]:
+            - /url: /objects/enrichmentEvaluations?viewId=30945b92-e699-442f-81ca-0dbf6880ee4d
+            - generic [ref=e436]:
+              - img [ref=e439]
+              - generic [ref=e442]: Enrichment Evaluations
+      - generic [ref=e444]:
+        - generic [ref=e448]: Other
+        - button "Settings" [ref=e450] [cursor=pointer]:
+          - generic [ref=e451]:
+            - img [ref=e453]
+            - generic [ref=e457]: Settings
+        - link "Documentation" [ref=e459] [cursor=pointer]:
+          - /url: https://docs.twenty.com/user-guide/introduction
+          - generic [ref=e460]:
+            - img [ref=e462]
+            - generic [ref=e466]: Documentation
+  - generic [ref=e469]:
+    - generic [ref=e470]:
+      - generic [ref=e472]:
+        - img [ref=e475]
+        - generic [ref=e479]: Companies
+      - generic [ref=e480]:
+        - button "Create new record" [ref=e483] [cursor=pointer]:
+          - generic:
+            - generic:
+              - img
+          - generic [ref=e484]:
+            - generic [ref=e485]: New record
+            - generic [ref=e486]: ...
+        - button "Open command menu" [ref=e489] [cursor=pointer]:
+          - img [ref=e491]
+          - generic [ref=e501]: ⌘K
+    - generic [ref=e502]:
+      - generic [ref=e507]:
+        - generic [ref=e509]:
+          - button "All Companies · 599" [ref=e511]:
+            - generic [ref=e512] [cursor=pointer]:
+              - img [ref=e514]
+              - generic [ref=e516]: All Companies
+              - generic [ref=e517]:
+                - text: · 599
+                - img [ref=e518]
+          - generic [ref=e520]:
+            - button "Filter" [ref=e521]:
+              - button "Filter" [ref=e522] [cursor=pointer]
+            - button "Sort" [ref=e523]:
+              - button "Sort" [ref=e524] [cursor=pointer]
+            - button "Options" [ref=e525]:
+              - button "Options" [ref=e526] [cursor=pointer]
+        - generic [ref=e529]:
+          - checkbox [ref=e534] [cursor=pointer]
+          - generic [ref=e536] [cursor=pointer]:
+            - button "Name" [ref=e537]:
+              - generic [ref=e538]:
+                - img [ref=e540]
+                - generic [ref=e543]: Name
+            - separator [ref=e544]
+          - generic [ref=e545] [cursor=pointer]:
+            - separator [ref=e546]
+            - button "Domain Name" [ref=e547]:
+              - generic [ref=e548]:
+                - img [ref=e550]
+                - generic [ref=e554]: Domain Name
+            - separator [ref=e555]
+          - generic [ref=e556] [cursor=pointer]:
+            - separator [ref=e557]
+            - button "Created by" [ref=e558]:
+              - generic [ref=e559]:
+                - img [ref=e561]
+                - generic [ref=e565]: Created by
+            - separator [ref=e566]
+          - generic [ref=e567] [cursor=pointer]:
+            - separator [ref=e568]
+            - button "Account Owner" [ref=e569]:
+              - generic [ref=e570]:
+                - img [ref=e572]
+                - generic [ref=e576]: Account Owner
+            - separator [ref=e577]
+          - generic [ref=e578] [cursor=pointer]:
+            - separator [ref=e579]
+            - button "Creation date" [ref=e580]:
+              - generic [ref=e581]:
+                - img [ref=e583]
+                - generic [ref=e585]: Creation date
+            - separator [ref=e586]
+          - generic [ref=e587] [cursor=pointer]:
+            - separator [ref=e588]
+            - button "Employees" [ref=e589]:
+              - generic [ref=e590]:
+                - img [ref=e592]
+                - generic [ref=e597]: Employees
+            - separator [ref=e598]
+          - generic [ref=e599] [cursor=pointer]:
+            - separator [ref=e600]
+            - button "Address" [ref=e601]:
+              - generic [ref=e602]:
+                - img [ref=e604]
+                - generic [ref=e606]: Address
+            - separator [ref=e607]
+          - generic [ref=e608] [cursor=pointer]:
+            - separator [ref=e609]
+            - button [ref=e611]:
+              - img [ref=e613]
+          - generic [ref=e614]:
+            - generic [ref=e617]:
+              - button [ref=e618]:
+                - img [ref=e621]
+              - checkbox [ref=e628] [cursor=pointer]
+              - link "Google" [ref=e634] [cursor=pointer]:
+                - /url: /object/company/20202020-a305-41e7-8c72-ba44072a4c58?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e637]: Google
+              - link "goo.gle" [ref=e645] [cursor=pointer]:
+                - /url: https://goo.gle
+              - generic [ref=e650] [cursor=pointer]:
+                - img [ref=e653]
+                - generic [ref=e656]: Tim Apple
+              - generic [ref=e661] [cursor=pointer]:
+                - generic [ref=e663]: P
+                - generic [ref=e664]: Phil Schiler
+              - generic [ref=e669]: 1 day ago
+              - generic [ref=e674] [cursor=pointer]: 284,571
+              - generic [ref=e680] [cursor=pointer]: Mountain View
+            - generic [ref=e683]:
+              - button [ref=e684]:
+                - img [ref=e687]
+              - checkbox [ref=e694] [cursor=pointer]
+              - link "Microsoft" [ref=e700] [cursor=pointer]:
+                - /url: /object/company/20202020-a225-4b3d-a89c-7f6c30df998a?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e703]: Microsoft
+              - link "microsoft.com" [ref=e711] [cursor=pointer]:
+                - /url: https://microsoft.com
+              - generic [ref=e716] [cursor=pointer]:
+                - img [ref=e718]
+                - generic [ref=e721]: Tim Apple
+              - generic [ref=e726] [cursor=pointer]:
+                - generic [ref=e728]: J
+                - generic [ref=e729]: Jony Ive
+              - generic [ref=e734]: 1 day ago
+              - generic [ref=e739] [cursor=pointer]: 226,067
+              - generic [ref=e745] [cursor=pointer]: Redmond
+            - generic [ref=e748]:
+              - button [ref=e749]:
+                - img [ref=e752]
+              - checkbox [ref=e759] [cursor=pointer]
+              - link "Meta" [ref=e765] [cursor=pointer]:
+                - /url: /object/company/20202020-a8b0-422c-8fcf-5b7496f94975?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e768]: Meta
+              - link "metacareers.com" [ref=e776] [cursor=pointer]:
+                - /url: https://metacareers.com
+              - generic [ref=e781] [cursor=pointer]:
+                - img [ref=e783]
+                - generic [ref=e786]: Tim Apple
+              - generic [ref=e791] [cursor=pointer]:
+                - generic [ref=e793]: P
+                - generic [ref=e794]: Phil Schiler
+              - generic [ref=e799]: 1 day ago
+              - generic [ref=e804] [cursor=pointer]: 119,511
+              - generic [ref=e810] [cursor=pointer]: Menlo Park
+            - generic [ref=e813]:
+              - button [ref=e814]:
+                - img [ref=e817]
+              - checkbox [ref=e824] [cursor=pointer]
+              - link "SLB" [ref=e830] [cursor=pointer]:
+                - /url: /object/company/20202020-aaf7-41d6-87a9-7add07bebfd8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e833]: SLB
+              - link "slb.com" [ref=e841] [cursor=pointer]:
+                - /url: https://slb.com
+              - generic [ref=e846] [cursor=pointer]:
+                - img [ref=e848]
+                - generic [ref=e851]: Tim Apple
+              - generic [ref=e856] [cursor=pointer]:
+                - generic [ref=e858]: P
+                - generic [ref=e859]: Phil Schiler
+              - generic [ref=e864]: 1 day ago
+              - generic [ref=e869] [cursor=pointer]: 113,151
+              - generic [ref=e875] [cursor=pointer]: Houston
+            - generic [ref=e878]:
+              - button [ref=e879]:
+                - img [ref=e882]
+              - checkbox [ref=e889] [cursor=pointer]
+              - link "Cisco" [ref=e895] [cursor=pointer]:
+                - /url: /object/company/20202020-a19d-422b-9cb2-5f8382a56877?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e898]: Cisco
+              - link "cisco.com" [ref=e906] [cursor=pointer]:
+                - /url: https://cisco.com
+              - generic [ref=e911] [cursor=pointer]:
+                - img [ref=e914]
+                - generic [ref=e918]: Tim Apple
+              - generic [ref=e923] [cursor=pointer]:
+                - generic [ref=e925]: P
+                - generic [ref=e926]: Phil Schiler
+              - generic [ref=e931]: 1 day ago
+              - generic [ref=e936] [cursor=pointer]: 99,625
+              - generic [ref=e942] [cursor=pointer]: San Jose
+            - generic [ref=e945]:
+              - button [ref=e946]:
+                - img [ref=e949]
+              - checkbox [ref=e956] [cursor=pointer]
+              - link "Uber" [ref=e962] [cursor=pointer]:
+                - /url: /object/company/20202020-a39c-4644-867d-e8e1851b3ee8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e965]: Uber
+              - link "uber.com" [ref=e973] [cursor=pointer]:
+                - /url: https://uber.com
+              - generic [ref=e978] [cursor=pointer]:
+                - img [ref=e980]
+                - generic [ref=e982]: Tim Apple
+              - generic [ref=e987] [cursor=pointer]:
+                - generic [ref=e989]: T
+                - generic [ref=e990]: Tim Apple
+              - generic [ref=e995]: 1 day ago
+              - generic [ref=e1000] [cursor=pointer]: 90,545
+              - generic [ref=e1006] [cursor=pointer]: San Francisco
+            - generic [ref=e1009]:
+              - button [ref=e1010]:
+                - img [ref=e1013]
+              - checkbox [ref=e1020] [cursor=pointer]
+              - link "Salesforce" [ref=e1026] [cursor=pointer]:
+                - /url: /object/company/20202020-a0eb-4c51-aa03-c4cd2423d7cb?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1029]: Salesforce
+              - link "salesforce.com" [ref=e1037] [cursor=pointer]:
+                - /url: https://salesforce.com
+              - generic [ref=e1042] [cursor=pointer]:
+                - generic [ref=e1044]: T
+                - generic [ref=e1045]: Tim Apple
+              - generic [ref=e1050] [cursor=pointer]:
+                - generic [ref=e1052]: P
+                - generic [ref=e1053]: Phil Schiler
+              - generic [ref=e1058]: 1 day ago
+              - generic [ref=e1063] [cursor=pointer]: 71,322
+              - generic [ref=e1069] [cursor=pointer]: San Francisco
+            - generic [ref=e1072]:
+              - button [ref=e1073]:
+                - img [ref=e1076]
+              - checkbox [ref=e1083] [cursor=pointer]
+              - link "Amdocs" [ref=e1089] [cursor=pointer]:
+                - /url: /object/company/20202020-a9b5-48ec-97c0-dbbfcbe8df1b?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1092]: Amdocs
+              - link "amdocs.com" [ref=e1100] [cursor=pointer]:
+                - /url: https://amdocs.com
+              - generic [ref=e1105] [cursor=pointer]:
+                - img [ref=e1108]
+                - generic [ref=e1112]: Tim Apple
+              - generic [ref=e1117] [cursor=pointer]:
+                - generic [ref=e1119]: J
+                - generic [ref=e1120]: Jony Ive
+              - generic [ref=e1125]: 1 day ago
+              - generic [ref=e1130] [cursor=pointer]: 35,731
+              - generic [ref=e1136] [cursor=pointer]: Chesterfield
+            - generic [ref=e1139]:
+              - button [ref=e1140]:
+                - img [ref=e1143]
+              - checkbox [ref=e1150] [cursor=pointer]
+              - link "VMware" [ref=e1156] [cursor=pointer]:
+                - /url: /object/company/20202020-a89d-44f9-ac9c-25e462460cb0?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1159]: VMware
+              - link "vmware.com" [ref=e1167] [cursor=pointer]:
+                - /url: https://vmware.com
+              - generic [ref=e1172] [cursor=pointer]:
+                - generic [ref=e1174]: T
+                - generic [ref=e1175]: Tim Apple
+              - generic [ref=e1180] [cursor=pointer]:
+                - generic [ref=e1182]: J
+                - generic [ref=e1183]: Jony Ive
+              - generic [ref=e1188]: 1 day ago
+              - generic [ref=e1193] [cursor=pointer]: 34,759
+              - generic [ref=e1199] [cursor=pointer]: Palo Alto
+            - generic [ref=e1202]:
+              - button [ref=e1203]:
+                - img [ref=e1206]
+              - checkbox [ref=e1213] [cursor=pointer]
+              - link "GlobalLogic" [ref=e1219] [cursor=pointer]:
+                - /url: /object/company/20202020-a377-4693-a2d9-89dc9188a1dc?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1222]: GlobalLogic
+              - link "globallogic.com" [ref=e1230] [cursor=pointer]:
+                - /url: https://globallogic.com
+              - generic [ref=e1235] [cursor=pointer]:
+                - img [ref=e1238]
+                - generic [ref=e1241]: Tim Apple
+              - generic [ref=e1246] [cursor=pointer]:
+                - generic [ref=e1248]: J
+                - generic [ref=e1249]: Jony Ive
+              - generic [ref=e1254]: 1 day ago
+              - generic [ref=e1259] [cursor=pointer]: 24,461
+              - generic [ref=e1265] [cursor=pointer]: Santa Clara
+            - generic [ref=e1268]:
+              - button [ref=e1269]:
+                - img [ref=e1272]
+              - checkbox [ref=e1279] [cursor=pointer]
+              - link "ServiceNow" [ref=e1285] [cursor=pointer]:
+                - /url: /object/company/20202020-a1d7-4279-a41a-7530ade05b5b?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1288]: ServiceNow
+              - link "servicenow.com" [ref=e1296] [cursor=pointer]:
+                - /url: https://servicenow.com
+              - generic [ref=e1301] [cursor=pointer]:
+                - generic [ref=e1303]: T
+                - generic [ref=e1304]: Tim Apple
+              - generic [ref=e1309] [cursor=pointer]:
+                - generic [ref=e1311]: T
+                - generic [ref=e1312]: Tim Apple
+              - generic [ref=e1317]: 1 day ago
+              - generic [ref=e1322] [cursor=pointer]: 24,104
+              - generic [ref=e1328] [cursor=pointer]: Santa Clara
+            - generic [ref=e1331]:
+              - button [ref=e1332]:
+                - img [ref=e1335]
+              - checkbox [ref=e1342] [cursor=pointer]
+              - link "SS&C Technologies" [ref=e1348] [cursor=pointer]:
+                - /url: /object/company/20202020-abaa-428e-a496-0fe54b32e7c6?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1351]: SS&C Technologies
+              - link "ssctech.com" [ref=e1359] [cursor=pointer]:
+                - /url: https://ssctech.com
+              - generic [ref=e1364] [cursor=pointer]:
+                - img [ref=e1367]
+                - generic [ref=e1371]: Tim Apple
+              - generic [ref=e1376] [cursor=pointer]:
+                - generic [ref=e1378]: P
+                - generic [ref=e1379]: Phil Schiler
+              - generic [ref=e1384]: 1 day ago
+              - generic [ref=e1389] [cursor=pointer]: 20,311
+              - generic [ref=e1395] [cursor=pointer]: Windsor
+            - generic [ref=e1398]:
+              - button [ref=e1399]:
+                - img [ref=e1402]
+              - checkbox [ref=e1409] [cursor=pointer]
+              - link "Workday" [ref=e1415] [cursor=pointer]:
+                - /url: /object/company/20202020-ad85-4b32-b670-b4b020ed0e09?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1418]: Workday
+              - link "workday.com" [ref=e1426] [cursor=pointer]:
+                - /url: https://workday.com
+              - generic [ref=e1431] [cursor=pointer]:
+                - generic [ref=e1433]: T
+                - generic [ref=e1434]: Tim Apple
+              - generic [ref=e1439] [cursor=pointer]:
+                - generic [ref=e1441]: J
+                - generic [ref=e1442]: Jony Ive
+              - generic [ref=e1447]: 1 day ago
+              - generic [ref=e1452] [cursor=pointer]: 20,036
+              - generic [ref=e1458] [cursor=pointer]: Pleasanton
+            - generic [ref=e1461]:
+              - button [ref=e1462]:
+                - img [ref=e1465]
+              - checkbox [ref=e1472] [cursor=pointer]
+              - link "Red Hat" [ref=e1478] [cursor=pointer]:
+                - /url: /object/company/20202020-a7c6-41d1-924e-1b65b9d3b99e?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1481]: Red Hat
+              - link "redhat.com" [ref=e1489] [cursor=pointer]:
+                - /url: https://redhat.com
+              - generic [ref=e1494] [cursor=pointer]:
+                - img [ref=e1496]
+                - generic [ref=e1498]: Tim Apple
+              - generic [ref=e1503] [cursor=pointer]:
+                - generic [ref=e1505]: P
+                - generic [ref=e1506]: Phil Schiler
+              - generic [ref=e1511]: 1 day ago
+              - generic [ref=e1516] [cursor=pointer]: 19,945
+              - generic [ref=e1522] [cursor=pointer]: Raleigh
+            - generic [ref=e1525]:
+              - button [ref=e1526]:
+                - img [ref=e1529]
+              - checkbox [ref=e1536] [cursor=pointer]
+              - link "NetSuite" [ref=e1542] [cursor=pointer]:
+                - /url: /object/company/20202020-a14e-446f-aa5e-59afbcdffb16?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1545]: NetSuite
+              - link "netsuite.com" [ref=e1553] [cursor=pointer]:
+                - /url: https://netsuite.com
+              - generic [ref=e1558] [cursor=pointer]:
+                - img [ref=e1560]
+                - generic [ref=e1563]: Tim Apple
+              - generic [ref=e1568] [cursor=pointer]:
+                - generic [ref=e1570]: J
+                - generic [ref=e1571]: Jony Ive
+              - generic [ref=e1576]: 1 day ago
+              - generic [ref=e1581] [cursor=pointer]: 19,269
+              - generic [ref=e1587] [cursor=pointer]: Austin
+            - generic [ref=e1590]:
+              - button [ref=e1591]:
+                - img [ref=e1594]
+              - checkbox [ref=e1601] [cursor=pointer]
+              - link "Synopsys Inc" [ref=e1607] [cursor=pointer]:
+                - /url: /object/company/20202020-aba6-4097-ae47-053aa8fbb7e7?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1610]: Synopsys Inc
+              - link "synopsys.com" [ref=e1618] [cursor=pointer]:
+                - /url: https://synopsys.com
+              - generic [ref=e1623] [cursor=pointer]:
+                - img [ref=e1625]
+                - generic [ref=e1628]: Tim Apple
+              - generic [ref=e1633] [cursor=pointer]:
+                - generic [ref=e1635]: J
+                - generic [ref=e1636]: Jony Ive
+              - generic [ref=e1641]: 1 day ago
+              - generic [ref=e1646] [cursor=pointer]: 18,061
+              - generic [ref=e1652] [cursor=pointer]: Sunnyvale
+            - generic [ref=e1655]:
+              - button [ref=e1656]:
+                - img [ref=e1659]
+              - checkbox [ref=e1666] [cursor=pointer]
+              - link "Siemens Digital Industries Software" [ref=e1672] [cursor=pointer]:
+                - /url: /object/company/20202020-a076-43ec-a8ac-485420bd2ccf?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1675]: Siemens Digital Industries Software
+              - link "sw.siemens.com" [ref=e1683] [cursor=pointer]:
+                - /url: https://sw.siemens.com
+              - generic [ref=e1688] [cursor=pointer]:
+                - img [ref=e1691]
+                - generic [ref=e1695]: Tim Apple
+              - generic [ref=e1700] [cursor=pointer]:
+                - generic [ref=e1702]: T
+                - generic [ref=e1703]: Tim Apple
+              - generic [ref=e1708]: 1 day ago
+              - generic [ref=e1713] [cursor=pointer]: 17,262
+              - generic [ref=e1719] [cursor=pointer]: Plano
+            - generic [ref=e1722]:
+              - button [ref=e1723]:
+                - img [ref=e1726]
+              - checkbox [ref=e1733] [cursor=pointer]
+              - link "SAS" [ref=e1739] [cursor=pointer]:
+                - /url: /object/company/20202020-aec4-4416-b087-f5a61c3a0315?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1742]: SAS
+              - link "sas.com" [ref=e1750] [cursor=pointer]:
+                - /url: https://sas.com
+              - generic [ref=e1755] [cursor=pointer]:
+                - img [ref=e1757]
+                - generic [ref=e1759]: Tim Apple
+              - generic [ref=e1764] [cursor=pointer]:
+                - generic [ref=e1766]: P
+                - generic [ref=e1767]: Phil Schiler
+              - generic [ref=e1772]: 1 day ago
+              - generic [ref=e1777] [cursor=pointer]: 16,287
+              - generic [ref=e1783] [cursor=pointer]: Cary
+            - generic [ref=e1786]:
+              - button [ref=e1787]:
+                - img [ref=e1790]
+              - checkbox [ref=e1797] [cursor=pointer]
+              - link "Intuit" [ref=e1803] [cursor=pointer]:
+                - /url: /object/company/20202020-a120-4ad9-8bf3-58f8691e66ce?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1806]: Intuit
+              - link "intuit.com" [ref=e1814] [cursor=pointer]:
+                - /url: https://intuit.com
+              - generic [ref=e1819] [cursor=pointer]:
+                - generic [ref=e1821]: T
+                - generic [ref=e1822]: Tim Apple
+              - generic [ref=e1827] [cursor=pointer]:
+                - generic [ref=e1829]: J
+                - generic [ref=e1830]: Jony Ive
+              - generic [ref=e1835]: 1 day ago
+              - generic [ref=e1840] [cursor=pointer]: 15,851
+              - generic [ref=e1846] [cursor=pointer]: Mountain View
+            - generic [ref=e1849]:
+              - button [ref=e1850]:
+                - img [ref=e1853]
+              - checkbox [ref=e1860] [cursor=pointer]
+              - link "Broadcom Software" [ref=e1866] [cursor=pointer]:
+                - /url: /object/company/20202020-af43-44c6-877e-5ad51fe74ff0?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1869]: Broadcom Software
+              - link "broadcom.com" [ref=e1877] [cursor=pointer]:
+                - /url: https://broadcom.com
+              - generic [ref=e1882] [cursor=pointer]:
+                - img [ref=e1884]
+                - generic [ref=e1887]: Tim Apple
+              - generic [ref=e1892] [cursor=pointer]:
+                - generic [ref=e1894]: P
+                - generic [ref=e1895]: Phil Schiler
+              - generic [ref=e1900]: 1 day ago
+              - generic [ref=e1905] [cursor=pointer]: 15,127
+              - generic [ref=e1911] [cursor=pointer]: San Jose
+            - generic [ref=e1914]:
+              - button [ref=e1915]:
+                - img [ref=e1918]
+              - checkbox [ref=e1925] [cursor=pointer]
+              - link "Autodesk" [ref=e1931] [cursor=pointer]:
+                - /url: /object/company/20202020-aab2-4e2f-8372-cc2613fb3db8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e1934]: Autodesk
+              - link "autodesk.com" [ref=e1942] [cursor=pointer]:
+                - /url: https://autodesk.com
+              - generic [ref=e1947] [cursor=pointer]:
+                - img [ref=e1949]
+                - generic [ref=e1953]: Tim Apple
+              - generic [ref=e1958] [cursor=pointer]:
+                - generic [ref=e1960]: J
+                - generic [ref=e1961]: Jony Ive
+              - generic [ref=e1966]: 1 day ago
+              - generic [ref=e1971] [cursor=pointer]: 14,593
+              - generic [ref=e1977] [cursor=pointer]: San Francisco
+            - generic [ref=e1980]:
+              - button [ref=e1981]:
+                - img [ref=e1984]
+              - checkbox [ref=e1991] [cursor=pointer]
+              - link "Epic" [ref=e1997] [cursor=pointer]:
+                - /url: /object/company/20202020-a3e8-41d6-8b48-b4e6c7bae742?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2000]: Epic
+              - link "epic.com" [ref=e2008] [cursor=pointer]:
+                - /url: https://epic.com
+              - generic [ref=e2013] [cursor=pointer]:
+                - img [ref=e2016]
+                - generic [ref=e2019]: Tim Apple
+              - generic [ref=e2024] [cursor=pointer]:
+                - generic [ref=e2026]: P
+                - generic [ref=e2027]: Phil Schiler
+              - generic [ref=e2032]: 1 day ago
+              - generic [ref=e2037] [cursor=pointer]: 13,765
+              - generic [ref=e2043] [cursor=pointer]: Verona
+            - generic [ref=e2046]:
+              - button [ref=e2047]:
+                - img [ref=e2050]
+              - checkbox [ref=e2057] [cursor=pointer]
+              - link "Bosch USA" [ref=e2063] [cursor=pointer]:
+                - /url: /object/company/20202020-a828-4ae2-b694-3c453632b147?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2066]: Bosch USA
+              - link "bosch.us" [ref=e2074] [cursor=pointer]:
+                - /url: https://bosch.us
+              - generic [ref=e2079] [cursor=pointer]:
+                - generic [ref=e2081]: T
+                - generic [ref=e2082]: Tim Apple
+              - generic [ref=e2087] [cursor=pointer]:
+                - generic [ref=e2089]: J
+                - generic [ref=e2090]: Jony Ive
+              - generic [ref=e2095]: 1 day ago
+              - generic [ref=e2100] [cursor=pointer]: 13,754
+              - generic [ref=e2106] [cursor=pointer]: Farmington
+            - generic [ref=e2109]:
+              - button [ref=e2110]:
+                - img [ref=e2113]
+              - checkbox [ref=e2120] [cursor=pointer]
+              - link "C Cloud Software Group" [ref=e2126] [cursor=pointer]:
+                - /url: /object/company/20202020-ac47-4745-bec5-cbe19672fe13?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2127]:
+                  - generic [ref=e2129]: C
+                  - generic [ref=e2130]: Cloud Software Group
+              - link "cloudsoftwaregroup.com" [ref=e2138] [cursor=pointer]:
+                - /url: https://cloudsoftwaregroup.com
+              - generic [ref=e2143] [cursor=pointer]:
+                - img [ref=e2145]
+                - generic [ref=e2148]: Tim Apple
+              - generic [ref=e2153] [cursor=pointer]:
+                - generic [ref=e2155]: J
+                - generic [ref=e2156]: Jony Ive
+              - generic [ref=e2161]: 1 day ago
+              - generic [ref=e2166] [cursor=pointer]: 13,111
+              - generic [ref=e2172] [cursor=pointer]: Fort Lauderdale
+            - generic [ref=e2175]:
+              - button [ref=e2176]:
+                - img [ref=e2179]
+              - checkbox [ref=e2186] [cursor=pointer]
+              - link "Pitney Bowes" [ref=e2192] [cursor=pointer]:
+                - /url: /object/company/20202020-a42f-4bc0-97ee-73e9b810322f?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2195]: Pitney Bowes
+              - link "pitneybowes.com" [ref=e2203] [cursor=pointer]:
+                - /url: https://pitneybowes.com
+              - generic [ref=e2208] [cursor=pointer]:
+                - img [ref=e2211]
+                - generic [ref=e2215]: Tim Apple
+              - generic [ref=e2220] [cursor=pointer]:
+                - generic [ref=e2222]: P
+                - generic [ref=e2223]: Phil Schiler
+              - generic [ref=e2228]: 1 day ago
+              - generic [ref=e2233] [cursor=pointer]: 12,306
+              - generic [ref=e2239] [cursor=pointer]: Stamford
+            - generic [ref=e2242]:
+              - button [ref=e2243]:
+                - img [ref=e2246]
+              - checkbox [ref=e2253] [cursor=pointer]
+              - link "Juniper Networks" [ref=e2259] [cursor=pointer]:
+                - /url: /object/company/20202020-aa45-4913-878e-d7ebf66ee13e?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2262]: Juniper Networks
+              - link "juniper.net" [ref=e2270] [cursor=pointer]:
+                - /url: https://juniper.net
+              - generic [ref=e2275] [cursor=pointer]:
+                - img [ref=e2277]
+                - generic [ref=e2280]: Tim Apple
+              - generic [ref=e2285] [cursor=pointer]:
+                - generic [ref=e2287]: T
+                - generic [ref=e2288]: Tim Apple
+              - generic [ref=e2293]: 1 day ago
+              - generic [ref=e2298] [cursor=pointer]: 11,928
+              - generic [ref=e2304] [cursor=pointer]: Sunnyvale
+            - generic [ref=e2307]:
+              - button [ref=e2308]:
+                - img [ref=e2311]
+              - checkbox [ref=e2318] [cursor=pointer]
+              - link "Chegg Inc." [ref=e2324] [cursor=pointer]:
+                - /url: /object/company/20202020-a997-466d-8e1b-1de0d45611e8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2327]: Chegg Inc.
+              - link "chegg.com" [ref=e2335] [cursor=pointer]:
+                - /url: https://chegg.com
+              - generic [ref=e2340] [cursor=pointer]:
+                - generic [ref=e2342]: T
+                - generic [ref=e2343]: Tim Apple
+              - generic [ref=e2348] [cursor=pointer]:
+                - generic [ref=e2350]: P
+                - generic [ref=e2351]: Phil Schiler
+              - generic [ref=e2356]: 1 day ago
+              - generic [ref=e2361] [cursor=pointer]: 10,790
+              - generic [ref=e2367] [cursor=pointer]: Santa Clara
+            - generic [ref=e2370]:
+              - button [ref=e2371]:
+                - img [ref=e2374]
+              - checkbox [ref=e2381] [cursor=pointer]
+              - link "Teradata" [ref=e2387] [cursor=pointer]:
+                - /url: /object/company/20202020-aa8e-4283-ba38-faf499869cb7?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2390]: Teradata
+              - link "teradata.com" [ref=e2398] [cursor=pointer]:
+                - /url: https://teradata.com
+              - generic [ref=e2403] [cursor=pointer]:
+                - img [ref=e2406]
+                - generic [ref=e2410]: Tim Apple
+              - generic [ref=e2415] [cursor=pointer]:
+                - generic [ref=e2417]: T
+                - generic [ref=e2418]: Tim Apple
+              - generic [ref=e2423]: 1 day ago
+              - generic [ref=e2428] [cursor=pointer]: 10,748
+              - generic [ref=e2434] [cursor=pointer]: San Diego
+            - generic [ref=e2437]:
+              - button [ref=e2438]:
+                - img [ref=e2441]
+              - checkbox [ref=e2448] [cursor=pointer]
+              - link "NICE" [ref=e2454] [cursor=pointer]:
+                - /url: /object/company/20202020-a378-47b4-ae93-bf979a769ab8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2457]: NICE
+              - link "nice.com" [ref=e2465] [cursor=pointer]:
+                - /url: https://nice.com
+              - generic [ref=e2470] [cursor=pointer]:
+                - generic [ref=e2472]: T
+                - generic [ref=e2473]: Tim Apple
+              - generic [ref=e2478] [cursor=pointer]:
+                - generic [ref=e2480]: P
+                - generic [ref=e2481]: Phil Schiler
+              - generic [ref=e2486]: 1 day ago
+              - generic [ref=e2491] [cursor=pointer]: 10,258
+              - generic [ref=e2497] [cursor=pointer]: Hoboken
+            - generic [ref=e2500]:
+              - button [ref=e2501]:
+                - img [ref=e2504]
+              - checkbox [ref=e2511] [cursor=pointer]
+              - link "C Cadence Design Systems" [ref=e2517] [cursor=pointer]:
+                - /url: /object/company/20202020-a5be-4382-afbe-1b2e3f0ed166?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2518]:
+                  - generic [ref=e2520]: C
+                  - generic [ref=e2521]: Cadence Design Systems
+              - link "cadence.com" [ref=e2529] [cursor=pointer]:
+                - /url: https://cadence.com
+              - generic [ref=e2534] [cursor=pointer]:
+                - img [ref=e2536]
+                - generic [ref=e2539]: Tim Apple
+              - generic [ref=e2544] [cursor=pointer]:
+                - generic [ref=e2546]: J
+                - generic [ref=e2547]: Jony Ive
+              - generic [ref=e2552]: 1 day ago
+              - generic [ref=e2557] [cursor=pointer]: 9,377
+              - generic [ref=e2563] [cursor=pointer]: San Jose
+            - generic [ref=e2566]:
+              - button [ref=e2567]:
+                - img [ref=e2570]
+              - checkbox [ref=e2577] [cursor=pointer]
+              - link "Cox Automotive Inc." [ref=e2583] [cursor=pointer]:
+                - /url: /object/company/20202020-ae71-46fe-ad2c-f25001d4c800?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2586]: Cox Automotive Inc.
+              - link "coxautoinc.com" [ref=e2594] [cursor=pointer]:
+                - /url: https://coxautoinc.com
+              - generic [ref=e2599] [cursor=pointer]:
+                - generic [ref=e2601]: T
+                - generic [ref=e2602]: Tim Apple
+              - generic [ref=e2607] [cursor=pointer]:
+                - generic [ref=e2609]: P
+                - generic [ref=e2610]: Phil Schiler
+              - generic [ref=e2615]: 1 day ago
+              - generic [ref=e2620] [cursor=pointer]: 9,331
+              - generic [ref=e2626] [cursor=pointer]: Atlanta
+            - generic [ref=e2629]:
+              - button [ref=e2630]:
+                - img [ref=e2633]
+              - checkbox [ref=e2640] [cursor=pointer]
+              - link "Trimble Inc." [ref=e2646] [cursor=pointer]:
+                - /url: /object/company/20202020-addd-413f-a90c-5eed6658975c?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2649]: Trimble Inc.
+              - link "trimble.com" [ref=e2657] [cursor=pointer]:
+                - /url: https://trimble.com
+              - generic [ref=e2662] [cursor=pointer]:
+                - generic [ref=e2664]: T
+                - generic [ref=e2665]: Tim Apple
+              - generic [ref=e2670] [cursor=pointer]:
+                - generic [ref=e2672]: J
+                - generic [ref=e2673]: Jony Ive
+              - generic [ref=e2678]: 1 day ago
+              - generic [ref=e2683] [cursor=pointer]: 9,311
+              - generic [ref=e2689] [cursor=pointer]: Broomfield
+            - generic [ref=e2692]:
+              - button [ref=e2693]:
+                - img [ref=e2696]
+              - checkbox [ref=e2703] [cursor=pointer]
+              - link "[24]7.ai" [ref=e2709] [cursor=pointer]:
+                - /url: /object/company/20202020-a286-45a2-a048-8a6a69fdcfe7?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2712]: "[24]7.ai"
+              - link "247.ai" [ref=e2720] [cursor=pointer]:
+                - /url: https://247.ai
+              - generic [ref=e2725] [cursor=pointer]:
+                - img [ref=e2727]
+                - generic [ref=e2731]: Tim Apple
+              - generic [ref=e2736] [cursor=pointer]:
+                - generic [ref=e2738]: P
+                - generic [ref=e2739]: Phil Schiler
+              - generic [ref=e2744]: 1 day ago
+              - generic [ref=e2749] [cursor=pointer]: 9,170
+              - generic [ref=e2755] [cursor=pointer]: San Jose
+            - generic [ref=e2758]:
+              - button [ref=e2759]:
+                - img [ref=e2762]
+              - checkbox [ref=e2769] [cursor=pointer]
+              - link "Akamai Technologies" [ref=e2775] [cursor=pointer]:
+                - /url: /object/company/20202020-a6d3-42bc-ac1e-b0c9c1e032db?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2778]: Akamai Technologies
+              - link "akamai.com" [ref=e2786] [cursor=pointer]:
+                - /url: https://akamai.com
+              - generic [ref=e2791] [cursor=pointer]:
+                - generic [ref=e2793]: T
+                - generic [ref=e2794]: Tim Apple
+              - generic [ref=e2799] [cursor=pointer]:
+                - generic [ref=e2801]: T
+                - generic [ref=e2802]: Tim Apple
+              - generic [ref=e2807]: 1 day ago
+              - generic [ref=e2812] [cursor=pointer]: 9,168
+              - generic [ref=e2818] [cursor=pointer]: Cambridge
+            - generic [ref=e2821]:
+              - button [ref=e2822]:
+                - img [ref=e2825]
+              - checkbox [ref=e2832] [cursor=pointer]
+              - link "Splunk" [ref=e2838] [cursor=pointer]:
+                - /url: /object/company/20202020-a026-43c0-b042-0123f72f6cf9?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2841]: Splunk
+              - link "splunk.com" [ref=e2849] [cursor=pointer]:
+                - /url: https://splunk.com
+              - generic [ref=e2854] [cursor=pointer]:
+                - img [ref=e2856]
+                - generic [ref=e2859]: Tim Apple
+              - generic [ref=e2864] [cursor=pointer]:
+                - generic [ref=e2866]: P
+                - generic [ref=e2867]: Phil Schiler
+              - generic [ref=e2872]: 1 day ago
+              - generic [ref=e2877] [cursor=pointer]: 8,891
+              - generic [ref=e2883] [cursor=pointer]: San Francisco
+            - generic [ref=e2886]:
+              - button [ref=e2887]:
+                - img [ref=e2890]
+              - checkbox [ref=e2897] [cursor=pointer]
+              - link "Okta" [ref=e2903] [cursor=pointer]:
+                - /url: /object/company/20202020-ab8b-4dbf-81b5-1c18941b6457?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2906]: Okta
+              - link "okta.com" [ref=e2914] [cursor=pointer]:
+                - /url: https://okta.com
+              - generic [ref=e2919] [cursor=pointer]:
+                - img [ref=e2922]
+                - generic [ref=e2926]: Tim Apple
+              - generic [ref=e2931] [cursor=pointer]:
+                - generic [ref=e2933]: J
+                - generic [ref=e2934]: Jony Ive
+              - generic [ref=e2939]: 1 day ago
+              - generic [ref=e2944] [cursor=pointer]: 8,860
+              - generic [ref=e2950] [cursor=pointer]: San Francisco
+            - generic [ref=e2953]:
+              - button [ref=e2954]:
+                - img [ref=e2957]
+              - checkbox [ref=e2964] [cursor=pointer]
+              - link "Ceridian" [ref=e2970] [cursor=pointer]:
+                - /url: /object/company/20202020-a9cb-4047-895e-045524c8c3be?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e2973]: Ceridian
+              - link "ceridian.com" [ref=e2981] [cursor=pointer]:
+                - /url: https://ceridian.com
+              - generic [ref=e2986] [cursor=pointer]:
+                - generic [ref=e2988]: T
+                - generic [ref=e2989]: Tim Apple
+              - generic [ref=e2994] [cursor=pointer]:
+                - generic [ref=e2996]: P
+                - generic [ref=e2997]: Phil Schiler
+              - generic [ref=e3002]: 1 day ago
+              - generic [ref=e3007] [cursor=pointer]: 8,813
+              - generic [ref=e3013] [cursor=pointer]: Minneapolis
+            - generic [ref=e3016]:
+              - button [ref=e3017]:
+                - img [ref=e3020]
+              - checkbox [ref=e3027] [cursor=pointer]
+              - link "RealPage, Inc." [ref=e3033] [cursor=pointer]:
+                - /url: /object/company/20202020-a958-4f51-9d1e-d3799bf8bf94?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3036]: RealPage, Inc.
+              - link "realpage.com" [ref=e3044] [cursor=pointer]:
+                - /url: https://realpage.com
+              - generic [ref=e3049] [cursor=pointer]:
+                - img [ref=e3052]
+                - generic [ref=e3056]: Tim Apple
+              - generic [ref=e3061] [cursor=pointer]:
+                - generic [ref=e3063]: T
+                - generic [ref=e3064]: Tim Apple
+              - generic [ref=e3069]: 1 day ago
+              - generic [ref=e3074] [cursor=pointer]: 8,227
+              - generic [ref=e3080] [cursor=pointer]: Richardson
+            - generic [ref=e3083]:
+              - button [ref=e3084]:
+                - img [ref=e3087]
+              - checkbox [ref=e3094] [cursor=pointer]
+              - link "Freelance" [ref=e3100] [cursor=pointer]:
+                - /url: /object/company/20202020-ae04-4eae-95bb-dae396d779d8?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3103]: Freelance
+              - link "jobicy.com" [ref=e3111] [cursor=pointer]:
+                - /url: https://jobicy.com
+              - generic [ref=e3116] [cursor=pointer]:
+                - img [ref=e3119]
+                - generic [ref=e3123]: Tim Apple
+              - generic [ref=e3128] [cursor=pointer]:
+                - generic [ref=e3130]: J
+                - generic [ref=e3131]: Jony Ive
+              - generic [ref=e3136]: 1 day ago
+              - generic [ref=e3141] [cursor=pointer]: 8,180
+              - generic [ref=e3147] [cursor=pointer]: Ny
+            - generic [ref=e3150]:
+              - button [ref=e3151]:
+                - img [ref=e3154]
+              - checkbox [ref=e3161] [cursor=pointer]
+              - link "Stripe" [ref=e3167] [cursor=pointer]:
+                - /url: /object/company/20202020-a6f9-42e4-9891-3dbd8bd35079?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3170]: Stripe
+              - link "stripe.com" [ref=e3178] [cursor=pointer]:
+                - /url: https://stripe.com
+              - generic [ref=e3183] [cursor=pointer]:
+                - img [ref=e3185]
+                - generic [ref=e3187]: Tim Apple
+              - generic [ref=e3192] [cursor=pointer]:
+                - generic [ref=e3194]: J
+                - generic [ref=e3195]: Jony Ive
+              - generic [ref=e3200]: 1 day ago
+              - generic [ref=e3205] [cursor=pointer]: 8,145
+              - generic [ref=e3211] [cursor=pointer]: South San Francisco
+            - generic [ref=e3214]:
+              - button [ref=e3215]:
+                - img [ref=e3218]
+              - checkbox [ref=e3225] [cursor=pointer]
+              - link "Shutterfly" [ref=e3231] [cursor=pointer]:
+                - /url: /object/company/20202020-a729-4cba-861d-6582f1bb5985?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3234]: Shutterfly
+              - link "shutterflyinc.com" [ref=e3242] [cursor=pointer]:
+                - /url: https://shutterflyinc.com
+              - generic [ref=e3247] [cursor=pointer]:
+                - generic [ref=e3249]: T
+                - generic [ref=e3250]: Tim Apple
+              - generic [ref=e3255] [cursor=pointer]:
+                - generic [ref=e3257]: T
+                - generic [ref=e3258]: Tim Apple
+              - generic [ref=e3263]: 1 day ago
+              - generic [ref=e3268] [cursor=pointer]: 8,070
+              - generic [ref=e3274] [cursor=pointer]: San Jose
+            - generic [ref=e3277]:
+              - button [ref=e3278]:
+                - img [ref=e3281]
+              - checkbox [ref=e3288] [cursor=pointer]
+              - link "Unity" [ref=e3294] [cursor=pointer]:
+                - /url: /object/company/20202020-ac61-4374-a911-cbb469541429?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3297]: Unity
+              - link "unity.com" [ref=e3305] [cursor=pointer]:
+                - /url: https://unity.com
+              - generic [ref=e3310] [cursor=pointer]:
+                - img [ref=e3313]
+                - generic [ref=e3317]: Tim Apple
+              - generic [ref=e3322] [cursor=pointer]:
+                - generic [ref=e3324]: T
+                - generic [ref=e3325]: Tim Apple
+              - generic [ref=e3330]: 1 day ago
+              - generic [ref=e3335] [cursor=pointer]: 8,063
+              - generic [ref=e3341] [cursor=pointer]: San Francisco
+            - generic [ref=e3344]:
+              - button [ref=e3345]:
+                - img [ref=e3348]
+              - checkbox [ref=e3355] [cursor=pointer]
+              - link "Veeva Systems" [ref=e3361] [cursor=pointer]:
+                - /url: /object/company/20202020-ae0e-4528-bdca-c43796611200?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3364]: Veeva Systems
+              - link "veeva.com" [ref=e3372] [cursor=pointer]:
+                - /url: https://veeva.com
+              - generic [ref=e3377] [cursor=pointer]:
+                - img [ref=e3379]
+                - generic [ref=e3382]: Tim Apple
+              - generic [ref=e3387] [cursor=pointer]:
+                - generic [ref=e3389]: P
+                - generic [ref=e3390]: Phil Schiler
+              - generic [ref=e3395]: 1 day ago
+              - generic [ref=e3400] [cursor=pointer]: 7,831
+              - generic [ref=e3406] [cursor=pointer]: Pleasanton
+            - generic [ref=e3409]:
+              - button [ref=e3410]:
+                - img [ref=e3413]
+              - checkbox [ref=e3420] [cursor=pointer]
+              - link "Nuance Communications" [ref=e3426] [cursor=pointer]:
+                - /url: /object/company/20202020-a480-4f79-be9e-e6ca396a3ddc?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3429]: Nuance Communications
+              - link "nuance.com" [ref=e3437] [cursor=pointer]:
+                - /url: https://nuance.com
+              - generic [ref=e3442] [cursor=pointer]:
+                - img [ref=e3445]
+                - generic [ref=e3449]: Tim Apple
+              - generic [ref=e3454] [cursor=pointer]:
+                - generic [ref=e3456]: P
+                - generic [ref=e3457]: Phil Schiler
+              - generic [ref=e3462]: 1 day ago
+              - generic [ref=e3467] [cursor=pointer]: 7,761
+              - generic [ref=e3473] [cursor=pointer]: Burlington
+            - generic [ref=e3476]:
+              - button [ref=e3477]:
+                - img [ref=e3480]
+              - checkbox [ref=e3487] [cursor=pointer]
+              - link "Freshworks" [ref=e3493] [cursor=pointer]:
+                - /url: /object/company/20202020-aac2-4504-9a18-f50157ece5fb?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3496]: Freshworks
+              - link "freshworks.com" [ref=e3504] [cursor=pointer]:
+                - /url: https://freshworks.com
+              - generic [ref=e3509] [cursor=pointer]:
+                - img [ref=e3511]
+                - generic [ref=e3514]: Tim Apple
+              - generic [ref=e3519] [cursor=pointer]:
+                - generic [ref=e3521]: T
+                - generic [ref=e3522]: Tim Apple
+              - generic [ref=e3527]: 1 day ago
+              - generic [ref=e3532] [cursor=pointer]: 7,687
+              - generic [ref=e3538] [cursor=pointer]: San Mateo
+            - generic [ref=e3541]:
+              - button [ref=e3542]:
+                - img [ref=e3545]
+              - checkbox [ref=e3552] [cursor=pointer]
+              - link "S Seal Software, a DocuSign Company" [ref=e3558] [cursor=pointer]:
+                - /url: /object/company/20202020-a38b-447c-b98d-b21ecc37ae48?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3559]:
+                  - generic [ref=e3561]: S
+                  - generic [ref=e3562]: Seal Software, a DocuSign Company
+              - link "seal-software.com" [ref=e3570] [cursor=pointer]:
+                - /url: https://seal-software.com
+              - generic [ref=e3575] [cursor=pointer]:
+                - img [ref=e3577]
+                - generic [ref=e3580]: Tim Apple
+              - generic [ref=e3585] [cursor=pointer]:
+                - generic [ref=e3587]: T
+                - generic [ref=e3588]: Tim Apple
+              - generic [ref=e3593]: 1 day ago
+              - generic [ref=e3598] [cursor=pointer]: 7,586
+              - generic [ref=e3604] [cursor=pointer]: Walnut Creek
+            - generic [ref=e3607]:
+              - button [ref=e3608]:
+                - img [ref=e3611]
+              - checkbox [ref=e3618] [cursor=pointer]
+              - link "DocuSign" [ref=e3624] [cursor=pointer]:
+                - /url: /object/company/20202020-abce-4259-9808-5bd830a32e23?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3627]: DocuSign
+              - link "docusign.com" [ref=e3635] [cursor=pointer]:
+                - /url: https://docusign.com
+              - generic [ref=e3640] [cursor=pointer]:
+                - img [ref=e3642]
+                - generic [ref=e3644]: Tim Apple
+              - generic [ref=e3649] [cursor=pointer]:
+                - generic [ref=e3651]: P
+                - generic [ref=e3652]: Phil Schiler
+              - generic [ref=e3657]: 1 day ago
+              - generic [ref=e3662] [cursor=pointer]: 7,557
+              - generic [ref=e3668] [cursor=pointer]: San Francisco
+            - generic [ref=e3671]:
+              - button [ref=e3672]:
+                - img [ref=e3675]
+              - checkbox [ref=e3682] [cursor=pointer]
+              - link "Nutanix" [ref=e3688] [cursor=pointer]:
+                - /url: /object/company/20202020-aedb-41d6-91cc-763d21e740b7?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3691]: Nutanix
+              - link "nutanix.com" [ref=e3699] [cursor=pointer]:
+                - /url: https://nutanix.com
+              - generic [ref=e3704] [cursor=pointer]:
+                - img [ref=e3706]
+                - generic [ref=e3710]: Tim Apple
+              - generic [ref=e3715] [cursor=pointer]:
+                - generic [ref=e3717]: T
+                - generic [ref=e3718]: Tim Apple
+              - generic [ref=e3723]: 1 day ago
+              - generic [ref=e3728] [cursor=pointer]: 7,454
+              - generic [ref=e3734] [cursor=pointer]: San Jose
+            - generic [ref=e3737]:
+              - button [ref=e3738]:
+                - img [ref=e3741]
+              - checkbox [ref=e3748] [cursor=pointer]
+              - link "Genesys" [ref=e3754] [cursor=pointer]:
+                - /url: /object/company/20202020-a5d1-459c-97fa-dd4f8e3cadc0?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3757]: Genesys
+              - link "genesys.com" [ref=e3765] [cursor=pointer]:
+                - /url: https://genesys.com
+              - generic [ref=e3770] [cursor=pointer]:
+                - img [ref=e3772]
+                - generic [ref=e3775]: Tim Apple
+              - generic [ref=e3780] [cursor=pointer]:
+                - generic [ref=e3782]: T
+                - generic [ref=e3783]: Tim Apple
+              - generic [ref=e3788]: 1 day ago
+              - generic [ref=e3793] [cursor=pointer]: 7,371
+              - generic [ref=e3799] [cursor=pointer]: Menlo Park
+            - generic [ref=e3802]:
+              - button [ref=e3803]:
+                - img [ref=e3806]
+              - checkbox [ref=e3813] [cursor=pointer]
+              - link "SAP Concur" [ref=e3819] [cursor=pointer]:
+                - /url: /object/company/20202020-a412-4896-9413-ffc4d443367f?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3822]: SAP Concur
+              - link "concur.com" [ref=e3830] [cursor=pointer]:
+                - /url: https://concur.com
+              - generic [ref=e3835] [cursor=pointer]:
+                - img [ref=e3837]
+                - generic [ref=e3841]: Tim Apple
+              - generic [ref=e3846] [cursor=pointer]:
+                - generic [ref=e3848]: J
+                - generic [ref=e3849]: Jony Ive
+              - generic [ref=e3854]: 1 day ago
+              - generic [ref=e3859] [cursor=pointer]: 7,305
+              - generic [ref=e3865] [cursor=pointer]: Bellevue
+            - generic [ref=e3868]:
+              - button [ref=e3869]:
+                - img [ref=e3872]
+              - checkbox [ref=e3879] [cursor=pointer]
+              - link "Square" [ref=e3885] [cursor=pointer]:
+                - /url: /object/company/20202020-af5c-4e39-90e2-d80e82a0dc4b?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3888]: Square
+              - link "squareup.com" [ref=e3896] [cursor=pointer]:
+                - /url: https://squareup.com
+              - generic [ref=e3901] [cursor=pointer]:
+                - img [ref=e3903]
+                - generic [ref=e3907]: Tim Apple
+              - generic [ref=e3912] [cursor=pointer]:
+                - generic [ref=e3914]: P
+                - generic [ref=e3915]: Phil Schiler
+              - generic [ref=e3920]: 1 day ago
+              - generic [ref=e3925] [cursor=pointer]: 7,233
+              - generic [ref=e3931] [cursor=pointer]: San Francisco
+            - generic [ref=e3934]:
+              - button [ref=e3935]:
+                - img [ref=e3938]
+              - checkbox [ref=e3945] [cursor=pointer]
+              - link "Snap Inc." [ref=e3951] [cursor=pointer]:
+                - /url: /object/company/20202020-aef1-4ca1-b636-aa3d104c9ead?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e3954]: Snap Inc.
+              - link "snap.com" [ref=e3962] [cursor=pointer]:
+                - /url: https://snap.com
+              - generic [ref=e3967] [cursor=pointer]:
+                - img [ref=e3969]
+                - generic [ref=e3972]: Tim Apple
+              - generic [ref=e3977] [cursor=pointer]:
+                - generic [ref=e3979]: J
+                - generic [ref=e3980]: Jony Ive
+              - generic [ref=e3985]: 1 day ago
+              - generic [ref=e3990] [cursor=pointer]: 7,219
+              - generic [ref=e3996] [cursor=pointer]: Santa Monica
+            - generic [ref=e3999]:
+              - button [ref=e4000]:
+                - img [ref=e4003]
+              - checkbox [ref=e4010] [cursor=pointer]
+              - link "MathWorks" [ref=e4016] [cursor=pointer]:
+                - /url: /object/company/20202020-a84a-4ce1-8785-2881210db380?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4019]: MathWorks
+              - link "mathworks.com" [ref=e4027] [cursor=pointer]:
+                - /url: https://mathworks.com
+              - generic [ref=e4032] [cursor=pointer]:
+                - generic [ref=e4034]: T
+                - generic [ref=e4035]: Tim Apple
+              - generic [ref=e4040] [cursor=pointer]:
+                - generic [ref=e4042]: J
+                - generic [ref=e4043]: Jony Ive
+              - generic [ref=e4048]: 1 day ago
+              - generic [ref=e4053] [cursor=pointer]: 7,188
+              - generic [ref=e4059] [cursor=pointer]: Natick
+            - generic [ref=e4062]:
+              - button [ref=e4063]:
+                - img [ref=e4066]
+              - checkbox [ref=e4073] [cursor=pointer]
+              - link "P PTC" [ref=e4079] [cursor=pointer]:
+                - /url: /object/company/20202020-ace2-45fb-a109-3b59d1fdb1c3?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4080]:
+                  - generic [ref=e4082]: P
+                  - generic [ref=e4083]: PTC
+              - link "ptc.co" [ref=e4091] [cursor=pointer]:
+                - /url: https://ptc.co
+              - generic [ref=e4096] [cursor=pointer]:
+                - img [ref=e4099]
+                - generic [ref=e4102]: Tim Apple
+              - generic [ref=e4107] [cursor=pointer]:
+                - generic [ref=e4109]: J
+                - generic [ref=e4110]: Jony Ive
+              - generic [ref=e4115]: 1 day ago
+              - generic [ref=e4120] [cursor=pointer]: 7,119
+              - generic [ref=e4126] [cursor=pointer]: Boston
+            - generic [ref=e4129]:
+              - button [ref=e4130]:
+                - img [ref=e4133]
+              - checkbox [ref=e4140] [cursor=pointer]
+              - link "Ansys" [ref=e4146] [cursor=pointer]:
+                - /url: /object/company/20202020-af6e-420d-a798-145a9c10f049?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4149]: Ansys
+              - link "ansys.com" [ref=e4157] [cursor=pointer]:
+                - /url: https://ansys.com
+              - generic [ref=e4162] [cursor=pointer]:
+                - img [ref=e4165]
+                - generic [ref=e4168]: Tim Apple
+              - generic [ref=e4173] [cursor=pointer]:
+                - generic [ref=e4175]: P
+                - generic [ref=e4176]: Phil Schiler
+              - generic [ref=e4181]: 1 day ago
+              - generic [ref=e4186] [cursor=pointer]: 7,112
+              - generic [ref=e4192] [cursor=pointer]: Canonsburg
+            - generic [ref=e4195]:
+              - button [ref=e4196]:
+                - img [ref=e4199]
+              - checkbox [ref=e4206] [cursor=pointer]
+              - link "Aricent" [ref=e4212] [cursor=pointer]:
+                - /url: /object/company/20202020-a0f8-4f7a-a510-8e7c7de219ec?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4215]: Aricent
+              - link "altran.com" [ref=e4223] [cursor=pointer]:
+                - /url: https://altran.com
+              - generic [ref=e4228] [cursor=pointer]:
+                - img [ref=e4231]
+                - generic [ref=e4235]: Tim Apple
+              - generic [ref=e4240] [cursor=pointer]:
+                - generic [ref=e4242]: J
+                - generic [ref=e4243]: Jony Ive
+              - generic [ref=e4248]: 1 day ago
+              - generic [ref=e4253] [cursor=pointer]: 7,016
+              - generic [ref=e4259] [cursor=pointer]: Santa Clara
+            - generic [ref=e4262]:
+              - button [ref=e4263]:
+                - img [ref=e4266]
+              - checkbox [ref=e4273] [cursor=pointer]
+              - link "Databricks" [ref=e4279] [cursor=pointer]:
+                - /url: /object/company/20202020-ac1f-49e8-886f-f81ac9ef2b17?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4282]: Databricks
+              - link "databricks.com" [ref=e4290] [cursor=pointer]:
+                - /url: https://databricks.com
+              - generic [ref=e4295] [cursor=pointer]:
+                - generic [ref=e4297]: T
+                - generic [ref=e4298]: Tim Apple
+              - generic [ref=e4303] [cursor=pointer]:
+                - generic [ref=e4305]: T
+                - generic [ref=e4306]: Tim Apple
+              - generic [ref=e4311]: 1 day ago
+              - generic [ref=e4316] [cursor=pointer]: 6,927
+              - generic [ref=e4322] [cursor=pointer]: San Francisco
+            - generic [ref=e4325]:
+              - button [ref=e4326]:
+                - img [ref=e4329]
+              - checkbox [ref=e4336] [cursor=pointer]
+              - link "Shipt" [ref=e4342] [cursor=pointer]:
+                - /url: /object/company/20202020-aa07-4364-8e0d-155f0bfbb054?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4345]: Shipt
+              - link "shipt.com" [ref=e4353] [cursor=pointer]:
+                - /url: https://shipt.com
+              - generic [ref=e4358] [cursor=pointer]:
+                - img [ref=e4360]
+                - generic [ref=e4363]: Tim Apple
+              - generic [ref=e4368] [cursor=pointer]:
+                - generic [ref=e4370]: J
+                - generic [ref=e4371]: Jony Ive
+              - generic [ref=e4376]: 1 day ago
+              - generic [ref=e4381] [cursor=pointer]: 6,902
+              - generic [ref=e4387] [cursor=pointer]: Birmingham
+            - generic [ref=e4390]:
+              - button [ref=e4391]:
+                - img [ref=e4394]
+              - checkbox [ref=e4401] [cursor=pointer]
+              - link "CSG" [ref=e4407] [cursor=pointer]:
+                - /url: /object/company/20202020-a659-4a9e-a307-110daf1ee522?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4410]: CSG
+              - link "csgi.com" [ref=e4418] [cursor=pointer]:
+                - /url: https://csgi.com
+              - generic [ref=e4423] [cursor=pointer]:
+                - img [ref=e4425]
+                - generic [ref=e4427]: Tim Apple
+              - generic [ref=e4432] [cursor=pointer]:
+                - generic [ref=e4434]: T
+                - generic [ref=e4435]: Tim Apple
+              - generic [ref=e4440]: 1 day ago
+              - generic [ref=e4445] [cursor=pointer]: 6,849
+              - generic [ref=e4451] [cursor=pointer]: Englewood
+            - generic [ref=e4454]:
+              - button [ref=e4455]:
+                - img [ref=e4458]
+              - checkbox [ref=e4465] [cursor=pointer]
+              - link "Twilio" [ref=e4471] [cursor=pointer]:
+                - /url: /object/company/20202020-a1f5-49c6-8838-47b1ff5de851?viewId=ed9ae626-a0b4-4ba2-ba04-b6a1d2c97b82
+                - generic [ref=e4474]: Twilio
+              - link "twilio.com" [ref=e4482] [cursor=pointer]:
+                - /url: https://twilio.com
+              - generic [ref=e4487] [cursor=pointer]:
+                - img [ref=e4489]
+                - generic [ref=e4492]: Tim Apple
+              - generic [ref=e4497] [cursor=pointer]:
+                - generic [ref=e4499]: T
+                - generic [ref=e4500]: Tim Apple
+              - generic [ref=e4505]: 1 day ago
+              - generic [ref=e4510] [cursor=pointer]: 6,721
+              - generic [ref=e4516] [cursor=pointer]: San Francisco
+            - checkbox [ref=e4524] [cursor=pointer]
+            - checkbox [ref=e4547] [cursor=pointer]
+            - checkbox [ref=e4570] [cursor=pointer]
+            - checkbox [ref=e4593] [cursor=pointer]
+            - checkbox [ref=e4616] [cursor=pointer]
+            - checkbox [ref=e4639] [cursor=pointer]
+            - checkbox [ref=e4662] [cursor=pointer]
+            - checkbox [ref=e4685] [cursor=pointer]
+            - checkbox [ref=e4708] [cursor=pointer]
+            - checkbox [ref=e4731] [cursor=pointer]
+            - checkbox [ref=e4754] [cursor=pointer]
+            - checkbox [ref=e4777] [cursor=pointer]
+            - checkbox [ref=e4800] [cursor=pointer]
+            - checkbox [ref=e4823] [cursor=pointer]
+            - checkbox [ref=e4846] [cursor=pointer]
+            - checkbox [ref=e4869] [cursor=pointer]
+            - checkbox [ref=e4892] [cursor=pointer]
+            - checkbox [ref=e4915] [cursor=pointer]
+            - checkbox [ref=e4938] [cursor=pointer]
+            - checkbox [ref=e4961] [cursor=pointer]
+            - checkbox [ref=e4984] [cursor=pointer]
+            - checkbox [ref=e5007] [cursor=pointer]
+            - checkbox [ref=e5030] [cursor=pointer]
+            - checkbox [ref=e5053] [cursor=pointer]
+            - checkbox [ref=e5076] [cursor=pointer]
+            - checkbox [ref=e5099] [cursor=pointer]
+            - checkbox [ref=e5122] [cursor=pointer]
+            - checkbox [ref=e5145] [cursor=pointer]
+            - checkbox [ref=e5168] [cursor=pointer]
+            - checkbox [ref=e5191] [cursor=pointer]
+            - checkbox [ref=e5214] [cursor=pointer]
+            - checkbox [ref=e5237] [cursor=pointer]
+            - checkbox [ref=e5260] [cursor=pointer]
+            - checkbox [ref=e5283] [cursor=pointer]
+            - checkbox [ref=e5306] [cursor=pointer]
+            - checkbox [ref=e5329] [cursor=pointer]
+            - checkbox [ref=e5352] [cursor=pointer]
+            - checkbox [ref=e5375] [cursor=pointer]
+            - checkbox [ref=e5398] [cursor=pointer]
+            - checkbox [ref=e5421] [cursor=pointer]
+            - checkbox [ref=e5444] [cursor=pointer]
+            - checkbox [ref=e5467] [cursor=pointer]
+            - checkbox [ref=e5490] [cursor=pointer]
+            - checkbox [ref=e5513] [cursor=pointer]
+            - checkbox [ref=e5536] [cursor=pointer]
+            - checkbox [ref=e5559] [cursor=pointer]
+            - checkbox [ref=e5582] [cursor=pointer]
+            - checkbox [ref=e5605] [cursor=pointer]
+            - checkbox [ref=e5628] [cursor=pointer]
+            - checkbox [ref=e5651] [cursor=pointer]
+            - checkbox [ref=e5674] [cursor=pointer]
+            - checkbox [ref=e5697] [cursor=pointer]
+            - checkbox [ref=e5720] [cursor=pointer]
+            - checkbox [ref=e5743] [cursor=pointer]
+            - checkbox [ref=e5766] [cursor=pointer]
+            - checkbox [ref=e5789] [cursor=pointer]
+            - checkbox [ref=e5812] [cursor=pointer]
+            - checkbox [ref=e5835] [cursor=pointer]
+            - checkbox [ref=e5858] [cursor=pointer]
+            - checkbox [ref=e5881] [cursor=pointer]
+            - checkbox [ref=e5904] [cursor=pointer]
+            - checkbox [ref=e5927] [cursor=pointer]
+            - checkbox [ref=e5950] [cursor=pointer]
+            - checkbox [ref=e5973] [cursor=pointer]
+            - checkbox [ref=e5996] [cursor=pointer]
+            - checkbox [ref=e6019] [cursor=pointer]
+            - checkbox [ref=e6042] [cursor=pointer]
+            - checkbox [ref=e6065] [cursor=pointer]
+            - checkbox [ref=e6088] [cursor=pointer]
+            - checkbox [ref=e6111] [cursor=pointer]
+            - checkbox [ref=e6134] [cursor=pointer]
+            - checkbox [ref=e6157] [cursor=pointer]
+            - checkbox [ref=e6180] [cursor=pointer]
+            - checkbox [ref=e6203] [cursor=pointer]
+            - checkbox [ref=e6226] [cursor=pointer]
+            - checkbox [ref=e6249] [cursor=pointer]
+            - checkbox [ref=e6272] [cursor=pointer]
+            - checkbox [ref=e6295] [cursor=pointer]
+            - checkbox [ref=e6318] [cursor=pointer]
+            - checkbox [ref=e6341] [cursor=pointer]
+            - checkbox [ref=e6364] [cursor=pointer]
+            - checkbox [ref=e6387] [cursor=pointer]
+            - checkbox [ref=e6410] [cursor=pointer]
+            - checkbox [ref=e6433] [cursor=pointer]
+            - checkbox [ref=e6456] [cursor=pointer]
+            - checkbox [ref=e6479] [cursor=pointer]
+            - checkbox [ref=e6502] [cursor=pointer]
+            - checkbox [ref=e6525] [cursor=pointer]
+            - checkbox [ref=e6548] [cursor=pointer]
+            - checkbox [ref=e6571] [cursor=pointer]
+            - checkbox [ref=e6594] [cursor=pointer]
+            - checkbox [ref=e6617] [cursor=pointer]
+            - checkbox [ref=e6640] [cursor=pointer]
+            - checkbox [ref=e6663] [cursor=pointer]
+            - checkbox [ref=e6686] [cursor=pointer]
+            - checkbox [ref=e6709] [cursor=pointer]
+            - checkbox [ref=e6732] [cursor=pointer]
+            - checkbox [ref=e6755] [cursor=pointer]
+            - checkbox [ref=e6778] [cursor=pointer]
+            - checkbox [ref=e6801] [cursor=pointer]
+            - checkbox [ref=e6824] [cursor=pointer]
+            - checkbox [ref=e6847] [cursor=pointer]
+            - checkbox [ref=e6870] [cursor=pointer]
+            - checkbox [ref=e6893] [cursor=pointer]
+            - checkbox [ref=e6916] [cursor=pointer]
+            - checkbox [ref=e6939] [cursor=pointer]
+            - checkbox [ref=e6962] [cursor=pointer]
+            - checkbox [ref=e6985] [cursor=pointer]
+            - checkbox [ref=e7008] [cursor=pointer]
+            - checkbox [ref=e7031] [cursor=pointer]
+            - checkbox [ref=e7054] [cursor=pointer]
+            - checkbox [ref=e7077] [cursor=pointer]
+            - checkbox [ref=e7100] [cursor=pointer]
+            - checkbox [ref=e7123] [cursor=pointer]
+            - checkbox [ref=e7146] [cursor=pointer]
+            - checkbox [ref=e7169] [cursor=pointer]
+            - checkbox [ref=e7192] [cursor=pointer]
+            - checkbox [ref=e7215] [cursor=pointer]
+            - checkbox [ref=e7238] [cursor=pointer]
+            - checkbox [ref=e7261] [cursor=pointer]
+            - checkbox [ref=e7284] [cursor=pointer]
+            - checkbox [ref=e7307] [cursor=pointer]
+            - checkbox [ref=e7330] [cursor=pointer]
+            - checkbox [ref=e7353] [cursor=pointer]
+            - checkbox [ref=e7376] [cursor=pointer]
+            - checkbox [ref=e7399] [cursor=pointer]
+            - checkbox [ref=e7422] [cursor=pointer]
+            - checkbox [ref=e7445] [cursor=pointer]
+            - checkbox [ref=e7468] [cursor=pointer]
+            - checkbox [ref=e7491] [cursor=pointer]
+            - checkbox [ref=e7514] [cursor=pointer]
+            - checkbox [ref=e7537] [cursor=pointer]
+            - checkbox [ref=e7560] [cursor=pointer]
+            - checkbox [ref=e7583] [cursor=pointer]
+            - checkbox [ref=e7606] [cursor=pointer]
+            - checkbox [ref=e7629] [cursor=pointer]
+            - checkbox [ref=e7652] [cursor=pointer]
+            - checkbox [ref=e7675] [cursor=pointer]
+            - checkbox [ref=e7698] [cursor=pointer]
+            - checkbox [ref=e7721] [cursor=pointer]
+            - generic [ref=e7738] [cursor=pointer]:
+              - img [ref=e7741]
+              - generic [ref=e7743]: Add New
+          - button "Calculate" [ref=e7749]:
+            - generic [ref=e7751] [cursor=pointer]:
+              - generic [ref=e7752]: Calculate
+              - img [ref=e7753]
+          - button "Count all 599" [ref=e7757]:
+            - generic [ref=e7760] [cursor=pointer]:
+              - generic [ref=e7761]: Count all
+              - generic [ref=e7762]: "599"
+          - button [ref=e7765]
+          - button [ref=e7770]
+          - button [ref=e7775]
+          - button "Max of Employees 284,571" [ref=e7780]:
+            - generic [ref=e7783] [cursor=pointer]:
+              - generic [ref=e7784]: Max of Employees
+              - generic [ref=e7785]: 284,571
+          - button "Not empty of Address 599" [ref=e7788]:
+            - generic [ref=e7791] [cursor=pointer]:
+              - generic [ref=e7792]: Not empty of Address
+              - generic [ref=e7793]: "599"
+      - complementary [ref=e7795]

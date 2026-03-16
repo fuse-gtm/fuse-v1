@@ -1,0 +1,194 @@
+- generic [ref=e1570]:
+  - generic [ref=e10304]:
+    - link "Exit Settings" [ref=e10306] [cursor=pointer]:
+      - /url: /objects/companies?viewId=3aee668e-3d15-495c-b9c9-ad8540c0dd1b
+      - button "Exit Settings" [ref=e10307]:
+        - img [ref=e10308]
+        - generic [ref=e10311]: Exit Settings
+    - generic [ref=e10314]:
+      - generic [ref=e10316]:
+        - generic [ref=e10319]: User
+        - link "Profile" [ref=e10321] [cursor=pointer]:
+          - /url: /settings/profile
+          - generic [ref=e10322]:
+            - img [ref=e10324]
+            - generic [ref=e10329]: Profile
+        - link "Experience" [ref=e10331] [cursor=pointer]:
+          - /url: /settings/experience
+          - generic [ref=e10332]:
+            - img [ref=e10334]
+            - generic [ref=e10339]: Experience
+        - generic [ref=e10340]:
+          - link "Accounts" [ref=e10342] [cursor=pointer]:
+            - /url: /settings/accounts
+            - generic [ref=e10343]:
+              - img [ref=e10345]
+              - generic [ref=e10349]: Accounts
+          - link "Emails" [ref=e10351] [cursor=pointer]:
+            - /url: /settings/accounts/emails
+            - generic [ref=e10352]:
+              - img [ref=e10358]
+              - generic [ref=e10362]: Emails
+          - link "Calendars" [ref=e10364] [cursor=pointer]:
+            - /url: /settings/accounts/calendars
+            - generic [ref=e10365]:
+              - img [ref=e10370]
+              - generic [ref=e10374]: Calendars
+      - generic [ref=e10376]:
+        - generic [ref=e10379]: Workspace
+        - link "General" [ref=e10381] [cursor=pointer]:
+          - /url: /settings/general
+          - generic [ref=e10382]:
+            - img [ref=e10384]
+            - generic [ref=e10388]: General
+        - link "Data model" [ref=e10390] [cursor=pointer]:
+          - /url: /settings/objects
+          - generic [ref=e10391]:
+            - img [ref=e10393]
+            - generic [ref=e10399]: Data model
+        - link "Members" [ref=e10401] [cursor=pointer]:
+          - /url: /settings/members
+          - generic [ref=e10402]:
+            - img [ref=e10404]
+            - generic [ref=e10410]: Members
+        - link "Roles" [ref=e10412] [cursor=pointer]:
+          - /url: /settings/roles
+          - generic [ref=e10413]:
+            - img [ref=e10415]
+            - generic [ref=e10420]: Roles
+        - link "Domains" [ref=e10422] [cursor=pointer]:
+          - /url: /settings/domains
+          - generic [ref=e10423]:
+            - img [ref=e10425]
+            - generic [ref=e10430]: Domains
+        - link "APIs & Webhooks" [ref=e10432] [cursor=pointer]:
+          - /url: /settings/api-webhooks
+          - generic [ref=e10433]:
+            - img [ref=e10435]
+            - generic [ref=e10439]: APIs & Webhooks
+        - link "Apps New" [ref=e10441] [cursor=pointer]:
+          - /url: /settings/applications
+          - generic [ref=e10442]:
+            - img [ref=e10444]
+            - generic [ref=e10450]: Apps
+            - generic [ref=e10451]: New
+        - link "AI New" [ref=e10453] [cursor=pointer]:
+          - /url: /settings/ai
+          - generic [ref=e10454]:
+            - img [ref=e10456]
+            - generic [ref=e10459]: AI
+            - generic [ref=e10460]: New
+      - generic [ref=e10462]:
+        - generic [ref=e10465]: Other
+        - link "Admin Panel" [ref=e10467] [cursor=pointer]:
+          - /url: /settings/admin-panel
+          - generic [ref=e10468]:
+            - img [ref=e10470]
+            - generic [ref=e10474]: Admin Panel
+        - link "Updates" [ref=e10476] [cursor=pointer]:
+          - /url: /settings/updates
+          - generic [ref=e10477]:
+            - img [ref=e10479]
+            - generic [ref=e10484]: Updates
+        - button "Documentation" [ref=e10486] [cursor=pointer]:
+          - generic [ref=e10487]:
+            - img [ref=e10489]
+            - generic [ref=e10493]: Documentation
+        - button "Logout" [ref=e10495] [cursor=pointer]:
+          - generic [ref=e10496]:
+            - img [ref=e10498]
+            - generic [ref=e10502]: Logout
+    - generic [ref=e10506]:
+      - img [ref=e10508]
+      - generic [ref=e10510] [cursor=pointer]:
+        - generic [ref=e10511]: "Advanced:"
+        - checkbox "Advanced:" [ref=e10513]
+  - generic [ref=e10515]:
+    - navigation [ref=e10520]:
+      - link "User" [ref=e10521] [cursor=pointer]:
+        - /url: /settings/profile
+      - generic [ref=e10522]: /
+      - generic [ref=e10523]: Profile
+    - generic [ref=e10526]:
+      - heading "Profile" [level=3] [ref=e10527]
+      - generic [ref=e10529]:
+        - generic [ref=e10530]:
+          - heading "Picture" [level=2] [ref=e10533]
+          - generic [ref=e10534]:
+            - button [ref=e10535] [cursor=pointer]:
+              - img [ref=e10536]
+            - generic [ref=e10541]:
+              - generic [ref=e10542]:
+                - button "Upload ..." [ref=e10544] [cursor=pointer]:
+                  - generic:
+                    - generic:
+                      - img
+                  - generic [ref=e10545]:
+                    - generic [ref=e10546]: Upload
+                    - generic [ref=e10547]: ...
+                - button "Remove ..." [disabled] [ref=e10549]:
+                  - generic:
+                    - generic:
+                      - img
+                  - generic [ref=e10550]:
+                    - generic [ref=e10551]: Remove
+                    - generic [ref=e10552]: ...
+              - generic [ref=e10553]: We support your square PNGs, JPEGs and GIFs under 10MB
+        - generic [ref=e10554]:
+          - generic [ref=e10555]:
+            - heading "Name" [level=2] [ref=e10557]
+            - heading "Your name as it will be displayed" [level=3] [ref=e10558]:
+              - generic [ref=e10559]: Your name as it will be displayed
+          - generic [ref=e10560]:
+            - generic [ref=e10561]:
+              - generic [ref=e10562]: First Name
+              - textbox "Tim" [ref=e10564]
+            - generic [ref=e10566]:
+              - generic [ref=e10567]: Last Name
+              - textbox "Cook" [ref=e10569]: Apple
+        - generic [ref=e10571]:
+          - generic [ref=e10572]:
+            - heading "Email" [level=2] [ref=e10574]
+            - heading "The email associated to your account" [level=3] [ref=e10575]:
+              - generic [ref=e10576]: The email associated to your account
+          - generic [ref=e10578]:
+            - textbox [disabled] [ref=e10581]: tim@apple.dev
+            - button [disabled] [ref=e10585]:
+              - generic:
+                - generic:
+                  - img
+        - generic [ref=e10586]:
+          - generic [ref=e10587]:
+            - heading "Two Factor Authentication" [level=2] [ref=e10589]
+            - heading "Enhances security by requiring a code along with your password" [level=3] [ref=e10590]:
+              - generic [ref=e10591]: Enhances security by requiring a code along with your password
+          - link "Authenticator App Deactivated" [ref=e10592] [cursor=pointer]:
+            - /url: /settings/profile/two-factor-authentication/TOTP
+            - generic [ref=e10595]:
+              - img [ref=e10597]
+              - generic [ref=e10599]: Authenticator App
+              - heading "Deactivated" [level=3] [ref=e10600]:
+                - generic [ref=e10601]: Deactivated
+              - img [ref=e10602]
+        - generic [ref=e10604]:
+          - generic [ref=e10605]:
+            - heading "Change Password" [level=2] [ref=e10607]
+            - heading "Receive an email containing password update link" [level=3] [ref=e10608]:
+              - generic [ref=e10609]: Receive an email containing password update link
+          - button "Change Password ..." [ref=e10611] [cursor=pointer]:
+            - generic [ref=e10612]:
+              - generic [ref=e10613]: Change Password
+              - generic [ref=e10614]: ...
+        - generic [ref=e10615]:
+          - generic [ref=e10616]:
+            - heading "Danger zone" [level=2] [ref=e10618]
+            - heading "Delete account and all the associated data or leave workspace" [level=3] [ref=e10619]:
+              - generic [ref=e10620]: Delete account and all the associated data or leave workspace
+          - button "Leave workspace ..." [ref=e10623] [cursor=pointer]:
+            - generic [ref=e10624]:
+              - generic [ref=e10625]: Leave workspace
+              - generic [ref=e10626]: ...
+          - button "Delete account ..." [ref=e10628] [cursor=pointer]:
+            - generic [ref=e10629]:
+              - generic [ref=e10630]: Delete account
+              - generic [ref=e10631]: ...

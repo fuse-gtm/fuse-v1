@@ -1,0 +1,83 @@
+[    5127ms] [WARNING] Uncompiled message detected! Message:
+
+> 1oqxe6
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[    5208ms] [WARNING] Uncompiled message detected! Message:
+
+> cgevMo
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[    5209ms] [WARNING] Uncompiled message detected! Message:
+
+> PnMGfO
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[   54174ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[   54398ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[  571818ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[  572301ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[  572367ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[  573142ms] [WARNING] Uncompiled message detected! Message:
+
+> Close command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[  601740ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://twenty-icons.com/cloudsoftwaregroup.com:0
+[  610941ms] [WARNING] An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.13.8%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22opportunities%22%2C%22Query%22%2C%22either%20ensure%20all%20objects%20of%20type%20OpportunityConnection%20have%20an%20ID%20or%20a%20custom%20merge%20function%2C%20or%20%22%2C%22Query.opportunities%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22OpportunityConnection%5C%22%2C%5Cn%20%20%5C%22totalCount%5C%22%3A%2050%5Cn%7D%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22OpportunityConnection%5C%22%2C%5Cn%20%20%5C%22minCloseDate%5C%22%3A%20%5C%222026-03-03T02%3A43%3A04.137Z%5C%22%5Cn%7D%22%5D%7D @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:146

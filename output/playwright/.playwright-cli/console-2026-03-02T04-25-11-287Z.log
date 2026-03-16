@@ -1,0 +1,27 @@
+[    2040ms] [WARNING] Uncompiled message detected! Message:
+
+> 1oqxe6
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[    2125ms] [WARNING] Uncompiled message detected! Message:
+
+> cgevMo
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138
+[    2127ms] [WARNING] Uncompiled message detected! Message:
+
+> PnMGfO
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://yc.localhost:3000/assets/index-BGNJDq6n.js:138

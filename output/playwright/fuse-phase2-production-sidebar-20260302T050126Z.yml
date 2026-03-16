@@ -1,0 +1,258 @@
+- generic [ref=e4]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - button "Fuse-Test" [ref=e8]:
+        - generic [ref=e9] [cursor=pointer]:
+          - generic [ref=e12]: Fuse-Test
+          - img [ref=e14]
+      - generic [ref=e16]:
+        - button "Search" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]
+        - button [ref=e22] [cursor=pointer]:
+          - img [ref=e23]
+    - generic [ref=e28]:
+      - generic [ref=e30]:
+        - generic [ref=e34]: Workspace
+        - link "People" [ref=e37] [cursor=pointer]:
+          - /url: /objects/people
+          - generic [ref=e38]:
+            - img [ref=e40]
+            - generic [ref=e44]: People
+        - link "Companies" [ref=e47] [cursor=pointer]:
+          - /url: /objects/companies?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+          - generic [ref=e48]:
+            - img [ref=e50]
+            - generic [ref=e54]: Companies
+        - link "Opportunities" [ref=e57] [cursor=pointer]:
+          - /url: /objects/opportunities
+          - generic [ref=e58]:
+            - img [ref=e60]
+            - generic [ref=e67]: Opportunities
+        - link "Tasks" [ref=e70] [cursor=pointer]:
+          - /url: /objects/tasks
+          - generic [ref=e71]:
+            - img [ref=e73]
+            - generic [ref=e77]: Tasks
+        - link "Notes" [ref=e80] [cursor=pointer]:
+          - /url: /objects/notes
+          - generic [ref=e81]:
+            - img [ref=e83]
+            - generic [ref=e86]: Notes
+        - link "Workflows" [ref=e89] [cursor=pointer]:
+          - /url: /objects/workflows
+          - generic [ref=e90]:
+            - img [ref=e92]
+            - generic [ref=e96]: Workflows
+        - link "Dashboards" [ref=e99] [cursor=pointer]:
+          - /url: /objects/dashboards
+          - generic [ref=e100]:
+            - img [ref=e102]
+            - generic [ref=e108]: Dashboards
+      - generic [ref=e110]:
+        - generic [ref=e114]: Other
+        - button "Settings" [ref=e116] [cursor=pointer]:
+          - generic [ref=e117]:
+            - img [ref=e119]
+            - generic [ref=e123]: Settings
+        - link "Documentation" [ref=e125] [cursor=pointer]:
+          - /url: https://docs.twenty.com/user-guide/introduction
+          - generic [ref=e126]:
+            - img [ref=e128]
+            - generic [ref=e132]: Documentation
+  - generic [ref=e135]:
+    - generic [ref=e136]:
+      - generic [ref=e138]:
+        - img [ref=e140]
+        - generic [ref=e144]: Companies
+      - generic [ref=e145]:
+        - button "Create new record" [ref=e148] [cursor=pointer]:
+          - generic:
+            - generic:
+              - img
+          - generic [ref=e149]:
+            - generic [ref=e150]: New record
+            - generic [ref=e151]: ...
+        - button "Open command menu" [ref=e154] [cursor=pointer]:
+          - img [ref=e156]
+          - generic [ref=e166]: ⌘K
+    - generic [ref=e167]:
+      - generic [ref=e172]:
+        - generic [ref=e174]:
+          - button "All Companies · 5" [ref=e176]:
+            - generic [ref=e177] [cursor=pointer]:
+              - img [ref=e179]
+              - generic [ref=e181]: All Companies
+              - generic [ref=e182]:
+                - text: · 5
+                - img [ref=e183]
+          - generic [ref=e185]:
+            - button "Filter" [ref=e186]:
+              - button "Filter" [ref=e187] [cursor=pointer]
+            - button "Sort" [ref=e188]:
+              - button "Sort" [ref=e189] [cursor=pointer]
+            - button "Options" [ref=e190]:
+              - button "Options" [ref=e191] [cursor=pointer]
+        - generic [ref=e194]:
+          - checkbox [ref=e199] [cursor=pointer]
+          - generic [ref=e201] [cursor=pointer]:
+            - button "Name" [ref=e202]:
+              - generic [ref=e203]:
+                - img [ref=e205]
+                - generic [ref=e208]: Name
+            - separator [ref=e209]
+          - generic [ref=e210] [cursor=pointer]:
+            - separator [ref=e211]
+            - button "Domain Name" [ref=e212]:
+              - generic [ref=e213]:
+                - img [ref=e215]
+                - generic [ref=e219]: Domain Name
+            - separator [ref=e220]
+          - generic [ref=e221] [cursor=pointer]:
+            - separator [ref=e222]
+            - button "Created by" [ref=e223]:
+              - generic [ref=e224]:
+                - img [ref=e226]
+                - generic [ref=e230]: Created by
+            - separator [ref=e231]
+          - generic [ref=e232] [cursor=pointer]:
+            - separator [ref=e233]
+            - button "Account Owner" [ref=e234]:
+              - generic [ref=e235]:
+                - img [ref=e237]
+                - generic [ref=e241]: Account Owner
+            - separator [ref=e242]
+          - generic [ref=e243] [cursor=pointer]:
+            - separator [ref=e244]
+            - button "Creation date" [ref=e245]:
+              - generic [ref=e246]:
+                - img [ref=e248]
+                - generic [ref=e250]: Creation date
+            - separator [ref=e251]
+          - generic [ref=e252] [cursor=pointer]:
+            - separator [ref=e253]
+            - button "Employees" [ref=e254]:
+              - generic [ref=e255]:
+                - img [ref=e257]
+                - generic [ref=e262]: Employees
+            - separator [ref=e263]
+          - generic [ref=e264] [cursor=pointer]:
+            - separator [ref=e265]
+            - button "Linkedin" [ref=e266]:
+              - generic [ref=e267]:
+                - img [ref=e269]
+                - generic [ref=e272]: Linkedin
+            - separator [ref=e273]
+          - generic [ref=e274] [cursor=pointer]:
+            - separator [ref=e275]
+            - button "Address" [ref=e276]:
+              - generic [ref=e277]:
+                - img [ref=e279]
+                - generic [ref=e281]: Address
+            - separator [ref=e282]
+          - generic [ref=e283] [cursor=pointer]:
+            - separator [ref=e284]
+            - button [ref=e286]:
+              - img [ref=e288]
+          - generic [ref=e289]:
+            - generic [ref=e292]:
+              - button [ref=e293]:
+                - img [ref=e296]
+              - checkbox [ref=e303] [cursor=pointer]
+              - link "Airbnb" [ref=e309] [cursor=pointer]:
+                - /url: /object/company/c776ee49-f608-4a77-8cc8-6fe96ae1e43f?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+                - generic [ref=e312]: Airbnb
+              - link "airbnb.com" [ref=e320] [cursor=pointer]:
+                - /url: https://airbnb.com
+              - generic [ref=e325] [cursor=pointer]:
+                - img [ref=e328]
+                - generic [ref=e332]: System
+              - generic [ref=e341]: about 6 hours ago
+              - generic [ref=e346] [cursor=pointer]: 5,000
+              - generic [ref=e356] [cursor=pointer]: 888 Brannan St,San Francisco,CA,94103,United States
+            - generic [ref=e359]:
+              - button [ref=e360]:
+                - img [ref=e363]
+              - checkbox [ref=e370] [cursor=pointer]
+              - link "Anthropic" [ref=e376] [cursor=pointer]:
+                - /url: /object/company/f45ee421-8a3e-4aa5-a1cf-7207cc6754e1?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+                - generic [ref=e379]: Anthropic
+              - link "anthropic.com" [ref=e387] [cursor=pointer]:
+                - /url: https://anthropic.com
+              - generic [ref=e392] [cursor=pointer]:
+                - img [ref=e395]
+                - generic [ref=e399]: System
+              - generic [ref=e408]: about 6 hours ago
+              - generic [ref=e413] [cursor=pointer]: 1,100
+              - generic [ref=e423] [cursor=pointer]: 548 Market Street,San Francisco,CA,94104,United States
+            - generic [ref=e426]:
+              - button [ref=e427]:
+                - img [ref=e430]
+              - checkbox [ref=e437] [cursor=pointer]
+              - link "Stripe" [ref=e443] [cursor=pointer]:
+                - /url: /object/company/1f70157c-4ea5-4d81-bc49-e1401abfbb94?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+                - generic [ref=e446]: Stripe
+              - link "stripe.com" [ref=e454] [cursor=pointer]:
+                - /url: https://stripe.com
+              - generic [ref=e459] [cursor=pointer]:
+                - img [ref=e462]
+                - generic [ref=e466]: System
+              - generic [ref=e475]: about 6 hours ago
+              - generic [ref=e480] [cursor=pointer]: 8,000
+              - generic [ref=e490] [cursor=pointer]: Eutaw Street,Dublin,Ireland
+            - generic [ref=e493]:
+              - button [ref=e494]:
+                - img [ref=e497]
+              - checkbox [ref=e504] [cursor=pointer]
+              - link "Figma" [ref=e510] [cursor=pointer]:
+                - /url: /object/company/9d5bcf43-7d38-4e88-82cb-d6d4ce638bf0?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+                - generic [ref=e513]: Figma
+              - link "figma.com" [ref=e521] [cursor=pointer]:
+                - /url: https://figma.com
+              - generic [ref=e526] [cursor=pointer]:
+                - img [ref=e529]
+                - generic [ref=e533]: System
+              - generic [ref=e542]: about 6 hours ago
+              - generic [ref=e547] [cursor=pointer]: "800"
+              - generic [ref=e557] [cursor=pointer]: 760 Market St,Floor 10,San Francisco,94102,United States
+            - generic [ref=e560]:
+              - button [ref=e561]:
+                - img [ref=e564]
+              - checkbox [ref=e571] [cursor=pointer]
+              - link "Notion" [ref=e577] [cursor=pointer]:
+                - /url: /object/company/06290608-8bf0-4806-99ae-a715a6a93fad?viewId=694c2a50-b131-45ec-8ab3-1754a2677840
+                - generic [ref=e580]: Notion
+              - link "notion.com" [ref=e588] [cursor=pointer]:
+                - /url: https://notion.com
+              - generic [ref=e593] [cursor=pointer]:
+                - img [ref=e596]
+                - generic [ref=e600]: System
+              - generic [ref=e609]: about 6 hours ago
+              - generic [ref=e614] [cursor=pointer]: "400"
+              - generic [ref=e624] [cursor=pointer]: 2300 Harrison St,San Francisco,CA,94110,United States
+            - generic [ref=e626] [cursor=pointer]:
+              - img [ref=e629]
+              - generic [ref=e631]: Add New
+          - button "Calculate" [ref=e637]:
+            - generic [ref=e639] [cursor=pointer]:
+              - generic [ref=e640]: Calculate
+              - img [ref=e641]
+          - button "Count all 5" [ref=e645]:
+            - generic [ref=e648] [cursor=pointer]:
+              - generic [ref=e649]: Count all
+              - generic [ref=e650]: "5"
+          - button [ref=e653]
+          - button [ref=e658]
+          - button [ref=e663]
+          - button "Max of Employees 8,000" [ref=e668]:
+            - generic [ref=e671] [cursor=pointer]:
+              - generic [ref=e672]: Max of Employees
+              - generic [ref=e673]: 8,000
+          - button "Empty of Linkedin 100%" [ref=e676]:
+            - generic [ref=e679] [cursor=pointer]:
+              - generic [ref=e680]: Empty of Linkedin
+              - generic [ref=e681]: 100%
+          - button "Not empty of Address 5" [ref=e684]:
+            - generic [ref=e687] [cursor=pointer]:
+              - generic [ref=e688]: Not empty of Address
+              - generic [ref=e689]: "5"
+      - complementary [ref=e691]

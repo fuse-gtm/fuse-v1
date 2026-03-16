@@ -12,7 +12,6 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { EMPTY, from, switchMap } from 'rxjs';
 import { RestLink } from 'apollo-link-rest';
 import { createUploadLink } from 'apollo-upload-client';
 
@@ -180,7 +179,7 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
         if (!getTokenPair()) {
           onUnauthenticatedError?.();
 
-          return EMPTY;
+          return fromPromise(Promise.resolve() as unknown as Promise<FetchResult>);
         }
 
         if (!renewalPromise) {
@@ -200,11 +199,15 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
             });
         }
 
-        return from(renewalPromise).pipe(
-          switchMap((succeeded) =>
-            succeeded ? forward(operation) : EMPTY,
-          ),
-        ) as ReturnType<typeof forward>;
+        return fromPromise(renewalPromise).flatMap((succeeded) => {
+          if (succeeded) {
+            return forward(operation);
+          }
+
+          return fromPromise(
+            Promise.resolve() as unknown as Promise<FetchResult>,
+          );
+        });
       };
 
       const sendToSentry = ({
