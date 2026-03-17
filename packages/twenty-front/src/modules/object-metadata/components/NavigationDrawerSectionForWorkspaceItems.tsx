@@ -1,33 +1,47 @@
+<<<<<<<< HEAD:packages/twenty-front/src/modules/object-metadata/components/NavigationDrawerSectionForWorkspaceItems.tsx
 import { NavigationDropTargetContext } from '@/navigation-menu-item/contexts/NavigationDropTargetContext';
+========
+import { styled } from '@linaria/react';
+>>>>>>>> 9f7c29bce8 (refactor(twenty-front): unify Favorites and Workspace navigation menu item code (#18697)):packages/twenty-front/src/modules/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionContainer.tsx
 import React, { lazy, Suspense, useContext } from 'react';
 import { NavigationMenuItemType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { AnimatedExpandableContainer } from 'twenty-ui/layout';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
+<<<<<<<< HEAD:packages/twenty-front/src/modules/object-metadata/components/NavigationDrawerSectionForWorkspaceItems.tsx
 import { NavigationMenuItemDroppableIds } from '@/navigation-menu-item/constants/NavigationMenuItemDroppableIds';
 import { type NavigationMenuItemClickParams } from '@/navigation-menu-item/hooks/useWorkspaceSectionItems';
 import { isNavigationMenuInEditModeState } from '@/navigation-menu-item/states/isNavigationMenuInEditModeState';
 import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/utils/getObjectMetadataForNavigationMenuItem';
 import type { EditModeProps } from '@/object-metadata/components/EditModeProps';
 import { NavigationDrawerSectionForWorkspaceItemsListReadOnly } from '@/object-metadata/components/NavigationDrawerSectionForWorkspaceItemsListReadOnly';
+========
+import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
+import { NavigationMenuItemDroppableIds } from '@/navigation-menu-item/common/constants/NavigationMenuItemDroppableIds';
+import { NavigationDropTargetContext } from '@/navigation-menu-item/common/contexts/NavigationDropTargetContext';
+import { type NavigationMenuItemClickParams } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
+import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/display/object/utils/getObjectMetadataForNavigationMenuItem';
+import { WorkspaceSectionListReadOnly } from '@/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionListReadOnly';
+import { NavigationMenuItemSection } from '@/navigation-menu-item/display/sections/components/NavigationMenuItemSection';
+import type { EditModeProps } from '@/object-metadata/components/EditModeProps';
+>>>>>>>> 9f7c29bce8 (refactor(twenty-front): unify Favorites and Workspace navigation menu item code (#18697)):packages/twenty-front/src/modules/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionContainer.tsx
 import { WorkspaceSectionListEditModeFallback } from '@/object-metadata/components/WorkspaceSectionListEditModeFallback';
 import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { getObjectPermissionsForObject } from '@/object-metadata/utils/getObjectPermissionsForObject';
 import { useObjectPermissions } from '@/object-record/hooks/useObjectPermissions';
-import { NavigationDrawerAnimatedCollapseWrapper } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerAnimatedCollapseWrapper';
-import { NavigationDrawerSection } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerSection';
-import { NavigationDrawerSectionTitle } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerSectionTitle';
 import { useNavigationSection } from '@/ui/navigation/navigation-drawer/hooks/useNavigationSection';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
-import { styled } from '@linaria/react';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const LazyWorkspaceSectionListDndKit = lazy(() =>
   import(
+<<<<<<<< HEAD:packages/twenty-front/src/modules/object-metadata/components/NavigationDrawerSectionForWorkspaceItems.tsx
     '@/object-metadata/components/NavigationDrawerSectionForWorkspaceItemsListDndKit'
+========
+    '@/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionListDndKit'
+>>>>>>>> 9f7c29bce8 (refactor(twenty-front): unify Favorites and Workspace navigation menu item code (#18697)):packages/twenty-front/src/modules/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionContainer.tsx
   ).then((m) => ({ default: m.WorkspaceSectionListDndKit })),
 );
 
@@ -35,7 +49,7 @@ const StyledWorkspaceSectionContentGapOffset = styled.div`
   margin-top: calc(-1 * ${themeCssVariables.betweenSiblingsGap});
 `;
 
-type NavigationDrawerSectionForWorkspaceItemsProps = {
+type WorkspaceSectionContainerProps = {
   sectionTitle: string;
   items: NavigationMenuItem[];
   rightIcon?: React.ReactNode;
@@ -47,16 +61,22 @@ type NavigationDrawerSectionForWorkspaceItemsProps = {
   ) => void;
 };
 
-export const NavigationDrawerSectionForWorkspaceItems = ({
+export const WorkspaceSectionContainer = ({
   sectionTitle,
   items,
   rightIcon,
   selectedNavigationMenuItemId = null,
   onNavigationMenuItemClick,
   onActiveObjectMetadataItemClick,
+<<<<<<<< HEAD:packages/twenty-front/src/modules/object-metadata/components/NavigationDrawerSectionForWorkspaceItems.tsx
 }: NavigationDrawerSectionForWorkspaceItemsProps) => {
   const isNavigationMenuInEditMode = useAtomStateValue(
     isNavigationMenuInEditModeState,
+========
+}: WorkspaceSectionContainerProps) => {
+  const isLayoutCustomizationModeEnabled = useAtomStateValue(
+    isLayoutCustomizationModeEnabledState,
+>>>>>>>> 9f7c29bce8 (refactor(twenty-front): unify Favorites and Workspace navigation menu item code (#18697)):packages/twenty-front/src/modules/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionContainer.tsx
   );
   const { toggleNavigationSection, isNavigationSectionOpen } =
     useNavigationSection('Workspace');
@@ -145,6 +165,7 @@ export const NavigationDrawerSectionForWorkspaceItems = ({
   }
 
   return (
+<<<<<<<< HEAD:packages/twenty-front/src/modules/object-metadata/components/NavigationDrawerSectionForWorkspaceItems.tsx
     <NavigationDrawerSection>
       <NavigationDrawerAnimatedCollapseWrapper>
         <NavigationDrawerSectionTitle
@@ -190,13 +211,47 @@ export const NavigationDrawerSectionForWorkspaceItems = ({
             </Suspense>
           ) : (
             <NavigationDrawerSectionForWorkspaceItemsListReadOnly
+========
+    <NavigationMenuItemSection
+      title={sectionTitle}
+      isOpen={isNavigationSectionOpen}
+      onToggle={() => toggleNavigationSection()}
+      rightIcon={rightIcon}
+      alwaysShowRightIcon={isLayoutCustomizationModeEnabled}
+      forceExpanded={isAddToNavigationDropTargetVisible}
+      contentWrapper={(children) => (
+        <StyledWorkspaceSectionContentGapOffset>
+          {children}
+        </StyledWorkspaceSectionContentGapOffset>
+      )}
+    >
+      {isLayoutCustomizationModeEnabled ? (
+        <Suspense
+          fallback={
+            <WorkspaceSectionListEditModeFallback
+>>>>>>>> 9f7c29bce8 (refactor(twenty-front): unify Favorites and Workspace navigation menu item code (#18697)):packages/twenty-front/src/modules/navigation-menu-item/display/sections/workspace/components/WorkspaceSectionContainer.tsx
               filteredItems={filteredItems}
               folderChildrenById={folderChildrenById}
               onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
             />
-          )}
-        </AnimatedExpandableContainer>
-      </StyledWorkspaceSectionContentGapOffset>
-    </NavigationDrawerSection>
+          }
+        >
+          <LazyWorkspaceSectionListDndKit
+            filteredItems={filteredItems}
+            getEditModeProps={getEditModeProps}
+            folderChildrenById={folderChildrenById}
+            selectedNavigationMenuItemId={selectedNavigationMenuItemId}
+            onNavigationMenuItemClick={onNavigationMenuItemClick}
+            onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
+          />
+        </Suspense>
+      ) : (
+        <WorkspaceSectionListReadOnly
+          filteredItems={filteredItems}
+          folderChildrenById={folderChildrenById}
+          onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
+        />
+      )}
+    </NavigationMenuItemSection>
   );
 };

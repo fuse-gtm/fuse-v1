@@ -4,28 +4,27 @@ import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 import { IconFolder, IconLink, useIcons } from 'twenty-ui/display';
 
-import { ADD_TO_NAV_SOURCE_DROPPABLE_ID } from '@/navigation-menu-item/constants/AddToNavSourceDroppableId';
+import { useEnterLayoutCustomizationMode } from '@/layout-customization/hooks/useEnterLayoutCustomizationMode';
+import { ADD_TO_NAV_SOURCE_DROPPABLE_ID } from '@/navigation-menu-item/common/constants/AddToNavSourceDroppableId';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import { useAddFolderToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddFolderToNavigationMenuDraft';
-import { useAddLinkToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddLinkToNavigationMenuDraft';
-import { useAddObjectToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddObjectToNavigationMenuDraft';
-import { useAddRecordToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddRecordToNavigationMenuDraft';
-import { useAddViewToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddViewToNavigationMenuDraft';
-import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/hooks/useNavigationMenuItemsDraftState';
-import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/hooks/useOpenNavigationMenuItemInSidePanel';
-import { addToNavPayloadRegistryState } from '@/navigation-menu-item/states/addToNavPayloadRegistryState';
-import { isNavigationMenuInEditModeState } from '@/navigation-menu-item/states/isNavigationMenuInEditModeState';
-import { navigationMenuItemsDraftState } from '@/navigation-menu-item/states/navigationMenuItemsDraftState';
-import { openNavigationMenuItemFolderIdsState } from '@/navigation-menu-item/states/openNavigationMenuItemFolderIdsState';
-import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/utils/getObjectMetadataIdsInDraft';
-import { getStandardObjectIconColor } from '@/navigation-menu-item/utils/getStandardObjectIconColor';
-import { isWorkspaceDroppableId } from '@/navigation-menu-item/utils/isWorkspaceDroppableId';
-import { validateAndExtractWorkspaceFolderId } from '@/navigation-menu-item/utils/validateAndExtractWorkspaceFolderId';
+import { useAddFolderToNavigationMenuDraft } from '@/navigation-menu-item/edit/folder/hooks/useAddFolderToNavigationMenuDraft';
+import { useAddLinkToNavigationMenuDraft } from '@/navigation-menu-item/edit/link/hooks/useAddLinkToNavigationMenuDraft';
+import { useAddObjectToNavigationMenuDraft } from '@/navigation-menu-item/edit/object/hooks/useAddObjectToNavigationMenuDraft';
+import { useAddRecordToNavigationMenuDraft } from '@/navigation-menu-item/edit/record/hooks/useAddRecordToNavigationMenuDraft';
+import { useAddViewToNavigationMenuDraft } from '@/navigation-menu-item/edit/view/hooks/useAddViewToNavigationMenuDraft';
+import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
+import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/edit/hooks/useOpenNavigationMenuItemInSidePanel';
+import { addToNavPayloadRegistryState } from '@/navigation-menu-item/common/states/addToNavPayloadRegistryState';
+import { navigationMenuItemsDraftState } from '@/navigation-menu-item/common/states/navigationMenuItemsDraftState';
+import { openNavigationMenuItemFolderIdsState } from '@/navigation-menu-item/common/states/openNavigationMenuItemFolderIdsState';
+import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/common/utils/getObjectMetadataIdsInDraft';
+import { getStandardObjectIconColor } from '@/navigation-menu-item/common/utils/getStandardObjectIconColor';
+import { canNavigationMenuItemBeDroppedIn } from '@/navigation-menu-item/common/utils/canNavigationMenuItemBeDroppedIn';
+import { validateAndExtractWorkspaceFolderId } from '@/navigation-menu-item/common/utils/validateAndExtractWorkspaceFolderId';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
-import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
+import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 import { useStore } from 'jotai';
 
 export const useHandleAddToNavigationDrop = () => {
@@ -42,11 +41,9 @@ export const useHandleAddToNavigationDrop = () => {
   const { openNavigationMenuItemInSidePanel } =
     useOpenNavigationMenuItemInSidePanel();
   const { objectMetadataItems } = useObjectMetadataItems();
-  const coreViews = useAtomStateValue(coreViewsSelector);
+  const views = useAtomStateValue(viewsSelector);
   const { getIcon } = useIcons();
-  const setIsNavigationMenuInEditMode = useSetAtomState(
-    isNavigationMenuInEditModeState,
-  );
+  const { enterLayoutCustomizationMode } = useEnterLayoutCustomizationMode();
   const setOpenNavigationMenuItemFolderIds = useSetAtomState(
     openNavigationMenuItemFolderIdsState,
   );
@@ -57,7 +54,10 @@ export const useHandleAddToNavigationDrop = () => {
       if (
         source.droppableId !== ADD_TO_NAV_SOURCE_DROPPABLE_ID ||
         !destination ||
-        !isWorkspaceDroppableId(destination.droppableId)
+        !canNavigationMenuItemBeDroppedIn({
+          navigationMenuItemSection: 'workspace',
+          droppableId: destination.droppableId,
+        })
       ) {
         return;
       }
@@ -93,7 +93,7 @@ export const useHandleAddToNavigationDrop = () => {
           'itemId'
         >,
       ) => {
-        setIsNavigationMenuInEditMode(true);
+        enterLayoutCustomizationMode();
         openNavigationMenuItemInSidePanel({ ...options, itemId: newItemId });
       };
 
@@ -128,7 +128,6 @@ export const useHandleAddToNavigationDrop = () => {
           return;
         }
         case NavigationMenuItemType.OBJECT: {
-          const views = coreViews.map(convertCoreViewToView);
           const objectMetadataIdsInWorkspace = getObjectMetadataIdsInDraft(
             currentDraft,
             views,
@@ -141,7 +140,6 @@ export const useHandleAddToNavigationDrop = () => {
           );
           const newItemId = addObjectToDraft(
             payload.objectMetadataId,
-            payload.defaultViewId,
             currentDraft,
             folderId,
             index,
@@ -159,7 +157,6 @@ export const useHandleAddToNavigationDrop = () => {
           return;
         }
         case NavigationMenuItemType.VIEW: {
-          const views = coreViews.map(convertCoreViewToView);
           const view = views.find((v) => v.id === payload.viewId);
           const viewObjectMetadataItem = view
             ? objectMetadataItems.find(
@@ -214,13 +211,13 @@ export const useHandleAddToNavigationDrop = () => {
       addObjectToDraft,
       addRecordToDraft,
       addViewToDraft,
-      coreViews,
+      views,
       getIcon,
       navigationMenuItemsDraft,
       objectMetadataItems,
       openNavigationMenuItemInSidePanel,
       setOpenNavigationMenuItemFolderIds,
-      setIsNavigationMenuInEditMode,
+      enterLayoutCustomizationMode,
       workspaceNavigationMenuItems,
       store,
     ],

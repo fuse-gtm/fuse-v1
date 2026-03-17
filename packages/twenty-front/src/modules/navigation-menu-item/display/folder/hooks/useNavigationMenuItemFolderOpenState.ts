@@ -5,11 +5,11 @@ import { useIsMobile } from 'twenty-ui/utilities';
 import { isNonEmptyString } from '@sniptt/guards';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
-import { openNavigationMenuItemFolderIdsState } from '@/navigation-menu-item/common/states/openNavigationMenuItemFolderIdsState';
-import { getNavigationMenuItemComputedLink } from '@/navigation-menu-item/display/utils/getNavigationMenuItemComputedLink';
-import { isLocationMatchingNavigationMenuItem } from '@/navigation-menu-item/common/utils/isLocationMatchingNavigationMenuItem';
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
-import { currentNavigationMenuItemFolderIdState } from '@/navigation-menu-item/common/states/currentNavigationMenuItemFolderIdState';
+import { openNavigationMenuItemFolderIdsState } from '@/navigation-menu-item/states/openNavigationMenuItemFolderIdsState';
+import { getNavigationMenuItemComputedLink } from '@/navigation-menu-item/utils/getNavigationMenuItemComputedLink';
+import { isLocationMatchingNavigationMenuItem } from '@/navigation-menu-item/utils/isLocationMatchingNavigationMenuItem';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
+import { currentNavigationMenuItemFolderIdState } from '@/ui/navigation/navigation-drawer/states/currentNavigationMenuItemFolderIdState';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
@@ -29,7 +29,7 @@ export const useNavigationMenuItemFolderOpenState = ({
   const currentPath = location.pathname;
   const currentViewPath = location.pathname + location.search;
   const isMobile = useIsMobile();
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsState);
   const views = useAtomStateValue(viewsSelector);
 
   const [openNavigationMenuItemFolderIds, setOpenNavigationMenuItemFolderIds] =

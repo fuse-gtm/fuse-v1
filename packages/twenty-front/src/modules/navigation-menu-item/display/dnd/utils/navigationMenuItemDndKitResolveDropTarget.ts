@@ -38,7 +38,7 @@ export const resolveDropTarget = (
     );
   }
   if (isDroppableData(target.data)) {
-    const { droppableId, index, insertBeforeItemId } = target.data;
+    const { droppableId, index } = target.data;
     if (
       canNavigationMenuItemBeDroppedIn({
         navigationMenuItemSection,
@@ -50,7 +50,6 @@ export const resolveDropTarget = (
         effectiveDropTargetId: String(target.id),
         isTargetFolder: false,
         dropTargetId: String(target.id),
-        insertBeforeItemId,
       };
     }
   }

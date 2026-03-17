@@ -1,44 +1,47 @@
 import { useLingui } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
+import { IconColumnInsertRight } from 'twenty-ui/display';
 
-import { pendingInsertionNavigationMenuItemState } from '@/navigation-menu-item/common/states/pendingInsertionNavigationMenuItemState';
-import { type PendingInsertionNavigationMenuItem } from '@/navigation-menu-item/common/types/PendingInsertionNavigationMenuItem';
-import { selectedNavigationMenuItemIdInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemIdInEditModeState';
-import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
+import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
+import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
+import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
 import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemMoveRemove';
 import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
-import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
-import { useSidePanelSubPageHistory } from '@/side-panel/hooks/useSidePanelSubPageHistory';
-import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
-import { SidePanelSubPages } from '@/side-panel/types/SidePanelSubPages';
+import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
+import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
+import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemInEditModeState';
+import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/common/types/AddMenuItemInsertionContext';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import { type NavigationMenuItem } from '~/generated-metadata/graphql';
+import { SidePanelPages } from 'twenty-shared/types';
 
-const computeInsertionPosition = (
+const getAddMenuItemInsertionContext = (
   selectedItem: { id: string; folderId?: string | null },
-  workspaceNavigationMenuItems: NavigationMenuItem[],
+  workspaceNavigationMenuItems: Array<{
+    id: string;
+    folderId?: string | null;
+    userWorkspaceId?: string | null;
+  }>,
   offset: 0 | 1,
-): PendingInsertionNavigationMenuItem | null => {
-  const folderId = selectedItem.folderId ?? null;
-  const itemsInFolderSorted = workspaceNavigationMenuItems
-    .filter(
-      (item) =>
-        (item.folderId ?? null) === folderId &&
-        !isDefined(item.userWorkspaceId),
-    )
-    .sort((a, b) => a.position - b.position);
-  const selectedIndexSorted = itemsInFolderSorted.findIndex(
+): AddMenuItemInsertionContext | null => {
+  const targetFolderId = selectedItem.folderId ?? null;
+  const itemsInFolder = workspaceNavigationMenuItems.filter(
+    (item) =>
+      (item.folderId ?? null) === targetFolderId &&
+      !isDefined(item.userWorkspaceId),
+  );
+  const selectedIndexInFolder = itemsInFolder.findIndex(
     (item) => item.id === selectedItem.id,
   );
 
-  if (selectedIndexSorted < 0) {
+  if (selectedIndexInFolder < 0) {
     return null;
   }
 
   return {
-    folderId,
-    position: selectedIndexSorted + offset,
+    targetFolderId,
+    targetIndex: selectedIndexInFolder + offset,
+    disableDrag: true,
   };
 };
 
@@ -46,22 +49,22 @@ export const useNavigationMenuItemEditOrganizeActions =
   (): OrganizeActionsProps => {
     const { t } = useLingui();
     const { closeSidePanelMenu } = useSidePanelMenu();
-    const { navigateToSidePanelSubPage } = useSidePanelSubPageHistory();
-    const selectedNavigationMenuItemIdInEditMode = useAtomStateValue(
-      selectedNavigationMenuItemIdInEditModeState,
+    const { navigateSidePanel } = useNavigateSidePanel();
+    const selectedNavigationMenuItemInEditMode = useAtomStateValue(
+      selectedNavigationMenuItemInEditModeState,
     );
-    const setSelectedNavigationMenuItemIdInEditMode = useSetAtomState(
-      selectedNavigationMenuItemIdInEditModeState,
+    const setSelectedNavigationMenuItemInEditMode = useSetAtomState(
+      selectedNavigationMenuItemInEditModeState,
     );
-    const setPendingInsertionNavigationMenuItem = useSetAtomState(
-      pendingInsertionNavigationMenuItemState,
+    const setAddMenuItemInsertionContext = useSetAtomState(
+      addMenuItemInsertionContextState,
     );
     const { workspaceNavigationMenuItems } = useNavigationMenuItemsDraftState();
     const items = useNavigationMenuItemSectionItems();
     const { moveUp, moveDown, remove } = useNavigationMenuItemMoveRemove();
 
-    const selectedItem = selectedNavigationMenuItemIdInEditMode
-      ? items.find((item) => item.id === selectedNavigationMenuItemIdInEditMode)
+    const selectedItem = selectedNavigationMenuItemInEditMode
+      ? items.find((item) => item.id === selectedNavigationMenuItemInEditMode)
       : undefined;
 
     const folderId = selectedItem?.folderId ?? null;
@@ -78,50 +81,48 @@ export const useNavigationMenuItemEditOrganizeActions =
     const canMoveUp =
       selectedIndexInSiblings > 0 &&
       selectedItem != null &&
-      isDefined(selectedNavigationMenuItemIdInEditMode);
+      isDefined(selectedNavigationMenuItemInEditMode);
     const canMoveDown =
       selectedIndexInSiblings >= 0 &&
       selectedIndexInSiblings < siblings.length - 1 &&
       selectedItem != null &&
-      isDefined(selectedNavigationMenuItemIdInEditMode);
+      isDefined(selectedNavigationMenuItemInEditMode);
 
     const handleMoveUp = () => {
-      if (canMoveUp && isDefined(selectedNavigationMenuItemIdInEditMode)) {
-        moveUp(selectedNavigationMenuItemIdInEditMode);
+      if (canMoveUp && isDefined(selectedNavigationMenuItemInEditMode)) {
+        moveUp(selectedNavigationMenuItemInEditMode);
       }
     };
 
     const handleMoveDown = () => {
-      if (canMoveDown && isDefined(selectedNavigationMenuItemIdInEditMode)) {
-        moveDown(selectedNavigationMenuItemIdInEditMode);
+      if (canMoveDown && isDefined(selectedNavigationMenuItemInEditMode)) {
+        moveDown(selectedNavigationMenuItemInEditMode);
       }
     };
 
     const handleRemove = () => {
-      if (isDefined(selectedNavigationMenuItemIdInEditMode)) {
-        remove(selectedNavigationMenuItemIdInEditMode);
-        setSelectedNavigationMenuItemIdInEditMode(null);
+      if (isDefined(selectedNavigationMenuItemInEditMode)) {
+        remove(selectedNavigationMenuItemInEditMode);
+        setSelectedNavigationMenuItemInEditMode(null);
         closeSidePanelMenu();
       }
     };
 
     const handleAddAtOffset = (offset: 0 | 1) => {
       if (!isDefined(selectedItem)) return;
-      const insertion = computeInsertionPosition(
+      const context = getAddMenuItemInsertionContext(
         selectedItem,
         workspaceNavigationMenuItems,
         offset,
       );
-      if (!insertion) return;
-
-      const title =
-        offset === 0 ? t`Add menu item before` : t`Add menu item after`;
-
-      setPendingInsertionNavigationMenuItem(insertion);
-      navigateToSidePanelSubPage(
-        SidePanelSubPages.NewSidebarItemMainMenu,
-        title,
-      );
+      if (!context) return;
+      setAddMenuItemInsertionContext(context);
+      navigateSidePanel({
+        page: SidePanelPages.NavigationMenuAddItem,
+        pageTitle: t`New sidebar item`,
+        pageIcon: IconColumnInsertRight,
+        resetNavigationStack: true,
+      });
     };
 
     const handleAddBefore = () => handleAddAtOffset(0);

@@ -3,8 +3,8 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 import type { NavigationMenuItem } from '~/generated-metadata/graphql';
 import { NavigationMenuItemType } from 'twenty-shared/types';
-import type { WorkspaceSectionListDndKitProps } from '@/object-metadata/components/WorkspaceSectionListDndKitProps';
-import { NavigationDrawerSectionForWorkspaceItemContent } from '@/object-metadata/components/NavigationDrawerSectionForWorkspaceItemContent';
+import type { NavigationMenuItemSectionListDndKitProps } from '@/navigation-menu-item/display/sections/types/NavigationMenuItemSectionListDndKitProps';
+import { NavigationMenuItemDisplay } from '@/navigation-menu-item/display/components/NavigationMenuItemDisplay';
 
 const StyledList = styled.div`
   display: flex;
@@ -13,8 +13,8 @@ const StyledList = styled.div`
   padding-top: ${themeCssVariables.betweenSiblingsGap};
 `;
 
-type NavigationDrawerSectionForWorkspaceItemsListReadOnlyProps = Pick<
-  WorkspaceSectionListDndKitProps,
+type WorkspaceSectionListReadOnlyProps = Pick<
+  NavigationMenuItemSectionListDndKitProps,
   'filteredItems' | 'folderChildrenById' | 'onActiveObjectMetadataItemClick'
 >;
 
@@ -23,11 +23,11 @@ const READ_ONLY_EDIT_MODE_PROPS = {
   onEditModeClick: undefined,
 } as const;
 
-export const NavigationDrawerSectionForWorkspaceItemsListReadOnly = ({
+export const WorkspaceSectionListReadOnly = ({
   filteredItems,
   folderChildrenById,
   onActiveObjectMetadataItemClick,
-}: NavigationDrawerSectionForWorkspaceItemsListReadOnlyProps) => {
+}: WorkspaceSectionListReadOnlyProps) => {
   const folderCount = filteredItems.filter(
     (item) => item.type === NavigationMenuItemType.FOLDER,
   ).length;
@@ -35,7 +35,7 @@ export const NavigationDrawerSectionForWorkspaceItemsListReadOnly = ({
   return (
     <StyledList>
       {filteredItems.map((item: NavigationMenuItem) => (
-        <NavigationDrawerSectionForWorkspaceItemContent
+        <NavigationMenuItemDisplay
           key={item.id}
           item={item}
           editModeProps={READ_ONLY_EDIT_MODE_PROPS}
