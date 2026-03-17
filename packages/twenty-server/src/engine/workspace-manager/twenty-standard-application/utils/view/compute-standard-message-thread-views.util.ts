@@ -16,7 +16,7 @@ export const computeStandardMessageThreadViews = (
       objectName: 'messageThread',
       context: {
         viewName: 'allMessageThreads',
-        name: 'All Message Threads',
+        name: 'All {objectLabelPlural}',
         type: ViewType.TABLE,
         key: ViewKey.INDEX,
         position: 0,

@@ -16,7 +16,7 @@ export const computeStandardPersonViews = (
       objectName: 'person',
       context: {
         viewName: 'allPeople',
-        name: 'All People',
+        name: 'All {objectLabelPlural}',
         type: ViewType.TABLE,
         key: ViewKey.INDEX,
         position: 0,

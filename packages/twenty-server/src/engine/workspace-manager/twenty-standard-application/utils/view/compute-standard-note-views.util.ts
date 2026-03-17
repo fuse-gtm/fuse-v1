@@ -16,7 +16,7 @@ export const computeStandardNoteViews = (
       objectName: 'note',
       context: {
         viewName: 'allNotes',
-        name: 'All Notes',
+        name: 'All {objectLabelPlural}',
         type: ViewType.TABLE,
         key: ViewKey.INDEX,
         position: 0,

@@ -16,7 +16,7 @@ export const computeStandardDashboardViews = (
       objectName: 'dashboard',
       context: {
         viewName: 'allDashboards',
-        name: 'All Dashboards',
+        name: 'All {objectLabelPlural}',
         type: ViewType.TABLE,
         key: ViewKey.INDEX,
         position: 0,
