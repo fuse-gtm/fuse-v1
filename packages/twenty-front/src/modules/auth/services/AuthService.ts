@@ -7,7 +7,6 @@ import {
 } from '@apollo/client';
 
 import { loggerLink } from '@/apollo/utils/loggerLink';
-import { isDefined } from 'twenty-shared/utils';
 import {
   type AuthTokenPair,
   RenewTokenDocument,
@@ -24,13 +23,12 @@ const renewTokenMutation = async (
 ) => {
   const httpLink = new HttpLink({ uri });
 
-  // Create new client to call refresh token graphql mutation
   const client = new ApolloClient({
     link: ApolloLink.from([logger, httpLink]),
     cache: new InMemoryCache({}),
   });
 
-  const { data, errors } = await client.mutate<
+  const result = await client.mutate<
     RenewTokenMutation,
     RenewTokenMutationVariables
   >({
@@ -41,11 +39,11 @@ const renewTokenMutation = async (
     fetchPolicy: 'network-only',
   });
 
-  if (isDefined(errors) || isUndefinedOrNull(data)) {
-    throw new Error('Something went wrong during token renewal');
+  if (isUndefinedOrNull(result.data)) {
+    throw new Error('Token renewal returned empty data');
   }
 
-  return data;
+  return result.data;
 };
 
 export const renewToken = async (

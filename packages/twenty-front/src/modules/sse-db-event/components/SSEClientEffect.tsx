@@ -17,6 +17,9 @@ export const SSEClientEffect = () => {
   const isLoggedIn = useIsLogged();
   const [sseClient, setSseClient] = useAtomState(sseClientState);
   const tokenPair = useAtomStateValue(tokenPairState);
+  const hasAccessToken = isDefined(
+    tokenPair?.accessOrWorkspaceAgnosticToken?.token,
+  );
 
   const handleSSEClientConnected = useCallback(() => {
     const currentActiveQueryListeners = store.get(
@@ -32,29 +35,34 @@ export const SSEClientEffect = () => {
     useHandleSseClientConnectionRetry();
 
   useEffect(() => {
-    if (isLoggedIn && !isDefined(sseClient) && isDefined(tokenPair)) {
-      const token = tokenPair?.accessOrWorkspaceAgnosticToken?.token;
-
+    if (isLoggedIn && hasAccessToken && !isDefined(sseClient)) {
       const newSseClient = createClient({
         url: `${REACT_APP_SERVER_BASE_URL}/metadata`,
-        headers: {
-          Authorization: token ? `Bearer ${token}` : '',
+        headers: () => {
+          const currentTokenPair = store.get(tokenPairState.atom);
+          const token = currentTokenPair?.accessOrWorkspaceAgnosticToken?.token;
+
+          return {
+            Authorization: token ? `Bearer ${token}` : '',
+          };
         },
         on: {
           connected: handleSSEClientConnected,
         },
         retryAttempts: Infinity,
         retry: (retryCount: number) =>
-          handleSseClientConnectionRetry(retryCount, token),
+          handleSseClientConnectionRetry(retryCount),
       });
 
       setSseClient(newSseClient);
     }
   }, [
     handleSSEClientConnected,
+    hasAccessToken,
     isLoggedIn,
     setSseClient,
     sseClient,
+    store,
     tokenPair,
     handleSseClientConnectionRetry,
   ]);
