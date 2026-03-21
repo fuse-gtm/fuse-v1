@@ -94,7 +94,7 @@ export const SettingPublicDomain = () => {
     });
   };
 
-  const validationSchema = getDomainValidationSchema(t);
+  const validationSchema = getDomainValidationSchema();
 
   const onCreate = async () => {
     if (!isDefined(newPublicDomain)) {
