@@ -58,7 +58,15 @@ export class FileService {
     applicationId: string;
     filepath: string;
     fileFolder: FileFolder;
-  }) {
+  }): Promise<{ stream: Readable; mimeType: string }> {
+    const file = await this.fileRepository.findOneOrFail({
+      where: {
+        path: `${fileFolder}/${filepath}`,
+        workspaceId,
+        applicationId,
+      },
+    });
+
     const application = await this.applicationRepository.findOneOrFail({
       where: {
         id: applicationId,
@@ -66,12 +74,17 @@ export class FileService {
       },
     });
 
-    return this.fileStorageService.readFile({
+    const stream = await this.fileStorageService.readFile({
       resourcePath: filepath,
       fileFolder,
       applicationUniversalIdentifier: application.universalIdentifier,
       workspaceId,
     });
+
+    return {
+      stream,
+      mimeType: file.mimeType,
+    };
   }
 
   async getFileStreamById({
@@ -82,7 +95,7 @@ export class FileService {
     fileId: string;
     workspaceId: string;
     fileFolder: FileFolder;
-  }): Promise<Readable> {
+  }): Promise<{ stream: Readable; mimeType: string }> {
     const file = await this.fileRepository.findOneOrFail({
       where: {
         id: fileId,
@@ -98,12 +111,17 @@ export class FileService {
       },
     });
 
-    return this.fileStorageService.readFile({
+    const stream = await this.fileStorageService.readFile({
       resourcePath: removeFileFolderFromFileEntityPath(file.path),
       fileFolder,
       applicationUniversalIdentifier: application.universalIdentifier,
       workspaceId,
     });
+
+    return {
+      stream,
+      mimeType: file.mimeType,
+    };
   }
 
   signFileUrl({ url, workspaceId }: { url: string; workspaceId: string }) {
