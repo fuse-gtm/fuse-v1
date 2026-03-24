@@ -2423,8 +2423,8 @@ __metadata:
     "@types/react": "npm:^18.2.0"
     oxlint: "npm:^0.16.0"
     react: "npm:^18.2.0"
-    twenty-client-sdk: "npm:0.9.0"
-    twenty-sdk: "npm:0.9.0"
+    twenty-client-sdk: "portal:../../twenty-client-sdk"
+    twenty-sdk: "portal:../../twenty-sdk"
     typescript: "npm:^5.9.3"
     vite-tsconfig-paths: "npm:^4.2.1"
     vitest: "npm:^3.1.1"
@@ -4102,21 +4102,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"twenty-client-sdk@npm:0.9.0":
-  version: 0.9.0
-  resolution: "twenty-client-sdk@npm:0.9.0"
+"twenty-client-sdk@portal:../../twenty-client-sdk::locator=hello-world%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "twenty-client-sdk@portal:../../twenty-client-sdk::locator=hello-world%40workspace%3A."
   dependencies:
     "@genql/cli": "npm:^3.0.3"
     "@genql/runtime": "npm:^2.10.0"
     esbuild: "npm:^0.25.0"
     graphql: "npm:^16.8.1"
-  checksum: 10c0/4b42a6622a9852fc3eca50c1131b116c5602af006ee5f1d3b4f1e97721bbc8ef5c2f3b60d9dee3ca9ca8c3c7ad4b292a7b55007b779b4c042997dbc29940ba54
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"twenty-sdk@npm:0.9.0":
-  version: 0.9.0
-  resolution: "twenty-sdk@npm:0.9.0"
+"twenty-sdk@portal:../../twenty-sdk::locator=hello-world%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "twenty-sdk@portal:../../twenty-sdk::locator=hello-world%40workspace%3A."
   dependencies:
     "@genql/cli": "npm:^3.0.3"
     "@genql/runtime": "npm:^2.10.0"

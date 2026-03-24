@@ -47,10 +47,10 @@
       "import": "./dist/front-component-renderer.mjs",
       "require": "./dist/front-component-renderer.cjs"
     },
-    "./front-component-renderer/build": {
-      "types": "./dist/front-component-renderer/build/index.d.ts",
-      "import": "./dist/front-component-renderer/build.mjs",
-      "require": "./dist/front-component-renderer/build.cjs"
+    "./build": {
+      "types": "./dist/build/index.d.ts",
+      "import": "./dist/build.mjs",
+      "require": "./dist/build.cjs"
     }
   },
   "license": "AGPL-3.0",
@@ -89,6 +89,7 @@
     "rollup-plugin-dts": "^6.4.1",
     "ts-morph": "^25.0.0",
     "tsx": "^4.7.0",
+    "twenty-client-sdk": "workspace:*",
     "twenty-shared": "workspace:*",
     "twenty-ui": "workspace:*",
     "vite-plugin-dts": "^4.5.4",
@@ -114,9 +115,6 @@
       ],
       "front-component-renderer": [
         "dist/front-component-renderer/index.d.ts"
-      ],
-      "front-component-renderer/build": [
-        "dist/front-component-renderer/build/index.d.ts"
       ]
     }
   }

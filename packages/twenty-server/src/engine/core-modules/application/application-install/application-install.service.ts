@@ -22,17 +22,7 @@ import { ApplicationPackageFetcherService } from 'src/engine/core-modules/applic
 import { ApplicationSyncService } from 'src/engine/core-modules/application/application-manifest/application-sync.service';
 import { CacheLockService } from 'src/engine/core-modules/cache-lock/cache-lock.service';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
-import {
-  LogicFunctionTriggerJob,
-  type LogicFunctionTriggerJobData,
-} from 'src/engine/core-modules/logic-function/logic-function-trigger/jobs/logic-function-trigger.job';
-import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
-import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
-import { MessageQueueService } from 'src/engine/core-modules/message-queue/services/message-queue.service';
 import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client/sdk-client-generation.service';
-import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
-import { LogicFunctionExecutorService } from 'src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.service';
-
 @Injectable()
 export class ApplicationInstallService {
   private readonly logger = new Logger(ApplicationInstallService.name);
@@ -47,9 +37,6 @@ export class ApplicationInstallService {
     private readonly logicFunctionExecutorService: LogicFunctionExecutorService,
     private readonly cacheLockService: CacheLockService,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
-    @InjectMessageQueue(MessageQueue.logicFunctionQueue)
-    private readonly messageQueueService: MessageQueueService,
-    private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
   async installApplication(params: {
@@ -178,22 +165,22 @@ export class ApplicationInstallService {
         }
       }
 
+      const universalIdentifier = appRegistration.universalIdentifier;
+
+      const { application, wasCreated } = await this.ensureApplicationExists({
+        universalIdentifier,
+        name: resolvedPackage.manifest.application.displayName,
+        workspaceId: params.workspaceId,
+        applicationRegistrationId: appRegistration.id,
+        sourceType: appRegistration.sourceType,
+      });
+
       await this.writeFilesToStorage(
         resolvedPackage.extractedDir,
         resolvedPackage.manifest,
         universalIdentifier,
         params.workspaceId,
       );
-
-      await this.runPreInstallHook({
-        manifest: resolvedPackage.manifest,
-        workspaceId: params.workspaceId,
-        applicationRegistrationId: appRegistration.id,
-        previousVersion,
-        newVersion,
-        isVersionUpgrade,
-        universalIdentifier,
-      });
 
       const { hasSchemaMetadataChanged } =
         await this.applicationSyncService.synchronizeFromManifest({
@@ -202,22 +189,13 @@ export class ApplicationInstallService {
           applicationRegistrationId: appRegistration.id,
         });
 
-      if (!isVersionUpgrade || hasSchemaMetadataChanged) {
+      if (wasCreated || hasSchemaMetadataChanged) {
         await this.sdkClientGenerationService.generateSdkClientForApplication({
           workspaceId: params.workspaceId,
           applicationId: application.id,
           applicationUniversalIdentifier: universalIdentifier,
         });
       }
-
-      await this.runPostInstallHook({
-        manifest: resolvedPackage.manifest,
-        workspaceId: params.workspaceId,
-        previousVersion,
-        newVersion,
-        isVersionUpgrade,
-        universalIdentifier,
-      });
 
       this.logger.log(
         `Successfully installed app ${universalIdentifier} v${resolvedPackage.packageJson.version ?? 'unknown'}`,
@@ -509,12 +487,17 @@ export class ApplicationInstallService {
     workspaceId: string;
     applicationRegistrationId: string;
     sourceType: ApplicationRegistrationSourceType;
-  }): Promise<ApplicationEntity> {
-    if (isDefined(params.existingApplication)) {
-      return params.existingApplication;
+  }): Promise<{ application: ApplicationEntity; wasCreated: boolean }> {
+    const existing = await this.applicationService.findByUniversalIdentifier({
+      universalIdentifier: params.universalIdentifier,
+      workspaceId: params.workspaceId,
+    });
+
+    if (isDefined(existing)) {
+      return { application: existing, wasCreated: false };
     }
 
-    return await this.applicationService.create({
+    const application = await this.applicationService.create({
       universalIdentifier: params.universalIdentifier,
       name: params.name,
       sourcePath: params.universalIdentifier,
@@ -522,5 +505,7 @@ export class ApplicationInstallService {
       applicationRegistrationId: params.applicationRegistrationId,
       workspaceId: params.workspaceId,
     });
+
+    return { application, wasCreated: true };
   }
 }

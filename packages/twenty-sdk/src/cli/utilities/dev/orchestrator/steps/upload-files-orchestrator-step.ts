@@ -128,34 +128,6 @@ export class UploadFilesOrchestratorStep {
     this.notify();
   }
 
-  private logUploadSummary(): void {
-    if (this.totalQueued === 0) {
-      this.resetCounters();
-
-      return;
-    }
-
-    if (this.failedCount > 0) {
-      this.state.addEvent({
-        message: `Uploaded ${this.uploadedCount}/${this.totalQueued} files (${this.failedCount} failed)`,
-        status: 'error',
-      });
-    }
-
-    this.state.addEvent({
-      message: `Successfully uploaded ${this.uploadedCount} file${this.uploadedCount !== 1 ? 's' : ''}`,
-      status: 'success',
-    });
-
-    this.resetCounters();
-  }
-
-  private resetCounters(): void {
-    this.uploadedCount = 0;
-    this.failedCount = 0;
-    this.totalQueued = 0;
-  }
-
   private uploadPendingFiles(): void {
     for (const [
       builtPath,

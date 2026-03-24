@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 
-import { DataSource, Repository } from 'typeorm';
-import { v4 } from 'uuid';
+import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
+import { FeatureFlagKey } from 'twenty-shared/types';
+import { DataSource } from 'typeorm';
 
 import { ApplicationRegistrationService } from 'src/engine/core-modules/application/application-registration/application-registration.service';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
@@ -45,6 +46,8 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 
 @Injectable()
 export class DevSeederService {
+  private readonly logger = new Logger(DevSeederService.name);
+
   constructor(
     private readonly workspaceCacheStorageService: WorkspaceCacheStorageService,
     private readonly twentyConfigService: TwentyConfigService,
@@ -57,11 +60,6 @@ export class DevSeederService {
     private readonly applicationRegistrationService: ApplicationRegistrationService,
     private readonly workspaceCacheService: WorkspaceCacheService,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
-    private readonly upgradeMigrationService: UpgradeMigrationService,
-    private readonly upgradeSequenceReaderService: UpgradeSequenceReaderService,
-    private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
-    private readonly prefillFrontComponentService: PrefillFrontComponentService,
-    private readonly prefillLogicFunctionService: PrefillLogicFunctionService,
     @InjectDataSource()
     private readonly coreDataSource: DataSource,
     @InjectRepository(WorkspaceEntity)

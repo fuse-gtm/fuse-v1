@@ -14,11 +14,8 @@ import { WorkspaceEventEmitterModule } from 'src/engine/workspace-event-emitter/
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ConnectedAccountEntity,
-      CalendarChannelEntity,
-      MessageChannelEntity,
-    ]),
+    TypeOrmModule.forFeature([ConnectedAccountEntity]),
+    PermissionsModule,
     FeatureFlagModule,
     PermissionsModule,
     WorkspaceEventEmitterModule,

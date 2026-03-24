@@ -55,7 +55,6 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     WorkspaceMigrationModule,
     TwentyStandardApplicationModule,
     SdkClientModule,
-    UpgradeModule,
   ],
   exports: [DevSeederService],
   providers: [
