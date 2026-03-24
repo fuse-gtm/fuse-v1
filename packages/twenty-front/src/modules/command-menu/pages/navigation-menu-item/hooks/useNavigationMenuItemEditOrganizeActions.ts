@@ -2,53 +2,53 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
 import { IconColumnInsertRight } from 'twenty-ui/display';
 
-import { useCommandMenu } from '@/command-menu/hooks/useCommandMenu';
-import { useNavigateCommandMenu } from '@/command-menu/hooks/useNavigateCommandMenu';
-import { type OrganizeActionsProps } from '@/command-menu/pages/navigation-menu-item/components/CommandMenuEditOrganizeActions';
-import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/hooks/useNavigationMenuItemMoveRemove';
-import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/hooks/useNavigationMenuItemsDraftState';
-import { useWorkspaceSectionItems } from '@/navigation-menu-item/hooks/useWorkspaceSectionItems';
-import { addMenuItemInsertionContextState } from '@/navigation-menu-item/states/addMenuItemInsertionContextState';
-import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/states/selectedNavigationMenuItemInEditModeState';
-import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/types/AddMenuItemInsertionContext';
+import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
+import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemInEditModeState';
+import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/common/types/AddMenuItemInsertionContext';
+import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
+import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemMoveRemove';
+import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
+import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
+import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
+import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import { CommandMenuPages } from 'twenty-shared/types';
+import { SidePanelPages } from 'twenty-shared/types';
+import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
 const getAddMenuItemInsertionContext = (
   selectedItem: { id: string; folderId?: string | null },
-  workspaceNavigationMenuItems: Array<{
-    id: string;
-    folderId?: string | null;
-    userWorkspaceId?: string | null;
-  }>,
+  workspaceNavigationMenuItems: NavigationMenuItem[],
   offset: 0 | 1,
 ): AddMenuItemInsertionContext | null => {
   const targetFolderId = selectedItem.folderId ?? null;
-  const itemsInFolder = workspaceNavigationMenuItems.filter(
-    (item) =>
-      (item.folderId ?? null) === targetFolderId &&
-      !isDefined(item.userWorkspaceId),
-  );
-  const selectedIndexInFolder = itemsInFolder.findIndex(
+  const itemsInFolderSorted = workspaceNavigationMenuItems
+    .filter(
+      (item) =>
+        (item.folderId ?? null) === targetFolderId &&
+        !isDefined(item.userWorkspaceId),
+    )
+    .sort((a, b) => a.position - b.position);
+  const selectedIndexSorted = itemsInFolderSorted.findIndex(
     (item) => item.id === selectedItem.id,
   );
 
-  if (selectedIndexInFolder < 0) {
+  if (selectedIndexSorted < 0) {
     return null;
   }
 
   return {
     targetFolderId,
-    targetIndex: selectedIndexInFolder + offset,
+    targetIndex: selectedIndexSorted + offset,
+    disableDrag: true,
   };
 };
 
 export const useNavigationMenuItemEditOrganizeActions =
   (): OrganizeActionsProps => {
     const { t } = useLingui();
-    const { closeCommandMenu } = useCommandMenu();
-    const { navigateCommandMenu } = useNavigateCommandMenu();
+    const { closeSidePanelMenu } = useSidePanelMenu();
+    const { navigateSidePanel } = useNavigateSidePanel();
     const selectedNavigationMenuItemInEditMode = useAtomStateValue(
       selectedNavigationMenuItemInEditModeState,
     );
@@ -59,7 +59,7 @@ export const useNavigationMenuItemEditOrganizeActions =
       addMenuItemInsertionContextState,
     );
     const { workspaceNavigationMenuItems } = useNavigationMenuItemsDraftState();
-    const items = useWorkspaceSectionItems();
+    const items = useNavigationMenuItemSectionItems();
     const { moveUp, moveDown, remove } = useNavigationMenuItemMoveRemove();
 
     const selectedItem = selectedNavigationMenuItemInEditMode
@@ -103,7 +103,7 @@ export const useNavigationMenuItemEditOrganizeActions =
       if (isDefined(selectedNavigationMenuItemInEditMode)) {
         remove(selectedNavigationMenuItemInEditMode);
         setSelectedNavigationMenuItemInEditMode(null);
-        closeCommandMenu();
+        closeSidePanelMenu();
       }
     };
 
@@ -116,9 +116,9 @@ export const useNavigationMenuItemEditOrganizeActions =
       );
       if (!context) return;
       setAddMenuItemInsertionContext(context);
-      navigateCommandMenu({
-        page: CommandMenuPages.NavigationMenuAddItem,
-        pageTitle: t`New sidebar item`,
+      navigateSidePanel({
+        page: SidePanelPages.NavigationMenuAddItem,
+        pageTitle: t`New menu item`,
         pageIcon: IconColumnInsertRight,
         resetNavigationStack: true,
       });
