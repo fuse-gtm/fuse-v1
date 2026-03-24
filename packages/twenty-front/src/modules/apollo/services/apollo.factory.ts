@@ -127,7 +127,7 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
             ...options.headers,
             authorization: token ? `Bearer ${token}` : '',
             'x-locale': locale,
-            ...(this.currentWorkspace?.metadataVersion && {
+            ...(isDefined(this.currentWorkspace?.metadataVersion) && {
               'X-Schema-Version': `${this.currentWorkspace.metadataVersion}`,
             }),
             ...(this.appVersion && { 'X-App-Version': this.appVersion }),
