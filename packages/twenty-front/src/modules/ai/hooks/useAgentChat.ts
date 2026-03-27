@@ -18,9 +18,11 @@ import { DefaultChatTransport } from 'ai';
 import { type ExtendedUIMessage } from 'twenty-shared/ai';
 import { isDefined } from 'twenty-shared/utils';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
-import { cookieStorage } from '~/utils/cookie-storage';
-
-export const useAgentChat = (uiMessages: ExtendedUIMessage[]) => {
+export const useAgentChat = (
+  uiMessages: ExtendedUIMessage[],
+  ensureThreadIdForSend: () => Promise<string | null>,
+  onStreamingComplete?: () => void,
+) => {
   const setTokenPair = useSetAtomState(tokenPairState);
   const setAgentChatUsage = useSetAtomState(agentChatUsageState);
 
@@ -68,7 +70,6 @@ export const useAgentChat = (uiMessages: ExtendedUIMessage[]) => {
         return null;
       }
 
-      cookieStorage.setItem('tokenPair', JSON.stringify(renewedTokens));
       setTokenPair(renewedTokens);
 
       const updatedHeaders = new Headers(init?.headers ?? {});

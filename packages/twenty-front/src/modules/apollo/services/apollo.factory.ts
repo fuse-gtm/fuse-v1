@@ -38,7 +38,6 @@ import {
 import isEmpty from 'lodash.isempty';
 import { getGenericOperationName, isDefined } from 'twenty-shared/utils';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
-import { cookieStorage } from '~/utils/cookie-storage';
 import { isUndefinedOrNull } from '~/utils/isUndefinedOrNull';
 
 const logger = loggerLink(() => 'Twenty');
@@ -170,7 +169,6 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
 
         if (isDefined(tokens)) {
           onTokenPairChange?.(tokens);
-          cookieStorage.setItem('tokenPair', JSON.stringify(tokens));
         }
       };
 
