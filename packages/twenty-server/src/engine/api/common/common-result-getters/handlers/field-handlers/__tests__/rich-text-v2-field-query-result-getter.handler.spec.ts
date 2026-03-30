@@ -1,9 +1,7 @@
 import { FieldMetadataType, type ObjectRecord } from 'twenty-shared/types';
 
-import { RichTextV2FieldQueryResultGetterHandler } from 'src/engine/api/common/common-result-getters/handlers/field-handlers/rich-text-v2-field-query-result-getter.handler';
-import { type FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
+import { RichTextFieldQueryResultGetterHandler } from 'src/engine/api/common/common-result-getters/handlers/field-handlers/rich-text-field-query-result-getter.handler';
 import { type FileUrlService } from 'src/engine/core-modules/file/file-url/file-url.service';
-import { type FileService } from 'src/engine/core-modules/file/services/file.service';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
 const baseRecord: ObjectRecord = {
@@ -15,33 +13,21 @@ const baseRecord: ObjectRecord = {
 
 const richTextFieldMetadata = [
   {
-    type: FieldMetadataType.RICH_TEXT_V2,
+    type: FieldMetadataType.RICH_TEXT,
     name: 'bodyV2',
   },
 ] as FlatFieldMetadata[];
 
-const mockFileService = {
-  signFileUrl: jest.fn().mockReturnValue('signed-path'),
-} as unknown as FileService;
-
 const mockFileUrlService = {
-  signFileUrl: jest.fn().mockReturnValue('signed-path'),
+  signFileByIdUrl: jest.fn().mockReturnValue('signed-path'),
 } as unknown as FileUrlService;
 
-const mockFeatureFlagService = {
-  isFeatureEnabled: jest.fn().mockReturnValue(true),
-} as unknown as FeatureFlagService;
-
-describe('RichTextV2FieldQueryResultGetterHandler', () => {
-  let handler: RichTextV2FieldQueryResultGetterHandler;
+describe('RichTextFieldQueryResultGetterHandler', () => {
+  let handler: RichTextFieldQueryResultGetterHandler;
 
   beforeEach(() => {
     process.env.SERVER_URL = 'https://my-domain.twenty.com';
-    handler = new RichTextV2FieldQueryResultGetterHandler(
-      mockFileService,
-      mockFileUrlService,
-      mockFeatureFlagService,
-    );
+    handler = new RichTextFieldQueryResultGetterHandler(mockFileUrlService);
   });
 
   afterEach(() => {
@@ -50,7 +36,7 @@ describe('RichTextV2FieldQueryResultGetterHandler', () => {
   });
 
   describe('should return record unchanged', () => {
-    it('when no RICH_TEXT_V2 field metadata is present', async () => {
+    it('when no RICH_TEXT field metadata is present', async () => {
       const record = {
         ...baseRecord,
         bodyV2: { blocknote: '[]', markdown: null },
@@ -169,59 +155,11 @@ describe('RichTextV2FieldQueryResultGetterHandler', () => {
     });
   });
 
-  describe('should sign internal image URLs', () => {
-    it('when image block has an internal attachment URL (legacy path)', async () => {
-      jest
-        .spyOn(mockFeatureFlagService, 'isFeatureEnabled')
-        .mockResolvedValue(false);
-
-      const imageBlock = {
-        type: 'image',
-        props: {
-          name: 'photo.jpg',
-          url: 'https://my-domain.twenty.com/files/attachment/some-token/photo.jpg',
-          caption: '',
-        },
-        children: [],
-      };
-
-      const record = {
-        ...baseRecord,
-        bodyV2: {
-          markdown: null,
-          blocknote: JSON.stringify([imageBlock]),
-        },
-      };
-
-      const result = await handler.handle(
-        record,
-        'ws-1',
-        richTextFieldMetadata,
-      );
-
-      expect(result).toEqual({
-        ...baseRecord,
-        bodyV2: {
-          markdown: null,
-          blocknote: JSON.stringify([
-            {
-              ...imageBlock,
-              props: {
-                ...imageBlock.props,
-                url: 'https://my-domain.twenty.com/files/signed-path',
-              },
-            },
-          ]),
-        },
-      });
-    });
-  });
-
-  describe('should handle multiple RICH_TEXT_V2 fields', () => {
+  describe('should handle multiple RICH_TEXT fields', () => {
     it('when record has multiple rich text fields', async () => {
       const multiFieldMetadata = [
-        { type: FieldMetadataType.RICH_TEXT_V2, name: 'bodyV2' },
-        { type: FieldMetadataType.RICH_TEXT_V2, name: 'description' },
+        { type: FieldMetadataType.RICH_TEXT, name: 'bodyV2' },
+        { type: FieldMetadataType.RICH_TEXT, name: 'description' },
       ] as FlatFieldMetadata[];
 
       const record = {
