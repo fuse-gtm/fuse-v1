@@ -20,6 +20,7 @@ import {
   compareHash,
   hashPassword,
 } from 'src/engine/core-modules/auth/auth.util';
+import { MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY } from 'src/engine/core-modules/auth/constants/max-workspaces-without-enterprise-key.constants';
 import {
   type AuthProviderWithPasswordType,
   type ExistingUserOrPartialUserWithPicture,
@@ -586,16 +587,18 @@ export class SignInUpService {
       );
 
       await queryRunner.commitTransaction();
-      await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
-        'flatApplicationMaps',
-      ]);
 
       return { user, workspace };
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
       throw error;
     } finally {
       await queryRunner.release();
+      await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
+        'flatApplicationMaps',
+      ]);
     }
   }
 
