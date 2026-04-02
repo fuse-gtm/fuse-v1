@@ -12,6 +12,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { EMPTY, from, switchMap } from 'rxjs';
 import { RestLink } from 'apollo-link-rest';
 import { createUploadLink } from 'apollo-upload-client';
 
@@ -45,7 +46,7 @@ const logger = loggerLink(() => 'Twenty');
 // Shared across all ApolloFactory instances so concurrent
 // UNAUTHENTICATED errors from /graphql and /metadata clients
 // deduplicate into a single renewal request.
-let renewalPromise: Promise<void> | null = null;
+let renewalPromise: Promise<boolean> | null = null;
 
 const TOKEN_RENEWAL_MAX_RETRIES = 3;
 const TOKEN_RENEWAL_RETRY_DELAY_MS = 1000;
@@ -176,21 +177,32 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
         operation: Operation,
         forward: (operation: Operation) => Observable<FetchResult>,
       ) => {
+        if (!getTokenPair()) {
+          onUnauthenticatedError?.();
+
+          return EMPTY;
+        }
+
         if (!renewalPromise) {
           renewalPromise = attemptTokenRenewal()
+            .then(() => true)
             .catch(() => {
               // eslint-disable-next-line no-console
               console.log(
                 'Failed to renew token after retries, triggering unauthenticated error',
               );
               onUnauthenticatedError?.();
+
+              return false;
             })
             .finally(() => {
               renewalPromise = null;
             });
         }
 
-        return fromPromise(renewalPromise).flatMap(() => forward(operation));
+        return from(renewalPromise).pipe(
+          switchMap((succeeded) => (succeeded ? forward(operation) : EMPTY)),
+        );
       };
 
       const sendToSentry = ({
