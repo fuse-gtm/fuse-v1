@@ -37,8 +37,15 @@ import { SeedServerIdCommand } from 'src/database/commands/upgrade-version-comma
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
 import { SeedCliApplicationRegistrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-seed-cli-application-registration.command';
-import { MigrateRichTextToTextCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-migrate-rich-text-to-text.command';
-import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
+import { UpdateStandardIndexViewNamesCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-update-standard-index-view-names.command';
+import { AddGlobalKeyValuePairUniqueIndexCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-add-global-key-value-pair-unique-index.command';
+import { BackfillDatasourceToWorkspaceCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-datasource-to-workspace.command';
+import { BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-page-layouts-and-fields-widget-view-fields.command';
+import { DeduplicateEngineCommandsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-deduplicate-engine-commands.command';
+import { FixSelectAllCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-fix-select-all-command-menu-items.command';
+import { MigrateAiAgentTextToJsonResponseFormatCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-migrate-ai-agent-text-to-json-response-format.command';
+import { UpdateEditLayoutCommandMenuItemLabelCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-update-edit-layout-command-menu-item-label.command';
+import { CoreEngineVersionService } from 'src/engine/core-engine-version/services/core-engine-version.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
@@ -89,10 +96,30 @@ export class UpgradeCommand extends UpgradeCommandRunner {
     protected readonly seedServerIdCommand: SeedServerIdCommand,
 
     // 1.20 Commands
-    protected readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
-    protected readonly backfillPageLayoutsCommand: BackfillPageLayoutsCommand,
-    protected readonly seedCliApplicationRegistrationCommand: SeedCliApplicationRegistrationCommand,
-    protected readonly migrateRichTextToTextCommand: MigrateRichTextToTextCommand,
+    private readonly identifyPermissionFlagMetadataCommand: IdentifyPermissionFlagMetadataCommand,
+    private readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    private readonly identifyObjectPermissionMetadataCommand: IdentifyObjectPermissionMetadataCommand,
+    private readonly makeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    private readonly identifyFieldPermissionMetadataCommand: IdentifyFieldPermissionMetadataCommand,
+    private readonly makeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    private readonly backfillNavigationMenuItemTypeCommand: BackfillNavigationMenuItemTypeCommand,
+    private readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
+    private readonly deleteOrphanNavigationMenuItemsCommand: DeleteOrphanNavigationMenuItemsCommand,
+    private readonly seedCliApplicationRegistrationCommand: SeedCliApplicationRegistrationCommand,
+    private readonly migrateRichTextToTextCommand: MigrateRichTextToTextCommand,
+    private readonly migrateMessagingInfrastructureToMetadataCommand: MigrateMessagingInfrastructureToMetadataCommand,
+    private readonly backfillSelectFieldOptionIdsCommand: BackfillSelectFieldOptionIdsCommand,
+    private readonly updateStandardIndexViewNamesCommand: UpdateStandardIndexViewNamesCommand,
+    private readonly makeWorkflowSearchableCommand: MakeWorkflowSearchableCommand,
+
+    // 1.21 Commands
+    private readonly addGlobalKeyValuePairUniqueIndexCommand: AddGlobalKeyValuePairUniqueIndexCommand,
+    private readonly backfillDatasourceToWorkspaceCommand: BackfillDatasourceToWorkspaceCommand,
+    private readonly backfillPageLayoutsAndFieldsWidgetViewFieldsCommand: BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
+    private readonly deduplicateEngineCommandsCommand: DeduplicateEngineCommandsCommand,
+    private readonly fixSelectAllCommandMenuItemsCommand: FixSelectAllCommandMenuItemsCommand,
+    private readonly migrateAiAgentTextToJsonResponseFormatCommand: MigrateAiAgentTextToJsonResponseFormatCommand,
+    private readonly updateEditLayoutCommandMenuItemLabelCommand: UpdateEditLayoutCommandMenuItemLabelCommand,
   ) {
     super(
       workspaceRepository,
@@ -116,35 +143,14 @@ export class UpgradeCommand extends UpgradeCommandRunner {
       this.fixMorphRelationFieldNamesCommand,
     ];
 
-    const commands_1180: VersionCommands = [
-      this.deleteOrphanFavoritesCommand,
-      this.migrateFavoritesToNavigationMenuItemsCommand,
-      this.migratePersonAvatarFilesCommand,
-      this.migrateAttachmentFilesCommand,
-      this.migrateActivityRichTextAttachmentFileIdsCommand,
-      this.migrateWorkspacePicturesCommand,
-      this.migrateWorkflowSendEmailAttachmentsCommand,
-      this.backfillFileSizeAndMimeTypeCommand,
-      this.backfillMessageChannelThrottleRetryAfterCommand,
-      this.backfillStandardViewsAndFieldMetadataCommand,
-    ];
-
-    const commands_1190: VersionCommands = [
-      this.fixRoleAndAgentUniversalIdentifiersCommand,
-      this.backfillSystemFieldsIsSystemCommand,
-      this.addMissingSystemFieldsToStandardObjectsCommand,
-      this.backfillMessageChannelMessageAssociationMessageFolderCommand,
-      this.backfillMissingStandardViewsCommand,
-      this.backfillNavigationMenuItemTypeCommand,
-      this.seedServerIdCommand,
-    ];
-
-    const commands_1200: VersionCommands = [
-      this.backfillNavigationMenuItemTypeCommand,
-      this.migrateRichTextToTextCommand,
-      this.backfillCommandMenuItemsCommand,
-      this.backfillPageLayoutsCommand,
-      this.seedCliApplicationRegistrationCommand,
+    const commands_1210: VersionCommands = [
+      this.addGlobalKeyValuePairUniqueIndexCommand,
+      this.backfillDatasourceToWorkspaceCommand,
+      this.backfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
+      this.deduplicateEngineCommandsCommand,
+      this.fixSelectAllCommandMenuItemsCommand,
+      this.migrateAiAgentTextToJsonResponseFormatCommand,
+      this.updateEditLayoutCommandMenuItemLabelCommand,
     ];
 
     this.allCommands = {
