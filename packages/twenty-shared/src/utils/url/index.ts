@@ -1,4 +1,6 @@
 export * from './absoluteUrlSchema';
+export * from './getSafeUrl';
+export * from './isSafeUrl';
 export * from './getAbsoluteUrlOrThrow';
 export * from './getUrlHostnameOrThrow';
 export * from './isValidHostname';

@@ -14,7 +14,7 @@ import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 import { useContext, useState } from 'react';
 import { styled } from '@linaria/react';
-import { isDefined } from 'twenty-shared/utils';
+import { getSafeUrl, isDefined } from 'twenty-shared/utils';
 
 import { FileIcon } from '@/file/components/FileIcon';
 import { useHasPermissionFlag } from '@/settings/roles/hooks/useHasPermissionFlag';
@@ -207,7 +207,7 @@ export const AttachmentRow = ({
             <StyledLinkContainer>
               <StyledLink
                 onClick={handleOpenDocument}
-                href={fileUrl}
+                href={getSafeUrl(fileUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
