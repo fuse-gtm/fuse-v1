@@ -21,6 +21,8 @@ const SignInBackgroundMockPage = lazy(() =>
 );
 import { useShowFullscreen } from '@/ui/layout/fullscreen/hooks/useShowFullscreen';
 import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
+import { WelcomeProTrialEffect } from '@/onboarding/components/WelcomeProTrialEffect';
+import { WelcomeProTrialModal } from '@/onboarding/components/WelcomeProTrialModal';
 import { NAVIGATION_DRAWER_CONSTRAINTS } from '@/ui/layout/resizable-panel/constants/NavigationDrawerConstraints';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { styled } from '@linaria/react';
@@ -118,11 +120,15 @@ export const DefaultLayout = () => {
                     </AnimatePresence>
                   </>
                 ) : (
-                  <StyledMainContainer>
-                    <AppErrorBoundary FallbackComponent={AppPageErrorFallback}>
-                      <Outlet />
-                    </AppErrorBoundary>
-                  </StyledMainContainer>
+                  <>
+                    <StyledMainContainer>
+                      <AppErrorBoundary FallbackComponent={AppPageErrorFallback}>
+                        <Outlet />
+                      </AppErrorBoundary>
+                    </StyledMainContainer>
+                    <WelcomeProTrialEffect />
+                    <WelcomeProTrialModal />
+                  </>
                 )}
               </PageDragDropProvider>
             </StyledPageContainer>
