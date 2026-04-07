@@ -26,6 +26,7 @@ const makeWidget = (
     pageLayoutTabId: tabId,
     title: id,
     type: WidgetType.FIELDS,
+    isOverridden: false,
     gridPosition: { column: 0, columnSpan: 1, row: 0, rowSpan: 1 },
     configuration: { __typename: 'FieldsConfiguration' as const },
     position: {
@@ -49,6 +50,7 @@ const makeTab = (
   position,
   pageLayoutId: '',
   widgets,
+  isOverridden: false,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   deletedAt: null,
