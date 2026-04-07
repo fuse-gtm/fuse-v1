@@ -237,6 +237,21 @@ export const failingCreateInputByFieldMetadataType: {
         richTextV2Field: 'not-a-rich-text',
       },
     },
+    {
+      input: {
+        richTextField: {
+          blocknote: 'invalid-json',
+        },
+      },
+    },
+    {
+      input: {
+        richTextField: {
+          blocknote:
+            '[{"id":"1","type":"paragraph","props":{},"content":[{"type":"text","text":"test"},"children":[]}]',
+        },
+      },
+    },
   ],
   [FieldMetadataType.POSITION]: [
     {
