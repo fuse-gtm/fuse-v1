@@ -5,6 +5,7 @@ import { getSettingsPath } from 'twenty-shared/utils';
 import { IconHelpCircle, IconSettings } from 'twenty-ui/display';
 
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
+import { useOpenSettingsMenu } from '@/navigation/hooks/useOpenSettings';
 import { getDocumentationUrl } from '@/support/utils/getDocumentationUrl';
 import { isNavigationDrawerExpandedState } from '@/ui/navigation/states/isNavigationDrawerExpanded';
 import { navigationDrawerExpandedMemorizedState } from '@/ui/navigation/states/navigationDrawerExpandedMemorizedState';
@@ -35,6 +36,8 @@ export const NavigationDrawerOtherSection = () => {
     navigationMemorizedUrlState,
   );
 
+  const { openSettingsMenu } = useOpenSettingsMenu();
+
   const { toggleNavigationSection } = useNavigationSection('Other');
   const isNavigationSectionOpen = useAtomFamilyStateValue(
     isNavigationSectionOpenFamilyState,
@@ -45,6 +48,7 @@ export const NavigationDrawerOtherSection = () => {
     setNavigationDrawerExpandedMemorized(isNavigationDrawerExpanded);
     setIsNavigationDrawerExpanded(true);
     setNavigationMemorizedUrl(location.pathname + location.search);
+    openSettingsMenu();
     navigate(getSettingsPath(SettingsPath.ProfilePage));
   };
 

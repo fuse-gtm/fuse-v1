@@ -1,6 +1,7 @@
 import { styled } from '@linaria/react';
 import { useContext } from 'react';
 
+import { currentMobileNavigationDrawerState } from '@/navigation/states/currentMobileNavigationDrawerState';
 import { isNavigationDrawerExpandedState } from '@/ui/navigation/states/isNavigationDrawerExpanded';
 import { navigationDrawerExpandedMemorizedState } from '@/ui/navigation/states/navigationDrawerExpandedMemorizedState';
 import { navigationMemorizedUrlState } from '@/ui/navigation/states/navigationMemorizedUrlState';
@@ -54,6 +55,9 @@ export const NavigationDrawerBackButton = ({
   const setIsNavigationDrawerExpanded = useSetAtomState(
     isNavigationDrawerExpandedState,
   );
+  const setCurrentMobileNavigationDrawer = useSetAtomState(
+    currentMobileNavigationDrawerState,
+  );
   const navigationDrawerExpandedMemorized = useAtomStateValue(
     navigationDrawerExpandedMemorizedState,
   );
@@ -71,9 +75,10 @@ export const NavigationDrawerBackButton = ({
       <UndecoratedLink
         to={navigationMemorizedUrl}
         replace
-        onClick={() =>
-          setIsNavigationDrawerExpanded(navigationDrawerExpandedMemorized)
-        }
+        onClick={() => {
+          setIsNavigationDrawerExpanded(navigationDrawerExpandedMemorized);
+          setCurrentMobileNavigationDrawer('main');
+        }}
       >
         <StyledIconAndButtonContainer>
           <IconX
