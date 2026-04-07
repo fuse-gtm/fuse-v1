@@ -18,11 +18,6 @@ type SecureHttpClientConfig = CreateAxiosDefaults & {
   shouldResetTimeout?: boolean;
 };
 
-type SecureHttpClientConfig = CreateAxiosDefaults & {
-  retries?: number;
-  shouldResetTimeout?: boolean;
-};
-
 @Injectable()
 export class SecureHttpClientService {
   private readonly logger = new Logger(SecureHttpClientService.name);
