@@ -2,14 +2,13 @@ import { styled } from '@linaria/react';
 
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
-import { getDateFnsLocale } from '@/ui/field/display/utils/getDateFnsLocale.util';
+import { getDateFnsLocale } from '@/ui/field/display/utils/getDateFnsLocale';
 import { Select } from '@/ui/input/components/Select';
 
-import { useRefreshObjectMetadataItems } from '@/object-metadata/hooks/useRefreshObjectMetadataItems';
+import { useInvalidateMetadataStore } from '@/metadata-store/hooks/useInvalidateMetadataStore';
 import { useStore } from 'jotai';
-import { useRefreshAllCoreViews } from '@/views/hooks/useRefreshAllCoreViews';
 import { useLingui } from '@lingui/react/macro';
 import { enUS } from 'date-fns/locale';
 import { APP_LOCALES } from 'twenty-shared/translations';
@@ -33,10 +32,7 @@ export const LocalePicker = () => {
   );
   const { updateOneRecord } = useUpdateOneRecord();
 
-  const { refreshObjectMetadataItems } =
-    useRefreshObjectMetadataItems('network-only');
-
-  const { refreshAllCoreViews } = useRefreshAllCoreViews('network-only');
+  const { invalidateMetadataStore } = useInvalidateMetadataStore();
 
   const updateWorkspaceMember = async (changedFields: any) => {
     if (!currentWorkspaceMember?.id) {
@@ -74,11 +70,10 @@ export const LocalePicker = () => {
     try {
       localStorage.setItem('locale', value);
     } catch (error) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.log('Failed to save locale to localStorage:', error);
     }
-    await refreshObjectMetadataItems();
-    await refreshAllCoreViews();
+    invalidateMetadataStore();
   };
 
   const unsortedLocaleOptions: Array<{
