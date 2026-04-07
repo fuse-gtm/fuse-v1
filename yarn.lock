@@ -37033,6 +37033,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expr-eval-fork@npm:3.0.3":
+  version: 3.0.3
+  resolution: "expr-eval-fork@npm:3.0.3"
+  checksum: 10c0/26655b5e059d404de67ab374008ee03ff94c4b4af13904714404fca7fdfed4a27498032e48e75b5bbe5eac26cbcd360cd999eb9d5bbceb542824d9c588ab44ab
+  languageName: node
+  linkType: hard
+
 "express-session@npm:^1.18.2":
   version: 1.18.2
   resolution: "express-session@npm:1.18.2"
@@ -39371,29 +39378,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gunzip-maybe@npm:1.4.2":
-  version: 1.4.2
-  resolution: "gunzip-maybe@npm:1.4.2"
-  dependencies:
-    browserify-zlib: "npm:^0.1.4"
-    is-deflate: "npm:^1.0.0"
-    is-gzip: "npm:^1.0.0"
-    peek-stream: "npm:^1.1.0"
-    pumpify: "npm:^1.3.3"
-    through2: "npm:^2.0.3"
-  bin:
-    gunzip-maybe: bin.js
-  checksum: 10c0/42798a8061759885c2084e1804e51313d14f2dc9cf6c137e222953ec802f914e592d6f9dbf6ad67f4e78eb036e86db017d9c7c93bb23e90cd5ae09326296ed77
-  languageName: node
-  linkType: hard
-
-"handle-thing@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "handle-thing@npm:2.0.1"
-  checksum: 10c0/7ae34ba286a3434f1993ebd1cc9c9e6b6d8ea672182db28b1afc0a7119229552fa7031e3e5f3cd32a76430ece4e94b7da6f12af2eb39d6239a7693e4bd63a998
-  languageName: node
-  linkType: hard
-
 "handlebars@npm:*, handlebars@npm:^4.7.7, handlebars@npm:^4.7.9":
   version: 4.7.9
   resolution: "handlebars@npm:4.7.9"
@@ -39409,24 +39393,6 @@ __metadata:
   bin:
     handlebars: bin/handlebars
   checksum: 10c0/22f8105a7e68e81aff2662bb434edf05f757d21d850731d71cec886d69c10cd33d3c43e34b2892968ec62de8241611851d3d0674c8ef324ea3e01dc66262faa9
-  languageName: node
-  linkType: hard
-
-"handlebars@npm:4.7.8":
-  version: 4.7.8
-  resolution: "handlebars@npm:4.7.8"
-  dependencies:
-    minimist: "npm:^1.2.5"
-    neo-async: "npm:^2.6.2"
-    source-map: "npm:^0.6.1"
-    uglify-js: "npm:^3.1.4"
-    wordwrap: "npm:^1.0.0"
-  dependenciesMeta:
-    uglify-js:
-      optional: true
-  bin:
-    handlebars: bin/handlebars
-  checksum: 10c0/7aff423ea38a14bb379316f3857fe0df3c5d66119270944247f155ba1f08e07a92b340c58edaa00cfe985c21508870ee5183e0634dcb53dd405f35c93ef7f10d
   languageName: node
   linkType: hard
 
@@ -54549,13 +54515,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sax@npm:^1.4.1":
-  version: 1.5.0
-  resolution: "sax@npm:1.5.0"
-  checksum: 10c0/bc3b60a7bfecd40b18256596e96b32df2488339ae1e00a77f842b568f0831228a16c3bd357ec500241ec0b9dc7a475a1286427795c4a8c50bb8e8878f3435dd8
-  languageName: node
-  linkType: hard
-
 "sax@npm:^1.5.0":
   version: 1.6.0
   resolution: "sax@npm:1.6.0"
@@ -56953,7 +56912,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svgo@npm:^2.8.0":
+"svgo@npm:^2.7.0, svgo@npm:^2.8.0":
   version: 2.8.2
   resolution: "svgo@npm:2.8.2"
   dependencies:
@@ -57170,20 +57129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:*, tar@npm:^7.4.0, tar@npm:^7.4.3, tar@npm:^7.5.9":
-  version: 7.5.13
-  resolution: "tar@npm:7.5.13"
-  dependencies:
-    "@isaacs/fs-minipass": "npm:^4.0.0"
-    chownr: "npm:^3.0.0"
-    minipass: "npm:^7.1.2"
-    minizlib: "npm:^3.1.0"
-    yallist: "npm:^5.0.0"
-  checksum: 10c0/5c65b8084799bde7a791593a1c1a45d3d6ee98182e3700b24c247b7b8f8654df4191642abbdb07ff25043d45dcff35620827c3997b88ae6c12040f64bed5076b
-  languageName: node
-  linkType: hard
-
-"tar@npm:^6.0.2, tar@npm:^6.0.5, tar@npm:^6.1.0, tar@npm:^6.1.11, tar@npm:^6.1.15, tar@npm:^6.1.2, tar@npm:^6.2.1":
+"tar@npm:^6.0.2, tar@npm:^6.1.0, tar@npm:^6.1.11, tar@npm:^6.1.15, tar@npm:^6.1.2, tar@npm:^6.2.1":
   version: 6.2.1
   resolution: "tar@npm:6.2.1"
   dependencies:
@@ -58459,6 +58405,7 @@ __metadata:
     "@sentry/node": "npm:^10.27.0"
     "@sentry/profiling-node": "npm:^10.27.0"
     "@sniptt/guards": "npm:0.2.0"
+    "@types/archiver": "npm:^6.0.0"
     "@types/babel__preset-env": "npm:7.10.0"
     "@types/bytes": "npm:^3.1.1"
     "@types/dompurify": "npm:^3.0.5"
@@ -58613,6 +58560,7 @@ __metadata:
     "@types/handlebars": "npm:^4.1.0"
     babel-plugin-module-resolver: "npm:^5.0.2"
     class-validator: "npm:^0.14.0"
+    expr-eval-fork: "npm:3.0.3"
     glob: "npm:^11.1.0"
     handlebars: "npm:^4.7.9"
     libphonenumber-js: "npm:^1.10.26"
@@ -62046,16 +61994,6 @@ __metadata:
     buffer-crc32: "npm:~0.2.3"
     fd-slicer: "npm:~1.1.0"
   checksum: 10c0/f265002af7541b9ec3589a27f5fb8f11cf348b53cc15e2751272e3c062cd73f3e715bc72d43257de71bbaecae446c3f1b14af7559e8ab0261625375541816422
-  languageName: node
-  linkType: hard
-
-"yauzl@npm:^3.1.2":
-  version: 3.2.1
-  resolution: "yauzl@npm:3.2.1"
-  dependencies:
-    buffer-crc32: "npm:~0.2.3"
-    pend: "npm:~1.2.0"
-  checksum: 10c0/fe1997a8ee53c42556789ca61a28278e9ea2ca8f68cae1ae9904edaf3b5fbbc5d5537a3fb8623ac82c2bd0bd9d67233ce593f1acaadfb8718489d9f06d1bb3d0
   languageName: node
   linkType: hard
 
