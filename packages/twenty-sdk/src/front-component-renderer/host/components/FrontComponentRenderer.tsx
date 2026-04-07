@@ -1,9 +1,11 @@
-import { FrontComponentErrorEffect } from '@/front-component-renderer/remote/components/FrontComponentErrorEffect';
-import { FrontComponentHostCommunicationApiEffect } from '@/front-component-renderer/remote/components/FrontComponentHostCommunicationApiEffect';
-import { FrontComponentUpdateContextEffect } from '@/front-component-renderer/remote/components/FrontComponentUpdateContextEffect';
-import { type FrontComponentHostCommunicationApi } from '@/front-component-renderer/types/FrontComponentHostCommunicationApi';
-import { type WorkerExports } from '@/front-component-renderer/types/WorkerExports';
-import { type FrontComponentExecutionContext } from '@/sdk/front-component-api';
+import { FrontComponentErrorEffect } from '@/remote/components/FrontComponentErrorEffect';
+import { FrontComponentInitializeHostCommunicationApiEffect } from '@/remote/components/FrontComponentInitializeHostCommunicationApiEffect';
+import { FrontComponentUpdateContextEffect } from '@/remote/components/FrontComponentUpdateContextEffect';
+import { FrontComponentUpdateHostCommunicationApiEffect } from '@/remote/components/FrontComponentUpdateHostCommunicationApiEffect';
+import { type FrontComponentHostCommunicationApi } from '@/types/FrontComponentHostCommunicationApi';
+import { type SdkClientUrls } from '@/types/HostToWorkerRenderContext';
+import { type WorkerExports } from '@/types/WorkerExports';
+import { type FrontComponentExecutionContext } from 'twenty-sdk';
 import { type ThreadWebWorker } from '@quilted/threads';
 import {
   type RemoteReceiver,
@@ -12,7 +14,7 @@ import {
 import { useMemo, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
-import { type ThemeType, ThemeContextProvider } from 'twenty-ui/theme';
+import { ThemeProvider } from 'twenty-ui/theme-constants';
 import { FrontComponentWorkerEffect } from '../../remote/components/FrontComponentWorkerEffect';
 import { componentRegistry } from '../generated/host-component-registry';
 
@@ -20,20 +22,22 @@ type FrontComponentContentProps = {
   componentUrl: string;
   applicationAccessToken?: string;
   apiUrl?: string;
+  sdkClientUrls?: SdkClientUrls;
   executionContext: FrontComponentExecutionContext;
   frontComponentHostCommunicationApi: FrontComponentHostCommunicationApi;
   onError: (error?: Error) => void;
-  theme: ThemeType;
+  colorScheme: 'light' | 'dark';
 };
 
 export const FrontComponentRenderer = ({
   componentUrl,
   applicationAccessToken,
   apiUrl,
+  sdkClientUrls,
   executionContext,
   frontComponentHostCommunicationApi,
   onError,
-  theme,
+  colorScheme,
 }: FrontComponentContentProps) => {
   const [receiver, setReceiver] = useState<RemoteReceiver | null>(null);
   const [thread, setThread] = useState<ThreadWebWorker<
@@ -50,7 +54,8 @@ export const FrontComponentRenderer = ({
         componentUrl={componentUrl}
         applicationAccessToken={applicationAccessToken}
         apiUrl={apiUrl}
-        frontComponentHostCommunicationApi={frontComponentHostCommunicationApi}
+        sdkClientUrls={sdkClientUrls}
+        frontComponentId={executionContext.frontComponentId}
         setReceiver={setReceiver}
         setThread={setThread}
         setError={setError}
@@ -58,12 +63,13 @@ export const FrontComponentRenderer = ({
     );
   }, [
     componentUrl,
-    frontComponentHostCommunicationApi,
     setError,
     setReceiver,
     setThread,
     applicationAccessToken,
     apiUrl,
+    sdkClientUrls,
+    executionContext.frontComponentId,
   ]);
 
   return (
@@ -95,7 +101,13 @@ export const FrontComponentRenderer = ({
 
       {isDefined(thread) && (
         <>
-          <FrontComponentHostCommunicationApiEffect thread={thread} />
+          <FrontComponentUpdateHostCommunicationApiEffect
+            thread={thread}
+            frontComponentHostCommunicationApi={
+              frontComponentHostCommunicationApi
+            }
+          />
+          <FrontComponentInitializeHostCommunicationApiEffect thread={thread} />
           <FrontComponentUpdateContextEffect
             thread={thread}
             executionContext={executionContext}
@@ -107,12 +119,12 @@ export const FrontComponentRenderer = ({
       )}
 
       {isDefined(receiver) && isExecutionContextInitialized && (
-        <ThemeContextProvider theme={theme}>
+        <ThemeProvider colorScheme={colorScheme}>
           <RemoteRootRenderer
             receiver={receiver}
             components={componentRegistry}
           />
-        </ThemeContextProvider>
+        </ThemeProvider>
       )}
     </>
   );
