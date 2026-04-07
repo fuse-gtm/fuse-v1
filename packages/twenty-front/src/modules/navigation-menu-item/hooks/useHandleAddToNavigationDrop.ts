@@ -21,6 +21,7 @@ import { useAddObjectToNavigationMenuDraft } from '@/navigation-menu-item/edit/o
 import { useAddRecordToNavigationMenuDraft } from '@/navigation-menu-item/edit/record/hooks/useAddRecordToNavigationMenuDraft';
 import { useAddViewToNavigationMenuDraft } from '@/navigation-menu-item/edit/view/hooks/useAddViewToNavigationMenuDraft';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
+import { getObjectColorWithFallback } from '@/object-metadata/utils/getObjectColorWithFallback';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
@@ -129,10 +130,9 @@ export const useHandleAddToNavigationDrop = () => {
           return;
         }
         case NavigationMenuItemType.OBJECT: {
-          const objectMetadataIdsInWorkspace = getObjectMetadataIdsInDraft(
-            currentDraft,
-            views,
-          );
+          const objectMetadataIdsInWorkspace =
+            getObjectMetadataIdsInDraft(currentDraft);
+
           if (objectMetadataIdsInWorkspace.has(payload.objectMetadataId)) {
             return;
           }
