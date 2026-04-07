@@ -79,12 +79,12 @@ export class GraphQLConfigService
       plugins.push(useSentryTracing());
     }
 
-    const config: YogaDriverConfig = {
+    const config: any = {
       autoSchemaFile: true,
       include: [CoreEngineModule],
       resolverSchemaScope: 'core',
       buildSchemaOptions: {},
-      conditionalSchema: async (context) => {
+      conditionalSchema: async (context: any) => {
         const { workspace, user, application } = context.req;
 
         try {

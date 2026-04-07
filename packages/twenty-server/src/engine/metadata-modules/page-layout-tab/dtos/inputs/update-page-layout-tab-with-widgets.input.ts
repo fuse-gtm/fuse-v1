@@ -1,10 +1,12 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';
+import { PageLayoutTabLayoutMode } from 'twenty-shared/types';
 import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
   ValidateNested,
@@ -28,6 +30,10 @@ export class UpdatePageLayoutTabWithWidgetsInput {
   @IsNumber()
   @IsNotEmpty()
   position: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  layoutMode?: PageLayoutTabLayoutMode;
 
   @Field(() => [UpdatePageLayoutWidgetWithIdInput])
   @IsArray()

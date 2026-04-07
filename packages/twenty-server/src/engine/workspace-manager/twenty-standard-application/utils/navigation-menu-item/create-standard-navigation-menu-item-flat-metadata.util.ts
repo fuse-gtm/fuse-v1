@@ -1,3 +1,4 @@
+import { NavigationMenuItemType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
@@ -54,6 +55,7 @@ export const createStandardNavigationMenuItemFlatMetadata = ({
   return {
     id: navigationMenuItemId,
     universalIdentifier: navigationMenuItemDefinition.universalIdentifier,
+    type: NavigationMenuItemType.VIEW,
     applicationId: twentyStandardApplicationId,
     applicationUniversalIdentifier:
       TWENTY_STANDARD_APPLICATION.universalIdentifier,

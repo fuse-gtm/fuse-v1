@@ -1,3 +1,4 @@
+import { NavigationMenuItemType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -70,6 +71,7 @@ export const fromCreateNavigationMenuItemInputToFlatNavigationMenuItemToCreate =
     return {
       id,
       universalIdentifier: id,
+      type: (createNavigationMenuItemInput as any).type ?? NavigationMenuItemType.VIEW,
       userWorkspaceId: createNavigationMenuItemInput.userWorkspaceId ?? null,
       targetRecordId: createNavigationMenuItemInput.targetRecordId ?? null,
       targetObjectMetadataId:

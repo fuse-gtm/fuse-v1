@@ -261,7 +261,7 @@ describe('WorkspaceEntityManager', () => {
           softDelete: jest.fn(),
         })),
       } as any,
-    } as WorkspaceInternalContext;
+    } as unknown as WorkspaceInternalContext;
 
     mockDataSource = {
       featureFlagMap: {

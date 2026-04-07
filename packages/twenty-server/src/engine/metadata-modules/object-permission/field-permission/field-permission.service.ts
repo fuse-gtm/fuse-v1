@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
-import { ApplicationService } from 'src/engine/core-modules/application/application.service';
+import { ApplicationService } from 'src/engine/core-modules/application/services/application.service';
 import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 import { RelationType } from 'src/engine/metadata-modules/field-metadata/interfaces/relation-type.interface';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
@@ -205,8 +205,8 @@ export class FieldPermissionService {
               current.objectMetadataUniversalIdentifier,
             fieldMetadataUniversalIdentifier:
               current.fieldMetadataUniversalIdentifier,
-            canReadFieldValue: effectiveCanRead,
-            canUpdateFieldValue: effectiveCanUpdate,
+            canReadFieldValue: effectiveCanRead ?? current.canReadFieldValue,
+            canUpdateFieldValue: effectiveCanUpdate ?? current.canUpdateFieldValue,
             createdAt: current.createdAt,
             updatedAt: now,
           });

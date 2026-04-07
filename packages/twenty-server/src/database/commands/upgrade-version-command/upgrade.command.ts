@@ -29,23 +29,37 @@ import { MigrateWorkflowSendEmailAttachmentsCommand } from 'src/database/command
 import { MigrateWorkspacePicturesCommand } from 'src/database/commands/upgrade-version-command/1-18/1-18-migrate-workspace-pictures.command';
 import { AddMissingSystemFieldsToStandardObjectsCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-add-missing-system-fields-to-standard-objects.command';
 import { BackfillMessageChannelMessageAssociationMessageFolderCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-message-channel-message-association-message-folder.command';
-import { BackfillMissingStandardViewsCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-missing-standard-views.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { BackfillMissingStandardViewsCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-missing-standard-views.command';
 import { BackfillNavigationMenuItemTypeCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-navigation-menu-item-type.command';
 import { BackfillSystemFieldsIsSystemCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-system-fields-is-system.command';
 import { FixInvalidStandardUniversalIdentifiersCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-fix-invalid-standard-universal-identifiers.command';
 import { SeedServerIdCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-seed-server-id.command';
-import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
-import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
-import { SeedCliApplicationRegistrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-seed-cli-application-registration.command';
-import { UpdateStandardIndexViewNamesCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-update-standard-index-view-names.command';
-import { AddGlobalKeyValuePairUniqueIndexCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-add-global-key-value-pair-unique-index.command';
-import { BackfillDatasourceToWorkspaceCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-datasource-to-workspace.command';
-import { BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-page-layouts-and-fields-widget-view-fields.command';
-import { DeduplicateEngineCommandsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-deduplicate-engine-commands.command';
-import { FixSelectAllCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-fix-select-all-command-menu-items.command';
-import { MigrateAiAgentTextToJsonResponseFormatCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-migrate-ai-agent-text-to-json-response-format.command';
-import { UpdateEditLayoutCommandMenuItemLabelCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-update-edit-layout-command-menu-item-label.command';
-import { CoreEngineVersionService } from 'src/engine/core-engine-version/services/core-engine-version.service';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { SeedCliApplicationRegistrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-seed-cli-application-registration.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { UpdateStandardIndexViewNamesCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-update-standard-index-view-names.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { AddGlobalKeyValuePairUniqueIndexCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-add-global-key-value-pair-unique-index.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { BackfillDatasourceToWorkspaceCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-datasource-to-workspace.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-backfill-page-layouts-and-fields-widget-view-fields.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { DeduplicateEngineCommandsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-deduplicate-engine-commands.command';
+// TODO: upstream cherry-pick stub - module not yet in fork (incompatible runner type)
+// import { FixSelectAllCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-fix-select-all-command-menu-items.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { MigrateAiAgentTextToJsonResponseFormatCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-migrate-ai-agent-text-to-json-response-format.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { UpdateEditLayoutCommandMenuItemLabelCommand } from 'src/database/commands/upgrade-version-command/1-21/1-21-update-edit-layout-command-menu-item-label.command';
+// TODO: upstream cherry-pick stub - module not yet in fork
+// import { CoreEngineVersionService } from 'src/engine/core-engine-version/services/core-engine-version.service';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
@@ -90,36 +104,59 @@ export class UpgradeCommand extends UpgradeCommandRunner {
     protected readonly backfillSystemFieldsIsSystemCommand: BackfillSystemFieldsIsSystemCommand,
     protected readonly addMissingSystemFieldsToStandardObjectsCommand: AddMissingSystemFieldsToStandardObjectsCommand,
     protected readonly backfillMessageChannelMessageAssociationMessageFolderCommand: BackfillMessageChannelMessageAssociationMessageFolderCommand,
-    protected readonly backfillMissingStandardViewsCommand: BackfillMissingStandardViewsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // protected readonly backfillMissingStandardViewsCommand: BackfillMissingStandardViewsCommand,
     protected readonly backfillNavigationMenuItemTypeCommand: BackfillNavigationMenuItemTypeCommand,
     protected readonly fixRoleAndAgentUniversalIdentifiersCommand: FixInvalidStandardUniversalIdentifiersCommand,
     protected readonly seedServerIdCommand: SeedServerIdCommand,
 
     // 1.20 Commands
-    private readonly identifyPermissionFlagMetadataCommand: IdentifyPermissionFlagMetadataCommand,
-    private readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
-    private readonly identifyObjectPermissionMetadataCommand: IdentifyObjectPermissionMetadataCommand,
-    private readonly makeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
-    private readonly identifyFieldPermissionMetadataCommand: IdentifyFieldPermissionMetadataCommand,
-    private readonly makeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
-    private readonly backfillNavigationMenuItemTypeCommand: BackfillNavigationMenuItemTypeCommand,
-    private readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
-    private readonly deleteOrphanNavigationMenuItemsCommand: DeleteOrphanNavigationMenuItemsCommand,
-    private readonly seedCliApplicationRegistrationCommand: SeedCliApplicationRegistrationCommand,
-    private readonly migrateRichTextToTextCommand: MigrateRichTextToTextCommand,
-    private readonly migrateMessagingInfrastructureToMetadataCommand: MigrateMessagingInfrastructureToMetadataCommand,
-    private readonly backfillSelectFieldOptionIdsCommand: BackfillSelectFieldOptionIdsCommand,
-    private readonly updateStandardIndexViewNamesCommand: UpdateStandardIndexViewNamesCommand,
-    private readonly makeWorkflowSearchableCommand: MakeWorkflowSearchableCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly identifyPermissionFlagMetadataCommand: IdentifyPermissionFlagMetadataCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly identifyObjectPermissionMetadataCommand: IdentifyObjectPermissionMetadataCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly makeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly identifyFieldPermissionMetadataCommand: IdentifyFieldPermissionMetadataCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly makeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakeFieldPermissionUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork (duplicate removed)
+    // private readonly backfillNavigationMenuItemTypeCommand: BackfillNavigationMenuItemTypeCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly deleteOrphanNavigationMenuItemsCommand: DeleteOrphanNavigationMenuItemsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly seedCliApplicationRegistrationCommand: SeedCliApplicationRegistrationCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly migrateRichTextToTextCommand: MigrateRichTextToTextCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly migrateMessagingInfrastructureToMetadataCommand: MigrateMessagingInfrastructureToMetadataCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly backfillSelectFieldOptionIdsCommand: BackfillSelectFieldOptionIdsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly updateStandardIndexViewNamesCommand: UpdateStandardIndexViewNamesCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly makeWorkflowSearchableCommand: MakeWorkflowSearchableCommand,
 
     // 1.21 Commands
-    private readonly addGlobalKeyValuePairUniqueIndexCommand: AddGlobalKeyValuePairUniqueIndexCommand,
-    private readonly backfillDatasourceToWorkspaceCommand: BackfillDatasourceToWorkspaceCommand,
-    private readonly backfillPageLayoutsAndFieldsWidgetViewFieldsCommand: BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
-    private readonly deduplicateEngineCommandsCommand: DeduplicateEngineCommandsCommand,
-    private readonly fixSelectAllCommandMenuItemsCommand: FixSelectAllCommandMenuItemsCommand,
-    private readonly migrateAiAgentTextToJsonResponseFormatCommand: MigrateAiAgentTextToJsonResponseFormatCommand,
-    private readonly updateEditLayoutCommandMenuItemLabelCommand: UpdateEditLayoutCommandMenuItemLabelCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly addGlobalKeyValuePairUniqueIndexCommand: AddGlobalKeyValuePairUniqueIndexCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly backfillDatasourceToWorkspaceCommand: BackfillDatasourceToWorkspaceCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly backfillPageLayoutsAndFieldsWidgetViewFieldsCommand: BackfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly deduplicateEngineCommandsCommand: DeduplicateEngineCommandsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork (incompatible runner type)
+    // private readonly fixSelectAllCommandMenuItemsCommand: FixSelectAllCommandMenuItemsCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly migrateAiAgentTextToJsonResponseFormatCommand: MigrateAiAgentTextToJsonResponseFormatCommand,
+    // TODO: upstream cherry-pick stub - module not yet in fork
+    // private readonly updateEditLayoutCommandMenuItemLabelCommand: UpdateEditLayoutCommandMenuItemLabelCommand,
   ) {
     super(
       workspaceRepository,
@@ -143,14 +180,48 @@ export class UpgradeCommand extends UpgradeCommandRunner {
       this.fixMorphRelationFieldNamesCommand,
     ];
 
+    const commands_1180: VersionCommands = [
+      this.deleteOrphanFavoritesCommand,
+      this.migrateFavoritesToNavigationMenuItemsCommand,
+      this.migratePersonAvatarFilesCommand,
+      this.backfillFileSizeAndMimeTypeCommand,
+      this.migrateAttachmentFilesCommand,
+      this.migrateActivityRichTextAttachmentFileIdsCommand,
+      this.backfillMessageChannelThrottleRetryAfterCommand,
+      this.backfillStandardViewsAndFieldMetadataCommand,
+      this.migrateWorkspacePicturesCommand,
+      this.migrateWorkflowSendEmailAttachmentsCommand,
+    ];
+
+    const commands_1190: VersionCommands = [
+      this.backfillSystemFieldsIsSystemCommand,
+      this.addMissingSystemFieldsToStandardObjectsCommand,
+      this.backfillMessageChannelMessageAssociationMessageFolderCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.backfillMissingStandardViewsCommand,
+      this.backfillNavigationMenuItemTypeCommand,
+      this.fixRoleAndAgentUniversalIdentifiersCommand,
+      this.seedServerIdCommand,
+    ];
+
+    // TODO: upstream cherry-pick stub - 1.20 commands not yet in fork
+    const commands_1200: VersionCommands = [];
+
     const commands_1210: VersionCommands = [
-      this.addGlobalKeyValuePairUniqueIndexCommand,
-      this.backfillDatasourceToWorkspaceCommand,
-      this.backfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
-      this.deduplicateEngineCommandsCommand,
-      this.fixSelectAllCommandMenuItemsCommand,
-      this.migrateAiAgentTextToJsonResponseFormatCommand,
-      this.updateEditLayoutCommandMenuItemLabelCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.addGlobalKeyValuePairUniqueIndexCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.backfillDatasourceToWorkspaceCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.backfillPageLayoutsAndFieldsWidgetViewFieldsCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.deduplicateEngineCommandsCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork (incompatible runner type)
+      // this.fixSelectAllCommandMenuItemsCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.migrateAiAgentTextToJsonResponseFormatCommand,
+      // TODO: upstream cherry-pick stub - module not yet in fork
+      // this.updateEditLayoutCommandMenuItemLabelCommand,
     ];
 
     this.allCommands = {
@@ -159,6 +230,7 @@ export class UpgradeCommand extends UpgradeCommandRunner {
       '1.18.0': commands_1180,
       '1.19.0': commands_1190,
       '1.20.0': commands_1200,
+      '1.21.0': commands_1210,
     };
   }
 

@@ -63,6 +63,7 @@ export type { ExcludeFunctions } from './ExcludeFunctions';
 export type { ExtractPropertiesThatEndsWithId } from './ExtractPropertiesThatEndsWithId';
 export type { ExtractPropertiesThatEndsWithIds } from './ExtractPropertiesThatEndsWithIds';
 export type { ExtractSerializedRelationProperties } from './ExtractSerializedRelationProperties.type';
+export { FeatureFlagKey } from './FeatureFlagKey';
 export type {
   FieldMetadataDefaultValueFunctionNames,
   FieldMetadataDefaultValueUuidFunction,
@@ -124,6 +125,7 @@ export { MessageParticipantRole } from './MessageParticipantRole';
 export type { MetadataGqlOperationSignature } from './MetadataGqlOperationSignature';
 export type { ModifiedProperties } from './ModifiedProperties';
 export type { NavigateOptions } from './NavigateOptions';
+export { NavigationMenuItemType } from './NavigationMenuItemType';
 export type { NonNullableRequired } from './NonNullableRequired';
 export type { Nullable } from './Nullable';
 export type { NullablePartial } from './NullablePartial';

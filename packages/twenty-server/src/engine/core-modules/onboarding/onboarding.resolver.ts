@@ -39,7 +39,7 @@ export class OnboardingResolver {
   @Mutation(() => OnboardingStepSuccessDTO)
   @UseGuards(NoPermissionGuard)
   async skipPartnerProfileOnboardingStep(
-    @AuthUser() user: UserEntity,
+    @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<OnboardingStepSuccessDTO> {
     await this.onboardingService.setOnboardingPartnerProfilePending({

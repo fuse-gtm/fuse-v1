@@ -10,8 +10,11 @@ import { ApplicationEntity } from 'src/engine/core-modules/application/applicati
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
 import { FileEntity } from 'src/engine/core-modules/file/entities/file.entity';
 import { type FileResponse } from 'src/engine/core-modules/file/types/file-response.type';
-import { getContentDisposition } from 'src/engine/core-modules/file/utils/get-content-disposition.utils';
 import { removeFileFolderFromFileEntityPath } from 'src/engine/core-modules/file/utils/remove-file-folder-from-file-entity-path.utils';
+import {
+  FileTokenJwtPayloadLegacy,
+  JwtTokenTypeEnum,
+} from 'src/engine/core-modules/auth/types/auth-context.type';
 import { JwtWrapperService } from 'src/engine/core-modules/jwt/services/jwt-wrapper.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { streamToBuffer } from 'src/utils/stream-to-buffer';
@@ -132,19 +135,7 @@ export class FileService {
       workspaceId: params.workspaceId,
     };
 
-    const presignedUrl = await this.fileStorageService.getPresignedUrl({
-      ...resourceIdentifier,
-      expiresInSeconds: this.twentyConfigService.get(
-        'STORAGE_S3_PRESIGNED_URL_EXPIRES_IN',
-      ),
-      responseContentType: mimeType,
-      responseContentDisposition: getContentDisposition(mimeType),
-    });
-
-    if (presignedUrl) {
-      return { type: 'redirect', presignedUrl };
-    }
-
+    // TODO: upstream cherry-pick stub — presigned URL branch removed (fork lacks S3 presigned URL support)
     const stream = await this.fileStorageService.readFile(resourceIdentifier);
 
     return { type: 'stream', stream, mimeType };
@@ -187,6 +178,75 @@ export class FileService {
       buffer,
       mimeType: file.mimeType ?? 'application/octet-stream',
     };
+  }
+
+  /** @deprecated Legacy path-based file stream — upstream cherry-pick stub */
+  async getFileStream(
+    rawFolder: string,
+    filename: string,
+    workspaceId: string,
+  ): Promise<Readable> {
+    const filePath = `workspace-${workspaceId}/${rawFolder}/${filename}`;
+
+    return this.fileStorageService.readFileLegacy({ filePath });
+  }
+
+  /** @deprecated Legacy JWT token for file path — upstream cherry-pick stub */
+  signFileUrl({
+    url,
+    workspaceId,
+  }: {
+    url: string;
+    workspaceId: string;
+  }): string {
+    const filename = url.split('/').pop() ?? url;
+    const fileTokenExpiresIn = this.twentyConfigService.get(
+      'FILE_TOKEN_EXPIRES_IN',
+    );
+    const payload: FileTokenJwtPayloadLegacy = {
+      sub: workspaceId,
+      type: JwtTokenTypeEnum.FILE,
+      workspaceId,
+      filename,
+    };
+    const secret = this.jwtWrapperService.generateAppSecret(
+      payload.type,
+      workspaceId,
+    );
+    const token = this.jwtWrapperService.sign(payload, {
+      secret,
+      expiresIn: fileTokenExpiresIn,
+    });
+
+    return `${url}?token=${token}`;
+  }
+
+  /** @deprecated Legacy JWT token encoding for file uploads — upstream cherry-pick stub */
+  encodeFileToken({
+    filename,
+    workspaceId,
+  }: {
+    filename: string;
+    workspaceId: string;
+  }): string {
+    const fileTokenExpiresIn = this.twentyConfigService.get(
+      'FILE_TOKEN_EXPIRES_IN',
+    );
+    const payload: FileTokenJwtPayloadLegacy = {
+      sub: workspaceId,
+      type: JwtTokenTypeEnum.FILE,
+      workspaceId,
+      filename,
+    };
+    const secret = this.jwtWrapperService.generateAppSecret(
+      payload.type,
+      workspaceId,
+    );
+
+    return this.jwtWrapperService.sign(payload, {
+      secret,
+      expiresIn: fileTokenExpiresIn,
+    });
   }
 
   /** @deprecated Use FileStorageService.deleteByFileId instead */

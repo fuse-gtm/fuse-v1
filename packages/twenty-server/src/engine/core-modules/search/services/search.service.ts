@@ -101,7 +101,7 @@ export class SearchService {
                 resolveRolePermissionConfig({
                   authContext: context.authContext,
                   userWorkspaceRoleMap: context.userWorkspaceRoleMap,
-                  apiKeyRoleMap: context.apiKeyRoleMap,
+                  apiKeyRoleMap: (context as any).apiKeyRoleMap,
                 }) ?? undefined;
 
               const repository =

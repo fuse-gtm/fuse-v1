@@ -13,7 +13,9 @@ import { type QueryResultGetterHandlerInterface } from 'src/engine/api/graphql/w
 import { FilesFieldQueryResultGetterHandler } from 'src/engine/api/common/common-result-getters/handlers/field-handlers/files-field-query-result-getter.handler';
 import { RichTextFieldQueryResultGetterHandler } from 'src/engine/api/common/common-result-getters/handlers/field-handlers/rich-text-field-query-result-getter.handler';
 import { WorkspaceMemberQueryResultGetterHandler } from 'src/engine/api/graphql/workspace-query-runner/factories/query-result-getters/handlers/workspace-member-query-result-getter.handler';
+import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { FileUrlService } from 'src/engine/core-modules/file/file-url/file-url.service';
+import { FileService } from 'src/engine/core-modules/file/services/file.service';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { findFlatEntityByIdInFlatEntityMapsOrThrow } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps-or-throw.util';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
@@ -36,7 +38,11 @@ export class CommonResultGettersService {
     QueryResultGetterHandlerInterface
   >;
 
-  constructor(private readonly fileUrlService: FileUrlService) {
+  constructor(
+    private readonly fileService: FileService,
+    private readonly featureFlagService: FeatureFlagService,
+    private readonly fileUrlService: FileUrlService,
+  ) {
     this.initializeObjectHandlers();
     this.initializeFieldHandlers();
   }
@@ -45,7 +51,7 @@ export class CommonResultGettersService {
     this.objectHandlers = new Map<string, QueryResultGetterHandlerInterface>([
       [
         'workspaceMember',
-        new WorkspaceMemberQueryResultGetterHandler(this.fileUrlService),
+        new WorkspaceMemberQueryResultGetterHandler(this.fileService, this.featureFlagService, this.fileUrlService),
       ],
     ]);
   }

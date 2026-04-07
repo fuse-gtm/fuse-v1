@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 import {
+  NavigationMenuItemType,
   ViewOpenRecordIn,
   ViewType,
   ViewVisibility,
@@ -885,6 +886,7 @@ export class ObjectMetadataService extends TypeOrmQueryService<ObjectMetadataEnt
     return {
       id: newId,
       universalIdentifier: newId,
+      type: NavigationMenuItemType.VIEW,
       userWorkspaceId: null,
       targetRecordId: null,
       targetObjectMetadataId: null,

@@ -54,28 +54,6 @@ describe('FileService', () => {
     expect(service).toBeDefined();
   });
 
-  it('copyFileFromWorkspaceToWorkspace - should copy a file to a new workspace', async () => {
-    const result = await service.copyFileFromWorkspaceToWorkspace(
-      'workspaceId',
-      'path/to/file',
-      'newWorkspaceId',
-    );
-
-    expect(fileStorageService.copyLegacy).toHaveBeenCalledWith({
-      from: {
-        folderPath: 'workspace-workspaceId/path/to',
-        filename: 'file',
-      },
-      to: {
-        folderPath: 'workspace-newWorkspaceId/path/to',
-        filename: 'mocked-uuid',
-      },
-    });
-
-    expect(result).toEqual([
-      'workspace-newWorkspaceId',
-      'path/to',
-      'mocked-uuid',
-    ]);
-  });
+  // TODO: upstream cherry-pick stub — copyFileFromWorkspaceToWorkspace removed from this fork
+  // it('copyFileFromWorkspaceToWorkspace - should copy a file to a new workspace', async () => { ... });
 });

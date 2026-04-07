@@ -226,11 +226,11 @@ export class EmailComposerService {
       let stream: Readable;
 
       if (isOtherFileMigrated) {
-        stream = await this.fileService.getFileStreamById({
+        ({ stream } = await this.fileService.getFileStreamById({
           fileId: fileMetadata.id,
           workspaceId,
           fileFolder: FileFolder.Workflow,
-        });
+        }));
       } else {
         stream = await this.fileService.getFileStream(
           folderPath,

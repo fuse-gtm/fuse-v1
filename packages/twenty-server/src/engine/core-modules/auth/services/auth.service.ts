@@ -541,7 +541,7 @@ export class AuthService {
         : applicationRegistration.oAuthScopes;
 
     const invalidScopes = requestedScopes.filter(
-      (scope) => !applicationRegistration.oAuthScopes.includes(scope),
+      (scope: string) => !applicationRegistration.oAuthScopes.includes(scope),
     );
 
     if (invalidScopes.length > 0) {

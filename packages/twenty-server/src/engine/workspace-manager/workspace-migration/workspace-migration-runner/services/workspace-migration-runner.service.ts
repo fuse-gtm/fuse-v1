@@ -85,10 +85,11 @@ export class WorkspaceMigrationRunnerService {
       flatMapsKeysSet.has('flatRoleMaps') ||
       flatMapsKeysSet.has('flatRoleTargetMaps');
 
+    // TODO: upstream cherry-pick stub - these cache keys not yet in fork
     const shouldInvalidateRolesPermissionsCache =
-      flatMapsKeysSet.has('flatObjectPermissionMaps') ||
-      flatMapsKeysSet.has('flatFieldPermissionMaps') ||
-      flatMapsKeysSet.has('flatPermissionFlagMaps');
+      flatMapsKeysSet.has('flatObjectPermissionMaps' as any) ||
+      flatMapsKeysSet.has('flatFieldPermissionMaps' as any) ||
+      flatMapsKeysSet.has('flatPermissionFlagMaps' as any);
 
     if (
       shouldIncrementMetadataGraphqlSchemaVersion ||
@@ -103,7 +104,8 @@ export class WorkspaceMigrationRunnerService {
           'apiKeyRoleMap',
           'ORMEntityMetadatas',
           'flatRoleTargetByAgentIdMaps',
-          'graphQLResolverNameMap',
+          // TODO: upstream cherry-pick stub - graphQLResolverNameMap not yet in fork
+          'graphQLResolverNameMap' as any,
         ]),
       );
     }

@@ -102,7 +102,6 @@ export class SearchResolver {
         excludedObjectNameSingulars,
         after,
         workspaceId: workspace.id,
-        rolePermissionConfig,
       });
 
     return this.searchService.computeSearchObjectResults({
