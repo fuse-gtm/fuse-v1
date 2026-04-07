@@ -1,11 +1,11 @@
-import { isDefined } from 'twenty-shared/utils';
+import { NavigationMenuItemType } from 'twenty-shared/types';
+import { isDefined, normalizeUrl } from 'twenty-shared/utils';
 import { v4 } from 'uuid';
 import type { NavigationMenuItem } from '~/generated-metadata/graphql';
 
-import { DEFAULT_NAVIGATION_MENU_ITEM_COLOR_LINK } from '@/navigation-menu-item/constants/NavigationMenuItemDefaultColorLink';
-import { navigationMenuItemsDraftState } from '@/navigation-menu-item/states/navigationMenuItemsDraftState';
-import { computeInsertIndexAndPosition } from '@/navigation-menu-item/utils/computeInsertIndexAndPosition';
-import { normalizeUrl } from '@/navigation-menu-item/utils/normalizeUrl';
+import { DEFAULT_NAVIGATION_MENU_ITEM_COLOR_LINK } from '@/navigation-menu-item/common/constants/NavigationMenuItemDefaultColorLink';
+import { navigationMenuItemsDraftState } from '@/navigation-menu-item/common/states/navigationMenuItemsDraftState';
+import { computeInsertIndexAndPosition } from '@/navigation-menu-item/common/utils/computeInsertIndexAndPosition';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 
 export const useAddLinkToNavigationMenuDraft = () => {
@@ -40,6 +40,7 @@ export const useAddLinkToNavigationMenuDraft = () => {
     const newItem: NavigationMenuItem = {
       __typename: 'NavigationMenuItem',
       id: newItemId,
+      type: NavigationMenuItemType.LINK,
       viewId: undefined,
       targetObjectMetadataId: undefined,
       targetRecordId: undefined,
