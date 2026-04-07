@@ -85,5 +85,35 @@ describe('SettingsPermissionGuard', () => {
         PermissionsException,
       );
     });
+
+    it('should cache allowed permission checks on the request', async () => {
+      mockPermissionsService.userHasWorkspaceSettingPermission.mockResolvedValue(
+        true,
+      );
+
+      await expect(guard.canActivate(mockExecutionContext)).resolves.toBe(true);
+      await expect(guard.canActivate(mockExecutionContext)).resolves.toBe(true);
+
+      expect(
+        mockPermissionsService.userHasWorkspaceSettingPermission,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('should cache denied permission checks on the request', async () => {
+      mockPermissionsService.userHasWorkspaceSettingPermission.mockResolvedValue(
+        false,
+      );
+
+      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
+        PermissionsException,
+      );
+      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
+        PermissionsException,
+      );
+
+      expect(
+        mockPermissionsService.userHasWorkspaceSettingPermission,
+      ).toHaveBeenCalledTimes(1);
+    });
   });
 });

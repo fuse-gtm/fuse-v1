@@ -343,6 +343,36 @@ describe('FieldPermissionService', () => {
         ).toHaveBeenCalledWith(testWorkspaceId, ['rolesPermissions']);
       });
 
+      it('should allow omitting read permission while restricting update permission', async () => {
+        const input = createUpsertInput([
+          {
+            canUpdateFieldValue: false,
+          },
+        ]);
+
+        await expect(
+          service.upsertFieldPermissions({
+            workspaceId: testWorkspaceId,
+            input,
+          }),
+        ).resolves.toBeDefined();
+
+        expect(fieldPermissionsRepository.upsert).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              roleId: testRoleId,
+              workspaceId: testWorkspaceId,
+              objectMetadataId: testObjectMetadataId,
+              fieldMetadataId: testFieldMetadataId,
+              canUpdateFieldValue: false,
+            }),
+          ]),
+          {
+            conflictPaths: ['fieldMetadataId', 'roleId'],
+          },
+        );
+      });
+
       it('should delete field permissions when both canReadFieldValue and canUpdateFieldValue are null', async () => {
         const existingUniversalId = 'existing-fp-universal-id';
         const mapsWithOneCurrentPermission = {
