@@ -342,4 +342,5 @@ export type FieldFilesValue = {
   extension?: string;
   url?: string;
   fileCategory?: FileCategory;
+  isDeleted?: boolean;
 };

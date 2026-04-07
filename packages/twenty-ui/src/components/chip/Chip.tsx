@@ -1,8 +1,10 @@
 import { styled } from '@linaria/react';
 import { type ReactNode } from 'react';
 
+import { isNonEmptyString } from '@sniptt/guards';
 import { OverflowingTextWithTooltip } from '@ui/display/tooltip/OverflowingTextWithTooltip';
 import { themeCssVariables } from '@ui/theme-constants';
+import { isDefined } from 'twenty-shared/utils';
 
 export enum ChipSize {
   Large = 'large',
@@ -27,6 +29,8 @@ export type ChipProps = {
   disabled?: boolean;
   clickable?: boolean;
   label: string;
+  tooltipLabel?: string;
+  alwaysShowTooltip?: boolean;
   isLabelHidden?: boolean;
   isBold?: boolean;
   maxWidth?: number;
@@ -170,6 +174,8 @@ const renderRightComponent = (
 export const Chip = ({
   size = ChipSize.Small,
   label,
+  tooltipLabel,
+  alwaysShowTooltip = false,
   isLabelHidden = false,
   isBold = false,
   disabled = false,
@@ -197,8 +203,13 @@ export const Chip = ({
       maxWidth={maxWidth}
     >
       {leftComponent}
-      {!isLabelHidden && label && label.trim() ? (
-        <OverflowingTextWithTooltip size={size} text={label} />
+      {!isLabelHidden && isDefined(label) && isNonEmptyString(label) ? (
+        <OverflowingTextWithTooltip
+          size={size}
+          text={label}
+          tooltipContent={tooltipLabel}
+          alwaysShowTooltip={alwaysShowTooltip}
+        />
       ) : !forceEmptyText && !isLabelHidden ? (
         <StyledDiv>{emptyLabel}</StyledDiv>
       ) : (
