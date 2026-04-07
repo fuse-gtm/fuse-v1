@@ -22,6 +22,8 @@ const SignInBackgroundMockPage = lazy(() =>
 import { useShowFullscreen } from '@/ui/layout/fullscreen/hooks/useShowFullscreen';
 import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
 import { useShowFuseAuthLayout } from '@/ui/layout/hooks/useShowFuseAuthLayout';
+import { WelcomeProTrialEffect } from '@/onboarding/components/WelcomeProTrialEffect';
+import { WelcomeProTrialModal } from '@/onboarding/components/WelcomeProTrialModal';
 import { NAVIGATION_DRAWER_CONSTRAINTS } from '@/ui/layout/resizable-panel/constants/NavigationDrawerConstraints';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { Global, css, useTheme } from '@emotion/react';
@@ -136,6 +138,8 @@ export const DefaultLayout = () => {
                         <Outlet />
                       </AppErrorBoundary>
                     </StyledMainContainer>
+                    <WelcomeProTrialEffect />
+                    <WelcomeProTrialModal />
                   </>
                 )}
               </PageDragDropProvider>
