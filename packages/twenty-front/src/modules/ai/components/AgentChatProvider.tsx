@@ -12,7 +12,7 @@ const AgentChatProviderContent = ({
   children: React.ReactNode;
 }) => {
   const { uiMessages, isLoading } = useAgentChatData();
-  const chatState = useAgentChat(uiMessages);
+  const chatState = useAgentChat(uiMessages, async () => null);
   const combinedIsLoading = chatState.isLoading || isLoading;
 
   return (

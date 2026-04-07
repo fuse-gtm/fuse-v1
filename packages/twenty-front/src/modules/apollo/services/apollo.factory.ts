@@ -201,8 +201,10 @@ export class ApolloFactory<TCacheShape> implements ApolloManager<TCacheShape> {
         }
 
         return from(renewalPromise).pipe(
-          switchMap((succeeded) => (succeeded ? forward(operation) : EMPTY)),
-        );
+          switchMap((succeeded) =>
+            succeeded ? forward(operation) : EMPTY,
+          ),
+        ) as ReturnType<typeof forward>;
       };
 
       const sendToSentry = ({
