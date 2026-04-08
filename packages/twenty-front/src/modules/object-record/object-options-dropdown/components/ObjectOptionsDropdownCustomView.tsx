@@ -14,11 +14,13 @@ import { selectedItemIdComponentState } from '@/ui/layout/selectable-list/states
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSetAtomComponentState';
 import { useGetCurrentViewOnly } from '@/views/hooks/useGetCurrentViewOnly';
+import { coreViewsFromObjectMetadataItemFamilySelector } from '@/views/states/selectors/coreViewsFromObjectMetadataItemFamilySelector';
 import { ViewKey } from '@/views/types/ViewKey';
 import { ViewType, viewTypeIconMapping } from '@/views/types/ViewType';
 import { useDestroyViewFromCurrentState } from '@/views/view-picker/hooks/useDestroyViewFromCurrentState';
 import { viewPickerReferenceViewIdComponentState } from '@/views/view-picker/states/viewPickerReferenceViewIdComponentState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
 import { useLingui } from '@lingui/react/macro';
 import { capitalize, isDefined } from 'twenty-shared/utils';
 import {
@@ -64,7 +66,13 @@ export const ObjectOptionsDropdownCustomView = ({
       )
     : undefined;
 
+  const viewsOnCurrentObject = useAtomFamilySelectorValue(
+    coreViewsFromObjectMetadataItemFamilySelector,
+    { objectMetadataItemId: objectMetadataItem.id },
+  );
+
   const isDefaultView = currentView?.key === ViewKey.Index;
+  const isLastView = viewsOnCurrentObject.length <= 1;
 
   const recordIndexCalendarLayout = useAtomStateValue(
     recordIndexCalendarLayoutState,
@@ -163,25 +171,27 @@ export const ObjectOptionsDropdownCustomView = ({
         <DropdownMenuItemsContainer scrollable={false}>
           {customViewData?.type === ViewType.Calendar && (
             <>
-              <SelectableListItem
-                itemId="CalendarDateField"
-                onEnter={() => onContentChange('calendarFields')}
-              >
-                <MenuItem
-                  focused={selectedItemId === 'CalendarDateField'}
-                  onClick={() => onContentChange('calendarFields')}
-                  LeftIcon={IconCalendar}
-                  text={t`Date field`}
-                  contextualText={
-                    isDefaultView
-                      ? t`Not available on Default View`
-                      : calendarFieldMetadata?.label
-                  }
-                  contextualTextPosition="right"
-                  hasSubMenu
-                  disabled={isDefaultView}
-                />
-              </SelectableListItem>
+              <div id="calendar-date-field-picker-menu-item">
+                <SelectableListItem
+                  itemId="CalendarDateField"
+                  onEnter={() => onContentChange('calendarFields')}
+                >
+                  <MenuItem
+                    focused={selectedItemId === 'CalendarDateField'}
+                    onClick={() => onContentChange('calendarFields')}
+                    LeftIcon={IconCalendar}
+                    text={t`Date field`}
+                    contextualText={
+                      isDefaultView
+                        ? t`Not available on Default View`
+                        : calendarFieldMetadata?.label
+                    }
+                    contextualTextPosition="right"
+                    hasSubMenu
+                    disabled={isDefaultView}
+                  />
+                </SelectableListItem>
+              </div>
               <SelectableListItem
                 itemId="CalendarView"
                 onEnter={() => onContentChange('calendarView')}
@@ -218,67 +228,75 @@ export const ObjectOptionsDropdownCustomView = ({
             />
           </SelectableListItem>
           {customViewData?.type !== ViewType.Calendar && (
-            <AppTooltip
-              content={t`Not available on Default View`}
-              noArrow
-              place="bottom"
-              hidden={!isDefaultView}
-            >
-              <div>
-                <SelectableListItem
-                  itemId="Group"
-                  onEnter={() =>
+            <div id="group-by-menu-item">
+              <SelectableListItem
+                itemId="Group"
+                onEnter={() =>
+                  isDefined(recordIndexGroupFieldMetadataItem)
+                    ? onContentChange('recordGroups')
+                    : onContentChange('recordGroupFields')
+                }
+              >
+                <MenuItem
+                  focused={selectedItemId === 'Group'}
+                  onClick={() =>
                     isDefined(recordIndexGroupFieldMetadataItem)
                       ? onContentChange('recordGroups')
                       : onContentChange('recordGroupFields')
                   }
-                >
-                  <MenuItem
-                    focused={selectedItemId === 'Group'}
-                    onClick={() =>
-                      isDefined(recordIndexGroupFieldMetadataItem)
-                        ? onContentChange('recordGroups')
-                        : onContentChange('recordGroupFields')
-                    }
-                    LeftIcon={IconLayoutList}
-                    text={t`Group`}
-                    contextualText={
-                      isDefaultView
-                        ? t`Not available on Default View`
-                        : recordIndexGroupFieldMetadataItem?.label
-                    }
-                    contextualTextPosition="right"
-                    hasSubMenu
-                    disabled={isDefaultView}
-                  />
-                </SelectableListItem>
-              </div>
-            </AppTooltip>
-          )}
-        </DropdownMenuItemsContainer>
-        <DropdownMenuSeparator />
-        <DropdownMenuItemsContainer scrollable={false}>
-          <AppTooltip
-            content={t`Not available on Default View`}
-            noArrow
-            place="bottom"
-            hidden={!isDefaultView}
-          >
-            <div>
-              <SelectableListItem
-                itemId="Delete view"
-                onEnter={() => handleDelete()}
-              >
-                <MenuItem
-                  focused={selectedItemId === 'Delete view'}
-                  onClick={() => handleDelete()}
-                  LeftIcon={IconTrash}
-                  text={t`Delete view`}
+                  LeftIcon={IconLayoutList}
+                  text={t`Group`}
+                  contextualText={
+                    isDefaultView
+                      ? t`Not available on Default View`
+                      : recordIndexGroupFieldMetadataItem?.label
+                  }
+                  contextualTextPosition="right"
+                  hasSubMenu
                   disabled={isDefaultView}
                 />
               </SelectableListItem>
             </div>
-          </AppTooltip>
+          )}
+          {isDefaultView && (
+            <AppTooltip
+              anchorSelect={`#group-by-menu-item`}
+              content={t`Not available on Default View`}
+              noArrow
+              place="bottom"
+              width="100%"
+            />
+          )}
+        </DropdownMenuItemsContainer>
+        <DropdownMenuSeparator />
+        <DropdownMenuItemsContainer scrollable={false}>
+          <div id="delete-view-menu-item">
+            <SelectableListItem
+              itemId="Delete view"
+              onEnter={() => handleDelete()}
+            >
+              <MenuItem
+                focused={selectedItemId === 'Delete view'}
+                onClick={() => handleDelete()}
+                LeftIcon={IconTrash}
+                text={t`Delete view`}
+                disabled={isDefaultView || isLastView}
+              />
+            </SelectableListItem>
+          </div>
+          {(isDefaultView || isLastView) && (
+            <AppTooltip
+              anchorSelect={`#delete-view-menu-item`}
+              content={
+                isDefaultView
+                  ? t`Not available on Default View`
+                  : t`Cannot delete the only view`
+              }
+              noArrow
+              place="bottom"
+              width="100%"
+            />
+          )}
         </DropdownMenuItemsContainer>
       </SelectableList>
     </DropdownContent>
