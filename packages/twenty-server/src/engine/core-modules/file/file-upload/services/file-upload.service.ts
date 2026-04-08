@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { fileTypeFromBuffer } from 'file-type';
+import FileType from 'file-type';
 import sharp from 'sharp';
 import { FileFolder } from 'twenty-shared/types';
 import { v4 } from 'uuid';
@@ -136,7 +136,7 @@ export class FileUploadService {
       return null;
     }
 
-    const type = await fileTypeFromBuffer(buffer);
+    const type = await FileType.fromBuffer(buffer);
 
     if (!type || !type.ext || !type.mime || !type.mime.startsWith('image/')) {
       throw new Error(`Invalid image type for URL: ${imageUrl}`);
