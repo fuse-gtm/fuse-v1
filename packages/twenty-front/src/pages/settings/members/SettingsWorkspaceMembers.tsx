@@ -1,7 +1,8 @@
-import { styled } from '@linaria/react';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { isNonEmptyArray } from '@sniptt/guards';
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { useDebounce } from 'use-debounce';
@@ -41,8 +42,6 @@ import {
 } from 'twenty-ui/display';
 import { IconButton } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useGetWorkspaceInvitationsQuery } from '~/generated-metadata/graphql';
 
 import { SettingsRolesQueryEffect } from '@/settings/roles/components/SettingsRolesQueryEffect';
@@ -60,8 +59,8 @@ const StyledButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
-  gap: ${themeCssVariables.spacing[1]};
-  margin-left: ${themeCssVariables.spacing[2]};
+  gap: ${({ theme }) => theme.spacing(1)};
+  margin-left: ${({ theme }) => theme.spacing(2)};
 `;
 
 const StyledExpiresInHeader = styled.span`
@@ -69,14 +68,14 @@ const StyledExpiresInHeader = styled.span`
 `;
 
 const StyledTable = styled(Table)<{ hasMoreRows?: boolean }>`
-  border-bottom: ${({ hasMoreRows }) =>
-    hasMoreRows ? 'none' : `1px solid ${themeCssVariables.border.color.light}`};
+  border-bottom: ${({ hasMoreRows, theme }) =>
+    hasMoreRows ? 'none' : `1px solid ${theme.border.color.light}`};
 `;
 
 const StyledIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: ${themeCssVariables.spacing[2]};
+  margin-right: ${({ theme }) => theme.spacing(2)};
 `;
 
 const StyledTextContainerWithEllipsis = styled.div`
@@ -91,19 +90,19 @@ const StyledInvitationTableCell = styled(TableCell)`
 `;
 
 const StyledSearchContainer = styled.div`
-  padding-bottom: ${themeCssVariables.spacing[2]};
+  padding-bottom: ${({ theme }) => theme.spacing(2)};
 `;
 
 const StyledSearchInput = styled(SettingsTextInput)`
   input {
-    background: ${themeCssVariables.background.transparent.lighter};
-    border: 1px solid ${themeCssVariables.border.color.medium};
+    background: ${({ theme }) => theme.background.transparent.lighter};
+    border: 1px solid ${({ theme }) => theme.border.color.medium};
   }
 `;
 
 const StyledTableRows = styled.div`
-  padding-bottom: ${themeCssVariables.spacing[2]};
-  padding-top: ${themeCssVariables.spacing[2]};
+  padding-bottom: ${({ theme }) => theme.spacing(2)};
+  padding-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 const StyledClickableTableRow = styled(TableRow)`
@@ -112,20 +111,20 @@ const StyledClickableTableRow = styled(TableRow)`
 
 const StyledChevronWrapper = styled.div`
   align-items: center;
-  color: ${themeCssVariables.font.color.secondary};
+  color: ${({ theme }) => theme.font.color.secondary};
   display: flex;
   justify-content: flex-end;
   width: 100%;
 `;
 
 const StyledNoMembers = styled(TableCell)`
-  color: ${themeCssVariables.font.color.tertiary};
+  color: ${({ theme }) => theme.font.color.tertiary};
 `;
 
 export const SettingsWorkspaceMembers = () => {
   const { t } = useLingui();
   const { enqueueErrorSnackBar } = useSnackBar();
-  const { theme } = useContext(ThemeContext);
+  const theme = useTheme();
   const navigateSettings = useNavigateSettings();
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
@@ -328,16 +327,19 @@ export const SettingsWorkspaceMembers = () => {
                             stroke={theme.icon.stroke.sm}
                           />
                         </StyledIconWrapper>
+                        <StyledTextContainerWithEllipsis
+                          id={`invitation-email-${workspaceInvitation.id}`}
+                        >
+                          {workspaceInvitation.email}
+                        </StyledTextContainerWithEllipsis>
                         <AppTooltip
+                          anchorSelect={`#invitation-email-${workspaceInvitation.id}`}
                           content={workspaceInvitation.email}
                           noArrow
                           place="top"
+                          positionStrategy="fixed"
                           delay={TooltipDelay.shortDelay}
-                        >
-                          <StyledTextContainerWithEllipsis>
-                            {workspaceInvitation.email}
-                          </StyledTextContainerWithEllipsis>
-                        </AppTooltip>
+                        />
                       </StyledInvitationTableCell>
                       <StyledInvitationTableCell>
                         <StyledTextContainerWithEllipsis>
@@ -436,18 +438,21 @@ export const SettingsWorkspaceMembers = () => {
                             size="sm"
                           />
                         </StyledIconWrapper>
+                        <StyledTextContainerWithEllipsis
+                          id={`hover-text-${workspaceMember.id}`}
+                        >
+                          {workspaceMember.name.firstName +
+                            ' ' +
+                            workspaceMember.name.lastName}
+                        </StyledTextContainerWithEllipsis>
                         <AppTooltip
+                          anchorSelect={`#hover-text-${workspaceMember.id}`}
                           content={`${workspaceMember.name.firstName} ${workspaceMember.name.lastName}`}
                           noArrow
                           place="top"
+                          positionStrategy="fixed"
                           delay={TooltipDelay.shortDelay}
-                        >
-                          <StyledTextContainerWithEllipsis>
-                            {workspaceMember.name.firstName +
-                              ' ' +
-                              workspaceMember.name.lastName}
-                          </StyledTextContainerWithEllipsis>
-                        </AppTooltip>
+                        />
                       </TableCell>
                       <TableCell>
                         <StyledTextContainerWithEllipsis>
