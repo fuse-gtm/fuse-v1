@@ -143,6 +143,8 @@ export const useAuth = () => {
       isCaptchaScriptLoadedState.atom,
     );
 
+    store.set(isAppEffectRedirectEnabledState.atom, false);
+
     sessionStorage.clear();
     clearSessionLocalStorageKeys();
 

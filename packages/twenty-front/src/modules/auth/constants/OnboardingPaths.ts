@@ -3,7 +3,6 @@ import { AppPath } from 'twenty-shared/types';
 export const ONBOARDING_PATHS = [
   AppPath.CreateWorkspace,
   AppPath.CreateProfile,
-  AppPath.PartnerProfile,
   AppPath.SyncEmails,
   AppPath.InviteTeam,
   AppPath.PlanRequired,
