@@ -1,10 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { isNonEmptyString } from '@sniptt/guards';
 import { FeatureFlagKey } from 'twenty-shared/types';
-import { isDefined } from 'twenty-shared/utils';
-import { validate as uuidValidate } from 'uuid';
 import {
   type FindOneOptions,
   type FindOptionsWhere,
@@ -33,55 +30,6 @@ export class MessageFolderDataAccessService {
       FeatureFlagKey.IS_CONNECTED_ACCOUNT_MIGRATED,
       workspaceId,
     );
-  }
-
-  private async resolveParentFolderIdForCore(
-    workspaceId: string,
-    parentFolderId: string | null,
-    messageChannelId: string | undefined,
-  ): Promise<string | null> {
-    if (!isNonEmptyString(parentFolderId)) {
-      return null;
-    }
-
-    if (uuidValidate(parentFolderId)) {
-      return parentFolderId;
-    }
-
-    if (!isDefined(messageChannelId)) {
-      return null;
-    }
-
-    const parentFolder = await this.coreRepository.findOne({
-      where: {
-        workspaceId,
-        messageChannelId,
-        externalId: parentFolderId,
-      },
-      select: ['id'],
-    });
-
-    return parentFolder?.id ?? null;
-  }
-
-  private async toCore(
-    workspaceId: string,
-    data: Partial<MessageFolderWorkspaceEntity>,
-    messageChannelId?: string,
-  ): Promise<Record<string, unknown>> {
-    const coreData: Record<string, unknown> = { ...data, workspaceId };
-
-    const channelId = (coreData.messageChannelId as string) ?? messageChannelId;
-
-    if ('parentFolderId' in coreData) {
-      coreData.parentFolderId = await this.resolveParentFolderIdForCore(
-        workspaceId,
-        coreData.parentFolderId as string | null,
-        channelId,
-      );
-    }
-
-    return coreData;
   }
 
   async getWorkspaceRepository(workspaceId: string) {
@@ -142,15 +90,14 @@ export class MessageFolderDataAccessService {
   ): Promise<void> {
     const workspaceRepository = await this.getWorkspaceRepository(workspaceId);
 
-    const savedData = await workspaceRepository.save(data);
+    await workspaceRepository.save(data);
 
     if (await this.isMigrated(workspaceId)) {
       try {
-        const coreData = await this.toCore(workspaceId, savedData);
-
-        await this.coreRepository.save(
-          coreData as unknown as MessageFolderEntity,
-        );
+        await this.coreRepository.save({
+          ...data,
+          workspaceId,
+        } as unknown as MessageFolderEntity);
       } catch (error) {
         this.logger.error(
           `Failed to dual-write messageFolder to core: ${error}`,
@@ -172,15 +119,9 @@ export class MessageFolderDataAccessService {
 
     if (await this.isMigrated(workspaceId)) {
       try {
-        const coreData = await this.toCore(
-          workspaceId,
-          data,
-          (where as Record<string, unknown>).messageChannelId as string,
-        );
-
         await this.coreRepository.update(
           { ...where, workspaceId } as FindOptionsWhere<MessageFolderEntity>,
-          coreData,
+          data as Record<string, unknown>,
         );
       } catch (error) {
         this.logger.error(
