@@ -1,10 +1,6 @@
 import { sidePanelWorkflowIdComponentState } from '@/side-panel/pages/workflow/states/sidePanelWorkflowIdComponentState';
 import { SidePanelPageComponentInstanceContext } from '@/side-panel/states/contexts/SidePanelPageComponentInstanceContext';
-<<<<<<< HEAD
-import { useLoadMockedMetadata } from '@/metadata-store/hooks/useLoadMockedMetadata';
-=======
-import { useLoadMockedObjectMetadataItems } from '@/object-metadata/hooks/useLoadMockedObjectMetadataItems';
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
+import { useLoadMockedMinimalMetadata } from '@/metadata-store/hooks/useLoadMockedMinimalMetadata';
 import { flowComponentState } from '@/workflow/states/flowComponentState';
 import { workflowVisualizerWorkflowIdComponentState } from '@/workflow/states/workflowVisualizerWorkflowIdComponentState';
 import { workflowVisualizerWorkflowRunIdComponentState } from '@/workflow/states/workflowVisualizerWorkflowRunIdComponentState';
@@ -28,7 +24,7 @@ export const WorkflowStepDecorator: Decorator = (Story) => {
 
   const workflowVersion = mockedWorkflowVersion as WorkflowVersion;
   const { populateStepsOutputSchema } = useStepsOutputSchema();
-  const { loadMockedMetadataAtomic } = useLoadMockedMetadata();
+  const { loadMockedMinimalMetadata } = useLoadMockedMinimalMetadata();
 
   const [ready, setReady] = useState(false);
 
@@ -36,7 +32,7 @@ export const WorkflowStepDecorator: Decorator = (Story) => {
 
   useEffect(() => {
     const setup = async () => {
-      await loadMockedMetadataAtomic();
+      await loadMockedMinimalMetadata();
 
       store.set(
         workflowVisualizerWorkflowIdComponentState.atomFamily({
@@ -84,7 +80,7 @@ export const WorkflowStepDecorator: Decorator = (Story) => {
 
     setup();
   }, [
-    loadMockedMetadataAtomic,
+    loadMockedMinimalMetadata,
     populateStepsOutputSchema,
     workflowVersion,
     store,
