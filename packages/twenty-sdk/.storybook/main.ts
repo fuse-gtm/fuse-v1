@@ -1,22 +1,21 @@
-// This file has been automatically migrated to valid ESM format by Storybook.
 import type { StorybookConfig } from '@storybook/react-vite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const storybookDir =
+const dirname =
   typeof __dirname !== 'undefined'
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
-const sdkRoot = path.resolve(storybookDir, '..');
+const sdkRoot = path.resolve(dirname, '..');
 
 const config: StorybookConfig = {
   stories: ['../src/front-component-renderer/**/*.stories.@(js|jsx|ts|tsx)'],
 
-  addons: [getAbsolutePath('@storybook/addon-vitest')],
+  addons: ['@storybook/addon-vitest'],
 
-  framework: getAbsolutePath('@storybook/react-vite'),
+  framework: '@storybook/react-vite',
 
   refs: {
     '@chakra-ui/react': { disable: true },
@@ -40,7 +39,20 @@ const config: StorybookConfig = {
         ...viteConfig.resolve,
         alias: {
           ...viteConfig.resolve?.alias,
-          '@': path.resolve(storybookDir, '../src'),
+          '@': path.resolve(dirname, '../src'),
+          // twenty-sdk has React 19 locally (for Ink 6 CLI), but
+          // twenty-ui's dist uses React 18 internals. Force React 18
+          // from the workspace root for storybook builds.
+          react: path.resolve(dirname, '../../../node_modules/react'),
+          'react-dom': path.resolve(dirname, '../../../node_modules/react-dom'),
+          'react/jsx-runtime': path.resolve(
+            dirname,
+            '../../../node_modules/react/jsx-runtime',
+          ),
+          'react/jsx-dev-runtime': path.resolve(
+            dirname,
+            '../../../node_modules/react/jsx-dev-runtime',
+          ),
         },
       },
       plugins: [
@@ -65,7 +77,3 @@ const config: StorybookConfig = {
 };
 
 export default config;
-
-function getAbsolutePath(value: string): string {
-  return path.dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
-}
