@@ -12,9 +12,7 @@ const storybookDir =
 const sdkRoot = path.resolve(storybookDir, '..');
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/front-component-renderer/**/*.stories.@(js|jsx|ts|tsx)',
-  ],
+  stories: ['../src/front-component-renderer/**/*.stories.@(js|jsx|ts|tsx)'],
 
   addons: [getAbsolutePath('@storybook/addon-vitest')],
 
