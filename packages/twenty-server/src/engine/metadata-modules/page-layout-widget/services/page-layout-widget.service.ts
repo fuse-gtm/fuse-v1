@@ -310,24 +310,32 @@ export class PageLayoutWidgetService {
       existingFlatPageLayoutWidgetMaps,
     );
 
-    const {
-      flatObjectMetadataMaps: existingFlatObjectMetadataMaps,
-      flatFieldMetadataMaps: existingFlatFieldMetadataMaps,
-      flatFrontComponentMaps: existingFlatFrontComponentMaps,
-      flatViewFieldGroupMaps: existingFlatViewFieldGroupMaps,
-      flatViewMaps: existingFlatViewMaps,
-    } = await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
+    const [
       {
-        workspaceId,
-        flatMapsKeys: [
-          'flatObjectMetadataMaps',
-          'flatFieldMetadataMaps',
-          'flatFrontComponentMaps',
-          'flatViewFieldGroupMaps',
-          'flatViewMaps',
-        ],
+        flatObjectMetadataMaps: existingFlatObjectMetadataMaps,
+        flatFieldMetadataMaps: existingFlatFieldMetadataMaps,
+        flatFrontComponentMaps: existingFlatFrontComponentMaps,
+        flatViewFieldGroupMaps: existingFlatViewFieldGroupMaps,
+        flatViewMaps: existingFlatViewMaps,
       },
-    );
+      { workspaceCustomFlatApplication },
+    ] = await Promise.all([
+      this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
+        {
+          workspaceId,
+          flatMapsKeys: [
+            'flatObjectMetadataMaps',
+            'flatFieldMetadataMaps',
+            'flatFrontComponentMaps',
+            'flatViewFieldGroupMaps',
+            'flatViewMaps',
+          ],
+        },
+      ),
+      this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
+        { workspaceId },
+      ),
+    ]);
 
     const isConfigurationBeingUpdated = Object.prototype.hasOwnProperty.call(
       updateData,
@@ -360,6 +368,10 @@ export class PageLayoutWidgetService {
         flatFrontComponentMaps: existingFlatFrontComponentMaps,
         flatViewFieldGroupMaps: existingFlatViewFieldGroupMaps,
         flatViewMaps: existingFlatViewMaps,
+        callerApplicationUniversalIdentifier:
+          workspaceCustomFlatApplication.universalIdentifier,
+        workspaceCustomApplicationUniversalIdentifier:
+          workspaceCustomFlatApplication.universalIdentifier,
       });
 
     const shouldValidateChartFields =
