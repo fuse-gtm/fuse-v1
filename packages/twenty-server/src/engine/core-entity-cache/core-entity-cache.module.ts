@@ -1,5 +1,12 @@
 import { Module } from '@nestjs/common';
+import { DiscoveryModule } from '@nestjs/core';
 
-// TODO: upstream cherry-pick stub - module not yet in fork
-@Module({ providers: [], exports: [] })
+import { CacheStorageModule } from 'src/engine/core-modules/cache-storage/cache-storage.module';
+import { CoreEntityCacheService } from 'src/engine/core-entity-cache/services/core-entity-cache.service';
+
+@Module({
+  imports: [CacheStorageModule, DiscoveryModule],
+  providers: [CoreEntityCacheService],
+  exports: [CoreEntityCacheService],
+})
 export class CoreEntityCacheModule {}
