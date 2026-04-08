@@ -20,18 +20,30 @@ import { isNonEmptyString } from '@sniptt/guards';
 import { useCallback, useContext, useId } from 'react';
 import { CustomError, isDefined, isValidUuid } from 'twenty-shared/utils';
 import { IconChevronDown, IconForbid } from 'twenty-ui/display';
-import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext } from 'twenty-ui/theme';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const StyledFormSelectContainerWrapper = styled.div<{ readonly?: boolean }>`
-  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
-  display: flex;
+const StyledFormSelectContainer = styled(FormFieldInputInnerContainer)<{
+  readonly?: boolean;
+}>`
+  align-items: center;
   height: 32px;
-  width: 100%;
+  justify-content: space-between;
+  padding-right: ${themeCssVariables.spacing[2]};
+
+  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
+
+  &:hover,
+  &[data-open='true'] {
+    background-color: ${({ readonly }) =>
+      readonly
+        ? 'transparent'
+        : themeCssVariables.background.transparent.light};
+  }
 `;
 
 const StyledIconButton = styled.div`
   display: flex;
-  padding-right: ${themeCssVariables.spacing[2]};
 `;
 
 export type RecordId = string;
@@ -69,7 +81,6 @@ export const FormSingleRecordPicker = ({
   VariablePicker,
 }: FormSingleRecordPickerProps) => {
   const { theme } = useContext(ThemeContext);
-
   const draftValue: FormSingleRecordPickerValue = isStandaloneVariableString(
     defaultValue,
   )
@@ -79,7 +90,7 @@ export const FormSingleRecordPicker = ({
       }
     : {
         type: 'static',
-        value: (defaultValue as string | undefined) ?? '',
+        value: defaultValue || '',
       };
 
   if (objectNameSingulars.length === 0) {
@@ -155,20 +166,19 @@ export const FormSingleRecordPicker = ({
       {label ? <InputLabel>{label}</InputLabel> : null}
       <FormFieldInputRowContainer>
         {disabled ? (
-          <StyledFormSelectContainerWrapper readonly>
-            <FormFieldInputInnerContainer
-              formFieldInputInstanceId={componentId}
-              hasRightElement={false}
-            >
-              <FormSingleRecordFieldChip
-                draftValue={draftValue}
-                selectedRecord={selectedRecord}
-                objectNameSingular={objectNameSingulars[0]}
-                onRemove={handleUnlinkVariable}
-                disabled={disabled}
-              />
-            </FormFieldInputInnerContainer>
-          </StyledFormSelectContainerWrapper>
+          <StyledFormSelectContainer
+            formFieldInputInstanceId={componentId}
+            hasRightElement={false}
+            readonly
+          >
+            <FormSingleRecordFieldChip
+              draftValue={draftValue}
+              selectedRecord={selectedRecord}
+              objectNameSingular={objectNameSingulars[0]}
+              onRemove={handleUnlinkVariable}
+              disabled={disabled}
+            />
+          </StyledFormSelectContainer>
         ) : (
           <Dropdown
             dropdownId={dropdownId}
@@ -176,32 +186,27 @@ export const FormSingleRecordPicker = ({
             clickableComponentWidth="100%"
             onClose={handleCloseRelationPickerDropdown}
             onOpen={handleOpenDropdown}
-            dropdownOffset={{
-              y: parseInt(theme.spacing[1], 10),
-            }}
+            dropdownOffset={{ y: parseInt(theme.spacing(1), 10) }}
             clickableComponent={
-              <StyledFormSelectContainerWrapper>
-                <FormFieldInputInnerContainer
-                  formFieldInputInstanceId={componentId}
-                  hasRightElement={isDefined(VariablePicker) && !disabled}
-                  hoverable
-                  preventFocusStackUpdate={true}
-                >
-                  <FormSingleRecordFieldChip
-                    draftValue={draftValue}
-                    selectedRecord={selectedRecord}
-                    objectNameSingular={objectNameSingulars[0]}
-                    onRemove={handleUnlinkVariable}
-                    disabled={disabled}
+              <StyledFormSelectContainer
+                formFieldInputInstanceId={componentId}
+                hasRightElement={isDefined(VariablePicker) && !disabled}
+                preventFocusStackUpdate={true}
+              >
+                <FormSingleRecordFieldChip
+                  draftValue={draftValue}
+                  selectedRecord={selectedRecord}
+                  objectNameSingular={objectNameSingulars[0]}
+                  onRemove={handleUnlinkVariable}
+                  disabled={disabled}
+                />
+                <StyledIconButton>
+                  <IconChevronDown
+                    size={theme.icon.size.md}
+                    color={theme.font.color.light}
                   />
-                  <StyledIconButton>
-                    <IconChevronDown
-                      size={theme.icon.size.md}
-                      color={theme.font.color.light}
-                    />
-                  </StyledIconButton>
-                </FormFieldInputInnerContainer>
-              </StyledFormSelectContainerWrapper>
+                </StyledIconButton>
+              </StyledFormSelectContainer>
             }
             dropdownComponents={
               <SingleRecordPicker

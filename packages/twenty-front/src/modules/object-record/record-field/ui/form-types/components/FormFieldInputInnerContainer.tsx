@@ -7,7 +7,6 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 type FormFieldInputInnerContainerProps = {
   hasRightElement: boolean;
-  hoverable?: boolean;
   multiline?: boolean;
   readonly?: boolean;
   preventFocusStackUpdate?: boolean;
@@ -17,38 +16,26 @@ type FormFieldInputInnerContainerProps = {
 const StyledFormFieldInputInnerContainer = styled.div<
   Omit<FormFieldInputInnerContainerProps, 'formFieldInputInstanceId'>
 >`
-  align-items: center;
   background-color: ${themeCssVariables.background.transparent.lighter};
   border: 1px solid ${themeCssVariables.border.color.medium};
+  border-top-left-radius: ${themeCssVariables.border.radius.sm};
   border-bottom-left-radius: ${themeCssVariables.border.radius.sm};
+
   border-bottom-right-radius: ${({ multiline, hasRightElement }) =>
     multiline || !hasRightElement ? themeCssVariables.border.radius.sm : '0'};
   border-right: ${({ multiline, hasRightElement }) =>
-    multiline || !hasRightElement
-      ? `1px solid ${themeCssVariables.border.color.medium}`
-      : 'none'};
-  border-top-left-radius: ${themeCssVariables.border.radius.sm};
+    multiline || !hasRightElement ? 'auto' : 'none'};
   border-top-right-radius: ${({ multiline, hasRightElement }) =>
     multiline || !hasRightElement ? themeCssVariables.border.radius.sm : '0'};
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
   overflow-x: auto;
   overflow-y: ${({ multiline }) => (multiline ? 'auto' : 'hidden')};
   scrollbar-width: none;
-  width: 100%;
-
   &::-webkit-scrollbar {
     display: none;
   }
-
-  &:hover,
-  &[data-open='true'] {
-    background-color: ${({ hoverable }) =>
-      hoverable
-        ? themeCssVariables.background.transparent.light
-        : themeCssVariables.background.transparent.lighter};
-  }
+  width: 100%;
 `;
 
 export const FormFieldInputInnerContainer = forwardRef(
@@ -59,7 +46,6 @@ export const FormFieldInputInnerContainer = forwardRef(
       onFocus,
       onBlur,
       hasRightElement,
-      hoverable,
       multiline,
       readonly,
       preventFocusStackUpdate = false,
@@ -104,7 +90,6 @@ export const FormFieldInputInnerContainer = forwardRef(
         ref={ref}
         className={className}
         hasRightElement={hasRightElement}
-        hoverable={hoverable}
         multiline={multiline}
         readonly={readonly}
         onFocus={handleFocus}

@@ -13,6 +13,7 @@ import {
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { ThemeContext } from 'twenty-ui/theme';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { v4 as uuidV4 } from 'uuid';
 import { dateLocaleState } from '~/localization/states/dateLocaleState';
 import {
   beautifyExactDateTime,
@@ -127,6 +128,7 @@ export const ShowPageSummaryCard = ({
   const beautifiedCreatedAt =
     date !== '' ? beautifyPastDateRelativeToNow(date, localeCatalog) : '';
   const exactCreatedAt = date !== '' ? beautifyExactDateTime(date) : '';
+  const dateElementId = `date-id-${uuidV4()}`;
   const inputFileRef = useRef<HTMLInputElement>(null);
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (isDefined(e.target.files)) onUploadPicture?.(e.target.files[0]);
@@ -168,12 +170,17 @@ export const ShowPageSummaryCard = ({
       <StyledInfoContainer isMobile={isMobile}>
         <StyledTitle isMobile={isMobile}>{title}</StyledTitle>
         {beautifiedCreatedAt && (
-          <AppTooltip content={exactCreatedAt} noArrow place="right">
-            <StyledDate isMobile={isMobile}>
-              <Trans>Added {beautifiedCreatedAt}</Trans>
-            </StyledDate>
-          </AppTooltip>
+          <StyledDate isMobile={isMobile} id={dateElementId}>
+            <Trans>Added {beautifiedCreatedAt}</Trans>
+          </StyledDate>
         )}
+        <AppTooltip
+          anchorSelect={`#${dateElementId}`}
+          content={exactCreatedAt}
+          clickable
+          noArrow
+          place="right"
+        />
       </StyledInfoContainer>
     </StyledShowPageSummaryCard>
   );

@@ -1,5 +1,4 @@
 import { styled } from '@linaria/react';
-import { useContext } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { type z } from 'zod';
 
@@ -8,11 +7,12 @@ import { fieldMetadataItemSchema } from '@/object-metadata/validation-schemas/fi
 import { AdvancedSettingsContentWrapperWithDot } from '@/settings/components/AdvancedSettingsContentWrapperWithDot';
 import { AdvancedSettingsWrapper } from '@/settings/components/AdvancedSettingsWrapper';
 import { SettingsOptionCardContentToggle } from '@/settings/components/SettingsOptions/SettingsOptionCardContentToggle';
-import { IDENTIFIER_MAX_CHAR_LENGTH } from 'twenty-shared/metadata';
+import { DATABASE_IDENTIFIER_MAXIMUM_LENGTH } from '@/settings/data-model/constants/DatabaseIdentifierMaximumLength';
 import { getErrorMessageFromError } from '@/settings/data-model/fields/forms/utils/errorMessages';
 import { IconPicker } from '@/ui/input/components/IconPicker';
 import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { useLingui } from '@lingui/react/macro';
+import { useContext } from 'react';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import {
@@ -22,7 +22,8 @@ import {
   TooltipDelay,
 } from 'twenty-ui/display';
 import { Card } from 'twenty-ui/layout';
-import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext } from 'twenty-ui/theme';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { computeMetadataNameFromLabel } from '~/pages/settings/data-model/utils/computeMetadataNameFromLabel';
 
 export const settingsDataModelFieldIconLabelFormSchema = (
@@ -56,10 +57,10 @@ const StyledInputsContainer = styled.div`
 
 const StyledAdvancedSettingsSectionInputWrapper = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[4]};
   width: 100%;
+  flex: 1;
 `;
 
 const StyledAdvancedSettingsOuterContainer = styled.div`
@@ -95,6 +96,7 @@ export const SettingsDataModelFieldIconLabelForm = ({
   } = useFormContext<SettingsDataModelFieldIconLabelFormValues>();
 
   const { theme } = useContext(ThemeContext);
+
   const label = watch('label');
 
   const { t } = useLingui();
@@ -202,7 +204,7 @@ export const SettingsDataModelFieldIconLabelForm = ({
                           readOnly={readonly}
                           disabled={!isNameEditEnabled}
                           fullWidth
-                          maxLength={IDENTIFIER_MAX_CHAR_LENGTH}
+                          maxLength={DATABASE_IDENTIFIER_MAXIMUM_LENGTH}
                           RightIcon={() =>
                             apiNameTooltipText && (
                               <>

@@ -20,7 +20,6 @@ const StyledPermissionContent = styled.div`
   align-items: center;
   display: flex;
   gap: ${themeCssVariables.spacing[2]};
-  white-space: nowrap;
 `;
 
 const StyledPermissionLabel = styled.span`
@@ -32,7 +31,6 @@ const StyledOverrideInfo = styled.div`
   color: ${themeCssVariables.font.color.tertiary};
   display: flex;
   gap: ${themeCssVariables.spacing[1]};
-  white-space: nowrap;
 `;
 const StyledCheckboxCell = styled(TableCell)`
   align-items: center;

@@ -6,6 +6,7 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { FieldContext } from '@/object-record/record-field/ui/contexts/FieldContext';
 import { useFieldFocus } from '@/object-record/record-field/ui/hooks/useFieldFocus';
 import { RecordInlineCellValue } from '@/object-record/record-inline-cell/components/RecordInlineCellValue';
+import { getRecordFieldInputInstanceId } from '@/object-record/utils/getRecordFieldInputId';
 
 import { assertFieldMetadata } from '@/object-record/record-field/ui/types/guards/assertFieldMetadata';
 import { isFieldText } from '@/object-record/record-field/ui/types/guards/isFieldText';
@@ -73,7 +74,7 @@ export const RecordInlineCellContainer = () => {
   const { readonly, IconLabel, label, labelWidth, showLabel } =
     useRecordInlineCellContext();
 
-  const { fieldDefinition, onMouseEnter, onMouseLeave, anchorId } =
+  const { recordId, fieldDefinition, onMouseEnter, onMouseLeave, anchorId } =
     useContext(FieldContext);
 
   if (isFieldText(fieldDefinition)) {
@@ -97,6 +98,10 @@ export const RecordInlineCellContainer = () => {
   };
 
   const { theme } = useContext(ThemeContext);
+  const labelId = `label-${getRecordFieldInputInstanceId({
+    recordId,
+    fieldName: fieldDefinition?.metadata?.fieldName,
+  })}`;
 
   return (
     <StyledInlineCellBaseContainer
@@ -105,26 +110,30 @@ export const RecordInlineCellContainer = () => {
       onMouseLeave={handleContainerMouseLeave}
     >
       {(IconLabel || label) && (
-        <AppTooltip
-          content={label}
-          noArrow
-          place="bottom"
-          delay={TooltipDelay.shortDelay}
-          hidden={showLabel}
-        >
-          <StyledLabelAndIconContainer>
-            {IconLabel && (
-              <StyledIconContainer>
-                <IconLabel stroke={theme.icon.stroke.sm} />
-              </StyledIconContainer>
-            )}
-            {showLabel && (
-              <StyledLabelContainer width={labelWidth}>
-                <OverflowingTextWithTooltip text={label} displayedMaxRows={1} />
-              </StyledLabelContainer>
-            )}
-          </StyledLabelAndIconContainer>
-        </AppTooltip>
+        <StyledLabelAndIconContainer id={labelId}>
+          {IconLabel && (
+            <StyledIconContainer>
+              <IconLabel stroke={theme.icon.stroke.sm} />
+            </StyledIconContainer>
+          )}
+          {showLabel && (
+            <StyledLabelContainer width={labelWidth}>
+              <OverflowingTextWithTooltip text={label} displayedMaxRows={1} />
+            </StyledLabelContainer>
+          )}
+          {/* TODO: Displaying Tooltips on the board is causing performance issues https://react-tooltip.com/docs/examples/render */}
+          {!showLabel && (
+            <AppTooltip
+              anchorSelect={`#${labelId}`}
+              content={label}
+              clickable
+              noArrow
+              place="bottom"
+              positionStrategy="fixed"
+              delay={TooltipDelay.shortDelay}
+            />
+          )}
+        </StyledLabelAndIconContainer>
       )}
       <StyledValueContainer readonly={readonly ?? false} id={anchorId}>
         <RecordInlineCellValue />

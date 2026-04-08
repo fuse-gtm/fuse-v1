@@ -32,18 +32,17 @@ const StyledAnimatedContainer = styled.div<{
   isExpanded: boolean;
   isResizing: boolean;
 }>`
-  height: 100%;
-  max-height: 100%;
+  max-height: 100vh;
   overflow: hidden;
   position: relative;
-  transition: ${({ isResizing }) =>
-    isResizing
-      ? 'none'
-      : `width calc(${themeCssVariables.animation.duration.normal} * 1s)`};
   width: ${({ isExpanded }) =>
     isExpanded
       ? `var(${NAVIGATION_DRAWER_WIDTH_VAR})`
       : `${NAVIGATION_DRAWER_COLLAPSED_WIDTH}px`};
+  transition: ${({ isResizing }) =>
+    isResizing
+      ? 'none'
+      : `width calc(${themeCssVariables.animation.duration.normal} * 1s)`};
 
   @media (max-width: ${MOBILE_VIEWPORT}px) {
     width: ${({ isExpanded }) => (isExpanded ? '100%' : '0')};
@@ -58,6 +57,8 @@ const StyledContainer = styled.div<{
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  width: ${({ isExpanded }) =>
+    isExpanded ? `var(${NAVIGATION_DRAWER_WIDTH_VAR})` : '100%'};
   gap: ${themeCssVariables.spacing[3]};
   height: 100%;
   padding: ${({ isSettings, isMobile }) =>
@@ -66,8 +67,6 @@ const StyledContainer = styled.div<{
         ? `${themeCssVariables.spacing[3]} 0 0 ${themeCssVariables.spacing[8]}`
         : `${themeCssVariables.spacing[3]} 0 ${themeCssVariables.spacing[4]} 0`
       : `${themeCssVariables.spacing[3]} 0 ${themeCssVariables.spacing[4]} ${themeCssVariables.spacing[2]}`};
-  width: ${({ isExpanded }) =>
-    isExpanded ? `var(${NAVIGATION_DRAWER_WIDTH_VAR})` : '100%'};
   @media (max-width: ${MOBILE_VIEWPORT}px) {
     width: 100%;
     padding-left: ${themeCssVariables.spacing[5]};
@@ -129,7 +128,7 @@ export const NavigationDrawer = ({
           isExpanded={isNavigationDrawerExpanded}
         >
           {isSettingsDrawer && title ? (
-            <NavigationDrawerBackButton title={title} />
+            !isMobile && <NavigationDrawerBackButton title={title} />
           ) : (
             <NavigationDrawerHeader showCollapseButton />
           )}
