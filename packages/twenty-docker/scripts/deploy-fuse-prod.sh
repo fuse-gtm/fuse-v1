@@ -1,0 +1,246 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "${SELF_DIR}/../../.." && pwd)"
+SCRIPT_DIR="${SELF_DIR}"
+cd "$REPO_ROOT"
+
+as_bool() {
+  case "${1:-false}" in
+    true|TRUE|1|yes|YES) echo "true" ;;
+    *) echo "false" ;;
+  esac
+}
+
+run_with_timeout() {
+  local seconds="$1"
+  shift
+
+  "$@" &
+  local command_pid="$!"
+
+  (
+    sleep "$seconds"
+    if kill -0 "$command_pid" >/dev/null 2>&1; then
+      kill "$command_pid" >/dev/null 2>&1 || true
+      sleep 2
+      if kill -0 "$command_pid" >/dev/null 2>&1; then
+        kill -9 "$command_pid" >/dev/null 2>&1 || true
+      fi
+    fi
+  ) &
+  local killer_pid="$!"
+
+  local command_code=0
+  wait "$command_pid" || command_code="$?"
+  kill "$killer_pid" >/dev/null 2>&1 || true
+  wait "$killer_pid" >/dev/null 2>&1 || true
+
+  return "$command_code"
+}
+
+ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
+PLATFORM="${PLATFORM:-linux/amd64}"
+HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"
+MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
+CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
+PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
+PUBLIC_HEALTHCHECK_URL="${PUBLIC_HEALTHCHECK_URL:-}"
+PUBLIC_MAX_WAIT_SECONDS="${PUBLIC_MAX_WAIT_SECONDS:-180}"
+VERIFY_PUBLIC_URL_RAW="${VERIFY_PUBLIC_URL:-}"
+ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_RAW="${ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK:-}"
+REGISTER_CRONS_POST_DEPLOY_RAW="${REGISTER_CRONS_POST_DEPLOY:-true}"
+REGISTER_CRONS_TIMEOUT_SECONDS="${REGISTER_CRONS_TIMEOUT_SECONDS:-90}"
+REQUESTED_IMAGE_TAG="${1:-}"
+
+PUBLIC_BASE_URL_OVERRIDE="$PUBLIC_BASE_URL"
+PUBLIC_HEALTHCHECK_URL_OVERRIDE="$PUBLIC_HEALTHCHECK_URL"
+VERIFY_PUBLIC_URL_OVERRIDE="$VERIFY_PUBLIC_URL_RAW"
+ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_OVERRIDE="$ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_RAW"
+
+if [ ! -f "$ENV_FILE" ]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  echo "Copy packages/twenty-docker/.env.fuse-prod.example to $ENV_FILE first." >&2
+  exit 1
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+if [ -n "$REQUESTED_IMAGE_TAG" ]; then
+  if [[ "${TWENTY_IMAGE:-}" != *:* ]]; then
+    echo "TWENTY_IMAGE in $ENV_FILE must include a tag to support tag override." >&2
+    exit 1
+  fi
+
+  TWENTY_IMAGE_REPO="${TWENTY_IMAGE%:*}"
+  TWENTY_IMAGE="${TWENTY_IMAGE_REPO}:${REQUESTED_IMAGE_TAG}"
+  echo "Using image tag override: ${TWENTY_IMAGE}"
+fi
+
+if [ -n "$PUBLIC_BASE_URL_OVERRIDE" ]; then
+  PUBLIC_BASE_URL="$PUBLIC_BASE_URL_OVERRIDE"
+fi
+
+if [ -n "$PUBLIC_HEALTHCHECK_URL_OVERRIDE" ]; then
+  PUBLIC_HEALTHCHECK_URL="$PUBLIC_HEALTHCHECK_URL_OVERRIDE"
+fi
+
+if [ -n "$VERIFY_PUBLIC_URL_OVERRIDE" ]; then
+  VERIFY_PUBLIC_URL_RAW="$VERIFY_PUBLIC_URL_OVERRIDE"
+fi
+
+if [ -n "$ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_OVERRIDE" ]; then
+  ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_RAW="$ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_OVERRIDE"
+elif [ -n "${ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK:-}" ]; then
+  ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_RAW="${ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK}"
+fi
+
+if [ -z "${TWENTY_IMAGE:-}" ]; then
+  echo "TWENTY_IMAGE must be set in $ENV_FILE" >&2
+  exit 1
+fi
+
+if [ -z "${SERVER_URL:-}" ]; then
+  echo "SERVER_URL must be set in $ENV_FILE" >&2
+  exit 1
+fi
+
+if [ -z "${APP_SECRET:-}" ]; then
+  echo "APP_SECRET must be set in $ENV_FILE" >&2
+  exit 1
+fi
+
+if [ -z "${PG_DATABASE_PASSWORD:-}" ]; then
+  echo "PG_DATABASE_PASSWORD must be set in $ENV_FILE" >&2
+  exit 1
+fi
+
+if [ -n "${GHCR_USERNAME:-}" ] && [ -n "${GHCR_TOKEN:-}" ]; then
+  echo "Authenticating to ghcr.io with GHCR_USERNAME/GHCR_TOKEN"
+  echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USERNAME}" --password-stdin
+fi
+
+if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "$PUBLIC_BASE_URL" ]; then
+  PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/healthz"
+fi
+
+if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "${SERVER_URL:-}" ]; then
+  PUBLIC_HEALTHCHECK_URL="${SERVER_URL%/}/healthz"
+fi
+
+if [ -z "$VERIFY_PUBLIC_URL_RAW" ]; then
+  if [ -n "$PUBLIC_HEALTHCHECK_URL" ]; then
+    VERIFY_PUBLIC_URL_RAW="true"
+  else
+    VERIFY_PUBLIC_URL_RAW="false"
+  fi
+fi
+
+VERIFY_PUBLIC_URL="$(as_bool "$VERIFY_PUBLIC_URL_RAW")"
+ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK="$(as_bool "${ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK_RAW:-false}")"
+REGISTER_CRONS_POST_DEPLOY="$(as_bool "$REGISTER_CRONS_POST_DEPLOY_RAW")"
+
+if [ "$VERIFY_PUBLIC_URL" != "true" ] && [ "$ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK" != "true" ]; then
+  echo "Refusing to deploy without public ingress verification." >&2
+  echo "Set VERIFY_PUBLIC_URL=true, or explicitly bypass with ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK=true." >&2
+  exit 1
+fi
+
+MODE=prod \
+ENV_FILE="$ENV_FILE" \
+IMAGE_REF="$TWENTY_IMAGE" \
+PLATFORM="$PLATFORM" \
+CHECK_IMAGE_EXISTS=true \
+CHECK_BUILD_RESOURCES=false \
+bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
+
+# Guard: external DB requires EXTRA_COMPOSE_FILE (e.g. docker-compose.aws.yml)
+# to skip the local db container. Without it a t3.small will OOM.
+_PG_HOST="${PG_DATABASE_HOST:-db}"
+if [[ "$_PG_HOST" != "db" && "$_PG_HOST" != "localhost" && "$_PG_HOST" != "127.0.0.1" ]]; then
+  if [ -z "${EXTRA_COMPOSE_FILE:-}" ]; then
+    echo "ERROR: PG_DATABASE_HOST (${_PG_HOST}) is external but EXTRA_COMPOSE_FILE is not set." >&2
+    echo "Set EXTRA_COMPOSE_FILE=packages/twenty-docker/docker-compose.aws.yml to skip local db." >&2
+    exit 1
+  fi
+fi
+
+COMPOSE_ARGS=(
+  -f packages/twenty-docker/docker-compose.yml
+  -f packages/twenty-docker/docker-compose.fuse.yml
+)
+
+if [ -n "${EXTRA_COMPOSE_FILE:-}" ]; then
+  COMPOSE_ARGS+=(-f "$EXTRA_COMPOSE_FILE")
+fi
+
+COMPOSE_ARGS+=(--env-file "$ENV_FILE")
+
+echo "Deploying ${TWENTY_IMAGE}"
+docker compose "${COMPOSE_ARGS[@]}" up -d
+
+START_TS="$(date +%s)"
+
+echo "Waiting for health: ${HEALTH_URL}"
+until curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$HEALTH_URL" >/dev/null 2>&1; do
+  NOW_TS="$(date +%s)"
+  if [ $((NOW_TS - START_TS)) -ge "$MAX_WAIT_SECONDS" ]; then
+    echo "Timed out waiting for ${HEALTH_URL}" >&2
+    docker compose "${COMPOSE_ARGS[@]}" ps
+    docker compose "${COMPOSE_ARGS[@]}" logs server --tail 200 || true
+    exit 1
+  fi
+  sleep 3
+done
+
+echo "Server healthy"
+
+if [ "$VERIFY_PUBLIC_URL" = "true" ]; then
+  if [ -z "$PUBLIC_HEALTHCHECK_URL" ]; then
+    echo "VERIFY_PUBLIC_URL=true but PUBLIC_HEALTHCHECK_URL is not set and PUBLIC_BASE_URL is empty." >&2
+    exit 1
+  fi
+
+  PUBLIC_START_TS="$(date +%s)"
+  echo "Waiting for public health: ${PUBLIC_HEALTHCHECK_URL}"
+  until curl -fsS --max-time "$CURL_MAX_TIME_SECONDS" "$PUBLIC_HEALTHCHECK_URL" >/dev/null 2>&1; do
+    NOW_TS="$(date +%s)"
+    if [ $((NOW_TS - PUBLIC_START_TS)) -ge "$PUBLIC_MAX_WAIT_SECONDS" ]; then
+      echo "Timed out waiting for ${PUBLIC_HEALTHCHECK_URL}" >&2
+      docker compose "${COMPOSE_ARGS[@]}" ps
+      docker compose "${COMPOSE_ARGS[@]}" logs server --tail 200 || true
+      exit 1
+    fi
+    sleep 3
+  done
+
+  echo "Public health check passed"
+else
+  echo "Warning: Public health verification disabled by explicit override"
+  echo "(VERIFY_PUBLIC_URL=${VERIFY_PUBLIC_URL}, ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK=${ALLOW_DEPLOY_WITHOUT_PUBLIC_HEALTHCHECK})"
+fi
+
+if [ "$REGISTER_CRONS_POST_DEPLOY" = "true" ]; then
+  echo "Registering cron jobs post-deploy (timeout=${REGISTER_CRONS_TIMEOUT_SECONDS}s)"
+  if run_with_timeout "$REGISTER_CRONS_TIMEOUT_SECONDS" \
+    docker compose "${COMPOSE_ARGS[@]}" exec -T server yarn command:prod cron:register:all; then
+    echo "Post-deploy cron registration succeeded"
+  else
+    echo "Warning: Post-deploy cron registration failed or timed out; continuing."
+  fi
+else
+  echo "Post-deploy cron registration skipped (REGISTER_CRONS_POST_DEPLOY=${REGISTER_CRONS_POST_DEPLOY})"
+fi
+
+if [ -n "${WORKSPACE_ID:-}" ]; then
+  echo "Bootstrapping Partner OS for workspace ${WORKSPACE_ID}"
+  docker compose "${COMPOSE_ARGS[@]}" exec -T server \
+    yarn command:prod workspace:bootstrap:partner-os -w "${WORKSPACE_ID}"
+  echo "Partner OS bootstrap complete"
+else
+  echo "WORKSPACE_ID not set. Skipping Partner OS bootstrap."
+fi

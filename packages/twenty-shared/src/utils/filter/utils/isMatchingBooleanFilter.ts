@@ -1,4 +1,4 @@
-import { type BooleanFilter } from '@/types';
+import { type BooleanFilter } from '../../../types';
 
 export const isMatchingBooleanFilter = ({
   booleanFilter,

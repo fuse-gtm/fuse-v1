@@ -1,4 +1,4 @@
-import { type FloatFilter } from '@/types';
+import { type FloatFilter } from '../../../types';
 
 export const isMatchingFloatFilter = ({
   floatFilter,

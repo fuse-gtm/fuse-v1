@@ -13,6 +13,7 @@ type GetRecordImageIdentifierOptions = {
   record: Record<string, unknown>;
   flatObjectMetadata: FlatObjectMetadata;
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>;
+  allowRequestsToTwentyIcons?: boolean;
   signUrl?: (fileId: string, fileFolder: FileFolder) => string | null;
 };
 
@@ -20,9 +21,13 @@ export const getRecordImageIdentifier = ({
   record,
   flatObjectMetadata,
   flatFieldMetadataMaps,
+  allowRequestsToTwentyIcons = false,
   signUrl,
 }: GetRecordImageIdentifierOptions): string | null => {
-  if (flatObjectMetadata.nameSingular === 'company') {
+  if (
+    flatObjectMetadata.nameSingular === 'company' &&
+    allowRequestsToTwentyIcons
+  ) {
     const domainNameObj = record.domainName as
       | { primaryLinkUrl?: string }
       | undefined;

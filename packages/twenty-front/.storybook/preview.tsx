@@ -6,22 +6,23 @@ import { useEffect } from 'react';
 import { SOURCE_LOCALE } from 'twenty-shared/translations';
 //import { useDarkMode } from 'storybook-dark-mode';
 
-// eslint-disable-next-line no-restricted-imports
 import { RootDecorator } from '../src/testing/decorators/RootDecorator';
-// eslint-disable-next-line no-restricted-imports
 import { resetJotaiStore } from '../src/modules/ui/utilities/state/jotai/jotaiStore';
 
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'twenty-ui/style.css';
-import { THEME_LIGHT, ThemeContextProvider } from 'twenty-ui/theme';
-// eslint-disable-next-line no-restricted-imports
+import { ThemeContextProvider } from 'twenty-ui/theme';
 import { messages as enMessages } from '../src/locales/generated/en';
+import {
+  DEFAULT_DESIGN_OPTION_ID,
+  DESIGN_OPTION_TOOLBAR_ITEMS,
+  getDesignOptionTheme,
+} from './designOptions';
 
 // Initialize i18n globally for all stories
 i18n.load({ [SOURCE_LOCALE]: enMessages });
 i18n.activate(SOURCE_LOCALE);
 import { mockedUserJWT } from '~/testing/mock-data/jwt';
-// eslint-disable-next-line no-restricted-imports
 import { ClickOutsideListenerContext } from '../src/modules/ui/utilities/pointer-event/contexts/ClickOutsideListenerContext';
 
 initialize({
@@ -59,14 +60,17 @@ initialize({
 
 const preview: Preview = {
   decorators: [
-    (Story) => {
+    (Story, context) => {
       // const theme = useDarkMode() ? THEME_DARK : THEME_LIGHT;
-      const theme = THEME_LIGHT;
+      const designOptionId =
+        context.globals.designOption ?? DEFAULT_DESIGN_OPTION_ID;
+      const theme = getDesignOptionTheme(designOptionId);
 
       useEffect(() => {
         document.documentElement.className =
           theme.name === 'dark' ? 'dark' : 'light';
-      }, [theme]);
+        document.documentElement.dataset.storybookDesign = designOptionId;
+      }, [designOptionId, theme]);
 
       return (
         <I18nProvider i18n={i18n}>
@@ -88,6 +92,19 @@ const preview: Preview = {
   },
 
   loaders: [mswLoader],
+
+  globalTypes: {
+    designOption: {
+      name: 'Design',
+      description: 'Fuse design direction',
+      defaultValue: DEFAULT_DESIGN_OPTION_ID,
+      toolbar: {
+        icon: 'paintbrush',
+        items: DESIGN_OPTION_TOOLBAR_ITEMS,
+        dynamicTitle: true,
+      },
+    },
+  },
 
   parameters: {
     controls: {

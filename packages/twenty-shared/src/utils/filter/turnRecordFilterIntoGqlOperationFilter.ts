@@ -23,7 +23,7 @@ import {
   type StringFilter,
   type TSVectorFilter,
   type UUIDFilter,
-} from '@/types';
+} from '../../types';
 
 import {
   computeGqlOperationFilterForEmails,
@@ -34,9 +34,9 @@ import {
   generateILikeFiltersForCompositeFields,
   getEmptyRecordGqlOperationFilter,
   isExpectedSubFieldName,
-} from '@/utils/filter';
+} from '.';
 
-import { type DateTimeFilter } from '@/types/RecordGqlOperationFilter';
+import { type DateTimeFilter } from '../../types/RecordGqlOperationFilter';
 import {
   checkIfShouldComputeEmptinessFilter,
   CustomError,
@@ -49,10 +49,10 @@ import {
   resolveDateTimeFilter,
   resolveRelativeDateFilterStringified,
   type RecordFilter,
-} from '@/utils';
-import { arrayOfStringsOrVariablesSchema } from '@/utils/filter/utils/validation-schemas/arrayOfStringsOrVariablesSchema';
-import { arrayOfUuidOrVariableSchema } from '@/utils/filter/utils/validation-schemas/arrayOfUuidsOrVariablesSchema';
-import { jsonRelationFilterValueSchema } from '@/utils/filter/utils/validation-schemas/jsonRelationFilterValueSchema';
+} from '..';
+import { arrayOfStringsOrVariablesSchema } from './utils/validation-schemas/arrayOfStringsOrVariablesSchema';
+import { arrayOfUuidOrVariableSchema } from './utils/validation-schemas/arrayOfUuidsOrVariablesSchema';
+import { jsonRelationFilterValueSchema } from './utils/validation-schemas/jsonRelationFilterValueSchema';
 
 type FieldShared = {
   id: string;

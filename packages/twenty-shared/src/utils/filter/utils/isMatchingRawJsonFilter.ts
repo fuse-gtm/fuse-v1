@@ -1,4 +1,4 @@
-import { type RawJsonFilter } from '@/types';
+import { type RawJsonFilter } from '../../../types';
 
 export const isMatchingRawJsonFilter = ({
   rawJsonFilter,

@@ -1,10 +1,10 @@
-import { ensureAbsoluteUrl } from '@/utils/url/ensureAbsoluteUrl';
-import { isValidHostname } from '@/utils/url/isValidHostname';
+import { getAbsoluteUrl } from './getAbsoluteUrl';
+import { isValidHostname } from './isValidHostname';
 import { z } from 'zod';
 
 export const absoluteUrlSchema = z.string().transform((value, ctx) => {
   const trimmedValue = value.trim();
-  const absoluteUrl = ensureAbsoluteUrl(trimmedValue);
+  const absoluteUrl = getAbsoluteUrl(trimmedValue);
 
   const valueWithoutProtocol = absoluteUrl
     .replace('https://', '')

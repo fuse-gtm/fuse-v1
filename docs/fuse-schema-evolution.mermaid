@@ -1,0 +1,169 @@
+graph TB
+    subgraph CURRENT["CURRENT STATE · 16 objects · 1 bootstrapped"]
+        direction TB
+
+        subgraph C_CORE["CORE"]
+            C_PP["partnerProfile"]
+            C_PCA["partnerContactAssignment"]
+            C_LEAD["lead"]
+        end
+
+        subgraph C_COSELL["COSELL"]
+            C_PCM["partnerCustomerMap"]
+            C_PAE["partnerAttributionEvent"]
+            C_PAS["partnerAttributionSnapshot"]
+            C_CE["customerEvent"]
+            C_CS["customerSnapshot"]
+        end
+
+        subgraph C_DISC["DISCOVERY"]
+            C_PP2["partnerPlay"]
+            C_PC["playCheck"]
+            C_PE["playEnrichment"]
+            C_PX["playExclusion"]
+            C_DR["discoveryRun"]
+            C_CAND["partnerCandidate"]
+            C_CHK["checkEvaluation"]
+            C_ENR["enrichmentEvaluation"]
+        end
+
+        C_PP2 --> C_PC
+        C_PP2 --> C_PE
+        C_PP2 --> C_PX
+        C_PP2 --> C_DR
+        C_DR --> C_CAND
+        C_CAND --> C_CHK
+        C_CAND --> C_ENR
+        C_PC -.-> C_CHK
+        C_PE -.-> C_ENR
+    end
+
+    subgraph INITIAL["INITIAL · Track Rename · No new objects"]
+        direction TB
+
+        subgraph I_CORE["CORE · no changes"]
+            I_PP["partnerProfile"]
+            I_PCA["partnerContactAssignment"]
+            I_LEAD["lead"]
+        end
+
+        subgraph I_COSELL["COSELL · no changes"]
+            I_PCM["partnerCustomerMap"]
+            I_PAE["partnerAttributionEvent"]
+            I_PAS["partnerAttributionSnapshot"]
+            I_CE["customerEvent"]
+            I_CS["customerSnapshot"]
+        end
+
+        subgraph I_DISC["DISCOVERY · renamed"]
+            I_PT["partnerTrack"]
+            I_TC["trackCheck"]
+            I_TE["trackEnrichment"]
+            I_TX["trackExclusion"]
+            I_DR["discoveryRun"]
+            I_CAND["partnerCandidate"]
+            I_CHK["checkEvaluation"]
+            I_ENR["enrichmentEvaluation"]
+        end
+
+        I_PT --> I_TC
+        I_PT --> I_TE
+        I_PT --> I_TX
+        I_PT --> I_DR
+        I_DR --> I_CAND
+        I_CAND --> I_CHK
+        I_CAND --> I_ENR
+        I_TC -.-> I_CHK
+        I_TE -.-> I_ENR
+    end
+
+    subgraph V2["v2 NORTH STAR · PDF · adds ~20 objects"]
+        direction TB
+
+        subgraph V2_CRM["CRM GRAPH · Twenty built-in"]
+            V2_ORG["Organization"]
+            V2_PER["Person"]
+            V2_OPP["Opportunity"]
+            V2_ACT["Activity"]
+        end
+
+        subgraph V2_CORE["PARTNER CORE"]
+            V2_PA["partnerAccount"]
+            V2_PROG["partnerProgram"]
+            V2_MEM["programMembership"]
+            V2_TRK["partnerTrack"]
+        end
+
+        subgraph V2_DISC["DISCOVERY + SCORING"]
+            V2_CS["criteriaSet"]
+            V2_CI["criteriaItem"]
+            V2_SR["scorecardRun"]
+            V2_RES["scoreResult"]
+            V2_EV["scoreEvidence"]
+        end
+
+        subgraph V2_COSELL["CO-SELL + MAPPING"]
+            V2_AMP["accountMappingProject"]
+            V2_POP["population"]
+            V2_SP["sharingPolicy"]
+            V2_OS["overlapSnapshot"]
+            V2_DR2["dealRegistration"]
+        end
+
+        subgraph V2_ENABLE["ENABLEMENT"]
+            V2_EA["enablementAsset"]
+            V2_CERT["certification"]
+        end
+
+        subgraph V2_ATTR["ATTRIBUTION"]
+            V2_AT["attributionTouch"]
+            V2_AM["attributionModel"]
+            V2_COM["commissionRule"]
+        end
+
+        subgraph V2_AI["AI NATIVE"]
+            V2_DC["dataClaim"]
+            V2_AG["agentRun"]
+            V2_AE["auditEvent"]
+            V2_EMB["embedding"]
+        end
+
+        V2_ORG --> V2_PA
+        V2_PA --> V2_MEM
+        V2_PROG --> V2_MEM
+        V2_TRK --> V2_CS
+        V2_TRK --> V2_SR
+        V2_CS --> V2_CI
+        V2_SR --> V2_RES
+        V2_RES --> V2_EV
+        V2_AMP --> V2_POP
+        V2_POP --> V2_OS
+        V2_PA --> V2_SP
+    end
+
+    CURRENT -->|"rename play to track"| INITIAL
+    INITIAL -->|"v2 adds ~20 objects"| V2
+
+    style C_PP2 fill:#f96,stroke:#c00
+    style I_PT fill:#6f6,stroke:#090
+    style V2_PROG fill:#69f,stroke:#03c
+    style V2_MEM fill:#69f,stroke:#03c
+    style V2_CS fill:#69f,stroke:#03c
+    style V2_CI fill:#69f,stroke:#03c
+    style V2_SR fill:#69f,stroke:#03c
+    style V2_RES fill:#69f,stroke:#03c
+    style V2_EV fill:#69f,stroke:#03c
+    style V2_AMP fill:#69f,stroke:#03c
+    style V2_POP fill:#69f,stroke:#03c
+    style V2_SP fill:#69f,stroke:#03c
+    style V2_OS fill:#69f,stroke:#03c
+    style V2_DR2 fill:#69f,stroke:#03c
+    style V2_EA fill:#69f,stroke:#03c
+    style V2_CERT fill:#69f,stroke:#03c
+    style V2_AT fill:#69f,stroke:#03c
+    style V2_AM fill:#69f,stroke:#03c
+    style V2_COM fill:#69f,stroke:#03c
+    style V2_DC fill:#69f,stroke:#03c
+    style V2_AG fill:#69f,stroke:#03c
+    style V2_AE fill:#69f,stroke:#03c
+    style V2_EMB fill:#69f,stroke:#03c

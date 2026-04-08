@@ -169,8 +169,30 @@ export class ConfigVariables {
     description:
       "Enable or disable requests to twenty-icons to get companies' icons",
     type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
   })
-  ALLOW_REQUESTS_TO_TWENTY_ICONS = true;
+  ALLOW_REQUESTS_TO_TWENTY_ICONS = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Enable or disable remote company enrichment during contact/company creation',
+    type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  COMPANY_ENRICHMENT_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Company enrichment provider. Use "none" to keep company enrichment fully local.',
+    type: ConfigVariableType.ENUM,
+    options: ['none', 'twenty'],
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  COMPANY_ENRICHMENT_PROVIDER: 'none' | 'twenty' = 'none';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.MICROSOFT_AUTH,
@@ -632,6 +654,7 @@ export class ConfigVariables {
     group: ConfigVariablesGroup.ANALYTICS_CONFIG,
     description: 'Enable or disable analytics for telemetry',
     type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
   })
   @IsOptional()
   ANALYTICS_ENABLED = false;
@@ -654,9 +677,10 @@ export class ConfigVariables {
     group: ConfigVariablesGroup.LOGGING,
     description: 'Enable or disable telemetry logging',
     type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
   })
   @IsOptional()
-  TELEMETRY_ENABLED = true;
+  TELEMETRY_ENABLED = false;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.LOGGING,
@@ -875,6 +899,7 @@ export class ConfigVariables {
     description: 'Driver used for support chat integration',
     type: ConfigVariableType.ENUM,
     options: Object.values(SupportDriver),
+    isEnvOnly: true,
   })
   @IsOptional()
   @CastToUpperSnakeCase()
@@ -1412,6 +1437,56 @@ export class ConfigVariables {
   })
   @IsOptional()
   AI_ENABLED_MODEL_IDS: string[] = [];
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.LLM,
+    description: 'Enable or disable AI telemetry capture',
+    type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  AI_TELEMETRY_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Enable or disable remote marketplace metadata fetches from GitHub',
+    type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  MARKETPLACE_REMOTE_FETCH_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Enable or disable outbound admin version checks to Docker Hub',
+    type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  ADMIN_VERSION_CHECK_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Enable or disable help center web search tool availability and outbound calls',
+    type: ConfigVariableType.BOOLEAN,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  HELP_CENTER_SEARCH_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Help center search provider. Use "none" to disable, "mintlify" for direct docs API, or "twenty" for Twenty help proxy.',
+    type: ConfigVariableType.ENUM,
+    options: ['none', 'mintlify', 'twenty'],
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  HELP_CENTER_SEARCH_PROVIDER: 'none' | 'mintlify' | 'twenty' = 'none';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SERVER_CONFIG,

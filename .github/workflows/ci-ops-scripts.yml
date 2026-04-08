@@ -1,0 +1,34 @@
+name: CI Ops Scripts
+
+on:
+  pull_request:
+    paths:
+      - 'packages/twenty-docker/scripts/**'
+      - 'packages/twenty-docker/twenty/entrypoint.sh'
+      - 'packages/twenty-server/src/database/commands/cron-register-all.command.ts'
+      - '.github/workflows/ci-ops-scripts.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/twenty-docker/scripts/**'
+      - 'packages/twenty-docker/twenty/entrypoint.sh'
+      - 'packages/twenty-server/src/database/commands/cron-register-all.command.ts'
+      - '.github/workflows/ci-ops-scripts.yml'
+
+jobs:
+  ops-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Bash Syntax Check
+        run: |
+          bash -n packages/twenty-docker/scripts/*.sh
+          bash -n packages/twenty-docker/scripts/__tests__/test-ops-scripts.sh
+
+      - name: Run Mock-Based Ops Script Tests
+        run: |
+          bash packages/twenty-docker/scripts/__tests__/test-ops-scripts.sh

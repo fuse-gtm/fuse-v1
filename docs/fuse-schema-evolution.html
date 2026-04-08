@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuse Schema Evolution</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; padding: 24px; }
+  h1 { color: #f0f6fc; font-size: 1.5rem; margin-bottom: 4px; }
+  h2 { color: #8b949e; font-size: 1rem; font-weight: 400; margin-top: 0; }
+
+  .legend { display: flex; gap: 16px; margin-top: 16px; font-size: 0.8rem; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .panels { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+
+  .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+  .panel.active { border-color: #484f58; }
+
+  .panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .panel-header:hover { background: #1c2129; }
+
+  .panel-header h3 { margin: 0; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .badge-current { background: #f97316; color: #fff; }
+  .badge-initial { background: #22c55e; color: #fff; }
+  .badge-v2 { background: #3b82f6; color: #fff; }
+
+  .panel-desc { color: #8b949e; font-size: 0.8rem; margin-left: 12px; }
+
+  .chevron {
+    width: 20px; height: 20px; transition: transform 0.25s ease;
+    color: #484f58; flex-shrink: 0;
+  }
+  .panel.active .chevron { transform: rotate(180deg); color: #8b949e; }
+
+  .panel-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.25s ease;
+    padding: 0 20px;
+  }
+  .panel.active .panel-body {
+    max-height: 2000px;
+    padding: 0 20px 20px;
+  }
+
+  .mermaid { background: #0d1117; }
+
+  .object-list {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid #21262d;
+  }
+  .obj-tag {
+    font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;
+    background: #21262d; color: #8b949e; font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .obj-tag.stale { background: #431407; color: #fb923c; }
+  .obj-tag.renamed { background: #052e16; color: #4ade80; }
+  .obj-tag.new { background: #172554; color: #60a5fa; }
+</style>
+</head>
+<body>
+<h1>Fuse Partner-OS Schema Evolution</h1>
+<h2>Current State -> Initial (Track Rename) -> v2 North Star</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#f97316"></div> Stale naming (to rename)</div>
+  <div class="legend-item"><div class="dot" style="background:#22c55e"></div> Renamed / ready</div>
+  <div class="legend-item"><div class="dot" style="background:#3b82f6"></div> New in v2</div>
+  <div class="legend-item"><div class="dot" style="background:#6b7280"></div> Unchanged</div>
+</div>
+
+<div class="panels">
+
+<!-- CURRENT STATE -->
+<div class="panel" id="panel-current">
+  <div class="panel-header" onclick="toggle('panel-current')">
+    <h3>
+      <span class="badge badge-current">Current</span>
+      Current State
+      <span class="panel-desc">16 objects -- 4 with stale "play" naming</span>
+    </h3>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="panel-body">
+    <pre class="mermaid">
+graph TD
+    subgraph core["CORE"]
+        PP["partnerProfile"]
+        PCA["partnerContactAssignment"]
+        LEAD["lead"]
+    end
+
+    subgraph cosell["COSELL"]
+        PCM["partnerCustomerMap"]
+        PAE["partnerAttributionEvent"]
+        PAS["partnerAttributionSnapshot"]
+        CE["customerEvent"]
+        CS["customerSnapshot"]
+    end
+
+    subgraph disc["DISCOVERY"]
+        PT["partnerPlay"]
+        TC["playCheck"]
+        TE["playEnrichment"]
+        TX["playExclusion"]
+        DR["discoveryRun"]
+        CAND["partnerCandidate"]
+        CHK["checkEvaluation"]
+        ENR["enrichmentEvaluation"]
+    end
+
+    PT --> TC
+    PT --> TE
+    PT --> TX
+    PT --> DR
+    DR --> CAND
+    CAND --> CHK
+    CAND --> ENR
+    TC -.-> CHK
+    TE -.-> ENR
+
+    style PT fill:#f97316,stroke:#c2410c,color:#fff
+    style TC fill:#f97316,stroke:#c2410c,color:#fff
+    style TE fill:#f97316,stroke:#c2410c,color:#fff
+    style TX fill:#f97316,stroke:#c2410c,color:#fff
+    </pre>
+    <div class="object-list">
+      <span class="obj-tag">partnerProfile</span>
+      <span class="obj-tag">partnerContactAssignment</span>
+      <span class="obj-tag">lead</span>
+      <span class="obj-tag">partnerCustomerMap</span>
+      <span class="obj-tag">partnerAttributionEvent</span>
+      <span class="obj-tag">partnerAttributionSnapshot</span>
+      <span class="obj-tag">customerEvent</span>
+      <span class="obj-tag">customerSnapshot</span>
+      <span class="obj-tag stale">partnerPlay</span>
+      <span class="obj-tag stale">playCheck</span>
+      <span class="obj-tag stale">playEnrichment</span>
+      <span class="obj-tag stale">playExclusion</span>
+      <span class="obj-tag">discoveryRun</span>
+      <span class="obj-tag">partnerCandidate</span>
+      <span class="obj-tag">checkEvaluation</span>
+      <span class="obj-tag">enrichmentEvaluation</span>
+    </div>
+  </div>
+</div>
+
+<!-- INITIAL -->
+<div class="panel" id="panel-initial">
+  <div class="panel-header" onclick="toggle('panel-initial')">
+    <h3>
+      <span class="badge badge-initial">Initial</span>
+      Track Rename
+      <span class="panel-desc">16 objects -- play -> track, no new objects</span>
+    </h3>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="panel-body">
+    <pre class="mermaid">
+graph TD
+    subgraph core["CORE -- no changes"]
+        PP["partnerProfile"]
+        PCA["partnerContactAssignment"]
+        LEAD["lead"]
+    end
+
+    subgraph cosell["COSELL -- no changes"]
+        PCM["partnerCustomerMap"]
+        PAE["partnerAttributionEvent"]
+        PAS["partnerAttributionSnapshot"]
+        CE["customerEvent"]
+        CS["customerSnapshot"]
+    end
+
+    subgraph disc["DISCOVERY -- renamed"]
+        PT["partnerTrack"]
+        TC["trackCheck"]
+        TE["trackEnrichment"]
+        TX["trackExclusion"]
+        DR["discoveryRun"]
+        CAND["partnerCandidate"]
+        CHK["checkEvaluation"]
+        ENR["enrichmentEvaluation"]
+    end
+
+    PT --> TC
+    PT --> TE
+    PT --> TX
+    PT --> DR
+    DR --> CAND
+    CAND --> CHK
+    CAND --> ENR
+    TC -.-> CHK
+    TE -.-> ENR
+
+    style PT fill:#22c55e,stroke:#15803d,color:#fff
+    style TC fill:#22c55e,stroke:#15803d,color:#fff
+    style TE fill:#22c55e,stroke:#15803d,color:#fff
+    style TX fill:#22c55e,stroke:#15803d,color:#fff
+    </pre>
+    <div class="object-list">
+      <span class="obj-tag">partnerProfile</span>
+      <span class="obj-tag">partnerContactAssignment</span>
+      <span class="obj-tag">lead</span>
+      <span class="obj-tag">partnerCustomerMap</span>
+      <span class="obj-tag">partnerAttributionEvent</span>
+      <span class="obj-tag">partnerAttributionSnapshot</span>
+      <span class="obj-tag">customerEvent</span>
+      <span class="obj-tag">customerSnapshot</span>
+      <span class="obj-tag renamed">partnerTrack</span>
+      <span class="obj-tag renamed">trackCheck</span>
+      <span class="obj-tag renamed">trackEnrichment</span>
+      <span class="obj-tag renamed">trackExclusion</span>
+      <span class="obj-tag">discoveryRun</span>
+      <span class="obj-tag">partnerCandidate</span>
+      <span class="obj-tag">checkEvaluation</span>
+      <span class="obj-tag">enrichmentEvaluation</span>
+    </div>
+  </div>
+</div>
+
+<!-- V2 NORTH STAR -->
+<div class="panel" id="panel-v2">
+  <div class="panel-header" onclick="toggle('panel-v2')">
+    <h3>
+      <span class="badge badge-v2">v2</span>
+      North Star
+      <span class="panel-desc">~36 objects across 7 domains -- adds ~20 new objects</span>
+    </h3>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="panel-body">
+    <pre class="mermaid">
+graph TD
+    subgraph crm["CRM GRAPH -- Twenty"]
+        ORG["Organization"]
+        PER["Person"]
+        OPP["Opportunity"]
+    end
+
+    subgraph pcore["PARTNER CORE"]
+        PA["partnerAccount"]
+        PROG["partnerProgram"]
+        MEM["programMembership"]
+        PT["partnerTrack"]
+    end
+
+    subgraph scoring["DISCOVERY + SCORING"]
+        CS2["criteriaSet"]
+        CI["criteriaItem"]
+        SR["scorecardRun"]
+        RES["scoreResult"]
+        EV["scoreEvidence"]
+    end
+
+    subgraph mapping["CO-SELL + MAPPING"]
+        AMP["accountMappingProject"]
+        POP["population"]
+        SP["sharingPolicy"]
+        OS["overlapSnapshot"]
+        DRG["dealRegistration"]
+    end
+
+    subgraph enable["ENABLEMENT"]
+        EA["enablementAsset"]
+        CERT["certification"]
+    end
+
+    subgraph attrib["ATTRIBUTION"]
+        AT["attributionTouch"]
+        AM["attributionModel"]
+        COM["commissionRule"]
+    end
+
+    subgraph ai["AI NATIVE"]
+        DC["dataClaim"]
+        AG["agentRun"]
+        AE["auditEvent"]
+        EMB["embedding"]
+    end
+
+    ORG --> PA
+    PA --> MEM
+    PROG --> MEM
+    PT --> CS2
+    PT --> SR
+    CS2 --> CI
+    SR --> RES
+    RES --> EV
+    AMP --> POP
+    POP --> OS
+    PA --> SP
+
+    style PA fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style PROG fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style MEM fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style CS2 fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style CI fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style SR fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style RES fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style EV fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style AMP fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style POP fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style SP fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style OS fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style DRG fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style EA fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style CERT fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style AT fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style AM fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style COM fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style DC fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style AG fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style AE fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    style EMB fill:#3b82f6,stroke:#1d4ed8,color:#fff
+    </pre>
+    <div class="object-list">
+      <span class="obj-tag">Organization</span>
+      <span class="obj-tag">Person</span>
+      <span class="obj-tag">Opportunity</span>
+      <span class="obj-tag">partnerTrack</span>
+      <span class="obj-tag new">partnerAccount</span>
+      <span class="obj-tag new">partnerProgram</span>
+      <span class="obj-tag new">programMembership</span>
+      <span class="obj-tag new">criteriaSet</span>
+      <span class="obj-tag new">criteriaItem</span>
+      <span class="obj-tag new">scorecardRun</span>
+      <span class="obj-tag new">scoreResult</span>
+      <span class="obj-tag new">scoreEvidence</span>
+      <span class="obj-tag new">accountMappingProject</span>
+      <span class="obj-tag new">population</span>
+      <span class="obj-tag new">sharingPolicy</span>
+      <span class="obj-tag new">overlapSnapshot</span>
+      <span class="obj-tag new">dealRegistration</span>
+      <span class="obj-tag new">enablementAsset</span>
+      <span class="obj-tag new">certification</span>
+      <span class="obj-tag new">attributionTouch</span>
+      <span class="obj-tag new">attributionModel</span>
+      <span class="obj-tag new">commissionRule</span>
+      <span class="obj-tag new">dataClaim</span>
+      <span class="obj-tag new">agentRun</span>
+      <span class="obj-tag new">auditEvent</span>
+      <span class="obj-tag new">embedding</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#21262d',
+      primaryBorderColor: '#30363d',
+      primaryTextColor: '#c9d1d9',
+      lineColor: '#484f58',
+      secondaryColor: '#161b22',
+      tertiaryColor: '#0d1117'
+    }
+  });
+
+  function toggle(id) {
+    const panel = document.getElementById(id);
+    const wasActive = panel.classList.contains('active');
+
+    panel.classList.toggle('active');
+
+    // Render mermaid lazily on first expand
+    if (!wasActive) {
+      const pre = panel.querySelector('.mermaid');
+      if (pre && !pre.dataset.rendered) {
+        pre.dataset.rendered = 'true';
+        const graphDef = pre.textContent;
+        const svgId = 'mermaid-' + id;
+        mermaid.render(svgId, graphDef).then(({ svg }) => {
+          pre.innerHTML = svg;
+        });
+      }
+    }
+  }
+
+  // Auto-expand the first panel on load
+  window.addEventListener('DOMContentLoaded', () => {
+    toggle('panel-current');
+  });
+</script>
+</body>
+</html>

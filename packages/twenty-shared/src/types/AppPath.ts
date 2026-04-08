@@ -12,6 +12,7 @@ export enum AppPath {
   PartnerProfile = '/create/partner-profile',
   SyncEmails = '/sync/emails',
   InviteTeam = '/invite-team',
+  CheckInbox = '/check-inbox',
   PlanRequired = '/plan-required',
   PlanRequiredSuccess = '/plan-required/payment-success',
   BookCallDecision = '/book-call-decision',

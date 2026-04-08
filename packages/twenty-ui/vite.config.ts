@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import wyw from '@wyw-in-js/vite';
-import * as fs from 'fs';
+import fs from 'fs';
 import * as path from 'path';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
@@ -13,7 +13,7 @@ type Checkers = Parameters<typeof checker>[0];
 import packageJson from './package.json';
 
 const entries = Object.keys(packageJson.exports)
-  .filter((el) => !el.endsWith('.css'))
+  .filter((el) => el !== './style.css')
   .map((module) => `src/${module}/index.ts`);
 
 const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
@@ -37,9 +37,49 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
   return `${moduleDirectory}.${extension}`;
 };
 
-export default defineConfig(({ command, mode }) => {
+// TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
+// inside source imports that are consumed directly by twenty-ui.
+const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
+  const sharedRoot = path.resolve(__dirname, '../twenty-shared/src');
+  const raw = path.resolve(sharedRoot, sourceFromSharedRoot);
+
+  const hasExtension = path.extname(raw) !== '';
+  const candidates = hasExtension
+    ? [raw]
+    : [
+        `${raw}.ts`,
+        `${raw}.tsx`,
+        `${raw}.js`,
+        `${raw}.mjs`,
+        `${raw}.cjs`,
+        path.join(raw, 'index.ts'),
+        path.join(raw, 'index.tsx'),
+        path.join(raw, 'index.js'),
+      ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
+};
+
+const resolveTwentySharedRootAlias = () => ({
+  name: 'resolve-twenty-shared-root-alias',
+  enforce: 'pre' as const,
+  resolveId: (source: string, importer: string | undefined) => {
+    if (!importer || !source.startsWith('@/')) {
+      return null;
+    }
+
+    const normalizedImporter = importer.split('?')[0].split(path.sep).join('/');
+
+    if (!normalizedImporter.includes('/packages/twenty-shared/src/')) {
+      return null;
+    }
+
+    return resolveSharedSourceFile(source.slice(2));
+  },
+});
+
+export default defineConfig(({ command }) => {
   const isBuildCommand = command === 'build';
-  const isCI = process.env.CI === 'true';
 
   const tsConfigPath = isBuildCommand
     ? path.resolve(__dirname, './tsconfig.lib.json')
@@ -75,35 +115,34 @@ export default defineConfig(({ command, mode }) => {
     cacheDir: '../../node_modules/.vite/packages/twenty-ui',
     assetsInclude: ['src/**/*.svg'],
     plugins: [
-      react(),
+      react({
+        jsxImportSource: '@emotion/react',
+        plugins: [['@swc/plugin-emotion', {}]],
+      }),
+      resolveTwentySharedRootAlias(),
       tsconfigPaths({
         root: __dirname,
         projects: ['tsconfig.json'],
       }),
       svgr(),
       dts(dtsConfig),
-      !isCI && checker(checkersConfig),
-      {
-        ...wyw({
-          include: [path.resolve(__dirname, 'src') + '/**/*.{ts,tsx}'],
-          babelOptions: {
-            presets: ['@babel/preset-typescript', '@babel/preset-react'],
-          },
-        }),
-        enforce: 'pre',
-      },
-      {
-        name: 'copy-theme-css',
-        closeBundle: () => {
-          const themeCssFiles = ['theme-light.css', 'theme-dark.css'];
-          for (const file of themeCssFiles) {
-            fs.copyFileSync(
-              path.resolve(__dirname, `src/theme-constants/${file}`),
-              path.resolve(__dirname, `dist/${file}`),
-            );
-          }
+      checker(checkersConfig),
+      wyw({
+        include: [
+          '**/OverflowingTextWithTooltip.tsx',
+          '**/Tag.tsx',
+          '**/Avatar.tsx',
+          '**/Chip.tsx',
+          '**/LinkChip.tsx',
+          '**/Avatar.tsx',
+          '**/AvatarChipLeftComponent.tsx',
+          '**/ContactLink.tsx',
+          '**/RoundedLink.tsx',
+        ],
+        babelOptions: {
+          presets: ['@babel/preset-typescript', '@babel/preset-react'],
         },
-      },
+      }),
     ],
     build: {
       cssCodeSplit: false,

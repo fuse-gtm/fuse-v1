@@ -28,13 +28,42 @@ export class SearchHelpCenterTool implements Tool {
     _context: ToolExecutionContext,
   ): Promise<ToolOutput> {
     const { query } = parameters;
+    const helpCenterSearchEnabled = this.twentyConfigService.get(
+      'HELP_CENTER_SEARCH_ENABLED',
+    );
+    const helpCenterSearchProvider = String(
+      this.twentyConfigService.get('HELP_CENTER_SEARCH_PROVIDER'),
+    ).toLowerCase();
+
+    if (!helpCenterSearchEnabled || helpCenterSearchProvider === 'none') {
+      return {
+        success: false,
+        message: 'Help center search is disabled by server configuration',
+        error: 'HELP_CENTER_SEARCH_DISABLED',
+      };
+    }
 
     try {
       const MINTLIFY_API_KEY = this.twentyConfigService.get('MINTLIFY_API_KEY');
       const MINTLIFY_SUBDOMAIN =
         this.twentyConfigService.get('MINTLIFY_SUBDOMAIN');
 
-      const useDirectApi = MINTLIFY_API_KEY && MINTLIFY_SUBDOMAIN;
+      const useDirectApi =
+        helpCenterSearchProvider === 'mintlify' &&
+        MINTLIFY_API_KEY &&
+        MINTLIFY_SUBDOMAIN;
+
+      if (
+        helpCenterSearchProvider === 'mintlify' &&
+        (!MINTLIFY_API_KEY || !MINTLIFY_SUBDOMAIN)
+      ) {
+        return {
+          success: false,
+          message:
+            'Help center search provider is mintlify but required configuration is missing',
+          error: 'MINTLIFY_CONFIG_MISSING',
+        };
+      }
 
       const endpoint = useDirectApi
         ? `https://api-dsc.mintlify.com/v1/search/${MINTLIFY_SUBDOMAIN}`

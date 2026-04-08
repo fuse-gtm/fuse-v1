@@ -4,7 +4,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Twenty is an open-source CRM built with modern technologies in a monorepo structure. The codebase is organized as an Nx workspace with multiple packages.
+Fuse is a partnerships operating system built as a fork of Twenty CRM (v1.18.1) under an Organization Self-Hosted enterprise license. The codebase is an Nx monorepo. Fuse adds a `partner-os` module with 16 custom objects for partner discovery, co-sell/referral handoff, transcript insights, and attribution.
+
+### Fuse-Specific Context
+
+- **License:** Organization Self-Hosted (enterprise). No GPL publication obligations. Do not delete LICENSE file without written confirmation from Twenty.
+- **Fork strategy:** All Fuse code lives in `packages/twenty-server/src/modules/partner-os/`. Zero modifications to Twenty core or `twenty-ui`. This isolation is intentional — preserve it.
+- **Upstream:** Pinned at v1.18.1. Quarterly rebase cadence planned post-MVP.
+- **Execution tracker:** `docs/fuse-mvp-execution-tracker.md` — the working operations file.
+- **Architecture plan:** `docs/fuse-mvp-architecture-plan-v2.md` — system design and issue specs.
+- **Design system:** `docs/fuse-design-system-token-map.md` — Figma↔Code token mapping.
+
+### Partner-OS Module
+
+Location: `packages/twenty-server/src/modules/partner-os/`
+
+Key files:
+- `constants/partner-os-schema.constant.ts` — 16 custom object definitions (fields, relations, views)
+- `services/partner-os-metadata-bootstrap.service.ts` — creates objects/fields/relations/views in a workspace
+- `services/partner-discovery-adapter.service.ts` — maps TrackChecks to Exa API payloads
+- `services/partner-scoring.service.ts` — weight-based fit scoring with must-pass gates
+- `types/partner-discovery.types.ts` — shared type definitions
+
+Rules for partner-os code:
+- **Do not duplicate scoring logic in workflow CODE blocks.** Call `PartnerScoringService` through one execution path. Two implementations = silent drift.
+- **Schema is frozen for MVP** (FUSE-202). Do not add/remove objects or fields without updating the schema constant AND re-running bootstrap.
+- **Webhook-driven architecture.** Discovery uses Exa webhooks → Twenty WEBHOOK triggers → workflows → real-time SSE. No polling.
+- **Attribution events are immutable.** Never update or delete `PartnerAttributionEvent` records. Query-time aggregation for reports.
 
 ## Key Commands
 
@@ -90,16 +116,28 @@ npx nx run twenty-front:graphql:generate --configuration=metadata
 ## Architecture Overview
 
 ### Tech Stack
-- **Frontend**: React 18, TypeScript, Jotai (state management), Linaria (styling), Vite
+- **Frontend**: React 18, TypeScript, Jotai (state management), Emotion (styling — migrating to Linaria, see below), Vite
 - **Backend**: NestJS, TypeORM, PostgreSQL, Redis, GraphQL (with GraphQL Yoga)
 - **Monorepo**: Nx workspace managed with Yarn 4
+- **Discovery integration**: Exa Websets API (webhook-driven async search)
+
+### Styling: Emotion → Linaria Migration
+
+The fork is currently on Emotion. Upstream commit `1db2a409` migrates to Linaria (zero-runtime CSS-in-JS) with CSS custom properties (`--t-xxx`). This cherry-pick is tracked as FUSE-206 and must land before the theme pass (FUSE-502).
+
+After Linaria lands:
+- Theme overrides go in a single CSS file (`fuse-overrides.css`) as `:root` variable overrides
+- Pattern changes from `${({ theme }) => theme.font.color.primary}` to `${themeCssVariables.font.color.primary}`
+- Spacing changes from `theme.spacing(4)` to `themeCssVariables.spacing[4]`
+- See `docs/fuse-design-system-token-map.md` for the full Figma↔Code mapping
 
 ### Package Structure
 ```
 packages/
 ├── twenty-front/          # React frontend application
 ├── twenty-server/         # NestJS backend API
-├── twenty-ui/             # Shared UI components library
+│   └── src/modules/partner-os/  # FUSE: partner discovery, scoring, attribution
+├── twenty-ui/             # Shared UI components library (DO NOT MODIFY — keep upstream-clean)
 ├── twenty-shared/         # Common types and utilities
 ├── twenty-emails/         # Email templates with React Email
 ├── twenty-website/        # Next.js documentation website
@@ -175,10 +213,25 @@ IMPORTANT: Use Context7 for code generation, setup or configuration steps, or li
 5. Run `graphql:generate` after any GraphQL schema changes
 
 ### Code Style Notes
-- Use **Linaria** for styling with zero-runtime CSS-in-JS (styled-components pattern)
+- Use **Emotion** for styling with styled-components pattern (will move to **Linaria** after FUSE-206 cherry-pick)
 - Follow **Nx** workspace conventions for imports
 - Use **Lingui** for internationalization
 - Apply security first, then formatting (sanitize before format)
+
+### Deployment
+```bash
+# Deploy (tag-based, runs preflight)
+./deploy-fuse-prod.sh <tag>
+
+# Preflight check
+./fuse-deploy-preflight.sh
+
+# Health + ingress check
+./check-runtime-and-ingress.sh
+
+# Image tags: partner-os-<sha> (immutable)
+# Branch: feat/partner-os-schema-spine
+```
 
 ### Testing Strategy
 - **Test behavior, not implementation** — focus on user perspective
@@ -201,3 +254,9 @@ When running in CI, the dev environment is **not** pre-configured. Dependencies 
 - `tsconfig.base.json` - Base TypeScript configuration
 - `package.json` - Root package with workspace definitions
 - `.cursor/rules/` - Detailed development guidelines and best practices
+- `docs/fuse-mvp-execution-tracker.md` - Operations tracker (single source of truth for issue status)
+- `docs/fuse-mvp-architecture-plan-v2.md` - Architecture plan with system diagrams and data flows
+- `docs/fuse-design-system-token-map.md` - Figma↔Code design token mapping
+- `packages/twenty-server/src/modules/partner-os/` - All Fuse-specific backend code
+- `docker-compose.yml` - Production compose (OAuth vars must be passed to both server and worker)
+- `.env.fuse-prod.example` - Production env template

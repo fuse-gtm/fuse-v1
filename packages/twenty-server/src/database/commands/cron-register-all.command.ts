@@ -28,6 +28,7 @@ import { WorkflowCronTriggerCronCommand } from 'src/modules/workflow/workflow-tr
 })
 export class CronRegisterAllCommand extends CommandRunner {
   private readonly logger = new Logger(CronRegisterAllCommand.name);
+  private readonly commandTimeoutMs = this.getCommandTimeoutMs();
 
   constructor(
     private readonly messagingMessagesImportCronCommand: MessagingMessagesImportCronCommand,
@@ -140,20 +141,37 @@ export class CronRegisterAllCommand extends CommandRunner {
 
     let successCount = 0;
     let failureCount = 0;
+    let abortedDueToTimeout = false;
     const failures: string[] = [];
     const successes: string[] = [];
 
     for (const { name, command } of commands) {
       try {
         this.logger.log(`Registering ${name} cron job...`);
-        await command.run();
+        await this.runWithTimeout(name, command);
         this.logger.log(`Successfully registered ${name} cron job`);
         successCount++;
         successes.push(name);
       } catch (error) {
-        this.logger.error(`Failed to register ${name} cron job:`, error);
+        if (this.isTimeoutError(error)) {
+          this.logger.warn(
+            `Timed out registering ${name} cron job after ${this.commandTimeoutMs}ms`,
+          );
+          abortedDueToTimeout = true;
+        } else {
+          this.logger.error(`Failed to register ${name} cron job:`, error);
+        }
         failureCount++;
         failures.push(name);
+
+        // A timed-out registration can keep running in the current process.
+        // Stop here to avoid stacking more potentially hanging commands.
+        if (abortedDueToTimeout) {
+          this.logger.warn(
+            `Aborting remaining cron registrations after timeout on ${name}`,
+          );
+          break;
+        }
       }
     }
 
@@ -168,5 +186,55 @@ export class CronRegisterAllCommand extends CommandRunner {
     if (successCount > 0) {
       this.logger.log(`Successful commands: ${successes.join(', ')}`);
     }
+
+    if (failureCount > 0) {
+      throw new Error(
+        `Cron registration failed (${failureCount}): ${failures.join(', ')}`,
+      );
+    }
+  }
+
+  private getCommandTimeoutMs(): number {
+    const rawValue = process.env.CRON_REGISTER_COMMAND_TIMEOUT_MS;
+    const parsedValue = Number(rawValue);
+
+    if (Number.isFinite(parsedValue) && parsedValue > 0) {
+      return parsedValue;
+    }
+
+    return 5000;
+  }
+
+  private async runWithTimeout(
+    commandName: string,
+    command: { run: () => Promise<void> },
+  ): Promise<void> {
+    let timeoutHandle: NodeJS.Timeout | undefined = undefined;
+
+    try {
+      await Promise.race([
+        command.run(),
+        new Promise<never>((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            reject(
+              new Error(
+                `Timed out while registering ${commandName} after ${this.commandTimeoutMs}ms`,
+              ),
+            );
+          }, this.commandTimeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+    }
+  }
+
+  private isTimeoutError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      error.message.includes('Timed out while registering')
+    );
   }
 }

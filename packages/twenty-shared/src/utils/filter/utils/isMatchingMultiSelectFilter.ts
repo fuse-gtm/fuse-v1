@@ -1,4 +1,4 @@
-import { type MultiSelectFilter } from '@/types';
+import { type MultiSelectFilter } from '../../../types';
 
 export const isMatchingMultiSelectFilter = ({
   multiSelectFilter,

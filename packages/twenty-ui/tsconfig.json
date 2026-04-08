@@ -13,7 +13,10 @@
     "outDir": "../../.cache/tsc",
     "paths": {
       "@ui/*": ["./src/*"],
-      "@assets/*": ["./src/assets/*"]
+      "@assets/*": ["./src/assets/*"],
+      "twenty-shared": ["../twenty-shared/src/index.ts"],
+      "twenty-shared/*": ["../twenty-shared/src/*"],
+      "@/*": ["../twenty-shared/src/*"]
     }
   },
   "include": [
