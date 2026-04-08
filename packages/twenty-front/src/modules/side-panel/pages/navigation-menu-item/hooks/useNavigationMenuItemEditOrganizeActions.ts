@@ -2,21 +2,6 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
 import { IconColumnInsertRight } from 'twenty-ui/display';
 
-<<<<<<< HEAD:packages/twenty-front/src/modules/command-menu/pages/navigation-menu-item/hooks/useNavigationMenuItemEditOrganizeActions.ts
-import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
-import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemInEditModeState';
-import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/common/types/AddMenuItemInsertionContext';
-import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
-import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemMoveRemove';
-import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
-import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
-import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
-import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import { SidePanelPages } from 'twenty-shared/types';
-import { type NavigationMenuItem } from '~/generated-metadata/graphql';
-=======
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
 import { type OrganizeActionsProps } from '@/side-panel/pages/navigation-menu-item/components/SidePanelEditOrganizeActions';
@@ -29,32 +14,33 @@ import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/types/A
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { SidePanelPages } from 'twenty-shared/types';
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393)):packages/twenty-front/src/modules/side-panel/pages/navigation-menu-item/hooks/useNavigationMenuItemEditOrganizeActions.ts
 
 const getAddMenuItemInsertionContext = (
   selectedItem: { id: string; folderId?: string | null },
-  workspaceNavigationMenuItems: NavigationMenuItem[],
+  workspaceNavigationMenuItems: Array<{
+    id: string;
+    folderId?: string | null;
+    userWorkspaceId?: string | null;
+  }>,
   offset: 0 | 1,
 ): AddMenuItemInsertionContext | null => {
   const targetFolderId = selectedItem.folderId ?? null;
-  const itemsInFolderSorted = workspaceNavigationMenuItems
-    .filter(
-      (item) =>
-        (item.folderId ?? null) === targetFolderId &&
-        !isDefined(item.userWorkspaceId),
-    )
-    .sort((a, b) => a.position - b.position);
-  const selectedIndexSorted = itemsInFolderSorted.findIndex(
+  const itemsInFolder = workspaceNavigationMenuItems.filter(
+    (item) =>
+      (item.folderId ?? null) === targetFolderId &&
+      !isDefined(item.userWorkspaceId),
+  );
+  const selectedIndexInFolder = itemsInFolder.findIndex(
     (item) => item.id === selectedItem.id,
   );
 
-  if (selectedIndexSorted < 0) {
+  if (selectedIndexInFolder < 0) {
     return null;
   }
 
   return {
     targetFolderId,
-    targetIndex: selectedIndexSorted + offset,
+    targetIndex: selectedIndexInFolder + offset,
     disableDrag: true,
   };
 };
@@ -74,7 +60,7 @@ export const useNavigationMenuItemEditOrganizeActions =
       addMenuItemInsertionContextState,
     );
     const { workspaceNavigationMenuItems } = useNavigationMenuItemsDraftState();
-    const items = useNavigationMenuItemSectionItems();
+    const items = useWorkspaceSectionItems();
     const { moveUp, moveDown, remove } = useNavigationMenuItemMoveRemove();
 
     const selectedItem = selectedNavigationMenuItemInEditMode
@@ -133,11 +119,7 @@ export const useNavigationMenuItemEditOrganizeActions =
       setAddMenuItemInsertionContext(context);
       navigateSidePanel({
         page: SidePanelPages.NavigationMenuAddItem,
-<<<<<<< HEAD:packages/twenty-front/src/modules/command-menu/pages/navigation-menu-item/hooks/useNavigationMenuItemEditOrganizeActions.ts
-        pageTitle: t`New menu item`,
-=======
         pageTitle: t`New sidebar item`,
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393)):packages/twenty-front/src/modules/side-panel/pages/navigation-menu-item/hooks/useNavigationMenuItemEditOrganizeActions.ts
         pageIcon: IconColumnInsertRight,
         resetNavigationStack: true,
       });
