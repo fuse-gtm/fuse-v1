@@ -4,7 +4,6 @@ import { Command } from 'nest-commander';
 import { DataSource, Repository } from 'typeorm';
 
 import { ActiveOrSuspendedWorkspacesMigrationCommandRunner } from 'src/database/commands/command-runners/active-or-suspended-workspaces-migration.command-runner';
-import { type RunOnWorkspaceArgs } from 'src/database/commands/command-runners/workspaces-migration.command-runner';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
@@ -29,27 +28,19 @@ export class SeedServerIdCommand extends ActiveOrSuspendedWorkspacesMigrationCom
     super(workspaceRepository, twentyORMGlobalManager, dataSourceService);
   }
 
-  override async runOnWorkspace(args: RunOnWorkspaceArgs): Promise<void> {
+  override async runOnWorkspace(): Promise<void> {
     if (this.hasRun) {
-      return;
-    }
-
-    if (args.options.dryRun) {
-      this.logger.log('(dry run) Would seed SERVER_ID — skipping');
-
       return;
     }
 
     const queryRunner = this.coreDataSource.createQueryRunner();
 
-    try {
-      await seedServerId({ queryRunner, schemaName: 'core' });
+    await seedServerId({ queryRunner, schemaName: 'core' });
 
-      this.hasRun = true;
+    this.hasRun = true;
 
-      this.logger.log(`SERVER_ID seeded successfully`);
-    } finally {
-      await queryRunner.release();
-    }
+    await queryRunner.release();
+
+    this.logger.log(`SERVER_ID seeded successfully`);
   }
 }

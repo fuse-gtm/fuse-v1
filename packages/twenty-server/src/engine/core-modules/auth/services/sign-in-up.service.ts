@@ -48,6 +48,7 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 import { getDomainNameByEmail } from 'src/utils/get-domain-name-by-email';
 import { isWorkEmail } from 'src/utils/is-work-email';
+import { TelemetryEventType } from 'src/engine/core-modules/telemetry/telemetry-event.type';
 
 @Injectable()
 // oxlint-disable-next-line twenty/inject-workspace-repository
