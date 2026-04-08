@@ -116,7 +116,7 @@ export class FileController {
       const fileStream = await this.fileService.getFileStream(
         rawFolder,
         filename,
-        workspaceId,
+        workspaceId!,
       );
 
       this.setCacheControlHeader({
@@ -163,7 +163,7 @@ export class FileController {
     try {
       const { stream, mimeType } = await this.fileService.getFileStreamById({
         fileId,
-        workspaceId,
+        workspaceId: workspaceId!,
         fileFolder,
       });
 

@@ -115,12 +115,10 @@ export class DevSeederService {
     await this.devSeederMetadataService.seed({
       dataSourceMetadata,
       workspaceId,
-      profileWorkspaceId,
     });
 
     await this.devSeederMetadataService.seedRelations({
       workspaceId,
-      profileWorkspaceId,
     });
 
     if (!skipPermissionBootstrap) {
