@@ -10,7 +10,7 @@ import {
 
 import { join } from 'path';
 
-import type { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { FileFolder } from 'twenty-shared/types';
 
 import {
@@ -23,38 +23,18 @@ import {
   FileExceptionCode,
 } from 'src/engine/core-modules/file/file.exception';
 import { FileApiExceptionFilter } from 'src/engine/core-modules/file/filters/file-api-exception.filter';
-import { FilePathGuard } from 'src/engine/core-modules/file/guards/file-path-guard';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { FileService } from 'src/engine/core-modules/file/services/file.service';
-import { extractFileInfoFromRequest } from 'src/engine/core-modules/file/utils/extract-file-info-from-request.utils';
-import { setFileResponseHeaders } from 'src/engine/core-modules/file/utils/set-file-response-headers.utils';
-import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
-import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
 import {
   FileByIdGuard,
-  type SupportedFileFolder,
+  SupportedFileFolder,
 } from 'src/engine/core-modules/file/guards/file-by-id.guard';
-import { fileFolderConfigs } from 'src/engine/core-modules/file/interfaces/file-folder.interface';
+import { FileService } from 'src/engine/core-modules/file/services/file.service';
+import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
+import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
 
 @Controller()
 @UseFilters(FileApiExceptionFilter)
 export class FileController {
   constructor(private readonly fileService: FileService) {}
-
-  private setCacheControlHeader({
-    res,
-    ignoreExpirationToken,
-  }: {
-    res: Response;
-    ignoreExpirationToken: boolean;
-  }) {
-    res.setHeader(
-      'Cache-Control',
-      ignoreExpirationToken
-        ? 'public, max-age=31536000, immutable'
-        : 'private, max-age=0, must-revalidate',
-    );
-  }
 
   @Get('public-assets/:workspaceId/:applicationId/*path')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -68,60 +48,11 @@ export class FileController {
     const filepath = join(...req.params.path);
 
     try {
-      const { stream, mimeType } = await this.fileService.getFileStreamByPath({
+      const fileStream = await this.fileService.getFileStreamByPath({
         workspaceId,
         applicationId,
         fileFolder: FileFolder.PublicAsset,
         filepath,
-      });
-
-      setFileResponseHeaders(res, mimeType);
-      res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
-
-      stream.on('error', () => {
-        throw new FileException(
-          'Error streaming file from storage',
-          FileExceptionCode.INTERNAL_SERVER_ERROR,
-        );
-      });
-
-      stream.pipe(res);
-    } catch (error) {
-      if (
-        error instanceof FileStorageException &&
-        error.code === FileStorageExceptionCode.FILE_NOT_FOUND
-      ) {
-        throw new FileException(
-          'File not found',
-          FileExceptionCode.FILE_NOT_FOUND,
-        );
-      }
-
-      throw new FileException(
-        `Error retrieving file: ${error.message}`,
-        FileExceptionCode.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  @Get('files/*path')
-  @UseGuards(FilePathGuard, NoPermissionGuard)
-  async getFile(@Res() res: Response, @Req() req: Request) {
-    const workspaceId = (req as Request & { workspaceId?: string })?.workspaceId;
-
-    const { rawFolder, filename, ignoreExpirationToken } =
-      extractFileInfoFromRequest(req);
-
-    try {
-      const fileStream = await this.fileService.getFileStream(
-        rawFolder,
-        filename,
-        workspaceId!,
-      );
-
-      this.setCacheControlHeader({
-        res,
-        ignoreExpirationToken,
       });
 
       fileStream.on('error', () => {
@@ -158,30 +89,24 @@ export class FileController {
     @Param('fileFolder') fileFolder: SupportedFileFolder,
     @Param('id') fileId: string,
   ) {
-    const workspaceId = (req as Request & { workspaceId?: string })?.workspaceId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const workspaceId = (req as any)?.workspaceId;
 
     try {
-      const { stream, mimeType } = await this.fileService.getFileStreamById({
+      const fileStream = await this.fileService.getFileStreamById({
         fileId,
-        workspaceId: workspaceId!,
+        workspaceId,
         fileFolder,
       });
 
-      setFileResponseHeaders(res, mimeType);
-      this.setCacheControlHeader({
-        res,
-        ignoreExpirationToken: fileFolderConfigs[fileFolder]
-          .ignoreExpirationToken,
-      });
-
-      stream.on('error', () => {
+      fileStream.on('error', () => {
         throw new FileException(
           'Error streaming file from storage',
           FileExceptionCode.INTERNAL_SERVER_ERROR,
         );
       });
 
-      stream.pipe(res);
+      fileStream.pipe(res);
     } catch (error) {
       if (
         error instanceof FileStorageException &&

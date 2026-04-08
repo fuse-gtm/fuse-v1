@@ -15,7 +15,6 @@ import {
   FileExceptionCode,
 } from 'src/engine/core-modules/file/file.exception';
 import { FileApiExceptionFilter } from 'src/engine/core-modules/file/filters/file-api-exception.filter';
-import { FilePathGuard } from 'src/engine/core-modules/file/guards/file-path-guard';
 import { FileByIdGuard } from 'src/engine/core-modules/file/guards/file-by-id.guard';
 import { FileService } from 'src/engine/core-modules/file/services/file.service';
 import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
@@ -40,7 +39,6 @@ const createMockResponse = () => ({
 describe('FileController', () => {
   let controller: FileController;
   let fileService: FileService;
-  const mock_FilePathGuard: CanActivate = { canActivate: jest.fn(() => true) };
   const mock_FileByIdGuard: CanActivate = { canActivate: jest.fn(() => true) };
   const mock_PublicEndpointGuard: CanActivate = {
     canActivate: jest.fn(() => true),
@@ -56,15 +54,12 @@ describe('FileController', () => {
         {
           provide: FileService,
           useValue: {
-            getFileStream: jest.fn(),
             getFileStreamById: jest.fn(),
             getFileStreamByPath: jest.fn(),
           },
         },
       ],
     })
-      .overrideGuard(FilePathGuard)
-      .useValue(mock_FilePathGuard)
       .overrideGuard(FileByIdGuard)
       .useValue(mock_FileByIdGuard)
       .overrideGuard(PublicEndpointGuard)
@@ -81,50 +76,6 @@ describe('FileController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
-
-  describe('getFile', () => {
-    it('should extract folder, token and filename from 3-segment path', async () => {
-      const mockStream = createMockStream();
-
-      jest.spyOn(fileService, 'getFileStream').mockResolvedValue(mockStream);
-
-      const mockRequest = {
-        path: '/files/attachment/test-token/test-file.csv',
-        workspaceId: 'workspace-id',
-      } as any;
-
-      const mockResponse = {} as any;
-
-      await controller.getFile(mockResponse, mockRequest);
-
-      expect(fileService.getFileStream).toHaveBeenCalledWith(
-        'attachment',
-        'test-file.csv',
-        'workspace-id',
-      );
-    });
-
-    it('should extract folder with size, token and filename from 4-segment path', async () => {
-      const mockStream = createMockStream();
-
-      jest.spyOn(fileService, 'getFileStream').mockResolvedValue(mockStream);
-
-      const mockRequest = {
-        path: '/files/profile-picture/original/test-token/avatar.jpg',
-        workspaceId: 'workspace-id',
-      } as any;
-
-      const mockResponse = {} as any;
-
-      await controller.getFile(mockResponse, mockRequest);
-
-      expect(fileService.getFileStream).toHaveBeenCalledWith(
-        'profile-picture/original',
-        'avatar.jpg',
-        'workspace-id',
-      );
-    });
   });
 
   describe('getFileById', () => {

@@ -15,24 +15,21 @@ jest.mock('uuid', () => ({
 
 describe('FileService', () => {
   let service: FileService;
-  let fileStorageService: FileStorageService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FileService,
         {
-          provide: FileStorageService,
-          useValue: {
-            copyLegacy: jest.fn(),
-          },
-        },
-        {
           provide: TwentyConfigService,
           useValue: {},
         },
         {
           provide: JwtWrapperService,
+          useValue: {},
+        },
+        {
+          provide: FileStorageService,
           useValue: {},
         },
         {
@@ -47,13 +44,9 @@ describe('FileService', () => {
     }).compile();
 
     service = module.get<FileService>(FileService);
-    fileStorageService = module.get<FileStorageService>(FileStorageService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  // TODO: upstream cherry-pick stub — copyFileFromWorkspaceToWorkspace removed from this fork
-  // it('copyFileFromWorkspaceToWorkspace - should copy a file to a new workspace', async () => { ... });
 });
