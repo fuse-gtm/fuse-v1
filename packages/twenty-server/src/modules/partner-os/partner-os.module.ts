@@ -4,6 +4,8 @@ import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-s
 import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/field-metadata.module';
 import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.module';
 import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadata/object-metadata.module';
+import { ViewFilterModule } from 'src/engine/metadata-modules/view-filter/view-filter.module';
+import { ViewSortModule } from 'src/engine/metadata-modules/view-sort/view-sort.module';
 import { ViewModule } from 'src/engine/metadata-modules/view/view.module';
 import { ExaWebhookController } from 'src/modules/partner-os/controllers/exa-webhook.controller';
 import { PartnerCustomerMapHandoffListener } from 'src/modules/partner-os/listeners/partner-customer-map-handoff.listener';
@@ -19,6 +21,8 @@ import { PartnerScoringService } from 'src/modules/partner-os/services/partner-s
     ObjectMetadataModule,
     FieldMetadataModule,
     ViewModule,
+    ViewFilterModule,
+    ViewSortModule,
     WorkspaceManyOrAllFlatEntityMapsCacheModule,
   ],
   controllers: [ExaWebhookController],

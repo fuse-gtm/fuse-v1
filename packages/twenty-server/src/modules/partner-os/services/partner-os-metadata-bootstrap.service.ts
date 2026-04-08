@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FieldMetadataType,
+  ViewFilterOperand,
   ViewType,
   ViewVisibility,
 } from 'twenty-shared/types';
@@ -19,8 +20,12 @@ import { type FlatView } from 'src/engine/metadata-modules/flat-view/types/flat-
 import { ObjectMetadataService } from 'src/engine/metadata-modules/object-metadata/object-metadata.service';
 import { ViewCalendarLayout } from 'src/engine/metadata-modules/view/enums/view-calendar-layout.enum';
 import { ViewService } from 'src/engine/metadata-modules/view/services/view.service';
+import { ViewFilterService } from 'src/engine/metadata-modules/view-filter/services/view-filter.service';
+import { ViewSortService } from 'src/engine/metadata-modules/view-sort/services/view-sort.service';
+import { ViewSortDirection } from 'src/engine/metadata-modules/view-sort/enums/view-sort-direction';
 import {
   PARTNER_OS_OBJECT_SCHEMAS,
+  type PartnerOsFilteredViewConfig,
   type PartnerOsObjectSchema,
 } from 'src/modules/partner-os/constants/partner-os-schema.constant';
 
@@ -68,6 +73,8 @@ export class PartnerOsMetadataBootstrapService {
     private readonly objectMetadataService: ObjectMetadataService,
     private readonly fieldMetadataService: FieldMetadataService,
     private readonly viewService: ViewService,
+    private readonly viewFilterService: ViewFilterService,
+    private readonly viewSortService: ViewSortService,
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
@@ -351,7 +358,112 @@ export class PartnerOsMetadataBootstrapService {
       }
     }
 
+    // Create filtered table views
+    if (isDefined(schema.filteredViews) && schema.filteredViews.length > 0) {
+      for (const viewConfig of schema.filteredViews) {
+        const existingView = objectViews.find(
+          (view) => view.name === viewConfig.name,
+        );
+
+        if (isDefined(existingView)) {
+          continue;
+        }
+
+        const created = await this.createFilteredTableView({
+          workspaceId,
+          objectId: object.id,
+          objectFields,
+          viewConfig,
+          position: nextPosition,
+        });
+
+        if (created) {
+          didCreateView = true;
+          nextPosition += 1;
+        }
+      }
+    }
+
     return didCreateView;
+  }
+
+  private async createFilteredTableView({
+    workspaceId,
+    objectId,
+    objectFields,
+    viewConfig,
+    position,
+  }: {
+    workspaceId: string;
+    objectId: string;
+    objectFields: FlatFieldMetadata[];
+    viewConfig: PartnerOsFilteredViewConfig;
+    position: number;
+  }): Promise<boolean> {
+    const filterField = objectFields.find(
+      (field) => field.name === viewConfig.filterFieldName,
+    );
+
+    if (!isDefined(filterField)) {
+      this.logger.warn(
+        `Skipped filtered view "${viewConfig.name}": field ${viewConfig.filterFieldName} not found`,
+      );
+
+      return false;
+    }
+
+    const viewDto = await this.viewService.createOne({
+      workspaceId,
+      createViewInput: {
+        name: viewConfig.name,
+        icon: viewConfig.icon,
+        objectMetadataId: objectId,
+        position,
+        type: ViewType.TABLE,
+        visibility: ViewVisibility.WORKSPACE,
+      },
+    });
+
+    // Add filter
+    const operand =
+      viewConfig.filterOperand === 'IS'
+        ? ViewFilterOperand.IS
+        : ViewFilterOperand.IS_NOT;
+
+    await this.viewFilterService.createOne({
+      workspaceId,
+      createViewFilterInput: {
+        viewId: viewDto.id,
+        fieldMetadataId: filterField.id,
+        operand,
+        value: viewConfig.filterValue,
+      },
+    });
+
+    // Add sort if configured
+    if (isDefined(viewConfig.sortFieldName)) {
+      const sortField = objectFields.find(
+        (field) => field.name === viewConfig.sortFieldName,
+      );
+
+      if (isDefined(sortField)) {
+        await this.viewSortService.createOne({
+          workspaceId,
+          createViewSortInput: {
+            viewId: viewDto.id,
+            fieldMetadataId: sortField.id,
+            direction:
+              viewConfig.sortDirection === 'DESC'
+                ? ViewSortDirection.DESC
+                : ViewSortDirection.ASC,
+          },
+        });
+      }
+    }
+
+    this.logger.log(`Created filtered view "${viewConfig.name}"`);
+
+    return true;
   }
 
   private hasExistingRelationField({

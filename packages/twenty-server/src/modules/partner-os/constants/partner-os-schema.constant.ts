@@ -13,12 +13,23 @@ export type PartnerOsRelationFieldSeed = {
   targetFieldIcon: string;
 };
 
+export type PartnerOsFilteredViewConfig = {
+  name: string;
+  icon: string;
+  filterFieldName: string;
+  filterOperand: 'IS' | 'IS_NOT';
+  filterValue: string;
+  sortFieldName?: string;
+  sortDirection?: 'ASC' | 'DESC';
+};
+
 export type PartnerOsObjectSchema = {
   object: ObjectMetadataSeed;
   fields: FieldMetadataSeed[];
   relations: PartnerOsRelationFieldSeed[];
   kanbanFieldName?: string;
   calendarFieldName?: string;
+  filteredViews?: PartnerOsFilteredViewConfig[];
 };
 
 const asSelectOptions = (...values: string[]) =>
@@ -139,6 +150,31 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
       },
     ],
     kanbanFieldName: 'status',
+    filteredViews: [
+      {
+        name: 'New Leads',
+        icon: 'IconSparkles',
+        filterFieldName: 'status',
+        filterOperand: 'IS',
+        filterValue: 'NEW',
+        sortFieldName: 'createdAt',
+        sortDirection: 'DESC',
+      },
+      {
+        name: 'Qualifying',
+        icon: 'IconFilter',
+        filterFieldName: 'status',
+        filterOperand: 'IS',
+        filterValue: 'QUALIFYING',
+      },
+      {
+        name: 'Partner Sourced',
+        icon: 'IconHandshake',
+        filterFieldName: 'sourceType',
+        filterOperand: 'IS',
+        filterValue: 'PARTNER_SOURCED',
+      },
+    ],
   },
   {
     object: {
@@ -208,6 +244,22 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
       },
     ],
     kanbanFieldName: 'lifecycleStage',
+    filteredViews: [
+      {
+        name: 'Active Partners',
+        icon: 'IconCircleCheck',
+        filterFieldName: 'status',
+        filterOperand: 'IS',
+        filterValue: 'ACTIVE',
+      },
+      {
+        name: 'Evaluating',
+        icon: 'IconEye',
+        filterFieldName: 'lifecycleStage',
+        filterOperand: 'IS',
+        filterValue: 'EVALUATING',
+      },
+    ],
   },
   {
     object: {
@@ -357,6 +409,22 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
       },
     ],
     kanbanFieldName: 'mapStage',
+    filteredViews: [
+      {
+        name: 'Active Co-Sell',
+        icon: 'IconHandshake',
+        filterFieldName: 'mapStage',
+        filterOperand: 'IS',
+        filterValue: 'CO_SELL',
+      },
+      {
+        name: 'Closed Won',
+        icon: 'IconTrophy',
+        filterFieldName: 'mapStage',
+        filterOperand: 'IS',
+        filterValue: 'CLOSED_WON',
+      },
+    ],
   },
   {
     object: {
@@ -1070,6 +1138,15 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
       },
     ],
     calendarFieldName: 'startedAt',
+    filteredViews: [
+      {
+        name: 'Active Runs',
+        icon: 'IconPlayerPlay',
+        filterFieldName: 'status',
+        filterOperand: 'IS_NOT',
+        filterValue: 'COMPLETE',
+      },
+    ],
   },
   {
     object: {
@@ -1148,6 +1225,24 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
         relationType: RelationType.MANY_TO_ONE,
         targetFieldLabel: 'Candidates',
         targetFieldIcon: 'IconBuildingFactory2',
+      },
+    ],
+    filteredViews: [
+      {
+        name: 'Qualified Candidates',
+        icon: 'IconCircleCheck',
+        filterFieldName: 'gateStatus',
+        filterOperand: 'IS',
+        filterValue: 'QUALIFIED',
+        sortFieldName: 'fitScore',
+        sortDirection: 'DESC',
+      },
+      {
+        name: 'Disqualified',
+        icon: 'IconCircleX',
+        filterFieldName: 'gateStatus',
+        filterOperand: 'IS',
+        filterValue: 'DISQUALIFIED',
       },
     ],
   },
