@@ -14,12 +14,11 @@ import { WorkflowStepFooter } from '@/workflow/workflow-steps/components/Workflo
 import { WorkflowEditActionFormFieldSettings } from '@/workflow/workflow-steps/workflow-actions/form-action/components/WorkflowEditActionFormFieldSettings';
 import { type WorkflowFormActionField } from '@/workflow/workflow-steps/workflow-actions/form-action/types/WorkflowFormActionField';
 import { getDefaultFormFieldSettings } from '@/workflow/workflow-steps/workflow-actions/form-action/utils/getDefaultFormFieldSettings';
-import { styled } from '@linaria/react';
 import { type OnDragEndResponder } from '@hello-pangea/dnd';
+import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
-import { useEffect, useState } from 'react';
-import { DOCUMENTATION_BASE_URL } from 'twenty-shared/constants';
+import { useContext, useEffect, useState } from 'react';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import {
@@ -31,9 +30,9 @@ import {
   IconTrash,
 } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 } from 'uuid';
-import { ICON_SIZES, themeCssVariables } from 'twenty-ui/theme-constants';
 
 export type WorkflowEditActionFormBuilderProps = {
   triggerType: WorkflowTriggerType | undefined;
@@ -62,10 +61,10 @@ const StyledFormFieldContainer = styled.div`
 `;
 
 const StyledDraggingIndicator = styled.div`
-  position: absolute;
-  inset: -8px;
-  top: -4px;
   background-color: ${themeCssVariables.background.transparent.light};
+  inset: -8px;
+  position: absolute;
+  top: -4px;
 `;
 
 const StyledGripButtonContainer = styled.div`
@@ -96,13 +95,14 @@ const StyledFieldContainer = styled.div<{
   align-items: center;
   background: transparent;
   border: none;
+  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
   display: flex;
   font-family: inherit;
+  height: 100%;
   padding-left: ${themeCssVariables.spacing[2]};
+
   padding-right: ${themeCssVariables.spacing[2]};
   width: 100%;
-
-  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
 
   &:hover,
   &[data-open='true'] {
@@ -140,8 +140,11 @@ const StyledCalloutContainer = styled.div`
   padding-top: ${themeCssVariables.spacing[2]};
 `;
 
-const StyledNotClosableCalloutContainer = styled(StyledCalloutContainer)`
+const StyledNotClosableCalloutContainer = styled.div`
   padding-bottom: ${themeCssVariables.spacing[4]};
+  padding-left: ${themeCssVariables.spacing[7]};
+  padding-right: ${themeCssVariables.spacing[7]};
+  padding-top: ${themeCssVariables.spacing[2]};
 `;
 
 export const WorkflowEditActionFormBuilder = ({
@@ -150,6 +153,7 @@ export const WorkflowEditActionFormBuilder = ({
   actionOptions,
 }: WorkflowEditActionFormBuilderProps) => {
   const { t } = useLingui();
+  const { theme } = useContext(ThemeContext);
 
   const [formData, setFormData] = useState<FormData>(action.settings.input);
 
@@ -247,7 +251,7 @@ export const WorkflowEditActionFormBuilder = ({
                 label: t`Learn more`,
                 onClick: () =>
                   window.open(
-                    `${DOCUMENTATION_BASE_URL}/user-guide/workflows/capabilities/workflow-actions#form`,
+                    'https://docs.twenty.com/user-guide/workflows/capabilities/workflow-actions#form',
                     '_blank',
                     'noopener,noreferrer',
                   ),
@@ -327,9 +331,11 @@ export const WorkflowEditActionFormBuilder = ({
                                           .placeholder}
                                   </FormFieldPlaceholder>
                                 </StyledPlaceholderContainer>
-                                {field.type === 'RECORD' && (
+                                {(field.type === 'RECORD' ||
+                                  field.type === 'SELECT' ||
+                                  field.type === 'MULTI_SELECT') && (
                                   <IconChevronDown
-                                    size={ICON_SIZES.md}
+                                    size={theme.icon.size.md}
                                     color={
                                       themeCssVariables.font.color.tertiary
                                     }
@@ -419,7 +425,7 @@ export const WorkflowEditActionFormBuilder = ({
                 >
                   <StyledFieldContainer>
                     <StyledAddFieldButtonContentContainer>
-                      <IconPlus size={ICON_SIZES.sm} />
+                      <IconPlus size={theme.icon.size.sm} />
                       {t`Add Field`}
                     </StyledAddFieldButtonContentContainer>
                   </StyledFieldContainer>

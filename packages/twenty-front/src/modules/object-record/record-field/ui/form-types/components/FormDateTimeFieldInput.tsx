@@ -26,14 +26,6 @@ import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { type Nullable } from 'twenty-ui/utilities';
 
-const StyledInputContainer = styled(FormFieldInputInnerContainer)`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 0;
-  overflow: visible;
-  position: relative;
-`;
-
 const StyledDateInputAbsoluteContainer = styled.div`
   position: absolute;
   top: ${themeCssVariables.spacing[1]};
@@ -249,9 +241,9 @@ export const FormDateTimeFieldInput = ({
       {label ? <InputLabel>{label}</InputLabel> : null}
 
       <FormFieldInputRowContainer>
-        <StyledInputContainer
-          formFieldInputInstanceId={instanceId}
+        <FormFieldInputInnerContainer
           ref={datePickerWrapperRef}
+          formFieldInputInstanceId={instanceId}
           hasRightElement={isDefined(VariablePicker) && !readonly}
         >
           {draftValue.type === 'static' ? (
@@ -291,7 +283,7 @@ export const FormDateTimeFieldInput = ({
               onRemove={readonly ? undefined : handleUnlinkVariable}
             />
           )}
-        </StyledInputContainer>
+        </FormFieldInputInnerContainer>
         {VariablePicker && !readonly ? (
           <VariablePicker
             instanceId={instanceId}

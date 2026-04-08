@@ -20,13 +20,14 @@ const StyledFormFieldInputInnerContainer = styled.div<
   align-items: center;
   background-color: ${themeCssVariables.background.transparent.lighter};
   border: 1px solid ${themeCssVariables.border.color.medium};
-  border-top-left-radius: ${themeCssVariables.border.radius.sm};
   border-bottom-left-radius: ${themeCssVariables.border.radius.sm};
-
   border-bottom-right-radius: ${({ multiline, hasRightElement }) =>
     multiline || !hasRightElement ? themeCssVariables.border.radius.sm : '0'};
   border-right: ${({ multiline, hasRightElement }) =>
-    multiline || !hasRightElement ? 'auto' : 'none'};
+    multiline || !hasRightElement
+      ? `1px solid ${themeCssVariables.border.color.medium}`
+      : 'none'};
+  border-top-left-radius: ${themeCssVariables.border.radius.sm};
   border-top-right-radius: ${({ multiline, hasRightElement }) =>
     multiline || !hasRightElement ? themeCssVariables.border.radius.sm : '0'};
   box-sizing: border-box;
