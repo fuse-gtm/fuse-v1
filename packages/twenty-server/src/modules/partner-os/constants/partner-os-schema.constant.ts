@@ -85,7 +85,7 @@ export const PARTNER_OS_OBJECT_SCHEMAS: PartnerOsObjectSchema[] = [
         icon: 'IconTextCaption',
       },
       {
-        type: FieldMetadataType.RICH_TEXT_V2,
+        type: FieldMetadataType.RICH_TEXT,
         name: 'notes',
         label: 'Notes',
         icon: 'IconNotes',

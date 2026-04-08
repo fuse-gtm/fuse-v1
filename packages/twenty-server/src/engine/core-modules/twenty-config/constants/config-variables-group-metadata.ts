@@ -140,4 +140,10 @@ export const CONFIG_VARIABLES_GROUP_METADATA: Record<
     isHiddenOnLoad: true,
     isHiddenInAdminPanel: true,
   },
+  [ConfigVariablesGroup.OTHER]: {
+    position: 9999,
+    description: 'Miscellaneous configuration variables',
+    isHiddenOnLoad: true,
+    isHiddenInAdminPanel: false,
+  },
 };

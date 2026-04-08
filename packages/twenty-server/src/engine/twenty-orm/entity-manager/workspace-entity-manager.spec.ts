@@ -246,6 +246,7 @@ describe('WorkspaceEntityManager', () => {
         IS_RECORD_TABLE_WIDGET_ENABLED: false,
         IS_DATASOURCE_MIGRATED: false,
         IS_COMMAND_MENU_ITEM_ENABLED: false,
+        IS_PARTNER_OS_ENABLED: false,
       },
       userWorkspaceRoleMap: {},
       eventEmitterService: {
