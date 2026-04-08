@@ -52,16 +52,4 @@ mcp.json
 /.junie/
 TRANSLATION_QA_REPORT.md
 .playwright-mcp/
-
-# local AI/automation artifacts
 .playwright-cli/
-output/
-memory/
-**/__pycache__/
-
-# generated internal ops evidence (keep templates + index)
-docs/ops-logs/fuse-*.md
-docs/ops-logs/fuse-*.json
-!docs/ops-logs/README.md
-!docs/ops-logs/templates/
-!docs/ops-logs/templates/**
