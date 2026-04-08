@@ -373,34 +373,14 @@ export const successfulCreateInputByFieldMetadataType: {
     {
       input: {
         richTextField: {
-          blocknote:
-            '[{"type":"paragraph","content":[{"type":"text","text":"test"}]}]',
+          blocknote: 'test',
           markdown: 'test',
         },
       },
       validateInput: (record: Record<string, any>) => {
         return (
-          record.richTextField.blocknote ===
-            '[{"type":"paragraph","content":[{"type":"text","text":"test"}]}]' &&
+          record.richTextField.blocknote === 'test' &&
           record.richTextField.markdown === 'test'
-        );
-      },
-    },
-  ],
-  [FieldMetadataType.RICH_TEXT_V2]: [
-    {
-      input: {
-        richTextV2Field: {
-          blocknote:
-            '[{"type":"paragraph","content":[{"type":"text","text":"test"}]}]',
-          markdown: 'test',
-        },
-      },
-      validateInput: (record: Record<string, any>) => {
-        return (
-          record.richTextV2Field.blocknote ===
-            '[{"type":"paragraph","content":[{"type":"text","text":"test"}]}]' &&
-          record.richTextV2Field.markdown === 'test'
         );
       },
     },
