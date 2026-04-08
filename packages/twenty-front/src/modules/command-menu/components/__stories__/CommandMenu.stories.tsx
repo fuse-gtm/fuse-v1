@@ -21,7 +21,16 @@ import {
 import { sleep } from '~/utils/sleep';
 
 import { currentUserWorkspaceState } from '@/auth/states/currentUserWorkspaceState';
+<<<<<<< HEAD
 import { CommandMenuComponentInstanceContext } from '@/command-menu/states/contexts/CommandMenuComponentInstanceContext';
+=======
+import { SidePanelRouter } from '@/side-panel/components/SidePanelRouter';
+import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
+import { SIDE_PANEL_FOCUS_ID } from '@/side-panel/constants/SidePanelFocusId';
+import { type SidePanelRootPage } from '@/side-panel/pages/root/components/SidePanelRootPage';
+import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
+import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
+>>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 import { contextStoreCurrentViewTypeComponentState } from '@/context-store/states/contextStoreCurrentViewTypeComponentState';
@@ -57,7 +66,11 @@ const ContextStoreDecorator: Decorator = (Story) => {
         <ViewComponentInstanceContext.Provider
           value={{ instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID }}
         >
+<<<<<<< HEAD
           <CommandMenuComponentInstanceContext.Provider
+=======
+          <ActionMenuComponentInstanceContext.Provider
+>>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
             value={{ instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID }}
           >
             <JestContextStoreSetter
@@ -89,10 +102,13 @@ const meta: Meta<typeof SidePanelRootPage> = {
         mockedUserData.currentUserWorkspace,
       );
       jotaiStore.set(isSidePanelOpenedState.atom, true);
+<<<<<<< HEAD
       jotaiStore.set(sidePanelPageInfoState.atom, {
         title: 'Command Menu',
         instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
       });
+=======
+>>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
       jotaiStore.set(sidePanelNavigationStackState.atom, [
         {
           page: SidePanelPages.Root,

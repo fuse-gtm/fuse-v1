@@ -5,6 +5,10 @@ import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
 import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSetAtomComponentState';
 import { SidePanelPages } from 'twenty-shared/types';
 
+<<<<<<< HEAD
+=======
+import { useNavigatePageLayoutSidePanel } from '@/side-panel/pages/page-layout/hooks/useNavigatePageLayoutSidePanel';
+>>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
 import { PageLayoutComponentInstanceContext } from '@/page-layout/states/contexts/PageLayoutComponentInstanceContext';
 import { pageLayoutEditingWidgetIdComponentState } from '@/page-layout/states/pageLayoutEditingWidgetIdComponentState';
 import { useNavigatePageLayoutSidePanel } from '@/side-panel/pages/page-layout/hooks/useNavigatePageLayoutSidePanel';
@@ -66,6 +70,7 @@ export const useEditPageLayoutWidget = (pageLayoutIdFromProps?: string) => {
         return;
       }
 
+<<<<<<< HEAD
       if (widgetType === WidgetType.RECORD_TABLE) {
         navigatePageLayoutSidePanel({
           sidePanelPage: SidePanelPages.PageLayoutRecordTableSettings,
@@ -83,6 +88,9 @@ export const useEditPageLayoutWidget = (pageLayoutIdFromProps?: string) => {
       }
 
       setSidePanelPage(SidePanelPages.CommandMenuDisplay);
+=======
+      setSidePanelPage(SidePanelPages.Root);
+>>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
       closeSidePanelMenu();
     },
     [
