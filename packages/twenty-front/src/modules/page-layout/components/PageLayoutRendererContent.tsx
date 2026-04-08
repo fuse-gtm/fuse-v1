@@ -1,5 +1,4 @@
-import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { useNavigatePageLayoutCommandMenu } from '@/command-menu/pages/page-layout/hooks/useNavigatePageLayoutCommandMenu';
 import { PageLayoutLeftPanel } from '@/page-layout/components/PageLayoutLeftPanel';
 import { PageLayoutTabList } from '@/page-layout/components/PageLayoutTabList';
 import { PageLayoutTabListEffect } from '@/page-layout/components/PageLayoutTabListEffect';
@@ -16,19 +15,17 @@ import { getTabsByDisplayMode } from '@/page-layout/utils/getTabsByDisplayMode';
 import { getTabsWithVisibleWidgets } from '@/page-layout/utils/getTabsWithVisibleWidgets';
 import { shouldEnableTabEditingFeatures } from '@/page-layout/utils/shouldEnableTabEditingFeatures';
 import { sortTabsByPosition } from '@/page-layout/utils/sortTabsByPosition';
-import { useNavigatePageLayoutSidePanel } from '@/side-panel/pages/page-layout/hooks/useNavigatePageLayoutSidePanel';
 import { useLayoutRenderingContext } from '@/ui/layout/contexts/LayoutRenderingContext';
 import { activeTabIdComponentState } from '@/ui/layout/tab-list/states/activeTabIdComponentState';
 import { ScrollWrapper } from '@/ui/utilities/scroll/components/ScrollWrapper';
-import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
-import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilyStateValue';
 import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSetAtomComponentState';
+import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import { SidePanelPages } from 'twenty-shared/types';
+import { CommandMenuPages } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div<{ hasPinnedTab: boolean }>`
   display: grid;
@@ -45,19 +42,18 @@ const StyledTabsAndDashboardContainer = styled.div`
   overflow: hidden;
 `;
 
-const StyledPageLayoutTabListContainer = styled.div`
+const StyledPageLayoutTabList = styled(PageLayoutTabList)`
   padding-left: ${themeCssVariables.spacing[2]};
 `;
 
-const StyledScrollWrapperContainer = styled.div`
+const StyledScrollWrapper = styled(ScrollWrapper)`
   flex: 1;
-  min-height: 0;
 `;
 
 export const PageLayoutRendererContent = () => {
   const { currentPageLayout } = useCurrentPageLayout();
 
-  const { isInSidePanel, layoutType, targetRecordIdentifier } =
+  const { isInRightDrawer, layoutType, targetRecordIdentifier } =
     useLayoutRenderingContext();
 
   const isPageLayoutInEditMode = useAtomComponentStateValue(
@@ -71,20 +67,9 @@ export const PageLayoutRendererContent = () => {
   const setPageLayoutTabSettingsOpenTabId = useSetAtomComponentState(
     pageLayoutTabSettingsOpenTabIdComponentState,
   );
-  const { navigatePageLayoutSidePanel } = useNavigatePageLayoutSidePanel();
+  const { navigatePageLayoutCommandMenu } = useNavigatePageLayoutCommandMenu();
 
   const isMobile = useIsMobile();
-
-  const metadataStore = useAtomFamilyStateValue(
-    metadataStoreState,
-    'objectMetadataItems',
-  );
-
-  const isSystemObject =
-    (metadataStore.current as ObjectMetadataItem[]).find(
-      (item) =>
-        item.nameSingular === targetRecordIdentifier?.targetObjectNameSingular,
-    )?.isSystem ?? false;
 
   if (!isDefined(currentPageLayout)) {
     return null;
@@ -96,8 +81,8 @@ export const PageLayoutRendererContent = () => {
       ? () => {
           const newTabId = createPageLayoutTab(t`Untitled`);
           setPageLayoutTabSettingsOpenTabId(newTabId);
-          navigatePageLayoutSidePanel({
-            sidePanelPage: SidePanelPages.PageLayoutTabSettings,
+          navigatePageLayoutCommandMenu({
+            commandMenuPage: CommandMenuPages.PageLayoutTabSettings,
             focusTitleInput: true,
           });
         }
@@ -110,21 +95,15 @@ export const PageLayoutRendererContent = () => {
   const tabsWithVisibleWidgets = getTabsWithVisibleWidgets({
     tabs: currentPageLayout.tabs,
     isMobile,
-    isInSidePanel,
+    isInRightDrawer,
     isEditMode: isPageLayoutInEditMode,
   });
 
-  const tabsForCurrentObject = isSystemObject
-    ? tabsWithVisibleWidgets.filter(
-        (tab) => tab.title === 'Home' || tab.title === 'Timeline',
-      )
-    : tabsWithVisibleWidgets;
-
   const { tabsToRenderInTabList, pinnedLeftTab } = getTabsByDisplayMode({
-    tabs: tabsForCurrentObject,
+    tabs: tabsWithVisibleWidgets,
     pageLayoutType: currentPageLayout.type,
     isMobile,
-    isInSidePanel,
+    isInRightDrawer,
   });
 
   const tabListInstanceId = getTabListInstanceIdFromPageLayoutAndRecord({
@@ -134,10 +113,6 @@ export const PageLayoutRendererContent = () => {
   });
 
   const sortedTabs = sortTabsByPosition(tabsToRenderInTabList);
-
-  const activeTabExistsInCurrentPageLayout = currentPageLayout.tabs.some(
-    (tab) => tab.id === activeTabId,
-  );
 
   return (
     <StyledContainer hasPinnedTab={isDefined(pinnedLeftTab)}>
@@ -155,31 +130,27 @@ export const PageLayoutRendererContent = () => {
           }
         />
         {(sortedTabs.length > 1 || isPageLayoutInEditMode) && (
-          <StyledPageLayoutTabListContainer>
-            <PageLayoutTabList
-              tabs={sortedTabs}
-              behaveAsLinks={!isInSidePanel && !isPageLayoutInEditMode}
-              componentInstanceId={tabListInstanceId}
-              onAddTab={handleAddTab}
-              isReorderEnabled={canEnableTabEditing}
-              onReorder={canEnableTabEditing ? reorderTabs : undefined}
-              pageLayoutType={currentPageLayout.type}
-            />
-          </StyledPageLayoutTabListContainer>
+          <StyledPageLayoutTabList
+            tabs={sortedTabs}
+            behaveAsLinks={!isInRightDrawer && !isPageLayoutInEditMode}
+            componentInstanceId={tabListInstanceId}
+            onAddTab={handleAddTab}
+            isReorderEnabled={canEnableTabEditing}
+            onReorder={canEnableTabEditing ? reorderTabs : undefined}
+            pageLayoutType={currentPageLayout.type}
+          />
         )}
 
-        <StyledScrollWrapperContainer>
-          <ScrollWrapper
-            componentInstanceId={getScrollWrapperInstanceIdFromPageLayoutId(
-              currentPageLayout.id,
-            )}
-            defaultEnableXScroll={false}
-          >
-            {isDefined(activeTabId) && activeTabExistsInCurrentPageLayout && (
-              <PageLayoutMainContent tabId={activeTabId} />
-            )}
-          </ScrollWrapper>
-        </StyledScrollWrapperContainer>
+        <StyledScrollWrapper
+          componentInstanceId={getScrollWrapperInstanceIdFromPageLayoutId(
+            currentPageLayout.id,
+          )}
+          defaultEnableXScroll={false}
+        >
+          {isDefined(activeTabId) && (
+            <PageLayoutMainContent tabId={activeTabId} />
+          )}
+        </StyledScrollWrapper>
       </StyledTabsAndDashboardContainer>
     </StyledContainer>
   );

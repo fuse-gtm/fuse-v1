@@ -3,26 +3,12 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 
 import { LightCopyIconButton } from '@/object-record/record-field/ui/components/LightCopyIconButton';
 import { useRegisterInputEvents } from '@/object-record/record-field/ui/meta-types/input/hooks/useRegisterInputEvents';
+import { TEXT_INPUT_STYLE } from 'twenty-ui/theme';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 export const StyledTextInput = styled.input`
   margin: 0;
-  background-color: transparent;
-  border: none;
-  color: ${themeCssVariables.font.color.primary};
-  font-family: ${themeCssVariables.font.family};
-  font-size: inherit;
-  font-weight: inherit;
-  outline: none;
-  padding: ${themeCssVariables.spacing[0]} ${themeCssVariables.spacing[2]};
-
-  &::placeholder,
-  &::-webkit-input-placeholder {
-    color: ${themeCssVariables.font.color.light};
-    font-family: ${themeCssVariables.font.family};
-    font-weight: ${themeCssVariables.font.weight.medium};
-  }
-
+  ${TEXT_INPUT_STYLE}
   width: 100%;
 
   &:disabled {
@@ -30,7 +16,7 @@ export const StyledTextInput = styled.input`
   }
 `;
 
-export type TextInputProps = {
+type TextInputProps = {
   instanceId: string;
   placeholder?: string;
   autoFocus?: boolean;
@@ -44,7 +30,6 @@ export type TextInputProps = {
   copyButton?: boolean;
   shouldTrim?: boolean;
   disabled?: boolean;
-  className?: string;
 };
 
 const getValue = (value: string, shouldTrim: boolean) => {
@@ -69,7 +54,6 @@ export const TextInput = ({
   copyButton = true,
   shouldTrim = true,
   disabled,
-  className,
 }: TextInputProps) => {
   const [internalText, setInternalText] = useState(value);
 
@@ -107,7 +91,6 @@ export const TextInput = ({
         autoFocus={autoFocus}
         value={internalText}
         disabled={disabled}
-        className={className}
       />
       {copyButton && (
         <div ref={copyRef}>

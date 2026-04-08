@@ -19,6 +19,7 @@ import { Temporal } from 'temporal-polyfill';
 import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { isDifferentZonedDateTime } from '~/utils/dates/isDifferentZonedDateTime';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledInputContainer = styled.div`
   align-items: center;

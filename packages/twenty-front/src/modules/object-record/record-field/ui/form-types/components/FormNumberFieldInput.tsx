@@ -20,9 +20,6 @@ import {
 import { styled } from '@linaria/react';
 
 const StyledInputWrapper = styled.div`
-  align-items: center;
-  display: flex;
-
   & input {
     padding: ${themeCssVariables.spacing[1]} ${themeCssVariables.spacing[2]};
   }

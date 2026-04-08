@@ -1,14 +1,14 @@
-import { BarChartLayers } from '@/page-layout/widgets/graph/graph-widget-bar-chart/components/BarChartLayers';
-import { useBarChartLayout } from '@/page-layout/widgets/graph/graph-widget-bar-chart/hooks/useBarChartLayout';
-import { useBarChartTheme } from '@/page-layout/widgets/graph/graph-widget-bar-chart/hooks/useBarChartTheme';
-import { useMemoizedBarPositions } from '@/page-layout/widgets/graph/graph-widget-bar-chart/hooks/useMemoizedBarPositions';
-import { type BarChartDatum } from '@/page-layout/widgets/graph/graph-widget-bar-chart/types/BarChartDatum';
-import { type BarChartEnrichedKey } from '@/page-layout/widgets/graph/graph-widget-bar-chart/types/BarChartEnrichedKey';
-import { type BarChartSlice } from '@/page-layout/widgets/graph/graph-widget-bar-chart/types/BarChartSlice';
-import { type BarChartSliceHoverData } from '@/page-layout/widgets/graph/graph-widget-bar-chart/types/BarChartSliceHoverData';
-import { computeAllCategorySlices } from '@/page-layout/widgets/graph/graph-widget-bar-chart/utils/computeAllCategorySlices';
-import { getSliceHoverDataFromMouseEvent } from '@/page-layout/widgets/graph/graph-widget-bar-chart/utils/getSliceHoverDataFromMouseEvent';
-import { hasNegativeValuesInData } from '@/page-layout/widgets/graph/graph-widget-bar-chart/utils/hasNegativeValuesInData';
+import { BarChartLayers } from '@/page-layout/widgets/graph/graphWidgetBarChart/components/BarChartLayers';
+import { useBarChartTheme } from '@/page-layout/widgets/graph/graphWidgetBarChart/hooks/useBarChartTheme';
+import { useMemoizedBarPositions } from '@/page-layout/widgets/graph/graphWidgetBarChart/hooks/useMemoizedBarPositions';
+import { useBarChartLayout } from '@/page-layout/widgets/graph/graphWidgetBarChart/hooks/useBarChartLayout';
+import { type BarChartDatum } from '@/page-layout/widgets/graph/graphWidgetBarChart/types/BarChartDatum';
+import { type BarChartEnrichedKey } from '@/page-layout/widgets/graph/graphWidgetBarChart/types/BarChartEnrichedKey';
+import { type BarChartSlice } from '@/page-layout/widgets/graph/graphWidgetBarChart/types/BarChartSlice';
+import { type BarChartSliceHoverData } from '@/page-layout/widgets/graph/graphWidgetBarChart/types/BarChartSliceHoverData';
+import { computeAllCategorySlices } from '@/page-layout/widgets/graph/graphWidgetBarChart/utils/computeAllCategorySlices';
+import { getSliceHoverDataFromMouseEvent } from '@/page-layout/widgets/graph/graphWidgetBarChart/utils/getSliceHoverDataFromMouseEvent';
+import { hasNegativeValuesInData } from '@/page-layout/widgets/graph/graphWidgetBarChart/utils/hasNegativeValuesInData';
 import { graphWidgetHighlightedLegendIdComponentState } from '@/page-layout/widgets/graph/states/graphWidgetHighlightedLegendIdComponentState';
 import {
   formatGraphValue,
@@ -18,8 +18,9 @@ import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/use
 import { styled } from '@linaria/react';
 import { type MouseEvent, useContext } from 'react';
 import { isDefined } from 'twenty-shared/utils';
-import { ThemeContext } from 'twenty-ui/theme-constants';
 import { BarChartLayout } from '~/generated-metadata/graphql';
+import { ThemeContext } from 'twenty-ui/theme';
+
 type BarChartProps = {
   data: BarChartDatum[];
   indexBy: string;
@@ -30,14 +31,12 @@ type BarChartProps = {
   layout: BarChartLayout;
   groupMode: 'grouped' | 'stacked';
   effectiveValueRange: { minimum: number; maximum: number };
-  hasExplicitRangeBounds: boolean;
   formatOptions: GraphValueFormatOptions;
   axisConfig?: {
     xAxisLabel?: string;
     yAxisLabel?: string;
     showGrid?: boolean;
   };
-  rightTickLabels?: string[];
   dataLabelsConfig?: {
     show: boolean;
     omitNullValues: boolean;
@@ -67,10 +66,8 @@ export const BarChart = ({
   layout,
   groupMode,
   effectiveValueRange,
-  hasExplicitRangeBounds,
   formatOptions,
   axisConfig,
-  rightTickLabels,
   dataLabelsConfig,
   hoveredSliceIndexValue,
   onSliceHover,
@@ -80,7 +77,6 @@ export const BarChart = ({
   hasNoData = false,
 }: BarChartProps) => {
   const { theme } = useContext(ThemeContext);
-
   const graphWidgetHighlightedLegendId = useAtomComponentStateValue(
     graphWidgetHighlightedLegendIdComponentState,
   );
@@ -106,13 +102,11 @@ export const BarChart = ({
     chartWidth,
     data,
     effectiveValueRange,
-    hasExplicitRangeBounds,
     formatOptions,
     groupMode,
     indexBy,
     keys,
     layout,
-    rightTickLabels,
   });
 
   const isVerticalLayout = layout === BarChartLayout.VERTICAL;

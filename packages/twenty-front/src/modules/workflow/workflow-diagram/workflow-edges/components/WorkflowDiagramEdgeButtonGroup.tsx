@@ -1,14 +1,18 @@
+import { getWorkflowDiagramColors } from '@/workflow/workflow-diagram/utils/getWorkflowDiagramColors';
+import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
+import { useContext, useMemo, type CSSProperties } from 'react';
 import { IconButtonGroup, type IconButtonGroupProps } from 'twenty-ui/input';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext } from 'twenty-ui/theme';
 
-const StyledIconButtonGroup = styled(IconButtonGroup)`
+const iconButtonGroupStyle = css`
+  background-color: var(--edge-btn-bg, transparent);
+  border: var(--edge-btn-border, none);
   pointer-events: all;
 `;
 
-const StyledSelectedIconButtonGroup = styled(StyledIconButtonGroup)`
-  background-color: ${themeCssVariables.color.blue2};
-  border-color: ${themeCssVariables.color.blue};
+const StyledWrapper = styled.div`
+  display: contents;
 `;
 
 type WorkflowDiagramEdgeButtonGroupProps = IconButtonGroupProps & {
@@ -19,9 +23,24 @@ export const WorkflowDiagramEdgeButtonGroup = ({
   selected = false,
   iconButtons,
 }: WorkflowDiagramEdgeButtonGroupProps) => {
-  const ButtonGroup = selected
-    ? StyledSelectedIconButtonGroup
-    : StyledIconButtonGroup;
+  const { theme } = useContext(ThemeContext);
 
-  return <ButtonGroup className="nodrag nopan" iconButtons={iconButtons} />;
+  const dynamicStyles = useMemo(() => {
+    if (!selected) return {};
+    const colors = getWorkflowDiagramColors({ theme });
+    return {
+      '--edge-btn-bg': colors.selected.background,
+      // eslint-disable-next-line lingui/no-unlocalized-strings
+      '--edge-btn-border': `1px solid ${colors.selected.borderColor}`,
+    } as CSSProperties;
+  }, [selected, theme]);
+
+  return (
+    <StyledWrapper style={dynamicStyles}>
+      <IconButtonGroup
+        className={`nodrag nopan ${iconButtonGroupStyle}`}
+        iconButtons={iconButtons}
+      />
+    </StyledWrapper>
+  );
 };

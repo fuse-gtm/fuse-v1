@@ -14,8 +14,8 @@ import { WorkflowStepFooter } from '@/workflow/workflow-steps/components/Workflo
 import { WorkflowEditActionFormFieldSettings } from '@/workflow/workflow-steps/workflow-actions/form-action/components/WorkflowEditActionFormFieldSettings';
 import { type WorkflowFormActionField } from '@/workflow/workflow-steps/workflow-actions/form-action/types/WorkflowFormActionField';
 import { getDefaultFormFieldSettings } from '@/workflow/workflow-steps/workflow-actions/form-action/utils/getDefaultFormFieldSettings';
-import { type OnDragEndResponder } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
+import { type OnDragEndResponder } from '@hello-pangea/dnd';
 import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
 import { useContext, useEffect, useState } from 'react';
@@ -30,9 +30,10 @@ import {
   IconTrash,
 } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
-import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 } from 'uuid';
+import { ThemeContext } from 'twenty-ui/theme';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 export type WorkflowEditActionFormBuilderProps = {
   triggerType: WorkflowTriggerType | undefined;
@@ -49,6 +50,12 @@ export type WorkflowEditActionFormBuilderProps = {
 
 type FormData = WorkflowFormActionField[];
 
+const StyledWorkflowStepBody = styled(WorkflowStepBody)`
+  display: block;
+  padding-left: ${themeCssVariables.spacing[2]};
+  padding-right: ${themeCssVariables.spacing[2]};
+`;
+
 const StyledFormFieldContainer = styled.div`
   align-items: flex-end;
   column-gap: ${themeCssVariables.spacing[1]};
@@ -61,27 +68,23 @@ const StyledFormFieldContainer = styled.div`
 `;
 
 const StyledDraggingIndicator = styled.div`
-  background-color: ${themeCssVariables.background.transparent.light};
-  inset: -8px;
   position: absolute;
+  inset: -8px;
   top: -4px;
+  background-color: ${themeCssVariables.background.transparent.light};
 `;
 
-const StyledGripButtonContainer = styled.div`
-  align-items: flex-end;
-  display: flex;
+const StyledLightGripIconButton = styled(LightIconButton)`
   grid-area: grip;
   margin-bottom: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledTrashButtonContainer = styled.div`
-  align-items: flex-end;
-  display: flex;
+const StyledLightTrashIconButton = styled(LightIconButton)`
   grid-area: delete;
   margin-bottom: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledFormFieldInputContainerWrapper = styled.div`
+const StyledFormFieldInputContainer = styled(FormFieldInputContainer)`
   grid-area: input;
 `;
 
@@ -95,14 +98,13 @@ const StyledFieldContainer = styled.div<{
   align-items: center;
   background: transparent;
   border: none;
-  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
   display: flex;
   font-family: inherit;
-  height: 100%;
   padding-left: ${themeCssVariables.spacing[2]};
-
   padding-right: ${themeCssVariables.spacing[2]};
   width: 100%;
+
+  cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
 
   &:hover,
   &[data-open='true'] {
@@ -113,7 +115,7 @@ const StyledFieldContainer = styled.div<{
   }
 `;
 
-const StyledPlaceholderContainer = styled.div`
+const StyledPlaceholder = styled(FormFieldPlaceholder)`
   width: 100%;
 `;
 
@@ -140,11 +142,8 @@ const StyledCalloutContainer = styled.div`
   padding-top: ${themeCssVariables.spacing[2]};
 `;
 
-const StyledNotClosableCalloutContainer = styled.div`
+const StyledNotClosableCalloutContainer = styled(StyledCalloutContainer)`
   padding-bottom: ${themeCssVariables.spacing[4]};
-  padding-left: ${themeCssVariables.spacing[7]};
-  padding-right: ${themeCssVariables.spacing[7]};
-  padding-top: ${themeCssVariables.spacing[2]};
 `;
 
 export const WorkflowEditActionFormBuilder = ({
@@ -152,8 +151,8 @@ export const WorkflowEditActionFormBuilder = ({
   action,
   actionOptions,
 }: WorkflowEditActionFormBuilderProps) => {
-  const { t } = useLingui();
   const { theme } = useContext(ThemeContext);
+  const { t } = useLingui();
 
   const [formData, setFormData] = useState<FormData>(action.settings.input);
 
@@ -234,10 +233,7 @@ export const WorkflowEditActionFormBuilder = ({
 
   return (
     <>
-      <WorkflowStepBody
-        display="block"
-        paddingInline={themeCssVariables.spacing[2]}
-      >
+      <StyledWorkflowStepBody>
         {triggerType && triggerType !== 'MANUAL' && isCalloutVisible && (
           <StyledCalloutContainer>
             <Callout
@@ -251,7 +247,7 @@ export const WorkflowEditActionFormBuilder = ({
                 label: t`Learn more`,
                 onClick: () =>
                   window.open(
-                    'https://fusegtm.com/docs/user-guide/workflows/capabilities/workflow-actions#form',
+                    'https://docs.twenty.com/user-guide/workflows/capabilities/workflow-actions#form',
                     '_blank',
                     'noopener,noreferrer',
                   ),
@@ -300,15 +296,13 @@ export const WorkflowEditActionFormBuilder = ({
                         {isDragging && <StyledDraggingIndicator />}
 
                         {showButtons && (
-                          <StyledGripButtonContainer>
-                            <LightIconButton
-                              Icon={IconGripVertical}
-                              aria-label={t`Reorder field`}
-                            />
-                          </StyledGripButtonContainer>
+                          <StyledLightGripIconButton
+                            Icon={IconGripVertical}
+                            aria-label={t`Reorder field`}
+                          />
                         )}
 
-                        <StyledFormFieldInputContainerWrapper>
+                        <StyledFormFieldInputContainer>
                           <InputLabel>{field.label || ''}</InputLabel>
 
                           <FormFieldInputRowContainer>
@@ -322,53 +316,44 @@ export const WorkflowEditActionFormBuilder = ({
                               <StyledFieldContainer
                                 readonly={actionOptions.readonly}
                               >
-                                <StyledPlaceholderContainer>
-                                  <FormFieldPlaceholder>
-                                    {isDefined(field.placeholder) &&
-                                    isNonEmptyString(field.placeholder)
-                                      ? field.placeholder
-                                      : getDefaultFormFieldSettings(field.type)
-                                          .placeholder}
-                                  </FormFieldPlaceholder>
-                                </StyledPlaceholderContainer>
-                                {(field.type === 'RECORD' ||
-                                  field.type === 'SELECT' ||
-                                  field.type === 'MULTI_SELECT') && (
+                                <StyledPlaceholder>
+                                  {isDefined(field.placeholder) &&
+                                  isNonEmptyString(field.placeholder)
+                                    ? field.placeholder
+                                    : getDefaultFormFieldSettings(field.type)
+                                        .placeholder}
+                                </StyledPlaceholder>
+                                {field.type === 'RECORD' && (
                                   <IconChevronDown
                                     size={theme.icon.size.md}
-                                    color={
-                                      themeCssVariables.font.color.tertiary
-                                    }
+                                    color={theme.font.color.tertiary}
                                   />
                                 )}
                               </StyledFieldContainer>
                             </FormFieldInputInnerContainer>
                           </FormFieldInputRowContainer>
-                        </StyledFormFieldInputContainerWrapper>
+                        </StyledFormFieldInputContainer>
 
                         {showButtons && (
-                          <StyledTrashButtonContainer>
-                            <LightIconButton
-                              Icon={IconTrash}
-                              aria-label={t`Delete field`}
-                              onClick={() => {
-                                const updatedFormData = formData.filter(
-                                  (currentField) =>
-                                    currentField.id !== field.id,
-                                );
+                          <StyledLightTrashIconButton
+                            Icon={IconTrash}
+                            aria-label={t`Delete field`}
+                            onClick={() => {
+                              const updatedFormData = formData.filter(
+                                (currentField) => currentField.id !== field.id,
+                              );
 
-                                setFormData(updatedFormData);
+                              setFormData(updatedFormData);
 
-                                actionOptions.onActionUpdate({
-                                  ...action,
-                                  settings: {
-                                    ...action.settings,
-                                    input: updatedFormData,
-                                  },
-                                });
-                              }}
-                            />
-                          </StyledTrashButtonContainer>
+                              actionOptions.onActionUpdate({
+                                ...action,
+                                settings: {
+                                  ...action.settings,
+                                  input: updatedFormData,
+                                },
+                              });
+                            }}
+                          />
                         )}
 
                         {isFieldSelected(field.id) && (
@@ -434,7 +419,7 @@ export const WorkflowEditActionFormBuilder = ({
             </FormFieldInputContainer>
           </StyledAddFieldButtonContainer>
         )}
-      </WorkflowStepBody>
+      </StyledWorkflowStepBody>
       {!actionOptions.readonly && <WorkflowStepFooter stepId={action.id} />}
     </>
   );

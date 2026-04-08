@@ -12,7 +12,7 @@ import { PageDragDropProvider } from '@/navigation/components/PageDragDropProvid
 import { useIsSettingsPage } from '@/navigation/hooks/useIsSettingsPage';
 import { OBJECT_SETTINGS_WIDTH } from '@/settings/data-model/constants/ObjectSettings';
 import { SignInAppNavigationDrawerMock } from '@/sign-in-background-mock/components/SignInAppNavigationDrawerMock';
-import { lazy, Suspense } from 'react';
+import { Suspense, lazy, useContext } from 'react';
 
 const SignInBackgroundMockPage = lazy(() =>
   import('@/sign-in-background-mock/components/SignInBackgroundMockPage').then(
@@ -21,44 +21,39 @@ const SignInBackgroundMockPage = lazy(() =>
 );
 import { useShowFullscreen } from '@/ui/layout/fullscreen/hooks/useShowFullscreen';
 import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
-import { useShowFuseAuthLayout } from '@/ui/layout/hooks/useShowFuseAuthLayout';
-import { WelcomeProTrialEffect } from '@/onboarding/components/WelcomeProTrialEffect';
-import { WelcomeProTrialModal } from '@/onboarding/components/WelcomeProTrialModal';
 import { NAVIGATION_DRAWER_CONSTRAINTS } from '@/ui/layout/resizable-panel/constants/NavigationDrawerConstraints';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
-import { Global, css, useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
+import { styled } from '@linaria/react';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
 import { useScreenSize } from 'twenty-ui/utilities';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext } from 'twenty-ui/theme';
 
 const StyledLayout = styled.div`
-  background: ${({ theme }) => theme.background.noisy};
+  background: ${themeCssVariables.background.noisy};
   display: flex;
   flex-direction: column;
   height: 100dvh;
   position: relative;
-  scrollbar-color: ${({ theme }) => theme.border.color.medium} transparent;
+  scrollbar-color: ${themeCssVariables.border.color.medium} transparent;
   scrollbar-width: 4px;
   width: 100%;
 
   *::-webkit-scrollbar-thumb {
-    border-radius: ${({ theme }) => theme.border.radius.sm};
+    border-radius: ${themeCssVariables.border.radius.sm};
   }
 `;
 
-const StyledPageContainer = styled(motion.div)`
+const StyledPageContainerBase = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: row;
   min-height: 0;
 `;
+const StyledPageContainer = motion.create(StyledPageContainerBase);
 
-const StyledAppNavigationDrawer = styled(AppNavigationDrawer)`
-  flex-shrink: 0;
-`;
-
-const StyledAppNavigationDrawerMock = styled(SignInAppNavigationDrawerMock)`
+const StyledNavigationDrawerWrapper = styled.div`
   flex-shrink: 0;
 `;
 
@@ -71,21 +66,13 @@ const StyledMainContainer = styled.div`
 export const DefaultLayout = () => {
   const isMobile = useIsMobile();
   const isSettingsPage = useIsSettingsPage();
-  const theme = useTheme();
+  const { theme } = useContext(ThemeContext);
   const windowsWidth = useScreenSize().width;
   const showAuthModal = useShowAuthModal();
-  const showFuseAuthLayout = useShowFuseAuthLayout();
   const useShowFullScreen = useShowFullscreen();
 
   return (
     <>
-      <Global
-        styles={css`
-          body {
-            background: ${theme.background.tertiary};
-          }
-        `}
-      />
       <FileUploadProvider>
         <StyledLayout>
           <AppErrorBoundary FallbackComponent={AppFullScreenErrorFallback}>
@@ -108,13 +95,17 @@ export const DefaultLayout = () => {
             >
               <PageDragDropProvider>
                 {!showAuthModal && <KeyboardShortcutMenu />}
-                {showFuseAuthLayout ? (
-                  <StyledMainContainer>
-                    <Outlet />
-                  </StyledMainContainer>
-                ) : showAuthModal ? (
+                {showAuthModal ? (
+                  <StyledNavigationDrawerWrapper>
+                    <SignInAppNavigationDrawerMock />
+                  </StyledNavigationDrawerWrapper>
+                ) : useShowFullScreen ? null : (
+                  <StyledNavigationDrawerWrapper>
+                    <AppNavigationDrawer />
+                  </StyledNavigationDrawerWrapper>
+                )}
+                {showAuthModal ? (
                   <>
-                    <StyledAppNavigationDrawerMock />
                     <StyledMainContainer>
                       <Suspense fallback={null}>
                         <SignInBackgroundMockPage />
@@ -129,18 +120,11 @@ export const DefaultLayout = () => {
                     </AnimatePresence>
                   </>
                 ) : (
-                  <>
-                    {useShowFullScreen ? null : <StyledAppNavigationDrawer />}
-                    <StyledMainContainer>
-                      <AppErrorBoundary
-                        FallbackComponent={AppPageErrorFallback}
-                      >
-                        <Outlet />
-                      </AppErrorBoundary>
-                    </StyledMainContainer>
-                    <WelcomeProTrialEffect />
-                    <WelcomeProTrialModal />
-                  </>
+                  <StyledMainContainer>
+                    <AppErrorBoundary FallbackComponent={AppPageErrorFallback}>
+                      <Outlet />
+                    </AppErrorBoundary>
+                  </StyledMainContainer>
                 )}
               </PageDragDropProvider>
             </StyledPageContainer>

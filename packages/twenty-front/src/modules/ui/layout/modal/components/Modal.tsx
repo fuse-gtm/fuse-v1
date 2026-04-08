@@ -1,20 +1,22 @@
-import * as RadixDialog from '@radix-ui/react-dialog';
-
 import { RootStackingContextZIndices } from '@/ui/layout/constants/RootStackingContextZIndices';
+import { ModalHotkeysAndClickOutsideEffect } from '@/ui/layout/modal/components/ModalHotkeysAndClickOutsideEffect';
 import { ModalComponentInstanceContext } from '@/ui/layout/modal/contexts/ModalComponentInstanceContext';
 import { useModalContainer } from '@/ui/layout/modal/contexts/ModalContainerContext';
 import { isModalOpenedComponentState } from '@/ui/layout/modal/states/isModalOpenedComponentState';
 
+import { MODAL_BACKDROP_CLICK_OUTSIDE_ID } from '@/ui/layout/modal/constants/ModalBackdropClickOutsideId';
+import { MODAL_CLICK_OUTSIDE_LISTENER_EXCLUDED_ID } from '@/ui/layout/modal/constants/ModalClickOutsideListenerExcludedClassName';
 import { useModal } from '@/ui/layout/modal/hooks/useModal';
+import { ClickOutsideListenerContext } from '@/ui/utilities/pointer-event/contexts/ClickOutsideListenerContext';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { styled } from '@linaria/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useContext, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { ThemeContext } from 'twenty-ui/theme';
-
 const StyledModalDivBase = styled.div<{
   size?: ModalSize;
   padding?: ModalPadding;
@@ -238,6 +240,10 @@ export const Modal = ({
 
   const { theme } = useContext(ThemeContext);
 
+  const stopEventPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   const isModalOpened = useAtomComponentStateValue(
     isModalOpenedComponentState,
     modalId,
@@ -250,100 +256,64 @@ export const Modal = ({
     if (shouldCloseModalOnClickOutsideOrEscape) closeModal(modalId);
   };
 
-  // Handle Enter key on the modal content
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && isDefined(onEnter)) {
-      onEnter();
-    }
-  };
-
-  // Radix Dialog handles focus trap, Escape, and click-outside natively.
-  // We bridge the Jotai atom state to Radix's open prop,
-  // and use onOpenChange to sync dismissal back to Jotai.
-  return (
-    <RadixDialog.Root
-      open={isModalOpened}
-      onOpenChange={(open) => {
-        if (!open && isClosable) {
-          handleClose();
-        }
-      }}
-    >
-      <AnimatePresence mode="wait">
-        {isModalOpened && (
-          <RadixDialog.Portal
-            container={effectiveContainer ?? undefined}
-            forceMount
+  const modalContent = (
+    <AnimatePresence mode="wait">
+      {isModalOpened && (
+        <ModalComponentInstanceContext.Provider
+          value={{
+            instanceId: modalId,
+          }}
+        >
+          <ClickOutsideListenerContext.Provider
+            value={{
+              excludedClickOutsideId: MODAL_CLICK_OUTSIDE_LISTENER_EXCLUDED_ID,
+            }}
           >
-            <ModalComponentInstanceContext.Provider
-              value={{
-                instanceId: modalId,
-              }}
+            <ModalHotkeysAndClickOutsideEffect
+              modalId={modalId}
+              modalRef={modalRef}
+              onEnter={onEnter}
+              isClosable={isClosable}
+              onClose={handleClose}
+            />
+            <StyledBackDrop
+              data-testid="modal-backdrop"
+              data-click-outside-id={MODAL_BACKDROP_CLICK_OUTSIDE_ID}
+              onMouseDown={stopEventPropagation}
+              modalVariant={modalVariant}
+              isInContainer={isInContainer}
             >
-              <RadixDialog.Overlay asChild>
-                <StyledBackDrop
-                  data-testid="modal-backdrop"
-                  modalVariant={modalVariant}
-                  isInContainer={isInContainer}
-                >
-                  <RadixDialog.Content
-                    asChild
-                    // Preserve existing focus behavior during transition
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                    onCloseAutoFocus={(e) => e.preventDefault()}
-                    // Disable Radix's built-in Escape/click-outside when not closable
-                    onEscapeKeyDown={(e) => {
-                      if (!isClosable) e.preventDefault();
-                    }}
-                    onPointerDownOutside={(e) => {
-                      if (!isClosable || dataGloballyPreventClickOutside) {
-                        e.preventDefault();
-                      }
-                    }}
-                    onInteractOutside={(e) => {
-                      if (
-                        !shouldCloseModalOnClickOutsideOrEscape ||
-                        !isClosable
-                      ) {
-                        e.preventDefault();
-                      }
-                    }}
-                  >
-                    <StyledModalDiv
-                      ref={modalRef}
-                      size={size}
-                      padding={padding}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      layout
-                      modalVariant={modalVariant}
-                      variants={modalAnimation}
-                      transition={{
-                        duration: theme.animation.duration.normal,
-                      }}
-                      className={className}
-                      isMobile={isMobile}
-                      onKeyDown={handleKeyDown}
-                      data-globally-prevent-click-outside={
-                        dataGloballyPreventClickOutside
-                      }
-                    >
-                      {/* Visually hidden title for screen readers */}
-                      <RadixDialog.Title className="sr-only">
-                        Modal
-                      </RadixDialog.Title>
-                      {children}
-                    </StyledModalDiv>
-                  </RadixDialog.Content>
-                </StyledBackDrop>
-              </RadixDialog.Overlay>
-            </ModalComponentInstanceContext.Provider>
-          </RadixDialog.Portal>
-        )}
-      </AnimatePresence>
-    </RadixDialog.Root>
+              <StyledModalDiv
+                ref={modalRef}
+                size={size}
+                padding={padding}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                layout
+                modalVariant={modalVariant}
+                variants={modalAnimation}
+                transition={{ duration: theme.animation.duration.normal }}
+                className={className}
+                isMobile={isMobile}
+                data-globally-prevent-click-outside={
+                  dataGloballyPreventClickOutside
+                }
+              >
+                {children}
+              </StyledModalDiv>
+            </StyledBackDrop>
+          </ClickOutsideListenerContext.Provider>
+        </ModalComponentInstanceContext.Provider>
+      )}
+    </AnimatePresence>
   );
+
+  if (isDefined(effectiveContainer)) {
+    return createPortal(modalContent, effectiveContainer);
+  }
+
+  return modalContent;
 };
 
 Modal.Header = ModalHeader;

@@ -5,7 +5,7 @@ import { PageLayoutWidgetNoDataDisplay } from '@/page-layout/widgets/components/
 import { WidgetSkeletonLoader } from '@/page-layout/widgets/components/WidgetSkeletonLoader';
 import { styled } from '@linaria/react';
 import { useState } from 'react';
-import { getSafeUrl, isDefined } from 'twenty-shared/utils';
+import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div<{ $isEditMode: boolean }>`
@@ -82,10 +82,7 @@ export const IframeWidget = ({ widget }: IframeWidgetProps) => {
     setHasError(true);
   };
 
-  const safeUrl = isDefined(url) ? getSafeUrl(url) : undefined;
-  const isHttpUrl = isDefined(safeUrl) && /^https?:\/\//i.test(safeUrl);
-
-  if (hasError || !isHttpUrl) {
+  if (hasError || !isDefined(url)) {
     return (
       <StyledContainer $isEditMode={isPageLayoutInEditMode}>
         <StyledErrorContainer>
@@ -104,7 +101,7 @@ export const IframeWidget = ({ widget }: IframeWidgetProps) => {
       )}
       <StyledIframe
         $isEditMode={isPageLayoutInEditMode}
-        src={safeUrl}
+        src={url}
         title={title}
         onLoad={handleIframeLoad}
         onError={handleIframeError}

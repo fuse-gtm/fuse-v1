@@ -49,7 +49,7 @@ const StyledMenuItemDraggableWrapper = styled.div`
 
 const StyledDropdownContainer = styled.div`
   position: absolute;
-  right: ${({ theme }) => theme.spacing(1)};
+  right: ${themeCssVariables.spacing[1]};
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;

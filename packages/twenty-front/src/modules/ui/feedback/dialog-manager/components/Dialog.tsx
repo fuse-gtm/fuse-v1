@@ -1,9 +1,14 @@
-import * as RadixDialog from '@radix-ui/react-dialog';
 import { styled } from '@linaria/react';
 import { motion } from 'framer-motion';
+import { Key } from 'ts-key-enum';
 
+import { DIALOG_CLICK_OUTSIDE_ID } from '@/ui/feedback/dialog-manager/constants/DialogClickOutsideId';
+import { DIALOG_FOCUS_ID } from '@/ui/feedback/dialog-manager/constants/DialogFocusId';
+import { DIALOG_LISTENER_ID } from '@/ui/feedback/dialog-manager/constants/DialogListenerId';
 import { RootStackingContextZIndices } from '@/ui/layout/constants/RootStackingContextZIndices';
-import React from 'react';
+import { useHotkeysOnFocusedElement } from '@/ui/utilities/hotkey/hooks/useHotkeysOnFocusedElement';
+import { useListenClickOutside } from '@/ui/utilities/pointer-event/hooks/useListenClickOutside';
+import { useRef } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 import { Button } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
@@ -93,80 +98,77 @@ export const Dialog = ({
     closed: { y: '50vh' },
   };
 
-  // Handle Enter key to trigger the confirm button
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      const confirmButton = buttons.find((button) => button.role === 'confirm');
-      if (isDefined(confirmButton)) {
-        event.preventDefault();
-        confirmButton?.onClick?.(event.nativeEvent);
-        onClose?.();
-      }
+  const handleEnter = (event: KeyboardEvent) => {
+    const confirmButton = buttons.find((button) => button.role === 'confirm');
+
+    event.preventDefault();
+
+    if (isDefined(confirmButton)) {
+      confirmButton?.onClick?.(event);
+      onClose?.();
     }
   };
 
-  // Radix Dialog handles focus trap, Escape, and click-outside natively.
-  // The Dialog is always rendered open (it's shown by the dialog manager),
-  // so we use open={true} and onOpenChange to handle dismissal.
+  const handleEscape = (event: KeyboardEvent) => {
+    event.preventDefault();
+    onClose?.();
+  };
+
+  useHotkeysOnFocusedElement({
+    keys: [Key.Enter],
+    callback: handleEnter,
+    focusId: DIALOG_FOCUS_ID,
+    dependencies: [buttons],
+  });
+
+  useHotkeysOnFocusedElement({
+    keys: [Key.Escape],
+    callback: handleEscape,
+    focusId: DIALOG_FOCUS_ID,
+    dependencies: [handleEscape],
+  });
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useListenClickOutside({
+    refs: [dialogRef],
+    callback: () => {
+      onClose?.();
+    },
+    listenerId: DIALOG_LISTENER_ID,
+  });
+
   return (
-    <RadixDialog.Root
-      open={true}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose?.();
-        }
-      }}
+    <StyledDialogOverlay
+      variants={dialogVariants}
+      initial="closed"
+      animate="open"
+      exit="closed"
+      className={className}
+      data-click-outside-id={DIALOG_CLICK_OUTSIDE_ID}
     >
-      <RadixDialog.Portal forceMount>
-        <RadixDialog.Overlay asChild>
-          <StyledDialogOverlay
-            variants={dialogVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className={className}
-          >
-            <RadixDialog.Content
-              asChild
-              onOpenAutoFocus={(e) => e.preventDefault()}
-              onCloseAutoFocus={(e) => e.preventDefault()}
-              onKeyDown={handleKeyDown}
-            >
-              <StyledDialogContainer
-                variants={containerVariants}
-                transition={{ damping: 15, stiffness: 100 }}
-                id={id}
-              >
-                {title && (
-                  <RadixDialog.Title asChild>
-                    <StyledDialogTitle>{title}</StyledDialogTitle>
-                  </RadixDialog.Title>
-                )}
-                {message && (
-                  <RadixDialog.Description asChild>
-                    <StyledDialogMessage>{message}</StyledDialogMessage>
-                  </RadixDialog.Description>
-                )}
-                {children}
-                {buttons.map(
-                  ({ accent, onClick, role, title: key, variant }) => (
-                    <StyledDialogButton
-                      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                        onClose?.();
-                        onClick?.(event);
-                      }}
-                      fullWidth={true}
-                      variant={variant ?? 'secondary'}
-                      title={key}
-                      {...{ accent, key, role }}
-                    />
-                  ),
-                )}
-              </StyledDialogContainer>
-            </RadixDialog.Content>
-          </StyledDialogOverlay>
-        </RadixDialog.Overlay>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+      <StyledDialogContainer
+        variants={containerVariants}
+        transition={{ damping: 15, stiffness: 100 }}
+        id={id}
+        ref={dialogRef}
+      >
+        {title && <StyledDialogTitle>{title}</StyledDialogTitle>}
+        {message && <StyledDialogMessage>{message}</StyledDialogMessage>}
+        {children}
+        {buttons.map(({ accent, onClick, role, title: key, variant }) => (
+          <StyledDialogButton
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              onClose?.();
+              onClick?.(event);
+            }}
+            fullWidth={true}
+            variant={variant ?? 'secondary'}
+            title={key}
+            {...{ accent, key, role }}
+          />
+        ))}
+      </StyledDialogContainer>
+    </StyledDialogOverlay>
   );
 };

@@ -1,19 +1,17 @@
-import { SidePanelRouter } from '@/side-panel/components/SidePanelRouter';
-import { SidePanelWidthEffect } from '@/side-panel/components/SidePanelWidthEffect';
-import { SIDE_PANEL_CLICK_OUTSIDE_ID } from '@/side-panel/constants/SidePanelClickOutsideId';
-import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
-import { useSidePanelCloseAnimationCompleteCleanup } from '@/side-panel/hooks/useSidePanelCloseAnimationCompleteCleanup';
+import { CommandMenuRouter } from '@/command-menu/components/CommandMenuRouter';
+import { CommandMenuWidthEffect } from '@/command-menu/components/CommandMenuWidthEffect';
+import { useCommandMenu } from '@/command-menu/hooks/useCommandMenu';
+import { useCommandMenuCloseAnimationCompleteCleanup } from '@/command-menu/hooks/useCommandMenuCloseAnimationCompleteCleanup';
 import {
-  SIDE_PANEL_WIDTH_VAR,
-  sidePanelWidthState,
-} from '@/side-panel/states/sidePanelWidthState';
-import { isSidePanelClosingState } from '@/side-panel/states/isSidePanelClosingState';
-import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
+  COMMAND_MENU_WIDTH_VAR,
+  commandMenuWidthState,
+} from '@/command-menu/states/commandMenuWidthState';
+import { isCommandMenuClosingState } from '@/command-menu/states/isCommandMenuClosingState';
+import { isCommandMenuOpenedState } from '@/command-menu/states/isCommandMenuOpenedState';
 import { tableWidthResizeIsActiveState } from '@/object-record/record-table/states/tableWidthResizeIsActivedState';
 import { ModalContainerContext } from '@/ui/layout/modal/contexts/ModalContainerContext';
-import { ParentClickOutsideIdContext } from '@/ui/utilities/pointer-event/contexts/ParentClickOutsideIdContext';
 import { ResizablePanelGap } from '@/ui/layout/resizable-panel/components/ResizablePanelGap';
-import { SIDE_PANEL_CONSTRAINTS } from '@/side-panel/constants/SidePanelConstraints';
+import { COMMAND_MENU_CONSTRAINTS } from '@/ui/layout/resizable-panel/constants/CommandMenuConstraints';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
@@ -28,24 +26,24 @@ const StyledSidePanelWrapper = styled.div<{
   flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
+  width: ${({ isOpen }) => (isOpen ? `var(${COMMAND_MENU_WIDTH_VAR})` : '0px')};
   transition: ${({ isResizing }) =>
     isResizing
       ? 'none'
       : `width ${themeCssVariables.animation.duration.normal}s`};
-  width: ${({ isOpen }) => (isOpen ? `var(${SIDE_PANEL_WIDTH_VAR})` : '0px')};
 `;
 
 const StyledSidePanel = styled.aside`
   background: ${themeCssVariables.background.primary};
   border: 1px solid ${themeCssVariables.border.color.medium};
   border-radius: ${themeCssVariables.border.radius.md};
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   position: relative;
   width: 100%;
+  box-sizing: border-box;
 `;
 
 const StyledModalContainer = styled.div`
@@ -60,36 +58,38 @@ const StyledModalContainer = styled.div`
 
 const GAP_WIDTH = 8;
 
-export const SidePanelForDesktop = () => {
-  const isSidePanelOpened = useAtomStateValue(isSidePanelOpenedState);
-  const isSidePanelClosing = useAtomStateValue(isSidePanelClosingState);
-  const [sidePanelWidth, setSidePanelWidth] = useAtomState(sidePanelWidthState);
-  const { closeSidePanelMenu } = useSidePanelMenu();
-  const { sidePanelCloseAnimationCompleteCleanup } =
-    useSidePanelCloseAnimationCompleteCleanup();
+export const CommandMenuSidePanelForDesktop = () => {
+  const isCommandMenuOpened = useAtomStateValue(isCommandMenuOpenedState);
+  const isCommandMenuClosing = useAtomStateValue(isCommandMenuClosingState);
+  const [commandMenuWidth, setCommandMenuWidth] = useAtomState(
+    commandMenuWidthState,
+  );
+  const { closeCommandMenu } = useCommandMenu();
+  const { commandMenuCloseAnimationCompleteCleanup } =
+    useCommandMenuCloseAnimationCompleteCleanup();
 
   const [modalContainer, setModalContainer] = useState<HTMLDivElement | null>(
     null,
   );
   const [isResizing, setIsResizing] = useState(false);
   const [shouldRenderContent, setShouldRenderContent] =
-    useState(isSidePanelOpened);
+    useState(isCommandMenuOpened);
 
   const setTableWidthResizeIsActive = useSetAtomState(
     tableWidthResizeIsActiveState,
   );
 
-  const shouldShowContent = isSidePanelOpened || shouldRenderContent;
+  const shouldShowContent = isCommandMenuOpened || shouldRenderContent;
 
   const handleTransitionEnd = () => {
-    if (isSidePanelOpened) {
+    if (isCommandMenuOpened) {
       // Open animation completed - ensure content persists for close animation
       setShouldRenderContent(true);
     } else {
       // Close animation completed
       setShouldRenderContent(false);
-      if (isSidePanelClosing) {
-        sidePanelCloseAnimationCompleteCleanup();
+      if (isCommandMenuClosing) {
+        commandMenuCloseAnimationCompleteCleanup();
       }
     }
   };
@@ -103,11 +103,11 @@ export const SidePanelForDesktop = () => {
 
   const handleWidthChange = useCallback(
     (width: number) => {
-      setSidePanelWidth(width);
+      setCommandMenuWidth(width);
       setIsResizing(false);
       setTableWidthResizeIsActive(true);
     },
-    [setSidePanelWidth, setTableWidthResizeIsActive],
+    [setCommandMenuWidth, setTableWidthResizeIsActive],
   );
 
   const handleResizeStart = useCallback(() => {
@@ -116,40 +116,35 @@ export const SidePanelForDesktop = () => {
   }, [setTableWidthResizeIsActive]);
 
   const handleCollapse = useCallback(() => {
-    closeSidePanelMenu();
+    closeCommandMenu();
     setIsResizing(false);
     setTableWidthResizeIsActive(true);
-  }, [closeSidePanelMenu, setTableWidthResizeIsActive]);
+  }, [closeCommandMenu, setTableWidthResizeIsActive]);
 
   return (
     <>
-      <SidePanelWidthEffect />
+      <CommandMenuWidthEffect />
       <ResizablePanelGap
         side="left"
-        constraints={SIDE_PANEL_CONSTRAINTS}
-        currentWidth={sidePanelWidth}
+        constraints={COMMAND_MENU_CONSTRAINTS}
+        currentWidth={commandMenuWidth}
         onWidthChange={handleWidthChange}
         onCollapse={handleCollapse}
-        gapWidth={isSidePanelOpened ? GAP_WIDTH : 0}
-        cssVariableName={SIDE_PANEL_WIDTH_VAR}
+        gapWidth={isCommandMenuOpened ? GAP_WIDTH : 0}
+        cssVariableName={COMMAND_MENU_WIDTH_VAR}
         onResizeStart={handleResizeStart}
       />
 
       <StyledSidePanelWrapper
-        isOpen={isSidePanelOpened}
+        isOpen={isCommandMenuOpened}
         isResizing={isResizing}
         onTransitionEnd={handleTransitionEnd}
-        data-side-panel=""
-        data-click-outside-id={SIDE_PANEL_CLICK_OUTSIDE_ID}
+        data-command-menu-panel=""
       >
         <StyledSidePanel>
           <StyledModalContainer ref={handleModalContainerRef} />
           <ModalContainerContext.Provider value={{ container: modalContainer }}>
-            <ParentClickOutsideIdContext.Provider
-              value={SIDE_PANEL_CLICK_OUTSIDE_ID}
-            >
-              {shouldShowContent && <SidePanelRouter />}
-            </ParentClickOutsideIdContext.Provider>
+            {shouldShowContent && <CommandMenuRouter />}
           </ModalContainerContext.Provider>
         </StyledSidePanel>
       </StyledSidePanelWrapper>

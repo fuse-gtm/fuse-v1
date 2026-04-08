@@ -1,5 +1,5 @@
 import { useGetAvailablePackages } from '@/logic-functions/hooks/useGetAvailablePackages';
-import { useLogicFunctionForm } from '@/logic-functions/hooks/useLogicFunctionForm';
+import { useLogicFunctionEditor } from '@/logic-functions/hooks/useLogicFunctionEditor';
 import { useFullScreenModal } from '@/ui/layout/fullscreen/hooks/useFullScreenModal';
 import { type BreadcrumbProps } from '@/ui/navigation/bread-crumb/components/Breadcrumb';
 import { useGetUpdatableWorkflowVersionOrThrow } from '@/workflow/hooks/useGetUpdatableWorkflowVersionOrThrow';
@@ -22,6 +22,9 @@ import { WorkflowStepBody } from '@/workflow/workflow-steps/components/WorkflowS
 import { WorkflowCodeEditor } from '@/workflow/workflow-steps/workflow-actions/code-action/components/WorkflowCodeEditor';
 import { WorkflowEditActionCodeFields } from '@/workflow/workflow-steps/workflow-actions/code-action/components/WorkflowEditActionCodeFields';
 import { WORKFLOW_LOGIC_FUNCTION_TAB_LIST_COMPONENT_ID } from '@/workflow/workflow-steps/workflow-actions/code-action/constants/WorkflowLogicFunctionTabListComponentId';
+import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilyStateValue';
+import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
+import { logicFunctionTestDataFamilyState } from '@/workflow/workflow-steps/workflow-actions/code-action/states/logicFunctionTestDataFamilyState';
 import { WorkflowLogicFunctionTabId } from '@/workflow/workflow-steps/workflow-actions/code-action/types/WorkflowLogicFunctionTabId';
 import { getWrongExportedFunctionMarkers } from '@/workflow/workflow-steps/workflow-actions/code-action/utils/getWrongExportedFunctionMarkers';
 import { WorkflowVariablePicker } from '@/workflow/workflow-variables/components/WorkflowVariablePicker';
@@ -46,8 +49,6 @@ import { useIsMobile } from 'twenty-ui/utilities';
 import { useDebouncedCallback } from 'use-debounce';
 import { getFunctionInputFromInputSchema } from 'twenty-shared/workflow';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { LogicFunctionTestInputInitEffect } from '@/logic-functions/components/LogicFunctionTestInputInitEffect';
-import { useExecuteLogicFunction } from '@/logic-functions/hooks/useExecuteLogicFunction';
 
 const CODE_EDITOR_MIN_HEIGHT = 343;
 
@@ -118,27 +119,28 @@ export const WorkflowEditActionCode = ({
     });
   };
 
-  const { formValues, loading, onChange } = useLogicFunctionForm({
-    logicFunctionId,
-  });
-
-  const {
-    executeLogicFunction,
-    isExecuting,
-    logicFunctionTestData,
-    updateLogicFunctionInput,
-  } = useExecuteLogicFunction({
-    logicFunctionId,
-    callback: updateOutputSchemaFromTestResult,
-  });
+  const { formValues, loading, executeLogicFunction, onChange, isExecuting } =
+    useLogicFunctionEditor({
+      logicFunctionId,
+      executeCallback: updateOutputSchemaFromTestResult,
+    });
 
   const { availablePackages } = useGetAvailablePackages({
     id: logicFunctionId,
   });
 
+  const logicFunctionTestData = useAtomFamilyStateValue(
+    logicFunctionTestDataFamilyState,
+    logicFunctionId,
+  );
+  const setLogicFunctionTestData = useSetAtomFamilyState(
+    logicFunctionTestDataFamilyState,
+    logicFunctionId,
+  );
+
   const [functionInput, setFunctionInput] =
     useState<LogicFunctionInputFormData>(
-      action.settings.input.logicFunctionInput ?? {},
+      action.settings.input.logicFunctionInput,
     );
 
   const handleUpdateFunctionInputSchema = useDebouncedCallback(
@@ -161,7 +163,6 @@ export const WorkflowEditActionCode = ({
         newInput: newFunctionInput,
         oldInput: action.settings.input.logicFunctionInput,
       });
-
       const newMergedTestInput = mergeDefaultFunctionInputAndFunctionInput({
         newInput: newFunctionInput,
         oldInput: logicFunctionTestData.input,
@@ -169,7 +170,10 @@ export const WorkflowEditActionCode = ({
 
       setFunctionInput(newMergedInput);
 
-      updateLogicFunctionInput(newMergedTestInput);
+      setLogicFunctionTestData((prev) => ({
+        ...prev,
+        input: newMergedTestInput,
+      }));
 
       updateAction({
         ...action,
@@ -221,8 +225,10 @@ export const WorkflowEditActionCode = ({
       path,
       value,
     );
-
-    updateLogicFunctionInput(updatedTestFunctionInput);
+    setLogicFunctionTestData((prev) => ({
+      ...prev,
+      input: updatedTestFunctionInput,
+    }));
   };
 
   const handleTestFunction = async () => {
@@ -376,7 +382,6 @@ export const WorkflowEditActionCode = ({
   return (
     !loading && (
       <>
-        <LogicFunctionTestInputInitEffect logicFunctionId={logicFunctionId} />
         <StyledTabList
           tabs={tabs}
           behaveAsLinks={false}

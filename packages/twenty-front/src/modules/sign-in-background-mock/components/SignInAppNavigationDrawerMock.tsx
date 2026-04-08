@@ -45,7 +45,7 @@ export const SignInAppNavigationDrawerMock = ({
               label={t`Search`}
               Icon={IconSearch}
               onClick={() => {}}
-              modifier={{ keyboard: [getOsControlSymbol(), 'K'] }}
+              keyboard={[getOsControlSymbol(), 'K']}
             />
             <NavigationDrawerItem
               label={t`Settings`}

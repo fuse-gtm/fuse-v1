@@ -44,12 +44,17 @@ const StyledPicture = styled.button<{ withPicture: boolean }>`
     color: ${themeCssVariables.font.color.tertiary};
   }
 
-  &:hover {
-    background: ${({ withPicture, disabled }) =>
-      withPicture || disabled
-        ? 'transparent'
-        : themeCssVariables.background.transparent.medium};
-  }
+  ${({ withPicture, disabled }) => {
+    if ((withPicture || disabled) === true) {
+      return '';
+    }
+
+    return `
+      &:hover {
+        background: ${themeCssVariables.background.transparent.medium};
+      }
+    `;
+  }};
 `;
 
 const StyledContent = styled.div`
