@@ -274,6 +274,7 @@ export class MigrateFavoritesToNavigationMenuItemsCommand extends ActiveOrSuspen
 
         const folderToCreate = {
           id: navigationMenuItemId,
+          type: NavigationMenuItemType.FOLDER,
           universalIdentifier: navigationMenuItemId,
           type: NavigationMenuItemType.FOLDER,
           userWorkspaceId,
@@ -310,6 +311,7 @@ export class MigrateFavoritesToNavigationMenuItemsCommand extends ActiveOrSuspen
 
         const workspaceLevelFolderToCreate = {
           id: workspaceLevelNavigationMenuItemId,
+          type: NavigationMenuItemType.FOLDER,
           universalIdentifier: workspaceLevelNavigationMenuItemId,
           type: NavigationMenuItemType.FOLDER,
           userWorkspaceId: null,
@@ -519,6 +521,7 @@ export class MigrateFavoritesToNavigationMenuItemsCommand extends ActiveOrSuspen
 
           flatNavigationMenuItemsToCreate.push({
             id: favorite.id,
+            type: NavigationMenuItemType.VIEW,
             universalIdentifier,
             type: NavigationMenuItemType.VIEW,
             userWorkspaceId,
@@ -573,6 +576,7 @@ export class MigrateFavoritesToNavigationMenuItemsCommand extends ActiveOrSuspen
 
       flatNavigationMenuItemsToCreate.push({
         id: favorite.id,
+        type: NavigationMenuItemType.RECORD,
         universalIdentifier: favorite.id,
         type: NavigationMenuItemType.RECORD,
         userWorkspaceId,
