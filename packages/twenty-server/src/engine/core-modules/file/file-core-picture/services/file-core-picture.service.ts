@@ -4,18 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { buffer as streamToBuffer } from 'node:stream/consumers';
 
 import { isNonEmptyString } from '@sniptt/guards';
-import { FileTypeParser } from 'file-type';
-import { detectPdf } from '@file-type/pdf';
+import FileType from 'file-type';
 import { FileFolder } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { Like, type QueryRunner, Repository } from 'typeorm';
 import { v4 } from 'uuid';
 
-import { ApplicationService } from 'src/engine/core-modules/application/services/application.service';
-import {
-  ApplicationException,
-  ApplicationExceptionCode,
-} from 'src/engine/core-modules/application/application.exception';
+import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
 import { FileWithSignedUrlDTO } from 'src/engine/core-modules/file/dtos/file-with-sign-url.dto';
 import { FileEntity } from 'src/engine/core-modules/file/entities/file.entity';
@@ -33,6 +28,7 @@ export class FileCorePictureService {
 
   constructor(
     private readonly fileStorageService: FileStorageService,
+    private readonly applicationService: ApplicationService,
     @InjectRepository(WorkspaceEntity)
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
     @InjectRepository(FileEntity)
@@ -40,25 +36,6 @@ export class FileCorePictureService {
     private readonly fileUrlService: FileUrlService,
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
-
-  private async findCustomApplicationUniversalIdentifier(
-    workspaceId: string,
-  ): Promise<string> {
-    const workspace = await this.workspaceRepository.findOne({
-      where: { id: workspaceId },
-      select: ['workspaceCustomApplicationId'],
-      withDeleted: true,
-    });
-
-    if (!isDefined(workspace)) {
-      throw new ApplicationException(
-        `Could not find workspace ${workspaceId}`,
-        ApplicationExceptionCode.APPLICATION_NOT_FOUND,
-      );
-    }
-
-    return workspace.workspaceCustomApplicationId;
-  }
 
   private async uploadCorePicture({
     file,
@@ -81,7 +58,11 @@ export class FileCorePictureService {
 
     const universalIdentifier =
       applicationUniversalIdentifier ??
-      (await this.findCustomApplicationUniversalIdentifier(workspaceId));
+      (
+        await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
+          { workspaceId },
+        )
+      ).workspaceCustomFlatApplication.universalIdentifier;
 
     const savedFile = await this.fileStorageService.writeFile({
       sourceFile: sanitizedFile,
@@ -187,12 +168,17 @@ export class FileCorePictureService {
       },
     });
 
-    const customApplicationUniversalIdentifier =
-      await this.findCustomApplicationUniversalIdentifier(workspaceId);
+    const { workspaceCustomFlatApplication } =
+      await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
+        {
+          workspaceId,
+        },
+      );
 
     await this.fileStorageService.delete({
       workspaceId,
-      applicationUniversalIdentifier: customApplicationUniversalIdentifier,
+      applicationUniversalIdentifier:
+        workspaceCustomFlatApplication.universalIdentifier,
       fileFolder: FileFolder.CorePicture,
       resourcePath: removeFileFolderFromFileEntityPath(file.path),
     });
@@ -209,8 +195,7 @@ export class FileCorePictureService {
 
       const buffer = await getImageBufferFromUrl(imageUrl, httpClient);
 
-      const parser = new FileTypeParser({ customDetectors: [detectPdf] });
-      const type = await parser.fromBuffer(buffer);
+      const type = await FileType.fromBuffer(buffer);
 
       if (!isDefined(type) || !type.mime.startsWith('image/')) {
         return undefined;
@@ -299,12 +284,16 @@ export class FileCorePictureService {
       },
     });
 
-    const sourceApplicationUniversalIdentifier =
-      await this.findCustomApplicationUniversalIdentifier(sourceWorkspaceId);
+    const { workspaceCustomFlatApplication: sourceApplication } =
+      await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
+        {
+          workspaceId: sourceWorkspaceId,
+        },
+      );
 
     const fileStream = await this.fileStorageService.readFile({
       workspaceId: sourceWorkspaceId,
-      applicationUniversalIdentifier: sourceApplicationUniversalIdentifier,
+      applicationUniversalIdentifier: sourceApplication.universalIdentifier,
       fileFolder: FileFolder.CorePicture,
       resourcePath: removeFileFolderFromFileEntityPath(sourceFile.path),
     });

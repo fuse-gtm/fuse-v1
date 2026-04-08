@@ -15,10 +15,9 @@ import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 
 import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
 import { ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entity';
-import { ApplicationService } from 'src/engine/core-modules/application/services/application.service';
 import { ApplicationDTO } from 'src/engine/core-modules/application/dtos/application.dto';
+import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { fromFlatApplicationToApplicationDto } from 'src/engine/core-modules/application/utils/from-flat-application-to-application-dto.util';
-import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
 import { BillingEntitlementDTO } from 'src/engine/core-modules/billing/dtos/billing-entitlement.dto';
 import { BillingSubscriptionEntity } from 'src/engine/core-modules/billing/entities/billing-subscription.entity';
 import { BillingSubscriptionService } from 'src/engine/core-modules/billing/services/billing-subscription.service';
@@ -26,7 +25,6 @@ import { DomainValidRecords } from 'src/engine/core-modules/dns-manager/dtos/dom
 import { DnsManagerService } from 'src/engine/core-modules/dns-manager/services/dns-manager.service';
 import { CustomDomainManagerService } from 'src/engine/core-modules/domain/custom-domain-manager/services/custom-domain-manager.service';
 import { WorkspaceDomainsService } from 'src/engine/core-modules/domain/workspace-domains/services/workspace-domains.service';
-import { EnterprisePlanService } from 'src/engine/core-modules/enterprise/services/enterprise-plan.service';
 import { FeatureFlagDTO } from 'src/engine/core-modules/feature-flag/dtos/feature-flag.dto';
 import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { FileUrlService } from 'src/engine/core-modules/file/file-url/file-url.service';
@@ -35,6 +33,7 @@ import { PreventNestToAutoLogGraphqlErrorsFilter } from 'src/engine/core-modules
 import { ResolverValidationPipe } from 'src/engine/core-modules/graphql/pipes/resolver-validation.pipe';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { UserWorkspaceService } from 'src/engine/core-modules/user-workspace/user-workspace.service';
+import { UserEntity } from 'src/engine/core-modules/user/user.entity';
 import { ActivateWorkspaceInput } from 'src/engine/core-modules/workspace/dtos/activate-workspace-input';
 import {
   type AuthProvidersDTO,
@@ -98,7 +97,6 @@ export class WorkspaceResolver {
     private readonly dnsManagerService: DnsManagerService,
     private readonly customDomainManagerService: CustomDomainManagerService,
     private readonly applicationService: ApplicationService,
-    private readonly enterprisePlanService: EnterprisePlanService,
   ) {}
 
   @Query(() => WorkspaceEntity)
@@ -115,7 +113,7 @@ export class WorkspaceResolver {
   @UseGuards(UserAuthGuard, WorkspaceAuthGuard, NoPermissionGuard)
   async activateWorkspace(
     @Args('data') data: ActivateWorkspaceInput,
-    @AuthUser() user: AuthContextUser,
+    @AuthUser() user: UserEntity,
     @AuthWorkspace() workspace: WorkspaceEntity,
   ) {
     return await this.workspaceService.activateWorkspace(user, workspace, data);
@@ -176,7 +174,7 @@ export class WorkspaceResolver {
   async billingSubscriptions(
     @Parent() workspace: WorkspaceEntity,
   ): Promise<BillingSubscriptionEntity[] | undefined> {
-    if (!false) { // TODO: upstream cherry-pick stub - isBillingEnabled not yet in fork
+    if (!this.twentyConfigService.get('IS_BILLING_ENABLED')) {
       return [];
     }
 
@@ -221,6 +219,20 @@ export class WorkspaceResolver {
     return workspace.smartModel;
   }
 
+  @ResolveField(() => Boolean, { nullable: false })
+  async autoEnableNewAiModels(
+    @Parent() workspace: WorkspaceEntity,
+  ): Promise<boolean> {
+    return workspace.autoEnableNewAiModels;
+  }
+
+  @ResolveField(() => [String], { nullable: true })
+  async disabledAiModelIds(
+    @Parent() workspace: WorkspaceEntity,
+  ): Promise<string[]> {
+    return workspace.disabledAiModelIds;
+  }
+
   @ResolveField(() => [String], { nullable: true })
   async enabledAiModelIds(
     @Parent() workspace: WorkspaceEntity,
@@ -260,7 +272,7 @@ export class WorkspaceResolver {
   async currentBillingSubscription(
     @Parent() workspace: WorkspaceEntity,
   ): Promise<BillingSubscriptionEntity | undefined> {
-    if (!false) { // TODO: upstream cherry-pick stub - isBillingEnabled not yet in fork
+    if (!this.twentyConfigService.get('IS_BILLING_ENABLED')) {
       return;
     }
 
@@ -298,17 +310,7 @@ export class WorkspaceResolver {
 
   @ResolveField(() => Boolean)
   hasValidEnterpriseKey(): boolean {
-    return this.enterprisePlanService.hasValidEnterpriseKey();
-  }
-
-  @ResolveField(() => Boolean)
-  hasValidSignedEnterpriseKey(): boolean {
-    return this.enterprisePlanService.hasValidSignedEnterpriseKey();
-  }
-
-  @ResolveField(() => Boolean)
-  hasValidEnterpriseValidityToken(): boolean {
-    return this.enterprisePlanService.hasValidEnterpriseValidityToken();
+    return isDefined(this.twentyConfigService.get('ENTERPRISE_KEY'));
   }
 
   @ResolveField(() => WorkspaceUrlsDTO)
@@ -348,8 +350,7 @@ export class WorkspaceResolver {
   @ResolveField(() => [ViewDTO])
   async views(
     @Parent() workspace: WorkspaceEntity,
-    @AuthUserWorkspaceId({ allowUndefined: true })
-    userWorkspaceId: string | undefined,
+    @AuthUserWorkspaceId() userWorkspaceId: string | undefined,
   ): Promise<ViewDTO[]> {
     return this.viewService.findByWorkspaceId(workspace.id, userWorkspaceId);
   }
@@ -391,12 +392,15 @@ export class WorkspaceResolver {
 
       let workspaceLogoWithToken = '';
 
-      if (isDefined(workspace.logoFileId)) {
-        workspaceLogoWithToken = this.fileUrlService.signFileByIdUrl({
-          fileId: workspace.logoFileId,
-          workspaceId: workspace.id,
-          fileFolder: FileFolder.CorePicture,
-        });
+      if (workspace.logo) {
+        try {
+          workspaceLogoWithToken = this.fileService.signFileUrl({
+            url: workspace.logo,
+            workspaceId: workspace.id,
+          });
+        } catch {
+          workspaceLogoWithToken = workspace.logo;
+        }
       }
 
       return {
