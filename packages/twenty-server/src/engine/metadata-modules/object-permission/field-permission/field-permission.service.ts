@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
-import { ApplicationService } from 'src/engine/core-modules/application/services/application.service';
+import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 import { RelationType } from 'src/engine/metadata-modules/field-metadata/interfaces/relation-type.interface';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
@@ -130,8 +130,8 @@ export class FieldPermissionService {
         {
           objectMetadataId: fieldPermission.objectMetadataId,
           fieldMetadataId: fieldPermission.fieldMetadataId,
-          canReadFieldValue: fieldPermission.canReadFieldValue,
-          canUpdateFieldValue: fieldPermission.canUpdateFieldValue,
+          canReadFieldValue: fieldPermission.canReadFieldValue ?? undefined,
+          canUpdateFieldValue: fieldPermission.canUpdateFieldValue ?? undefined,
         },
       );
     }
@@ -183,13 +183,9 @@ export class FieldPermissionService {
         );
       } else {
         const effectiveCanRead =
-          desired.canReadFieldValue !== undefined
-            ? desired.canReadFieldValue
-            : current.canReadFieldValue;
+          desired.canReadFieldValue ?? current.canReadFieldValue;
         const effectiveCanUpdate =
-          desired.canUpdateFieldValue !== undefined
-            ? desired.canUpdateFieldValue
-            : current.canUpdateFieldValue;
+          desired.canUpdateFieldValue ?? current.canUpdateFieldValue;
         const changed =
           effectiveCanRead !== current.canReadFieldValue ||
           effectiveCanUpdate !== current.canUpdateFieldValue;
@@ -205,8 +201,8 @@ export class FieldPermissionService {
               current.objectMetadataUniversalIdentifier,
             fieldMetadataUniversalIdentifier:
               current.fieldMetadataUniversalIdentifier,
-            canReadFieldValue: effectiveCanRead ?? current.canReadFieldValue,
-            canUpdateFieldValue: effectiveCanUpdate ?? current.canUpdateFieldValue,
+            canReadFieldValue: effectiveCanRead ?? undefined,
+            canUpdateFieldValue: effectiveCanUpdate ?? undefined,
             createdAt: current.createdAt,
             updatedAt: now,
           });
@@ -214,16 +210,9 @@ export class FieldPermissionService {
       }
     }
 
-    const inputFieldKeys = new Set(
-      input.fieldPermissions.map((fp) =>
-        keyFrom(fp.objectMetadataId, fp.fieldMetadataId),
-      ),
-    );
-
     for (const current of currentFieldPermissionsForRole) {
       const key = keyFrom(current.objectMetadataId, current.fieldMetadataId);
-
-      if (inputFieldKeys.has(key) && !desiredMap.has(key)) {
+      if (!desiredMap.has(key)) {
         flatEntityToDelete.push({
           universalIdentifier: current.universalIdentifier,
           applicationUniversalIdentifier:
@@ -335,9 +324,9 @@ export class FieldPermissionService {
     }
 
     if (
-      (isDefined(fieldPermission.canUpdateFieldValue) &&
+      (fieldPermission.canUpdateFieldValue !== null &&
         fieldPermission.canUpdateFieldValue !== false) ||
-      (isDefined(fieldPermission.canReadFieldValue) &&
+      (fieldPermission.canReadFieldValue !== null &&
         fieldPermission.canReadFieldValue !== false)
     ) {
       throw new PermissionsException(
