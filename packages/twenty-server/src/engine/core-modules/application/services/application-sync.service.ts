@@ -139,10 +139,9 @@ export class ApplicationSyncService {
         workspaceId,
       );
 
-    // Only update registration metadata and variable schemas if this workspace
-    // owns the registration. Other workspaces that install the same app attach
-    // to the existing registration but must not be able to modify its metadata
-    // or overwrite/delete its variable definitions.
+    // Only update registration metadata if this workspace owns it.
+    // Other workspaces that install the same app attach to the existing
+    // registration but must not be able to modify its metadata.
     if (
       await this.applicationRegistrationService.isOwnedByWorkspace(
         applicationRegistrationId,
@@ -156,13 +155,13 @@ export class ApplicationSyncService {
         },
         workspaceId,
       );
+    }
 
-      if (manifest.application.serverVariables) {
-        await this.applicationRegistrationVariableService.syncVariableSchemas(
-          applicationRegistrationId,
-          manifest.application.serverVariables,
-        );
-      }
+    if (manifest.application.serverVariables) {
+      await this.applicationRegistrationVariableService.syncVariableSchemas(
+        applicationRegistrationId,
+        manifest.application.serverVariables,
+      );
     }
 
     return await this.applicationService.update(application.id, {

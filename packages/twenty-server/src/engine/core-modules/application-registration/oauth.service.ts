@@ -68,14 +68,6 @@ export class OAuthService {
 
     const applicationRegistration = clientValidation;
 
-    // Confidential clients (those with a stored secret) must authenticate
-    if (applicationRegistration.oAuthClientSecretHash && !clientSecret) {
-      return this.errorResponse(
-        'invalid_client',
-        'Client authentication required for confidential clients',
-      );
-    }
-
     if (clientSecret) {
       const secretError = await this.validateClientSecret(
         applicationRegistration,
@@ -392,30 +384,22 @@ export class OAuthService {
   }): Promise<{ success: boolean }> {
     const { token, clientId, clientSecret } = params;
 
-    // RFC 7009 §2.1: the authorization server MUST validate the client
-    if (!clientId) {
-      return { success: false };
-    }
+    if (clientId) {
+      const clientValidation = await this.validateClient(clientId);
 
-    const clientValidation = await this.validateClient(clientId);
-
-    if ('error' in clientValidation) {
-      return { success: false };
-    }
-
-    // Confidential clients (those with a stored secret) must authenticate
-    if (clientValidation.oAuthClientSecretHash) {
-      if (!clientSecret) {
+      if ('error' in clientValidation) {
         return { success: false };
       }
 
-      const secretError = await this.validateClientSecret(
-        clientValidation,
-        clientSecret,
-      );
+      if (clientSecret) {
+        const secretError = await this.validateClientSecret(
+          clientValidation,
+          clientSecret,
+        );
 
-      if (secretError) {
-        return { success: false };
+        if (secretError) {
+          return { success: false };
+        }
       }
     }
 
@@ -450,12 +434,7 @@ export class OAuthService {
       return { active: false };
     }
 
-    // Confidential clients (those with a stored secret) must authenticate
-    if (clientValidation.oAuthClientSecretHash) {
-      if (!clientSecret) {
-        return { active: false };
-      }
-
+    if (clientSecret) {
       const secretError = await this.validateClientSecret(
         clientValidation,
         clientSecret,
