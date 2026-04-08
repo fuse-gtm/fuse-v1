@@ -26,6 +26,14 @@ import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { type Nullable } from 'twenty-ui/utilities';
 
+const StyledInputContainerWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0;
+  overflow: visible;
+  position: relative;
+`;
+
 const StyledDateInputAbsoluteContainer = styled.div`
   position: absolute;
   top: ${themeCssVariables.spacing[1]};
@@ -133,6 +141,8 @@ export const FormDateTimeFieldInput = ({
   const handlePickerEnter = () => {};
 
   const handlePickerEscape = () => {
+    // FIXME: Escape key is not handled properly by the underlying DateInput component. We need to solve that.
+
     setDraftValue({
       type: 'static',
       value: draftValue.value,
@@ -220,70 +230,63 @@ export const FormDateTimeFieldInput = ({
 
   const { userTimezone } = useUserTimezone();
 
-  const isVariable = Boolean(isStandaloneVariableString(defaultValue));
-
-  const dateValue =
-    isVariable ||
-    !isDefined(defaultValue) ||
-    defaultValue === 'null' ||
-    defaultValue === ''
+  const dateValue = isStandaloneVariableString(defaultValue)
+    ? null
+    : defaultValue === 'null' || defaultValue === '' || !isDefined(defaultValue)
       ? null
-      : defaultValue.includes('T')
-        ? Temporal.Instant.from(defaultValue).toZonedDateTimeISO(
-            timeZone ?? userTimezone,
-          )
-        : Temporal.PlainDate.from(defaultValue).toZonedDateTime(
-            timeZone ?? userTimezone,
-          );
+      : Temporal.Instant.from(defaultValue).toZonedDateTimeISO(
+          timeZone ?? userTimezone,
+        );
 
   return (
     <FormFieldInputContainer>
       {label ? <InputLabel>{label}</InputLabel> : null}
 
       <FormFieldInputRowContainer>
-        <FormFieldInputInnerContainer
-          ref={datePickerWrapperRef}
-          formFieldInputInstanceId={instanceId}
-          hasRightElement={isDefined(VariablePicker) && !readonly}
-        >
-          {draftValue.type === 'static' ? (
-            <>
-              <StyledDateInputTextContainer>
-                <DateTimePickerInput
-                  date={dateValue}
-                  onChange={handleInputChange}
-                  onFocus={handleInputFocus}
-                  readonly={readonly}
-                  timeZone={timeZone}
-                />
-              </StyledDateInputTextContainer>
-              {draftValue.mode === 'edit' ? (
-                <StyledDateInputContainer>
-                  <StyledDateInputAbsoluteContainer>
-                    <OverlayContainer>
-                      <DateTimePicker
-                        instanceId={instanceId}
-                        date={dateValue}
-                        onChange={handlePickerChange}
-                        onClose={handlePickerMouseSelect}
-                        onEnter={handlePickerEnter}
-                        onEscape={handlePickerEscape}
-                        onClear={handlePickerClear}
-                        hideHeaderInput
-                        timeZone={timeZone}
-                      />
-                    </OverlayContainer>
-                  </StyledDateInputAbsoluteContainer>
-                </StyledDateInputContainer>
-              ) : null}
-            </>
-          ) : (
-            <VariableChipStandalone
-              rawVariableName={draftValue.value}
-              onRemove={readonly ? undefined : handleUnlinkVariable}
-            />
-          )}
-        </FormFieldInputInnerContainer>
+        <StyledInputContainerWrapper ref={datePickerWrapperRef}>
+          <FormFieldInputInnerContainer
+            formFieldInputInstanceId={instanceId}
+            hasRightElement={isDefined(VariablePicker) && !readonly}
+          >
+            {draftValue.type === 'static' ? (
+              <>
+                <StyledDateInputTextContainer>
+                  <DateTimePickerInput
+                    date={dateValue}
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
+                    readonly={readonly}
+                    timeZone={timeZone}
+                  />
+                </StyledDateInputTextContainer>
+                {draftValue.mode === 'edit' ? (
+                  <StyledDateInputContainer>
+                    <StyledDateInputAbsoluteContainer>
+                      <OverlayContainer>
+                        <DateTimePicker
+                          instanceId={instanceId}
+                          date={dateValue}
+                          onChange={handlePickerChange}
+                          onClose={handlePickerMouseSelect}
+                          onEnter={handlePickerEnter}
+                          onEscape={handlePickerEscape}
+                          onClear={handlePickerClear}
+                          hideHeaderInput
+                          timeZone={timeZone}
+                        />
+                      </OverlayContainer>
+                    </StyledDateInputAbsoluteContainer>
+                  </StyledDateInputContainer>
+                ) : null}
+              </>
+            ) : (
+              <VariableChipStandalone
+                rawVariableName={draftValue.value}
+                onRemove={readonly ? undefined : handleUnlinkVariable}
+              />
+            )}
+          </FormFieldInputInnerContainer>
+        </StyledInputContainerWrapper>
         {VariablePicker && !readonly ? (
           <VariablePicker
             instanceId={instanceId}
