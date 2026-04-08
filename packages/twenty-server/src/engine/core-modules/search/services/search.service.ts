@@ -2,25 +2,18 @@ import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
 import chunk from 'lodash.chunk';
-import { OBJECTS_WITH_CHANNEL_VISIBILITY_CONSTRAINTS } from 'twenty-shared/constants';
-import {
-  FieldMetadataType,
-  FileFolder,
-  ObjectRecord,
-} from 'twenty-shared/types';
+import { FieldMetadataType, ObjectRecord } from 'twenty-shared/types';
 import { getLogoUrlFromDomainName, isDefined } from 'twenty-shared/utils';
 import { Brackets, type ObjectLiteral } from 'typeorm';
 
 import { type ObjectRecordFilter } from 'src/engine/api/graphql/workspace-query-builder/interfaces/object-record.interface';
 
-import { FileOutput } from 'src/engine/api/common/common-args-processors/data-arg-processor/types/file-item.type';
 import { GraphqlQueryParser } from 'src/engine/api/graphql/graphql-query-runner/graphql-query-parsers/graphql-query.parser';
 import {
   decodeCursor,
   encodeCursorData,
 } from 'src/engine/api/graphql/graphql-query-runner/utils/cursors.util';
-import { FileUrlService } from 'src/engine/core-modules/file/file-url/file-url.service';
-import { extractFileIdFromUrl } from 'src/engine/core-modules/file/files-field/utils/extract-file-id-from-url.util';
+import { FileService } from 'src/engine/core-modules/file/services/file.service';
 import { STANDARD_OBJECTS_BY_PRIORITY_RANK } from 'src/engine/core-modules/search/constants/standard-objects-by-priority-rank';
 import { type ObjectRecordFilterInput } from 'src/engine/core-modules/search/dtos/object-record-filter-input';
 import { type SearchArgs } from 'src/engine/core-modules/search/dtos/search-args';
@@ -58,7 +51,7 @@ const OBJECT_METADATA_ITEMS_CHUNK_SIZE = 5;
 export class SearchService {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
-    private readonly fileUrlService: FileUrlService,
+    private readonly fileService: FileService,
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
@@ -101,7 +94,7 @@ export class SearchService {
                 resolveRolePermissionConfig({
                   authContext: context.authContext,
                   userWorkspaceRoleMap: context.userWorkspaceRoleMap,
-                  apiKeyRoleMap: (context as any).apiKeyRoleMap,
+                  apiKeyRoleMap: context.apiKeyRoleMap,
                 }) ?? undefined;
 
               const repository =
@@ -145,35 +138,19 @@ export class SearchService {
     includedObjectNameSingulars: string[];
     excludedObjectNameSingulars: string[];
   }) {
-    const hasExplicitInclusion = includedObjectNameSingulars.length > 0;
-
     return flatObjectMetadatas.filter(
       ({ nameSingular, isSearchable, isActive }) => {
-        if (!isActive) {
-          return false;
-        }
-
-        if (hasExplicitInclusion) {
-          if (
-            OBJECTS_WITH_CHANNEL_VISIBILITY_CONSTRAINTS.includes(
-              nameSingular as (typeof OBJECTS_WITH_CHANNEL_VISIBILITY_CONSTRAINTS)[number],
-            )
-          ) {
-            return false;
-          }
-
-          return (
-            includedObjectNameSingulars.includes(nameSingular) &&
-            !excludedObjectNameSingulars.includes(nameSingular)
-          );
-        }
-
         if (!isSearchable) {
           return false;
         }
-
+        if (!isActive) {
+          return false;
+        }
         if (excludedObjectNameSingulars.includes(nameSingular)) {
           return false;
+        }
+        if (includedObjectNameSingulars.length > 0) {
+          return includedObjectNameSingulars.includes(nameSingular);
         }
 
         return true;
@@ -518,15 +495,6 @@ export class SearchService {
       return 'domainNamePrimaryLinkUrl';
     }
 
-    //TODO: Temporary solution before imageIdentifier refactor
-    if (flatObjectMetadata.nameSingular === 'person') {
-      return 'avatarFile';
-    }
-
-    if (flatObjectMetadata.nameSingular === 'workspaceMember') {
-      return 'avatarUrl';
-    }
-
     if (!flatObjectMetadata.imageIdentifierFieldMetadataId) {
       return null;
     }
@@ -543,15 +511,10 @@ export class SearchService {
     return imageIdentifierField.name;
   }
 
-  private getImageUrlWithToken(
-    avatarFileId: string,
-    fileFolder: FileFolder,
-    workspaceId: string,
-  ): string {
-    return this.fileUrlService.signFileByIdUrl({
-      fileId: avatarFileId,
+  private getImageUrlWithToken(avatarUrl: string, workspaceId: string): string {
+    return this.fileService.signFileUrl({
+      url: avatarUrl,
       workspaceId,
-      fileFolder,
     });
   }
 
@@ -573,41 +536,9 @@ export class SearchService {
       return getLogoUrlFromDomainName(record.domainNamePrimaryLinkUrl) || '';
     }
 
-    //TODO: Temporary solution before imageIdentifier refactor
-    if (flatObjectMetadata.nameSingular === 'person') {
-      const avatarFileId = (record.avatarFile as FileOutput[])?.[0]?.fileId;
-      if (!isDefined(avatarFileId)) {
-        return '';
-      }
-      return this.getImageUrlWithToken(
-        avatarFileId,
-        FileFolder.FilesField,
-        workspaceId,
-      );
-    }
-
-    if (flatObjectMetadata.nameSingular === 'workspaceMember') {
-      const avatarFileId = extractFileIdFromUrl(
-        record.avatarUrl,
-        FileFolder.CorePicture,
-      );
-      if (!isDefined(avatarFileId)) {
-        return '';
-      }
-      return this.getImageUrlWithToken(
-        avatarFileId,
-        FileFolder.CorePicture,
-        workspaceId,
-      );
-    }
-
     return imageIdentifierField &&
       isNonEmptyString(record[imageIdentifierField])
-      ? this.getImageUrlWithToken(
-          record[imageIdentifierField],
-          FileFolder.FilesField,
-          workspaceId,
-        )
+      ? this.getImageUrlWithToken(record[imageIdentifierField], workspaceId)
       : '';
   }
 
