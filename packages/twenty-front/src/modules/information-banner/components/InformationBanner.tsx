@@ -15,19 +15,21 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 const StyledText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-const StyledInvertedIconButton = styled(IconButton)`
-  color: ${themeCssVariables.font.color.inverted} !important;
+const StyledCloseButton = styled(IconButton)`
+  color: ${themeCssVariables.grayScale.gray1};
+  display: flex;
 `;
 
 const StyledContent = styled.div<{ hasCloseButton: boolean }>`
   align-items: center;
+  justify-content: center;
   display: flex;
   flex: 1;
-  gap: ${themeCssVariables.spacing[3]};
-  justify-content: center;
   margin-left: ${({ hasCloseButton }) => (hasCloseButton ? '24px' : '0')};
+  gap: ${themeCssVariables.spacing[3]};
 `;
 
 export const InformationBanner = ({
@@ -77,7 +79,7 @@ export const InformationBanner = ({
             )}
           </StyledContent>
           {onClose && (
-            <StyledInvertedIconButton
+            <StyledCloseButton
               Icon={IconX}
               size="small"
               variant="tertiary"

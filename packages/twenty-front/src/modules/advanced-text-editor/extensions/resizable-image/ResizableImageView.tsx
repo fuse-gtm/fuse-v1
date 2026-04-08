@@ -11,10 +11,18 @@ const StyledNodeViewWrapperContainer = styled.div<{
   align?: string;
 }>`
   height: 100%;
-  margin-left: ${({ align }) =>
-    align === 'left' ? '0' : align === 'center' ? 'auto' : 'unset'};
-  margin-right: ${({ align }) =>
-    align === 'right' ? '0' : align === 'center' ? 'auto' : 'unset'};
+  ${({ align }) => {
+    switch (align) {
+      case 'left':
+        return 'margin-left: 0;';
+      case 'right':
+        return 'margin-right: 0;';
+      case 'center':
+        return 'margin-left: auto; margin-right: auto;';
+      default:
+        return '';
+    }
+  }}
 `;
 
 const StyledImageWrapper = styled.div<{ width?: number }>`
@@ -43,10 +51,10 @@ const StyledImageHandle = styled.div<{ handle: 'left' | 'right' }>`
   width: ${themeCssVariables.spacing[2]};
   z-index: 1;
 
-  left: ${({ handle }) =>
-    handle === 'left' ? themeCssVariables.spacing[1] : 'auto'};
-  right: ${({ handle }) =>
-    handle === 'right' ? themeCssVariables.spacing[1] : 'auto'};
+  ${({ handle }) =>
+    handle === 'left'
+      ? `left: ${themeCssVariables.spacing[1]};`
+      : `right: ${themeCssVariables.spacing[1]};`}
 `;
 
 type ResizeParams = {

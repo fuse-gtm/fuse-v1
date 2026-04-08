@@ -12,7 +12,7 @@ const StyledItemsContainer = styled.div`
   width: 100%;
 `;
 
-const StyledSeparatorContainer = styled.div`
+const StyledDropdownMenuSeparator = styled(DropdownMenuSeparator)`
   margin-bottom: ${themeCssVariables.spacing[1]};
   margin-top: ${themeCssVariables.spacing[1]};
 `;
@@ -59,9 +59,7 @@ export const FavoriteFolderPickerList = ({
         />
       )}
       {showNoFolderOption && filteredFolders.length > 0 && (
-        <StyledSeparatorContainer>
-          <DropdownMenuSeparator />
-        </StyledSeparatorContainer>
+        <StyledDropdownMenuSeparator />
       )}
       {filteredFolders.length > 0
         ? filteredFolders.map((folder) => (

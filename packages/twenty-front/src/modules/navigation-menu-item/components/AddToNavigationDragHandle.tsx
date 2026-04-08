@@ -18,10 +18,14 @@ const StyledIconSlot = styled.div<{ $hasFixedSize: boolean }>`
   display: flex;
   flex-shrink: 0;
   justify-content: center;
-  height: ${({ $hasFixedSize }) =>
-    $hasFixedSize ? themeCssVariables.spacing[4] : 'auto'};
-  width: ${({ $hasFixedSize }) =>
-    $hasFixedSize ? themeCssVariables.spacing[4] : 'auto'};
+
+  ${({ $hasFixedSize }) =>
+    $hasFixedSize
+      ? `
+      height: ${themeCssVariables.spacing[4]};
+      width: ${themeCssVariables.spacing[4]};
+    `
+      : ''}
 
   &:active {
     cursor: grabbing;
