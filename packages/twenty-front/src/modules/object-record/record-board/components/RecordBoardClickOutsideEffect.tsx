@@ -1,4 +1,4 @@
-import { ACTION_MENU_DROPDOWN_CLICK_OUTSIDE_ID } from '@/action-menu/constants/ActionMenuDropdownClickOutsideId';
+import { COMMAND_MENU_DROPDOWN_CLICK_OUTSIDE_ID } from '@/command-menu-item/constants/CommandMenuDropdownClickOutsideId';
 import { COMMAND_MENU_CLICK_OUTSIDE_ID } from '@/command-menu/constants/CommandMenuClickOutsideId';
 import { RECORD_BOARD_CLICK_OUTSIDE_LISTENER_ID } from '@/object-record/record-board/constants/RecordBoardClickOutsideListenerId';
 import { SIDE_PANEL_CLICK_OUTSIDE_ID } from '@/side-panel/constants/SidePanelClickOutsideId';
@@ -32,7 +32,7 @@ export const RecordBoardClickOutsideEffect = () => {
 
   useListenClickOutside({
     excludedClickOutsideIds: [
-      ACTION_MENU_DROPDOWN_CLICK_OUTSIDE_ID,
+      COMMAND_MENU_DROPDOWN_CLICK_OUTSIDE_ID,
       COMMAND_MENU_CLICK_OUTSIDE_ID,
       MODAL_BACKDROP_CLICK_OUTSIDE_ID,
       PAGE_ACTION_CONTAINER_CLICK_OUTSIDE_ID,

@@ -3,7 +3,7 @@ import {
   type Meta,
   type StoryObj,
 } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
@@ -20,37 +20,26 @@ import {
 } from '~/testing/mock-data/users';
 import { sleep } from '~/utils/sleep';
 
-import { currentUserWorkspaceState } from '@/auth/states/currentUserWorkspaceState';
-<<<<<<< HEAD
 import { CommandMenuComponentInstanceContext } from '@/command-menu/states/contexts/CommandMenuComponentInstanceContext';
-=======
+import { currentUserWorkspaceState } from '@/auth/states/currentUserWorkspaceState';
 import { SidePanelRouter } from '@/side-panel/components/SidePanelRouter';
 import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
 import { SIDE_PANEL_FOCUS_ID } from '@/side-panel/constants/SidePanelFocusId';
 import { type SidePanelRootPage } from '@/side-panel/pages/root/components/SidePanelRootPage';
 import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 import { contextStoreCurrentViewTypeComponentState } from '@/context-store/states/contextStoreCurrentViewTypeComponentState';
 import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { ContextStoreViewType } from '@/context-store/types/ContextStoreViewType';
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { RecordComponentInstanceContextsWrapper } from '@/object-record/components/RecordComponentInstanceContextsWrapper';
-import { SidePanelRouter } from '@/side-panel/components/SidePanelRouter';
-import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
-import { SIDE_PANEL_FOCUS_ID } from '@/side-panel/constants/SidePanelFocusId';
-import { type SidePanelRootPage } from '@/side-panel/pages/root/components/SidePanelRootPage';
-import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
-import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
-import { sidePanelPageInfoState } from '@/side-panel/states/sidePanelPageInfoState';
-import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
 import { ViewComponentInstanceContext } from '@/views/states/contexts/ViewComponentInstanceContext';
 import { HttpResponse, graphql } from 'msw';
 import { SidePanelPages } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { IconDotsVertical, IconPlus } from 'twenty-ui/display';
+import { IconDotsVertical } from 'twenty-ui/display';
 import { JestContextStoreSetter } from '~/testing/jest/JestContextStoreSetter';
 
 const openTimeout = 50;
@@ -66,11 +55,7 @@ const ContextStoreDecorator: Decorator = (Story) => {
         <ViewComponentInstanceContext.Provider
           value={{ instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID }}
         >
-<<<<<<< HEAD
           <CommandMenuComponentInstanceContext.Provider
-=======
-          <ActionMenuComponentInstanceContext.Provider
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
             value={{ instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID }}
           >
             <JestContextStoreSetter
@@ -102,13 +87,6 @@ const meta: Meta<typeof SidePanelRootPage> = {
         mockedUserData.currentUserWorkspace,
       );
       jotaiStore.set(isSidePanelOpenedState.atom, true);
-<<<<<<< HEAD
-      jotaiStore.set(sidePanelPageInfoState.atom, {
-        title: 'Command Menu',
-        instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
-      });
-=======
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
       jotaiStore.set(sidePanelNavigationStackState.atom, [
         {
           page: SidePanelPages.Root,
@@ -118,9 +96,7 @@ const meta: Meta<typeof SidePanelRootPage> = {
         },
       ]);
 
-      const objectMetadataItems = jotaiStore.get(
-        objectMetadataItemsSelector.atom,
-      );
+      const objectMetadataItems = jotaiStore.get(objectMetadataItemsState.atom);
       const companyMetadataItem = objectMetadataItems.find(
         (item) => item.nameSingular === 'company',
       );
@@ -170,10 +146,8 @@ export const LimitedPermissions: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(await canvas.findByText('Go to People')).toBeVisible();
-    await waitFor(() => {
-      expect(canvas.queryByText('Go to Opportunities')).not.toBeInTheDocument();
-      expect(canvas.queryByText('Go to Tasks')).not.toBeInTheDocument();
-    });
+    expect(canvas.queryByText('Go to Opportunities')).not.toBeInTheDocument();
+    expect(canvas.queryByText('Go to Tasks')).not.toBeInTheDocument();
     expect(await canvas.findByText('Go to Settings')).toBeVisible();
     expect(await canvas.findByText('Go to Notes')).toBeVisible();
   },
@@ -270,45 +244,3 @@ export const NoResultsSearchFallback: Story = {
 //     expect(await canvas.findByText('Search records')).toBeVisible();
 //   },
 // };
-
-export const SubPageNavigation: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const objectButton = await canvas.findByText('Object');
-    expect(objectButton).toBeVisible();
-
-    await userEvent.click(objectButton);
-
-    expect(await canvas.findByText('Pick an object')).toBeVisible();
-
-    const backButton = await canvas.findByRole('button', { name: 'Go back' });
-    await userEvent.click(backButton);
-
-    await waitFor(() => {
-      expect(canvas.getByText('Object')).toBeVisible();
-    });
-  },
-  decorators: [
-    (Story) => {
-      jotaiStore.set(
-        sidePanelPageState.atom,
-        SidePanelPages.NavigationMenuAddItem,
-      );
-      jotaiStore.set(sidePanelPageInfoState.atom, {
-        title: 'Add item',
-        instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
-      });
-      jotaiStore.set(sidePanelNavigationStackState.atom, [
-        {
-          page: SidePanelPages.NavigationMenuAddItem,
-          pageTitle: 'Add item',
-          pageIcon: IconPlus,
-          pageId: '1',
-        },
-      ]);
-
-      return <Story />;
-    },
-  ],
-};
