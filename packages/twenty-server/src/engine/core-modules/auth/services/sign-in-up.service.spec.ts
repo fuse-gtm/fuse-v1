@@ -79,9 +79,6 @@ const createSignInUpServiceForTests = () => {
     {
       emitCustomBatchEvent: jest.fn(),
     } as any,
-    {
-      getHttpClient: jest.fn(),
-    } as any,
     mockTwentyConfigService as any,
     {
       generateSubdomain: jest.fn(),

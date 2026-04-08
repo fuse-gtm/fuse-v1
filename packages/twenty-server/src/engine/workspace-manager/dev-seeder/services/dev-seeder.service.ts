@@ -5,6 +5,7 @@ import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
 import { DataSource } from 'typeorm';
 import { FeatureFlagKey } from 'twenty-shared/types';
 
+import { ApplicationRegistrationService } from 'src/engine/core-modules/application/application-registration/application-registration.service';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
@@ -37,6 +38,7 @@ export class DevSeederService {
     private readonly devSeederPermissionsService: DevSeederPermissionsService,
     private readonly devSeederDataService: DevSeederDataService,
     private readonly applicationService: ApplicationService,
+    private readonly applicationRegistrationService: ApplicationRegistrationService,
     private readonly workspaceCacheService: WorkspaceCacheService,
     @InjectDataSource()
     private readonly coreDataSource: DataSource,
@@ -54,35 +56,8 @@ export class DevSeederService {
       appVersion,
     });
 
-    await this.seedWorkspaceData({
-      workspaceId,
-      profileWorkspaceId: workspaceId,
-    });
-  }
+    await this.applicationRegistrationService.createCliRegistrationIfNotExists();
 
-  public async seedExistingWorkspace({
-    workspaceId,
-    profileWorkspaceId,
-  }: {
-    workspaceId: string;
-    profileWorkspaceId: SeededWorkspacesIds;
-  }): Promise<void> {
-    await this.seedWorkspaceData({
-      workspaceId,
-      profileWorkspaceId,
-      skipPermissionBootstrap: true,
-    });
-  }
-
-  private async seedWorkspaceData({
-    workspaceId,
-    profileWorkspaceId,
-    skipPermissionBootstrap = false,
-  }: {
-    workspaceId: string;
-    profileWorkspaceId: SeededWorkspacesIds;
-    skipPermissionBootstrap?: boolean;
-  }) {
     const schemaName =
       await this.workspaceDataSourceService.createWorkspaceDBSchema(
         workspaceId,
@@ -121,13 +96,11 @@ export class DevSeederService {
       workspaceId,
     });
 
-    if (!skipPermissionBootstrap) {
-      await this.devSeederPermissionsService.initPermissions({
-        workspaceId,
-        twentyStandardFlatApplication,
-        workspaceCustomFlatApplication,
-      });
-    }
+    await this.devSeederPermissionsService.initPermissions({
+      workspaceId,
+      twentyStandardFlatApplication,
+      workspaceCustomFlatApplication,
+    });
 
     await seedPageLayouts(
       this.coreDataSource,
