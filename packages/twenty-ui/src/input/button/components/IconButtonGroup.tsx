@@ -3,7 +3,7 @@ import { type IconComponent } from '@ui/display';
 import { type MouseEvent } from 'react';
 
 import { InsideButton } from '@ui/input/button/components/InsideButton';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 export type IconButtonGroupProps = {
   disabled?: boolean;

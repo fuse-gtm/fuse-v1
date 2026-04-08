@@ -1,7 +1,6 @@
 import { styled } from '@linaria/react';
-import * as RadixTooltip from '@radix-ui/react-tooltip';
-import { type ReactNode } from 'react';
-import { themeCssVariables } from '@ui/theme-constants';
+import { type PlacesType, type PositionStrategy, Tooltip } from 'react-tooltip';
+import { themeCssVariables } from '@ui/theme';
 
 export enum TooltipPosition {
   Top = 'top',
@@ -17,7 +16,7 @@ export enum TooltipDelay {
   longDelay = '1000ms',
 }
 
-const StyledTooltipContent = styled(RadixTooltip.Content)`
+const StyledAppTooltip = styled(Tooltip)<{ width?: string }>`
   backdrop-filter: ${themeCssVariables.blur.strong};
   background-color: ${themeCssVariables.color.transparent.gray11};
   border-radius: ${themeCssVariables.border.radius.sm};
@@ -28,7 +27,7 @@ const StyledTooltipContent = styled(RadixTooltip.Content)`
   font-size: ${themeCssVariables.font.size.sm};
   font-weight: ${themeCssVariables.font.weight.regular};
 
-  max-width: 40%;
+  max-width: ${({ width }) => width || '40%'};
   overflow: visible;
 
   padding: ${themeCssVariables.spacing[2]};
@@ -38,75 +37,68 @@ const StyledTooltipContent = styled(RadixTooltip.Content)`
   z-index: ${themeCssVariables.lastLayerZIndex};
 `;
 
-const StyledTooltipArrow = styled(RadixTooltip.Arrow)`
-  fill: ${themeCssVariables.color.transparent.gray11};
-`;
-
-const getDelayMs = (delay: TooltipDelay): number => {
-  switch (delay) {
-    case TooltipDelay.noDelay:
-      return 0;
-    case TooltipDelay.shortDelay:
-      return 300;
-    case TooltipDelay.mediumDelay:
-      return 500;
-    case TooltipDelay.longDelay:
-      return 1000;
-  }
-};
-
 export type AppTooltipProps = {
   className?: string;
-  content?: ReactNode;
-  children: ReactNode;
+  anchorSelect?: string;
+  content?: string;
+  children?: React.ReactNode;
   offset?: number;
   noArrow?: boolean;
   hidden?: boolean;
-  place?: TooltipPosition | string;
+  place?: PlacesType;
   delay?: TooltipDelay;
+  positionStrategy?: PositionStrategy;
+  clickable?: boolean;
   width?: string;
   isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
 };
 
 export const AppTooltip = ({
+  anchorSelect,
   className,
   content,
-  children,
-  offset = 5,
-  noArrow = false,
   hidden = false,
-  place = TooltipPosition.Bottom,
+  noArrow,
+  offset,
   delay = TooltipDelay.mediumDelay,
+  place,
+  positionStrategy,
+  children,
+  clickable,
   width,
   isOpen,
-  onOpenChange,
 }: AppTooltipProps) => {
-  const side = place as RadixTooltip.TooltipContentProps['side'];
-  const delayMs = getDelayMs(delay);
-
-  const isControlled = isOpen !== undefined;
+  const getDelayInMis = (delay: TooltipDelay) => {
+    switch (delay) {
+      case TooltipDelay.noDelay:
+        return 0;
+      case TooltipDelay.shortDelay:
+        return 300;
+      case TooltipDelay.mediumDelay:
+        return 500;
+      case TooltipDelay.longDelay:
+        return 1000;
+    }
+  };
 
   return (
-    <RadixTooltip.Provider delayDuration={delayMs}>
-      <RadixTooltip.Root
-        open={hidden ? false : isControlled ? isOpen : undefined}
-        onOpenChange={onOpenChange}
-        delayDuration={delayMs}
-      >
-        <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
-        <RadixTooltip.Portal>
-          <StyledTooltipContent
-            className={className}
-            side={side}
-            sideOffset={offset}
-            style={width ? { maxWidth: width } : undefined}
-          >
-            {content}
-            {!noArrow && <StyledTooltipArrow />}
-          </StyledTooltipContent>
-        </RadixTooltip.Portal>
-      </RadixTooltip.Root>
-    </RadixTooltip.Provider>
+    <StyledAppTooltip
+      {...{
+        anchorSelect,
+        className,
+        content,
+        delayShow: getDelayInMis(delay),
+        delayHide: 20,
+        hidden,
+        noArrow,
+        offset,
+        place,
+        positionStrategy,
+        children,
+        clickable,
+        width,
+        isOpen,
+      }}
+    />
   );
 };

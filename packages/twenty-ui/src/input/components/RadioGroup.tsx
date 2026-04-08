@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { type RadioProps } from './Radio';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 type RadioGroupProps = React.PropsWithChildren & {
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onValueChange?: (value: string) => void;
-  'aria-label'?: string;
 };
 
 export const RadioGroup = ({
@@ -15,7 +14,6 @@ export const RadioGroup = ({
   onChange,
   onValueChange,
   children,
-  'aria-label': ariaLabel,
 }: RadioGroupProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event);
@@ -23,7 +21,7 @@ export const RadioGroup = ({
   };
 
   return (
-    <div role="radiogroup" aria-label={ariaLabel}>
+    <>
       {React.Children.map(children, (child) => {
         if (React.isValidElement<RadioProps>(child)) {
           return React.cloneElement(child, {
@@ -34,6 +32,6 @@ export const RadioGroup = ({
         }
         return child;
       })}
-    </div>
+    </>
   );
 };

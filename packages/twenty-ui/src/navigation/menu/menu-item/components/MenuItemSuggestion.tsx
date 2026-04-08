@@ -2,7 +2,7 @@ import { styled } from '@linaria/react';
 import { type MouseEvent } from 'react';
 
 import { type IconComponent } from '@ui/display';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { MenuItemLeftContent } from '../internals/components/MenuItemLeftContent';
 import { StyledMenuItemLeftContent } from '../internals/components/StyledMenuItemBase';
 
@@ -42,7 +42,7 @@ const StyledSuggestionMenuItem = styled.li<{
   padding: var(--vertical-padding) var(--horizontal-padding);
 
   background: ${({ selected }) =>
-    selected ? themeCssVariables.background.transparent.medium : 'transparent'};
+    selected ? themeCssVariables.background.transparent.medium : ''};
   color: ${themeCssVariables.font.color.secondary};
 
   transition: background 0.1s ease;

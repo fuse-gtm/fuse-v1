@@ -1,20 +1,19 @@
-import { styled } from '@linaria/react';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import styled from '@emotion/styled';
 
-const StyledCardBodyContainer = styled.div<{ padding?: string }>`
+const StyledCardBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${themeCssVariables.spacing['0.5']};
-  padding: ${({ padding }) =>
-    padding ??
-    `0 ${themeCssVariables.spacing[2]} ${themeCssVariables.spacing[2]} 10px`};
+  gap: ${({ theme }) => theme.spacing(0.5)};
+  padding-bottom: ${({ theme }) => theme.spacing(2)};
+  padding-left: 10px;
+  padding-right: ${({ theme }) => theme.spacing(2)};
   span {
     align-items: center;
     display: flex;
     flex-direction: row;
     svg {
-      color: ${themeCssVariables.font.color.tertiary};
-      margin-right: ${themeCssVariables.spacing[2]};
+      color: ${({ theme }) => theme.font.color.tertiary};
+      margin-right: ${({ theme }) => theme.spacing(2)};
     }
   }
 `;

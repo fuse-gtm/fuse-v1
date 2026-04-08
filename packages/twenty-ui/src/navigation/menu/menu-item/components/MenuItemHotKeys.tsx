@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 import React from 'react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledCommandTextContainer = styled.div`
   align-items: center;

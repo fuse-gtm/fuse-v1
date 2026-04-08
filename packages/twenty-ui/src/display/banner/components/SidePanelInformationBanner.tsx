@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 import { isDefined } from 'twenty-shared/utils';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import {
   IconAlertTriangle,
   IconInfoCircle,
@@ -53,8 +53,13 @@ export const SidePanelInformationBanner = ({
   variant = 'default',
   tooltipMessage,
 }: SidePanelInformationBannerProps) => {
-  const bannerContent = (
-    <StyledBanner className={className}>
+  const tooltipId = 'side-panel-information-banner-tooltip';
+
+  return (
+    <StyledBanner
+      className={className}
+      data-tooltip-id={tooltipMessage ? tooltipId : undefined}
+    >
       <StyledIconContainer>
         {variant === 'default' ? (
           <IconInfoCircle size={16} />
@@ -63,16 +68,13 @@ export const SidePanelInformationBanner = ({
         )}
       </StyledIconContainer>
       <StyledMessage>{message}</StyledMessage>
+      {isDefined(tooltipMessage) && (
+        <AppTooltip
+          anchorSelect={`[data-tooltip-id='${tooltipId}']`}
+          content={tooltipMessage}
+          place="bottom"
+        />
+      )}
     </StyledBanner>
   );
-
-  if (isDefined(tooltipMessage)) {
-    return (
-      <AppTooltip content={tooltipMessage} place="bottom">
-        {bannerContent}
-      </AppTooltip>
-    );
-  }
-
-  return bannerContent;
 };

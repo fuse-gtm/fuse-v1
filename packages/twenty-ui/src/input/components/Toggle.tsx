@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 import { VisibilityHiddenInput } from '@ui/accessibility';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { motion } from 'framer-motion';
 
 export type ToggleSize = 'small' | 'medium';
@@ -9,12 +9,10 @@ type ContainerProps = {
   isOn: boolean;
   color?: string;
   toggleSize: ToggleSize;
-  centered?: boolean;
   'data-disabled'?: boolean;
 };
 
 const StyledContainer = styled.label<ContainerProps>`
-  align-self: ${({ centered }) => (centered ? 'center' : 'flex-start')};
   align-items: center;
   background-color: ${({ isOn, color }) =>
     isOn
@@ -54,9 +52,7 @@ export type ToggleProps = {
   color?: string;
   toggleSize?: ToggleSize;
   className?: string;
-  centered?: boolean;
   disabled?: boolean;
-  'aria-label'?: string;
 };
 
 export const Toggle = ({
@@ -66,9 +62,7 @@ export const Toggle = ({
   color,
   toggleSize = 'medium',
   className,
-  centered,
   disabled,
-  'aria-label': ariaLabel,
 }: ToggleProps) => {
   const circleVariants = {
     on: { x: toggleSize === 'small' ? 10 : 14 },
@@ -81,11 +75,7 @@ export const Toggle = ({
       color={color}
       toggleSize={toggleSize}
       className={className}
-      centered={centered}
       data-disabled={disabled}
-      role="switch"
-      aria-checked={value}
-      aria-label={ariaLabel}
     >
       <VisibilityHiddenInput
         id={id}

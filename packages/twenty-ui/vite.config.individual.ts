@@ -35,14 +35,11 @@ export default defineConfig(() => {
         projects: ['tsconfig.json'],
       }),
       svgr(),
-      {
-        ...wyw({
-          babelOptions: {
-            presets: ['@babel/preset-typescript', '@babel/preset-react'],
-          },
-        }),
-        enforce: 'pre',
-      },
+      wyw({
+        babelOptions: {
+          presets: ['@babel/preset-typescript', '@babel/preset-react'],
+        },
+      }),
     ],
     build: {
       cssCodeSplit: false,

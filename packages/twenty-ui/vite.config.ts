@@ -1,6 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
 import wyw from '@wyw-in-js/vite';
-import fs from 'fs';
 import * as path from 'path';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
@@ -36,47 +35,6 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
   }
   return `${moduleDirectory}.${extension}`;
 };
-
-// TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
-// inside source imports that are consumed directly by twenty-ui.
-const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
-  const sharedRoot = path.resolve(__dirname, '../twenty-shared/src');
-  const raw = path.resolve(sharedRoot, sourceFromSharedRoot);
-
-  const hasExtension = path.extname(raw) !== '';
-  const candidates = hasExtension
-    ? [raw]
-    : [
-        `${raw}.ts`,
-        `${raw}.tsx`,
-        `${raw}.js`,
-        `${raw}.mjs`,
-        `${raw}.cjs`,
-        path.join(raw, 'index.ts'),
-        path.join(raw, 'index.tsx'),
-        path.join(raw, 'index.js'),
-      ];
-
-  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
-};
-
-const resolveTwentySharedRootAlias = () => ({
-  name: 'resolve-twenty-shared-root-alias',
-  enforce: 'pre' as const,
-  resolveId: (source: string, importer: string | undefined) => {
-    if (!importer || !source.startsWith('@/')) {
-      return null;
-    }
-
-    const normalizedImporter = importer.split('?')[0].split(path.sep).join('/');
-
-    if (!normalizedImporter.includes('/packages/twenty-shared/src/')) {
-      return null;
-    }
-
-    return resolveSharedSourceFile(source.slice(2));
-  },
-});
 
 export default defineConfig(({ command }) => {
   const isBuildCommand = command === 'build';
@@ -115,11 +73,7 @@ export default defineConfig(({ command }) => {
     cacheDir: '../../node_modules/.vite/packages/twenty-ui',
     assetsInclude: ['src/**/*.svg'],
     plugins: [
-      react({
-        jsxImportSource: '@emotion/react',
-        plugins: [['@swc/plugin-emotion', {}]],
-      }),
-      resolveTwentySharedRootAlias(),
+      react(),
       tsconfigPaths({
         root: __dirname,
         projects: ['tsconfig.json'],
@@ -128,17 +82,6 @@ export default defineConfig(({ command }) => {
       dts(dtsConfig),
       checker(checkersConfig),
       wyw({
-        include: [
-          '**/OverflowingTextWithTooltip.tsx',
-          '**/Tag.tsx',
-          '**/Avatar.tsx',
-          '**/Chip.tsx',
-          '**/LinkChip.tsx',
-          '**/Avatar.tsx',
-          '**/AvatarChipLeftComponent.tsx',
-          '**/ContactLink.tsx',
-          '**/RoundedLink.tsx',
-        ],
         babelOptions: {
           presets: ['@babel/preset-typescript', '@babel/preset-react'],
         },

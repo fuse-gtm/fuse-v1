@@ -1,13 +1,11 @@
-import { styled } from '@linaria/react';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 import { t } from '@lingui/core/macro';
-import { useContext } from 'react';
 import {
   IconComment,
   IconHome,
   IconMessageCirclePlus,
 } from 'twenty-ui/display';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
 
 import { useCreateNewAIChatThread } from '@/ai/hooks/useCreateNewAIChatThread';
@@ -29,33 +27,31 @@ const StyledRow = styled.div<{ isExpanded: boolean }>`
   display: flex;
   justify-content: ${({ isExpanded }) =>
     isExpanded ? 'space-between' : 'center'};
-  gap: ${({ isExpanded }) => (isExpanded ? themeCssVariables.spacing[2] : 0)};
+  gap: ${({ theme, isExpanded }) => (isExpanded ? theme.spacing(2) : 0)};
   width: 100%;
-  transition: gap calc(${themeCssVariables.animation.duration.normal} * 1s) ease;
+  transition: gap ${({ theme }) => theme.animation.duration.normal}s ease;
 `;
 
 const StyledTabsPill = styled.div`
   align-items: center;
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  background: ${themeCssVariables.background.secondary};
-  border-radius: ${themeCssVariables.border.radius.pill};
+  border: 1px solid ${({ theme }) => theme.border.color.medium};
+  background: ${({ theme }) => theme.background.secondary};
+  border-radius: ${({ theme }) => theme.border.radius.pill};
   padding: 3px;
-  height: ${themeCssVariables.spacing[7]};
+  height: ${({ theme }) => theme.spacing(7)};
   display: flex;
-  width: ${themeCssVariables.spacing[18]};
-  gap: ${themeCssVariables.spacing[0.5]};
+  width: ${({ theme }) => theme.spacing(18)};
+  gap: ${({ theme }) => theme.spacing(0.5)};
   box-sizing: border-box;
 `;
 
 const StyledTabWrapper = styled.div<{ isActive: boolean }>`
-  border-radius: ${themeCssVariables.border.radius.pill};
+  border-radius: ${({ theme }) => theme.border.radius.pill};
   align-items: center;
-  background: ${({ isActive }) =>
-    isActive ? themeCssVariables.background.transparent.light : 'transparent'};
-  color: ${({ isActive }) =>
-    isActive
-      ? themeCssVariables.font.color.primary
-      : themeCssVariables.font.color.tertiary};
+  background: ${({ theme, isActive }) =>
+    isActive ? theme.background.transparent.light : 'transparent'};
+  color: ${({ theme, isActive }) =>
+    isActive ? theme.font.color.primary : theme.font.color.tertiary};
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -63,10 +59,10 @@ const StyledTabWrapper = styled.div<{ isActive: boolean }>`
   flex: 1;
 
   &:hover {
-    background: ${({ isActive }) =>
+    background: ${({ theme, isActive }) =>
       isActive
-        ? themeCssVariables.background.transparent.light
-        : themeCssVariables.background.transparent.lighter};
+        ? theme.background.transparent.light
+        : theme.background.transparent.lighter};
   }
 `;
 
@@ -74,27 +70,27 @@ const StyledTabIcon = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
-  height: ${themeCssVariables.spacing[5]};
-  width: ${themeCssVariables.spacing[5]};
+  height: ${({ theme }) => theme.spacing(5)};
+  width: ${({ theme }) => theme.spacing(5)};
 `;
 
 const StyledNewChatButtonWrapper = styled.div<{ isExpanded: boolean }>`
   align-items: center;
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  background: ${themeCssVariables.background.secondary};
-  border-radius: ${themeCssVariables.border.radius.pill};
+  border: 1px solid ${({ theme }) => theme.border.color.medium};
+  background: ${({ theme }) => theme.background.secondary};
+  border-radius: ${({ theme }) => theme.border.radius.pill};
   box-sizing: border-box;
   display: flex;
-  height: ${({ isExpanded }) =>
-    isExpanded ? themeCssVariables.spacing[7] : themeCssVariables.spacing[6]};
+  height: ${({ theme, isExpanded }) =>
+    isExpanded ? theme.spacing(7) : theme.spacing(6)};
   justify-content: center;
-  padding: ${({ isExpanded }) =>
-    isExpanded ? '3px' : themeCssVariables.spacing[0.5]};
-  width: ${({ isExpanded }) =>
-    isExpanded ? '103px' : themeCssVariables.spacing[6]};
+  padding: ${({ theme, isExpanded }) =>
+    isExpanded ? '3px' : theme.spacing(0.5)};
+  width: ${({ theme, isExpanded }) =>
+    isExpanded ? theme.spacing(25.75) : theme.spacing(6)};
   transition:
-    height calc(${themeCssVariables.animation.duration.normal} * 1s) ease,
-    padding calc(${themeCssVariables.animation.duration.normal} * 1s) ease;
+    height ${({ theme }) => theme.animation.duration.normal}s ease,
+    padding ${({ theme }) => theme.animation.duration.normal}s ease;
 `;
 
 const StyledNewChatButton = styled.div`
@@ -102,25 +98,25 @@ const StyledNewChatButton = styled.div`
   justify-content: center;
   display: flex;
   cursor: pointer;
-  font-size: ${themeCssVariables.font.size.sm};
-  font-weight: ${themeCssVariables.font.weight.medium};
-  gap: ${themeCssVariables.spacing[1]};
+  font-size: ${({ theme }) => theme.font.size.sm};
+  font-weight: ${({ theme }) => theme.font.weight.medium};
+  gap: ${({ theme }) => theme.spacing(1)};
   height: 100%;
   width: 100%;
   border-radius: inherit;
-  color: ${themeCssVariables.font.color.secondary};
+  color: ${({ theme }) => theme.font.color.secondary};
   transition:
-    background calc(${themeCssVariables.animation.duration.fast} * 1s) ease,
-    color calc(${themeCssVariables.animation.duration.fast} * 1s) ease;
+    background ${({ theme }) => theme.animation.duration.fast}s ease,
+    color ${({ theme }) => theme.animation.duration.fast}s ease;
 
   &:hover {
-    background: ${themeCssVariables.background.transparent.light};
-    color: ${themeCssVariables.font.color.primary};
+    background: ${({ theme }) => theme.background.transparent.light};
+    color: ${({ theme }) => theme.font.color.primary};
   }
 `;
 
 export const MainNavigationDrawerTabsRow = () => {
-  const { theme } = useContext(ThemeContext);
+  const theme = useTheme();
   const isMobile = useIsMobile();
   const isNavigationDrawerExpanded = useAtomStateValue(
     isNavigationDrawerExpandedState,

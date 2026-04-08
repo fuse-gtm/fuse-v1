@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 
 import { IconCheck, IconMinus } from '@ui/display/icon/components/TablerIcons';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import * as React from 'react';
 
 export enum CheckboxVariant {
@@ -37,7 +37,6 @@ type CheckboxProps = {
   className?: string;
   disabled?: boolean;
   accent?: CheckboxAccent;
-  'aria-label'?: string;
 };
 
 type InputProps = {
@@ -197,7 +196,6 @@ export const Checkbox = ({
   className,
   disabled = false,
   accent = CheckboxAccent.Blue,
-  'aria-label': ariaLabel,
 }: CheckboxProps) => {
   const [isInternalChecked, setIsInternalChecked] =
     React.useState<boolean>(false);
@@ -233,8 +231,6 @@ export const Checkbox = ({
         name="styled-checkbox"
         data-testid="input-checkbox"
         checked={isInternalChecked}
-        aria-checked={indeterminate ? 'mixed' : isInternalChecked}
-        aria-label={ariaLabel}
         onChange={handleChange}
         disabled={disabled}
       />

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { styled } from '@linaria/react';
 import { OverflowingTextWithTooltip } from '@ui/display/tooltip/OverflowingTextWithTooltip';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 type H3TitleProps = {
   title: ReactNode;

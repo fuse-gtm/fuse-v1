@@ -1,10 +1,8 @@
 import { styled } from '@linaria/react';
 import { type ReactNode } from 'react';
 
-import { isNonEmptyString } from '@sniptt/guards';
 import { OverflowingTextWithTooltip } from '@ui/display/tooltip/OverflowingTextWithTooltip';
-import { themeCssVariables } from '@ui/theme-constants';
-import { isDefined } from 'twenty-shared/utils';
+import { themeCssVariables } from '@ui/theme';
 
 export enum ChipSize {
   Large = 'large',
@@ -30,13 +28,11 @@ export type ChipProps = {
   clickable?: boolean;
   label: string;
   isLabelHidden?: boolean;
-  isBold?: boolean;
   maxWidth?: number;
   variant?: ChipVariant;
   accent?: ChipAccent;
   leftComponent?: ReactNode | null;
   rightComponent?: (() => ReactNode) | ReactNode | null;
-  rightComponentDivider?: boolean;
   className?: string;
   forceEmptyText?: boolean;
   emptyLabel?: string;
@@ -49,13 +45,7 @@ const StyledDiv = styled.div`
 const StyledContainer = styled.div<
   Pick<
     ChipProps,
-    | 'accent'
-    | 'clickable'
-    | 'disabled'
-    | 'isBold'
-    | 'maxWidth'
-    | 'size'
-    | 'variant'
+    'accent' | 'clickable' | 'disabled' | 'maxWidth' | 'size' | 'variant'
   >
 >`
   --chip-horizontal-padding: ${themeCssVariables.spacing[1]};
@@ -95,8 +85,8 @@ const StyledContainer = styled.div<
   padding: var(--chip-vertical-padding) var(--chip-horizontal-padding);
   user-select: none;
 
-  font-weight: ${({ accent, isBold }) =>
-    isBold || accent === ChipAccent.TextSecondary
+  font-weight: ${({ accent }) =>
+    accent === ChipAccent.TextSecondary
       ? themeCssVariables.font.weight.medium
       : 'inherit'};
 
@@ -141,45 +131,27 @@ const StyledContainer = styled.div<
       : 'var(--chip-horizontal-padding)'};
 `;
 
-const StyledRightComponentDivider = styled.div`
-  align-self: stretch;
-  border-left: 1px solid ${themeCssVariables.border.color.light};
-`;
-
 const renderRightComponent = (
   rightComponent: (() => ReactNode) | ReactNode | null,
-  rightComponentDivider?: boolean,
 ) => {
   if (!rightComponent) {
     return null;
   }
 
-  const rendered =
-    typeof rightComponent === 'function' ? rightComponent() : rightComponent;
-
-  if (rightComponentDivider === true) {
-    return (
-      <>
-        <StyledRightComponentDivider />
-        {rendered}
-      </>
-    );
-  }
-
-  return rendered;
+  return typeof rightComponent === 'function'
+    ? rightComponent()
+    : rightComponent;
 };
 
 export const Chip = ({
   size = ChipSize.Small,
   label,
   isLabelHidden = false,
-  isBold = false,
   disabled = false,
   clickable = true,
   variant = ChipVariant.Regular,
   leftComponent = null,
   rightComponent = null,
-  rightComponentDivider = false,
   accent = ChipAccent.TextPrimary,
   className,
   maxWidth,
@@ -192,21 +164,20 @@ export const Chip = ({
       accent={accent}
       clickable={clickable}
       disabled={disabled}
-      isBold={isBold}
       size={size}
       variant={variant}
       className={className}
       maxWidth={maxWidth}
     >
       {leftComponent}
-      {!isLabelHidden && isDefined(label) && isNonEmptyString(label) ? (
+      {!isLabelHidden && label && label.trim() ? (
         <OverflowingTextWithTooltip size={size} text={label} />
       ) : !forceEmptyText && !isLabelHidden ? (
         <StyledDiv>{emptyLabel}</StyledDiv>
       ) : (
         ''
       )}
-      {renderRightComponent(rightComponent, rightComponentDivider)}
+      {renderRightComponent(rightComponent)}
     </StyledContainer>
   );
 };

@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledNotificationCounter = styled.div<{
   variant: 'primary' | 'secondary';

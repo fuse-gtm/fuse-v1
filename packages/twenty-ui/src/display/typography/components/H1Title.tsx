@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { styled } from '@linaria/react';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 type H1TitleProps = {
   title: ReactNode;

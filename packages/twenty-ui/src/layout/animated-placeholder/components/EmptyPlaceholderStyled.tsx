@@ -1,8 +1,7 @@
 import { styled } from '@linaria/react';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { type HTMLMotionProps, motion } from 'framer-motion';
 import { type ReactNode } from 'react';
-import { isDefined } from 'twenty-shared/utils';
 
 const StyledEmptyContainerBase = styled.div`
   align-items: center;
@@ -23,13 +22,11 @@ type AnimatedPlaceholderEmptyContainerProps = Pick<
 > & {
   children?: ReactNode;
   className?: string;
-  width?: number;
 };
 
 export const AnimatedPlaceholderEmptyContainer = ({
   children,
   className,
-  width,
   initial,
   animate,
   transition,
@@ -37,7 +34,6 @@ export const AnimatedPlaceholderEmptyContainer = ({
   return (
     <MotionEmptyContainer
       className={className}
-      style={isDefined(width) ? { width: `${width}px` } : undefined}
       initial={initial}
       animate={animate}
       transition={transition}

@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 import { type IconComponent } from '@ui/display';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 type PillProps = {
   className?: string;

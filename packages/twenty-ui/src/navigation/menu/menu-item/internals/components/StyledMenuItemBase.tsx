@@ -1,7 +1,9 @@
 import { styled } from '@linaria/react';
 
+import { isUndefined } from '@sniptt/guards';
+
 import { IconCheck } from '@ui/display';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { type MenuItemAccent } from '../../types/MenuItemAccent';
 
 export type MenuItemBaseProps = {
@@ -37,13 +39,13 @@ export const StyledMenuItemBase = styled.div<MenuItemBaseProps>`
   background: ${({ isKeySelected, focused }) =>
     isKeySelected || focused
       ? themeCssVariables.background.transparent.light
-      : 'transparent'};
+      : ''};
 
   transition: ${({ isHoverBackgroundDisabled, disabled }) =>
     disabled || isHoverBackgroundDisabled ? 'none' : 'background 0.1s ease'};
 
   color: ${({ accent, disabled }) => {
-    if (disabled !== undefined && disabled !== false) {
+    if (!isUndefined(disabled) && disabled !== false) {
       return themeCssVariables.font.color.tertiary;
     }
     switch (accent) {
@@ -58,17 +60,8 @@ export const StyledMenuItemBase = styled.div<MenuItemBaseProps>`
   }};
 
   &:hover {
-    background: ${({
-      accent,
-      disabled,
-      isHoverBackgroundDisabled,
-      isKeySelected,
-      focused,
-    }) => {
-      if (disabled === true)
-        return isKeySelected || focused
-          ? themeCssVariables.background.transparent.light
-          : 'transparent';
+    background: ${({ accent, disabled, isHoverBackgroundDisabled }) => {
+      if (disabled === true) return '';
       if (accent === 'danger')
         return themeCssVariables.background.transparent.danger;
       if (isHoverBackgroundDisabled === true) return 'transparent';
@@ -166,7 +159,7 @@ export const StyledHoverableMenuItemBase = styled(
   }
 
   cursor: ${({ cursor, disabled }) => {
-    if (disabled !== undefined && disabled !== false) {
+    if (!isUndefined(disabled) && disabled !== false) {
       return 'default';
     }
 
@@ -179,18 +172,10 @@ export const StyledHoverableMenuItemBase = styled(
   }};
 `;
 
-const StyledMenuItemIconCheckContainer = styled.div`
-  align-items: center;
-  display: flex;
+export const StyledMenuItemIconCheck = styled(IconCheck)`
   flex-shrink: 0;
   margin-right: ${themeCssVariables.spacing[1]};
 `;
-
-export const StyledMenuItemIconCheck = ({ size }: { size?: number }) => (
-  <StyledMenuItemIconCheckContainer>
-    <IconCheck size={size} />
-  </StyledMenuItemIconCheckContainer>
-);
 
 export const StyledMenuItemContextualText = styled.div`
   color: ${themeCssVariables.font.color.light};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@linaria/react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { Radio } from './Radio';
 
 const StyledSubscriptionCardContainer = styled.button`

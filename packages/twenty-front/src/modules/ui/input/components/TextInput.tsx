@@ -1,13 +1,12 @@
 import { InputErrorHelper } from '@/ui/input/components/InputErrorHelper';
 import { InputLabel } from '@/ui/input/components/InputLabel';
-import { css } from '@linaria/core';
-import { styled } from '@linaria/react';
-import React, {
-  forwardRef,
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
+import {
   type ChangeEvent,
   type FocusEventHandler,
   type InputHTMLAttributes,
-  useContext,
+  forwardRef,
   useId,
   useRef,
   useState,
@@ -16,8 +15,6 @@ import { type IconComponent, IconEye, IconEyeOff } from 'twenty-ui/display';
 import { AutogrowWrapper } from 'twenty-ui/utilities';
 import { useCombinedRefs } from '~/hooks/useCombinedRefs';
 import { turnIntoEmptyStringIfWhitespacesOnly } from '~/utils/string/turnIntoEmptyStringIfWhitespacesOnly';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { ThemeContext } from 'twenty-ui/theme';
 
 const StyledContainer = styled.div<Pick<TextInputComponentProps, 'fullWidth'>>`
   box-sizing: border-box;
@@ -42,17 +39,17 @@ type StyledAdornmentContainerProps = {
 
 const StyledAdornmentContainer = styled.div<StyledAdornmentContainerProps>`
   align-items: center;
-  background-color: ${themeCssVariables.background.transparent.light};
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  border-radius: ${({ position }) =>
+  background-color: ${({ theme }) => theme.background.transparent.light};
+  border: 1px solid ${({ theme }) => theme.border.color.medium};
+  border-radius: ${({ theme, position }) =>
     position === 'left'
-      ? `${themeCssVariables.border.radius.sm} 0 0 ${themeCssVariables.border.radius.sm}`
-      : `0 ${themeCssVariables.border.radius.sm} ${themeCssVariables.border.radius.sm} 0`};
+      ? `${theme.border.radius.sm} 0 0 ${theme.border.radius.sm}`
+      : `0 ${theme.border.radius.sm} ${theme.border.radius.sm} 0`};
   box-sizing: border-box;
-  color: ${themeCssVariables.font.color.tertiary};
+  color: ${({ theme }) => theme.font.color.tertiary};
   display: flex;
-  font-size: ${themeCssVariables.font.size.md};
-  font-weight: ${themeCssVariables.font.weight.medium};
+  font-size: ${({ theme }) => theme.font.size.md};
+  font-weight: ${({ theme }) => theme.font.weight.medium};
   height: ${({ sizeVariant }) =>
     sizeVariant === 'xs'
       ? '20px'
@@ -63,7 +60,7 @@ const StyledAdornmentContainer = styled.div<StyledAdornmentContainerProps>`
           : '32px'};
   justify-content: center;
   min-width: fit-content;
-  padding: ${themeCssVariables.spacing[2]};
+  padding: ${({ theme }) => theme.spacing(2)};
   width: auto;
   line-height: ${({ sizeVariant }) =>
     sizeVariant === 'xs'
@@ -74,10 +71,8 @@ const StyledAdornmentContainer = styled.div<StyledAdornmentContainerProps>`
           ? '28px'
           : '32px'};
 
-  border-right-style: ${({ position }) =>
-    position === 'left' ? 'none' : 'solid'};
-  border-left-style: ${({ position }) =>
-    position === 'right' ? 'none' : 'solid'};
+  ${({ position }) =>
+    position === 'left' ? 'border-right: none;' : 'border-left: none;'}
 `;
 
 const StyledInput = styled.input<
@@ -94,29 +89,27 @@ const StyledInput = styled.input<
     | 'leftAdornment'
   >
 >`
-  background-color: ${themeCssVariables.background.transparent.lighter};
-  border-radius: ${({ leftAdornment, rightAdornment }) =>
+  background-color: ${({ theme }) => theme.background.transparent.lighter};
+  border-radius: ${({ theme, leftAdornment, rightAdornment }) =>
     leftAdornment
-      ? `0 ${themeCssVariables.border.radius.sm} ${themeCssVariables.border.radius.sm} 0`
+      ? `0 ${theme.border.radius.sm} ${theme.border.radius.sm} 0`
       : rightAdornment
-        ? `${themeCssVariables.border.radius.sm} 0 0 ${themeCssVariables.border.radius.sm}`
-        : themeCssVariables.border.radius.sm};
+        ? `${theme.border.radius.sm} 0 0 ${theme.border.radius.sm}`
+        : theme.border.radius.sm};
 
   border: 1px solid
-    ${({ error }) =>
-      error
-        ? themeCssVariables.border.color.danger
-        : themeCssVariables.border.color.medium};
+    ${({ theme, error }) =>
+      error ? theme.border.color.danger : theme.border.color.medium};
   box-sizing: border-box;
-  color: ${themeCssVariables.font.color.primary};
+  color: ${({ theme }) => theme.font.color.primary};
   display: flex;
   flex-grow: 1;
-  font-family: ${({ inheritFontStyles }) =>
-    inheritFontStyles ? 'inherit' : themeCssVariables.font.family};
-  font-size: ${({ inheritFontStyles }) =>
-    inheritFontStyles ? 'inherit' : themeCssVariables.font.size.md};
-  font-weight: ${({ inheritFontStyles }) =>
-    inheritFontStyles ? 'inherit' : themeCssVariables.font.weight.regular};
+  font-family: ${({ theme, inheritFontStyles }) =>
+    inheritFontStyles ? 'inherit' : theme.font.family};
+  font-size: ${({ theme, inheritFontStyles }) =>
+    inheritFontStyles ? 'inherit' : theme.font.size.md};
+  font-weight: ${({ theme, inheritFontStyles }) =>
+    inheritFontStyles ? 'inherit' : theme.font.weight.regular};
   height: ${({ sizeVariant }) =>
     sizeVariant === 'xs'
       ? '20px'
@@ -126,37 +119,37 @@ const StyledInput = styled.input<
           ? '28px'
           : '32px'};
   outline: none;
-  padding: ${({ sizeVariant, autoGrow }) =>
+  padding: ${({ theme, sizeVariant, autoGrow }) =>
     autoGrow
       ? 0
       : sizeVariant === 'xs'
-        ? `${themeCssVariables.spacing[2]} 0`
-        : themeCssVariables.spacing[2]};
-  padding-left: ${({ LeftIcon, autoGrow }) =>
+        ? `${theme.spacing(2)} 0`
+        : theme.spacing(2)};
+  padding-left: ${({ theme, LeftIcon, autoGrow }) =>
     autoGrow
-      ? themeCssVariables.spacing[1]
+      ? theme.spacing(1)
       : LeftIcon
-        ? `calc(${themeCssVariables.spacing[3]} + 16px)`
-        : themeCssVariables.spacing[2]};
-  padding-right: ${({ RightIcon, autoGrow }) =>
+        ? `calc(${theme.spacing(3)} + 16px)`
+        : theme.spacing(2)};
+  padding-right: ${({ theme, RightIcon, autoGrow }) =>
     autoGrow
-      ? themeCssVariables.spacing[1]
+      ? theme.spacing(1)
       : RightIcon
-        ? `calc(${themeCssVariables.spacing[3]} + 16px)`
-        : themeCssVariables.spacing[2]};
-  width: ${({ width }) =>
-    width ? `calc(${width}px + ${themeCssVariables.spacing[0.5]})` : '100%'};
+        ? `calc(${theme.spacing(3)} + 16px)`
+        : theme.spacing(2)};
+  width: ${({ theme, width }) =>
+    width ? `calc(${width}px + ${theme.spacing(0.5)})` : '100%'};
   max-width: ${({ autoGrow }) => (autoGrow ? '100%' : 'none')};
   text-overflow: ellipsis;
   &::placeholder,
   &::-webkit-input-placeholder {
-    color: ${themeCssVariables.font.color.light};
-    font-family: ${themeCssVariables.font.family};
-    font-weight: ${themeCssVariables.font.weight.medium};
+    color: ${({ theme }) => theme.font.color.light};
+    font-family: ${({ theme }) => theme.font.family};
+    font-weight: ${({ theme }) => theme.font.weight.medium};
   }
 
   &:disabled {
-    color: ${themeCssVariables.font.color.tertiary};
+    color: ${({ theme }) => theme.font.color.tertiary};
   }
 
   &[readonly] {
@@ -164,9 +157,9 @@ const StyledInput = styled.input<
   }
 
   &:focus {
-    ${({ error }) => {
+    ${({ theme, error }) => {
       return `
-      border-color: ${error ? themeCssVariables.border.color.danger : themeCssVariables.color.blue};
+      border-color: ${error ? theme.border.color.danger : theme.color.blue};
       `;
     }};
   }
@@ -176,12 +169,12 @@ const StyledLeftIconContainer = styled.div<{ sizeVariant: TextInputSize }>`
   align-items: center;
   display: flex;
   justify-content: center;
-  padding-left: ${({ sizeVariant }) =>
+  padding-left: ${({ theme, sizeVariant }) =>
     sizeVariant === 'xs'
-      ? themeCssVariables.spacing[0.5]
+      ? theme.spacing(0.5)
       : sizeVariant === 'md' || sizeVariant === 'sm'
-        ? themeCssVariables.spacing[1]
-        : themeCssVariables.spacing[2]};
+        ? theme.spacing(1)
+        : theme.spacing(2)};
   position: absolute;
   top: 0;
   bottom: 0;
@@ -194,7 +187,7 @@ const StyledTrailingIconContainer = styled.div<
   align-items: center;
   display: flex;
   justify-content: center;
-  padding-right: ${themeCssVariables.spacing[2]};
+  padding-right: ${({ theme }) => theme.spacing(2)};
   position: absolute;
   top: 0;
   bottom: 0;
@@ -207,10 +200,8 @@ const StyledTrailingIcon = styled.div<{
   onClick?: () => void;
 }>`
   align-items: center;
-  color: ${({ isFocused }) =>
-    isFocused
-      ? themeCssVariables.font.color.secondary
-      : themeCssVariables.font.color.light};
+  color: ${({ theme, isFocused }) =>
+    isFocused ? theme.font.color.secondary : theme.font.color.light};
   cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
   display: flex;
   justify-content: center;
@@ -285,7 +276,7 @@ const TextInputComponent = forwardRef<
     },
     ref,
   ) => {
-    const { theme } = useContext(ThemeContext);
+    const theme = useTheme();
     const inputRef = useRef<HTMLInputElement>(null);
     const combinedRef = useCombinedRefs(ref, inputRef);
 
@@ -406,49 +397,20 @@ const TextInputComponent = forwardRef<
   },
 );
 
-const autogrowBaseStyle = css`
+const StyledAutogrowWrapper = styled(AutogrowWrapper)<{
+  sizeVariant?: TextInputSize;
+}>`
   box-sizing: border-box;
+  height: ${({ sizeVariant }) =>
+    sizeVariant === 'xs'
+      ? '20px'
+      : sizeVariant === 'sm'
+        ? '24px'
+        : sizeVariant === 'md'
+          ? '28px'
+          : '32px'};
   padding: 0 5px;
 `;
-
-const autogrowHeightXs = css`
-  height: 20px;
-`;
-const autogrowHeightSm = css`
-  height: 24px;
-`;
-const autogrowHeightMd = css`
-  height: 28px;
-`;
-const autogrowHeightLg = css`
-  height: 32px;
-`;
-
-const AUTOGROW_HEIGHT_MAP: Record<TextInputSize, string> = {
-  xs: autogrowHeightXs,
-  sm: autogrowHeightSm,
-  md: autogrowHeightMd,
-  lg: autogrowHeightLg,
-};
-
-type StyledAutogrowWrapperProps = React.ComponentProps<
-  typeof AutogrowWrapper
-> & {
-  sizeVariant?: TextInputSize;
-};
-
-const StyledAutogrowWrapper = ({
-  sizeVariant = 'lg',
-  className,
-  children,
-  node,
-}: StyledAutogrowWrapperProps) => (
-  <AutogrowWrapper
-    children={children}
-    node={node}
-    className={`${autogrowBaseStyle} ${AUTOGROW_HEIGHT_MAP[sizeVariant]} ${className ?? ''}`}
-  />
-);
 
 const TextInputWithAutoGrowWrapper = forwardRef<
   HTMLInputElement,

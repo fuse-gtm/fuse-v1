@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 import * as React from 'react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledClickableLink = styled.a<{
   maxWidth?: number;

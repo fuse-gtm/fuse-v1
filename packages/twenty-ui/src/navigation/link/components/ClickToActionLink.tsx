@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 import React from 'react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledButtonLink = styled.a`
   align-items: center;
@@ -12,9 +12,8 @@ const StyledButtonLink = styled.a`
   gap: ${themeCssVariables.spacing[1]};
   padding: 0 ${themeCssVariables.spacing[1]};
   text-decoration: none;
-  white-space: nowrap;
 
-  &:hover {
+  :hover {
     color: ${themeCssVariables.font.color.tertiary};
     cursor: pointer;
   }

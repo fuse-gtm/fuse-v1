@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { styled } from '@linaria/react';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 import { t } from '@lingui/core/macro';
 
 import { ActivityTargetsInlineCell } from '@/activities/inline-cell/components/ActivityTargetsInlineCell';
@@ -16,14 +16,12 @@ import { RecordFieldsScopeContextProvider } from '@/object-record/record-field-l
 import { FieldContextProvider } from '@/object-record/record-field/ui/components/FieldContextProvider';
 import { IconCalendar, OverflowingTextWithTooltip } from 'twenty-ui/display';
 import { Checkbox, CheckboxShape } from 'twenty-ui/input';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useCompleteTask } from '@/activities/tasks/hooks/useCompleteTask';
 
 const StyledTaskBody = styled.div`
-  color: ${themeCssVariables.font.color.tertiary};
+  color: ${({ theme }) => theme.font.color.tertiary};
   display: flex;
-  max-width: calc(80% - ${themeCssVariables.spacing[2]});
+  max-width: calc(80% - ${({ theme }) => theme.spacing(2)});
   text-overflow: ellipsis;
   overflow: hidden;
   padding-bottom: 1px;
@@ -32,9 +30,9 @@ const StyledTaskBody = styled.div`
 const StyledTaskTitle = styled.div<{
   completed: boolean;
 }>`
-  color: ${themeCssVariables.font.color.primary};
-  font-weight: ${themeCssVariables.font.weight.medium};
-  padding: 0 ${themeCssVariables.spacing[2]};
+  color: ${({ theme }) => theme.font.color.primary};
+  font-weight: ${({ theme }) => theme.font.weight.medium};
+  padding: 0 ${({ theme }) => theme.spacing(2)};
   padding-bottom: 1px;
   text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
   white-space: nowrap;
@@ -48,13 +46,11 @@ const StyledDueDate = styled.div<{
   isPast: boolean;
 }>`
   align-items: center;
-  color: ${({ isPast }) =>
-    isPast
-      ? themeCssVariables.font.color.danger
-      : themeCssVariables.font.color.secondary};
+  color: ${({ theme, isPast }) =>
+    isPast ? theme.font.color.danger : theme.font.color.secondary};
   display: flex;
-  gap: ${themeCssVariables.spacing[1]};
-  padding-left: ${themeCssVariables.spacing[1]};
+  gap: ${({ theme }) => theme.spacing(1)};
+  padding-left: ${({ theme }) => theme.spacing(1)};
   white-space: nowrap;
 `;
 
@@ -70,7 +66,7 @@ const StyledActivityTargetsContainer = styled.div`
 `;
 
 const StyledPlaceholder = styled.div`
-  color: ${themeCssVariables.font.color.light};
+  color: ${({ theme }) => theme.font.color.light};
 `;
 
 const StyledLeftSideContainer = styled.div`
@@ -86,7 +82,7 @@ const StyledCheckboxContainer = styled.div`
 `;
 
 export const TaskRow = ({ task }: { task: Task }) => {
-  const { theme } = useContext(ThemeContext);
+  const theme = useTheme();
   const { openRecordInCommandMenu } = useOpenRecordInCommandMenu();
 
   const body = getActivitySummary(task?.bodyV2?.blocknote ?? null);

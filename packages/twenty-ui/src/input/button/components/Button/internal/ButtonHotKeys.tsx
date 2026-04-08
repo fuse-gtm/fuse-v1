@@ -5,7 +5,7 @@ import {
   type ButtonSize,
   type ButtonVariant,
 } from '@ui/input';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { getOsShortcutSeparator } from '@ui/utilities';
 
 const StyledSeparator = styled.div<{

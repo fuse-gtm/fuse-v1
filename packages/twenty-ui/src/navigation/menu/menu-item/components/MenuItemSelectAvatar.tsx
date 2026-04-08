@@ -9,8 +9,7 @@ import {
 
 import { styled } from '@linaria/react';
 import { OverflowingTextWithTooltip } from '@ui/display';
-import { ThemeContext } from '@ui/theme';
-import { themeCssVariables } from '@ui/theme-constants';
+import { ThemeContext, themeCssVariables } from '@ui/theme';
 import { StyledMenuItemSelect } from './MenuItemSelect';
 
 type MenuItemSelectAvatarProps = {

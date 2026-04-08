@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 import { isNonEmptyString } from '@sniptt/guards';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { type MouseEvent } from 'react';
 
 type RoundedLinkProps = {

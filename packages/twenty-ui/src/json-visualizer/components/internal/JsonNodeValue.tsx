@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 import { useJsonTreeContextOrThrow } from '@ui/json-visualizer/hooks/useJsonTreeContextOrThrow';
 import { type JsonNodeHighlighting } from '@ui/json-visualizer/types/JsonNodeHighlighting';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledText = styled.span<{
   highlighting: JsonNodeHighlighting | undefined;

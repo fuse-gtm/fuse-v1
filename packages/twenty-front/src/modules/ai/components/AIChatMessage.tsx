@@ -1,4 +1,4 @@
-import { styled } from '@linaria/react';
+import styled from '@emotion/styled';
 
 import { AgentChatFilePreview } from '@/ai/components/internal/AgentChatFilePreview';
 import { AgentMessageRole } from '@/ai/constants/AgentMessageRole';
@@ -9,7 +9,6 @@ import { LightCopyIconButton } from '@/object-record/record-field/ui/components/
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { type ExtendedUIMessage } from 'twenty-shared/ai';
 import { isDefined } from 'twenty-shared/utils';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { dateLocaleState } from '~/localization/states/dateLocaleState';
 import { beautifyPastDateRelativeToNow } from '~/utils/date-utils';
 
@@ -27,19 +26,16 @@ const StyledMessageBubble = styled.div<{ isUser?: boolean }>`
 `;
 
 const StyledMessageText = styled.div<{ isUser?: boolean }>`
-  background: ${({ isUser }) =>
-    isUser ? themeCssVariables.background.tertiary : 'transparent'};
-  border-radius: ${({ isUser }) =>
-    isUser ? themeCssVariables.border.radius.sm : '0'};
-  color: ${({ isUser }) =>
-    isUser
-      ? themeCssVariables.font.color.secondary
-      : themeCssVariables.font.color.primary};
+  background: ${({ theme, isUser }) =>
+    isUser ? theme.background.tertiary : theme.background.transparent};
+  border-radius: ${({ theme, isUser }) =>
+    isUser ? theme.border.radius.sm : '0'};
+  color: ${({ theme, isUser }) =>
+    isUser ? theme.font.color.secondary : theme.font.color.primary};
   font-weight: ${({ isUser }) => (isUser ? 500 : 400)};
   line-height: 1.4em;
   max-width: 100%;
-  padding: ${({ isUser }) =>
-    isUser ? `0 ${themeCssVariables.spacing[2]}` : '0'};
+  padding: ${({ theme, isUser }) => (isUser ? `0 ${theme.spacing(2)}` : 0)};
   width: fit-content;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -54,14 +50,14 @@ const StyledMessageText = styled.div<{ isUser?: boolean }>`
     max-width: 100%;
     line-height: 1.4;
     padding: 1px 3px;
-    border-radius: ${themeCssVariables.border.radius.sm};
-    background: ${themeCssVariables.background.tertiary};
+    border-radius: ${({ theme }) => theme.border.radius.sm};
+    background: ${({ theme }) => theme.background.tertiary};
   }
 
   pre {
-    background: ${themeCssVariables.background.tertiary};
-    padding: ${themeCssVariables.spacing[2]};
-    border-radius: ${themeCssVariables.border.radius.sm};
+    background: ${({ theme }) => theme.background.tertiary};
+    padding: ${({ theme }) => theme.spacing(2)};
+    border-radius: ${({ theme }) => theme.border.radius.sm};
     overflow-x: auto;
     max-width: 100%;
 
@@ -73,16 +69,16 @@ const StyledMessageText = styled.div<{ isUser?: boolean }>`
   }
 
   p {
-    margin-block: ${({ isUser }) =>
-      isUser ? '0' : themeCssVariables.spacing[1]};
+    margin-block: ${({ isUser, theme }) =>
+      isUser ? '0' : `${theme.spacing(1)}`};
     line-height: 1.4em;
   }
 
   ul,
   ol {
     line-height: 1.4em;
-    margin: ${themeCssVariables.spacing[1]} 0;
-    padding-left: ${themeCssVariables.spacing[4]};
+    margin: ${({ theme }) => theme.spacing(1)} 0;
+    padding-left: ${({ theme }) => theme.spacing(4)};
   }
 
   ul {
@@ -91,35 +87,35 @@ const StyledMessageText = styled.div<{ isUser?: boolean }>`
 
   li {
     line-height: 1.4em;
-    margin: ${themeCssVariables.spacing['0.5']} 0;
-    padding-bottom: ${themeCssVariables.spacing['0.5']};
-    padding-top: ${themeCssVariables.spacing['0.5']};
+    margin: ${({ theme }) => theme.spacing(0.5)} 0;
+    padding-bottom: ${({ theme }) => theme.spacing(0.5)};
+    padding-top: ${({ theme }) => theme.spacing(0.5)};
   }
 
   blockquote {
-    border-left: 3px solid ${themeCssVariables.border.color.medium};
-    margin: ${themeCssVariables.spacing[2]} 0;
-    padding-left: ${themeCssVariables.spacing[2]};
-    color: ${themeCssVariables.font.color.secondary};
+    border-left: 3px solid ${({ theme }) => theme.border.color.medium};
+    margin: ${({ theme }) => theme.spacing(2)} 0;
+    padding-left: ${({ theme }) => theme.spacing(2)};
+    color: ${({ theme }) => theme.font.color.secondary};
   }
 `;
 
 const StyledMessageFooter = styled.div`
   align-items: center;
-  color: ${themeCssVariables.font.color.secondary};
+  color: ${({ theme }) => theme.font.color.secondary};
   display: flex;
-  font-size: ${themeCssVariables.font.size.sm};
+  font-size: ${({ theme }) => theme.font.size.sm};
   justify-content: space-between;
-  margin-top: ${themeCssVariables.spacing[1]};
+  margin-top: ${({ theme }) => theme.spacing(1)};
   opacity: 0;
   pointer-events: none;
-  transition: opacity calc(${themeCssVariables.animation.duration.normal} * 1s)
+  transition: opacity ${({ theme }) => theme.animation.duration.normal}s
     ease-in-out;
   width: 100%;
 `;
 
 const StyledMessageTimestamp = styled.span`
-  color: ${themeCssVariables.font.color.light};
+  color: ${({ theme }) => theme.font.color.light};
 `;
 
 const StyledMessageContainer = styled.div<{ isUser?: boolean }>`
@@ -131,9 +127,9 @@ const StyledMessageContainer = styled.div<{ isUser?: boolean }>`
 const StyledFilesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  gap: ${themeCssVariables.spacing[2]};
+  gap: ${({ theme }) => theme.spacing(2)};
   flex-wrap: wrap;
-  margin-top: ${themeCssVariables.spacing[2]};
+  margin-top: ${({ theme }) => theme.spacing(2)};
 `;
 
 export const AIChatMessage = ({

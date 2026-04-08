@@ -17,47 +17,6 @@ import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 type Checkers = Parameters<typeof checker>[0];
 
-// TODO(fuse): Remove this shim once twenty-shared stops using `@/` root alias
-// inside source imports that are consumed directly by twenty-front.
-const resolveSharedSourceFile = (sourceFromSharedRoot: string) => {
-  const sharedRoot = path.resolve(__dirname, '../twenty-shared/src');
-  const raw = path.resolve(sharedRoot, sourceFromSharedRoot);
-
-  const hasExtension = path.extname(raw) !== '';
-  const candidates = hasExtension
-    ? [raw]
-    : [
-        `${raw}.ts`,
-        `${raw}.tsx`,
-        `${raw}.js`,
-        `${raw}.mjs`,
-        `${raw}.cjs`,
-        path.join(raw, 'index.ts'),
-        path.join(raw, 'index.tsx'),
-        path.join(raw, 'index.js'),
-      ];
-
-  return candidates.find((candidate) => fs.existsSync(candidate)) ?? raw;
-};
-
-const resolveTwentySharedRootAlias = (): PluginOption => ({
-  name: 'resolve-twenty-shared-root-alias',
-  enforce: 'pre',
-  resolveId: (source, importer) => {
-    if (!importer || !source.startsWith('@/')) {
-      return null;
-    }
-
-    const normalizedImporter = importer.split('?')[0].split(path.sep).join('/');
-
-    if (!normalizedImporter.includes('/packages/twenty-shared/src/')) {
-      return null;
-    }
-
-    return resolveSharedSourceFile(source.slice(2));
-  },
-});
-
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, __dirname, '');
 
@@ -70,11 +29,7 @@ export default defineConfig(({ command, mode }) => {
     SSL_KEY_PATH,
     REACT_APP_PORT,
     IS_DEBUG_MODE,
-    CI,
-    ANALYZE,
   } = env;
-
-  const isCI = CI === 'true';
 
   const port = isNonEmptyString(REACT_APP_PORT)
     ? parseInt(REACT_APP_PORT)
@@ -141,9 +96,9 @@ export default defineConfig(({ command, mode }) => {
 
     plugins: [
       react({
+        jsxImportSource: '@emotion/react',
         plugins: [['@lingui/swc-plugin', {}]],
       }),
-      resolveTwentySharedRootAlias(),
       tsconfigPaths({
         root: __dirname,
         projects: ['tsconfig.json'],
@@ -152,42 +107,37 @@ export default defineConfig(({ command, mode }) => {
       lingui({
         configPath: path.resolve(__dirname, './lingui.config.ts'),
       }),
-      !isCI && checker(checkers),
+      checker(checkers),
       {
         ...wyw({
           include: [
-            // Only scan directories that actually contain styled usage (~12% of source)
-            path.resolve(__dirname, 'src') + '/**/components/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/pages/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/loading/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/testing/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/blocknote-editor/blocks/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/advanced-text-editor/extensions/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/page-layout/widgets/graph/chart-core/layers/**/*.{ts,tsx}',
-          ],
-          exclude: [
-            '**/generated-metadata/**',
-            '**/testing/mock-data/generated/**',
-            '**/*.test.{ts,tsx}',
-            '**/*.spec.{ts,tsx}',
+            '**/twenty-ui/src/**/*.{ts,tsx}',
+            '**/EllipsisDisplay.tsx',
+            '**/BooleanDisplay.tsx',
+            '**/RatingInput.tsx',
+            '**/RecordTableCellDisplayContainer.tsx',
+            '**/RecordTableCellBaseContainer.tsx',
+            '**/RecordTableCellStyleWrapper.tsx',
+            '**/TextDisplay.tsx',
+            '**/EmailsDisplay.tsx',
+            '**/PhonesDisplay.tsx',
+            '**/MultiSelectDisplay.tsx',
+            '**/RecordTableRowVirtualizedContainer.tsx',
+            '**/RecordTableVirtualizedBodyPlaceholder.tsx',
+            '**/RecordTableCellLoading.tsx',
           ],
           babelOptions: {
             presets: ['@babel/preset-typescript', '@babel/preset-react'],
-            plugins: ['@babel/plugin-transform-export-namespace-from'],
           },
         }),
         enforce: 'pre',
       },
-      ANALYZE === 'true' &&
-        (visualizer({
-          open: !isCI,
-          gzipSize: true,
-          brotliSize: true,
-          filename: 'dist/stats.html',
-        }) as PluginOption), // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
+      visualizer({
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        filename: 'dist/stats.html',
+      }) as PluginOption, // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
     ],
 
     optimizeDeps: {
@@ -202,12 +152,13 @@ export default defineConfig(({ command, mode }) => {
       minify: 'esbuild',
       outDir: 'build',
       sourcemap: VITE_BUILD_SOURCEMAP === 'true',
-      chunkSizeWarningLimit: CHUNK_SIZE_WARNING_LIMIT,
       rollupOptions: {
         //  Don't use manual chunks as it causes many issue
         // including this one we wasted a lot of time on:
         // https://github.com/rollup/rollup/issues/2793
         output: {
+          // Set chunk size warning limit (in bytes) - warns at 1MB
+          chunkSizeWarningLimit: CHUNK_SIZE_WARNING_LIMIT,
           // Custom plugin to fail build if chunks exceed max size
           plugins: [
             {
@@ -306,6 +257,8 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         path: 'rollup-plugin-node-polyfills/polyfills/path',
+        // https://github.com/twentyhq/twenty/pull/10782/files
+        // This will likely be migrated to twenty-ui package when built separately
         '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
       },
     },

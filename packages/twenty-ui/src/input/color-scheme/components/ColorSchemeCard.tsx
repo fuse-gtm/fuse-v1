@@ -1,8 +1,11 @@
 import { styled } from '@linaria/react';
 import { Checkmark } from '@ui/display/checkmark/components/Checkmark';
 import { type ColorScheme } from '@ui/input/types/ColorScheme';
-import { GRAY_SCALE_DARK, GRAY_SCALE_LIGHT } from '@ui/theme';
-import { themeCssVariables } from '@ui/theme-constants';
+import {
+  GRAY_SCALE_DARK,
+  GRAY_SCALE_LIGHT,
+  themeCssVariables,
+} from '@ui/theme';
 import {
   AnimatePresence,
   type AnimationControls,

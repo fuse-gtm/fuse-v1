@@ -5,7 +5,7 @@ import {
   type FloatingButtonPosition,
   type FloatingButtonProps,
 } from './FloatingButton';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { isDefined } from 'twenty-shared/utils';
 
 const StyledFloatingButtonGroupContainer = styled.div`

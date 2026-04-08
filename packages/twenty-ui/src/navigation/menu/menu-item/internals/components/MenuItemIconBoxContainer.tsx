@@ -1,7 +1,7 @@
 import { styled } from '@linaria/react';
 import { type ReactNode } from 'react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledIconContainerBase = styled.div`
   align-items: flex-start;

@@ -2,7 +2,7 @@ import { styled } from '@linaria/react';
 import { motion } from 'framer-motion';
 import * as React from 'react';
 
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 import { RadioGroup } from './RadioGroup';
 
 export enum RadioSize {
@@ -121,7 +121,6 @@ export type RadioProps = {
   size?: RadioSize;
   style?: React.CSSProperties;
   value?: string;
-  'aria-label'?: string;
 };
 
 export const Radio = ({
@@ -135,7 +134,6 @@ export const Radio = ({
   onCheckedChange,
   size = RadioSize.Small,
   value,
-  'aria-label': ariaLabel,
 }: RadioProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event);
@@ -151,12 +149,11 @@ export const Radio = ({
         id={optionId}
         name={name}
         data-testid="input-radio"
-        tabIndex={0}
+        tabIndex={-1}
         checked={checked}
         value={value || label}
         radio-size={size}
         disabled={disabled}
-        aria-label={ariaLabel}
         onChange={handleChange}
         initial={{ scale: 0.95 }}
         animate={{ scale: checked ? 1.05 : 0.95 }}

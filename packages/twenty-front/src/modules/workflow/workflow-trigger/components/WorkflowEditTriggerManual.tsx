@@ -9,13 +9,13 @@ import { WorkflowStepFooter } from '@/workflow/workflow-steps/components/Workflo
 import { MANUAL_TRIGGER_AVAILABILITY_TYPE_OPTIONS } from '@/workflow/workflow-trigger/constants/ManualTriggerAvailabilityTypeOptions';
 import { MANUAL_TRIGGER_IS_PINNED_OPTIONS } from '@/workflow/workflow-trigger/constants/ManualTriggerIsPinnedOptions';
 import { getManualTriggerDefaultSettings } from '@/workflow/workflow-trigger/utils/getManualTriggerDefaultSettings';
-import { styled } from '@linaria/react';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useLingui } from '@lingui/react/macro';
 import { QUERY_MAX_RECORDS } from 'twenty-shared/constants';
 import { TRIGGER_STEP_ID } from 'twenty-shared/workflow';
 import { useIcons } from 'twenty-ui/display';
 import { type SelectOption } from 'twenty-ui/input';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 type WorkflowEditTriggerManualProps = {
   trigger: WorkflowManualTrigger;
@@ -31,15 +31,15 @@ type WorkflowEditTriggerManualProps = {
 };
 
 const StyledLabel = styled.span`
-  color: ${themeCssVariables.font.color.light};
-  font-size: ${themeCssVariables.font.size.xs};
-  font-weight: ${themeCssVariables.font.weight.semiBold};
-  margin-bottom: ${themeCssVariables.spacing[1]};
+  color: ${({ theme }) => theme.font.color.light};
+  font-size: ${({ theme }) => theme.font.size.xs};
+  font-weight: ${({ theme }) => theme.font.weight.semiBold};
+  margin-bottom: ${({ theme }) => theme.spacing(1)};
 `;
 
 const StyledDescription = styled.span`
-  color: ${themeCssVariables.font.color.light};
-  font-size: ${themeCssVariables.font.size.sm};
+  color: ${({ theme }) => theme.font.color.light};
+  font-size: ${({ theme }) => theme.font.size.sm};
   margin-top: 1px;
 `;
 
@@ -52,6 +52,8 @@ export const WorkflowEditTriggerManual = ({
   trigger,
   triggerOptions,
 }: WorkflowEditTriggerManualProps) => {
+  const theme = useTheme();
+
   const { t } = useLingui();
 
   const { getIcon } = useIcons();
@@ -105,7 +107,7 @@ export const WorkflowEditTriggerManual = ({
               }),
             });
           }}
-          dropdownOffset={{ y: 4 }}
+          dropdownOffset={{ y: parseInt(theme.spacing(1), 10) }}
           dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
         />
 
@@ -137,7 +139,7 @@ export const WorkflowEditTriggerManual = ({
                 },
               });
             }}
-            dropdownOffset={{ y: 4 }}
+            dropdownOffset={{ y: parseInt(theme.spacing(1), 10) }}
             dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
           />
         ) : null}
@@ -145,7 +147,7 @@ export const WorkflowEditTriggerManual = ({
         <IconPicker
           dropdownId="workflow-edit-manual-trigger-icon"
           selectedIconKey={trigger.settings.icon}
-          dropdownOffset={{ y: -12 }}
+          dropdownOffset={{ y: -parseInt(theme.spacing(3), 10) }}
           dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
           maxIconsVisible={9 * 8} // 9 columns * 8 lines
           disabled={triggerOptions.readonly}
@@ -207,7 +209,7 @@ export const WorkflowEditTriggerManual = ({
               },
             });
           }}
-          dropdownOffset={{ y: 4 }}
+          dropdownOffset={{ y: parseInt(theme.spacing(1), 10) }}
           dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
         />
       </WorkflowStepBody>

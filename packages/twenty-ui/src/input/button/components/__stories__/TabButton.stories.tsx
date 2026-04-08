@@ -17,7 +17,7 @@ import {
   JotaiRootDecorator,
 } from '@ui/testing';
 import { type ReactNode } from 'react';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledTabContainer = styled.div`
   display: flex;

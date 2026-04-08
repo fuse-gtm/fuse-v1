@@ -1,5 +1,5 @@
 import { styled } from '@linaria/react';
-import { themeCssVariables } from '@ui/theme-constants';
+import { themeCssVariables } from '@ui/theme';
 
 const StyledBanner = styled.div<{ variant?: BannerVariant }>`
   align-items: center;
@@ -10,7 +10,7 @@ const StyledBanner = styled.div<{ variant?: BannerVariant }>`
       : themeCssVariables.color.blue};
   display: flex;
   gap: ${themeCssVariables.spacing[3]};
-  min-height: 40px;
+  height: 40px;
   justify-content: center;
   padding: ${themeCssVariables.spacing[2]} ${themeCssVariables.spacing[3]};
   width: 100%;

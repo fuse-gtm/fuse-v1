@@ -1,7 +1,9 @@
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 import { IconCheck, IconX } from 'twenty-ui/display';
-const iconSizeSm = 14;
+import { THEME_COMMON } from 'twenty-ui/theme';
+
+const iconSizeSm = THEME_COMMON.icon.size.sm;
 
 const StyledBooleanFieldValue = styled.div`
   margin-left: 4px;
