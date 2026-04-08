@@ -1,68 +1,79 @@
-import { COMMAND_MENU_COMPONENT_INSTANCE_ID } from '@/command-menu/constants/CommandMenuComponentInstanceId';
-import { COMMAND_MENU_CONTEXT_CHIP_GROUPS_DROPDOWN_ID } from '@/command-menu/constants/CommandMenuContextChipGroupsDropdownId';
-import { COMMAND_MENU_LIST_SELECTABLE_LIST_ID } from '@/command-menu/constants/CommandMenuListSelectableListId';
-import { COMMAND_MENU_PREVIOUS_COMPONENT_INSTANCE_ID } from '@/command-menu/constants/CommandMenuPreviousComponentInstanceId';
 import { useResetContextStoreStates } from '@/command-menu/hooks/useResetContextStoreStates';
-import { commandMenuNavigationMorphItemsByPageState } from '@/command-menu/states/commandMenuNavigationMorphItemsByPageState';
-import { commandMenuNavigationStackState } from '@/command-menu/states/commandMenuNavigationStackState';
-import { commandMenuPageInfoState } from '@/command-menu/states/commandMenuPageInfoState';
-import { commandMenuPageState } from '@/command-menu/states/commandMenuPageState';
-import { commandMenuSearchState } from '@/command-menu/states/commandMenuSearchState';
-import { hasUserSelectedCommandState } from '@/command-menu/states/hasUserSelectedCommandState';
-import { isCommandMenuClosingState } from '@/command-menu/states/isCommandMenuClosingState';
-import { isCommandMenuOpenedState } from '@/command-menu/states/isCommandMenuOpenedState';
 import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
-import { viewableRecordIdState } from '@/object-record/record-right-drawer/states/viewableRecordIdState';
+import { addToNavPayloadRegistryState } from '@/navigation-menu-item/common/states/addToNavPayloadRegistryState';
+import { pendingInsertionNavigationMenuItemState } from '@/navigation-menu-item/common/states/pendingInsertionNavigationMenuItemState';
+import { selectedNavigationMenuItemIdInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemIdInEditModeState';
+import { viewableRecordIdState } from '@/object-record/record-side-panel/states/viewableRecordIdState';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { pageLayoutDraggedAreaComponentState } from '@/page-layout/states/pageLayoutDraggedAreaComponentState';
 import { pageLayoutEditingWidgetIdComponentState } from '@/page-layout/states/pageLayoutEditingWidgetIdComponentState';
 import { pageLayoutTabSettingsOpenTabIdComponentState } from '@/page-layout/states/pageLayoutTabSettingsOpenTabIdComponentState';
+import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
+import { SIDE_PANEL_CONTEXT_CHIP_GROUPS_DROPDOWN_ID } from '@/side-panel/constants/SidePanelContextChipGroupsDropdownId';
+import { SIDE_PANEL_PREVIOUS_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelPreviousComponentInstanceId';
+import { SIDE_PANEL_SELECTABLE_LIST_ID } from '@/side-panel/constants/SidePanelSelectableListId';
+import { hasUserSelectedSidePanelListItemState } from '@/side-panel/states/hasUserSelectedSidePanelListItemState';
+import { isSidePanelClosingState } from '@/side-panel/states/isSidePanelClosingState';
+import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
+import { sidePanelNavigationMorphItemsByPageState } from '@/side-panel/states/sidePanelNavigationMorphItemsByPageState';
+import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
+import { sidePanelPageInfoState } from '@/side-panel/states/sidePanelPageInfoState';
+import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
+import { sidePanelSearchObjectFilterState } from '@/side-panel/states/sidePanelSearchObjectFilterState';
+import { sidePanelSearchState } from '@/side-panel/states/sidePanelSearchState';
+import { sidePanelShowHiddenObjectsState } from '@/side-panel/states/sidePanelShowHiddenObjectsState';
 import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
-import { emitSidePanelCloseEvent } from '@/ui/layout/right-drawer/utils/emitSidePanelCloseEvent';
 import { useSelectableList } from '@/ui/layout/selectable-list/hooks/useSelectableList';
 import { getShowPageTabListComponentId } from '@/ui/layout/show-page/utils/getShowPageTabListComponentId';
+import { emitSidePanelCloseEvent } from '@/ui/layout/side-panel/utils/emitSidePanelCloseEvent';
 import { activeTabIdComponentState } from '@/ui/layout/tab-list/states/activeTabIdComponentState';
 import { WORKFLOW_LOGIC_FUNCTION_TAB_LIST_COMPONENT_ID } from '@/workflow/workflow-steps/workflow-actions/code-action/constants/WorkflowLogicFunctionTabListComponentId';
 import { WorkflowLogicFunctionTabId } from '@/workflow/workflow-steps/workflow-actions/code-action/types/WorkflowLogicFunctionTabId';
 import { useStore } from 'jotai';
 import { useCallback } from 'react';
-import { CommandMenuPages } from 'twenty-shared/types';
+import { SidePanelPages } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
-export const useCommandMenuCloseAnimationCompleteCleanup = () => {
+export const useSidePanelCloseAnimationCompleteCleanup = () => {
   const store = useStore();
   const { resetSelectedItem } = useSelectableList(
-    COMMAND_MENU_LIST_SELECTABLE_LIST_ID,
+    SIDE_PANEL_SELECTABLE_LIST_ID,
   );
 
   const { resetContextStoreStates } = useResetContextStoreStates();
 
   const { closeDropdown } = useCloseDropdown();
 
-  const commandMenuCloseAnimationCompleteCleanup = useCallback(
+  const resetNavigationMenuItemState = () => {
+    store.set(selectedNavigationMenuItemIdInEditModeState.atom, null);
+    store.set(pendingInsertionNavigationMenuItemState.atom, null);
+    store.set(addToNavPayloadRegistryState.atom, new Map());
+  };
+
+  const sidePanelCloseAnimationCompleteCleanup = useCallback(
     (options?: { emitSidePanelCloseEvent?: boolean }) => {
-      closeDropdown(COMMAND_MENU_CONTEXT_CHIP_GROUPS_DROPDOWN_ID);
+      closeDropdown(SIDE_PANEL_CONTEXT_CHIP_GROUPS_DROPDOWN_ID);
 
       // Snapshot values before any mutations (Jotai store.get is live and
       // reflects the latest state, so we capture before mutating).
-      const currentPage = store.get(commandMenuPageState.atom);
+      const currentPage = store.get(sidePanelPageState.atom);
       const targetedRecordsRule = store.get(
         contextStoreTargetedRecordsRuleComponentState.atomFamily({
-          instanceId: COMMAND_MENU_COMPONENT_INSTANCE_ID,
+          instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
         }),
       );
       const morphItemsByPage = store.get(
-        commandMenuNavigationMorphItemsByPageState.atom,
+        sidePanelNavigationMorphItemsByPageState.atom,
       );
 
-      resetContextStoreStates(COMMAND_MENU_COMPONENT_INSTANCE_ID);
-      resetContextStoreStates(COMMAND_MENU_PREVIOUS_COMPONENT_INSTANCE_ID);
+      resetContextStoreStates(SIDE_PANEL_COMPONENT_INSTANCE_ID);
+      resetContextStoreStates(SIDE_PANEL_PREVIOUS_COMPONENT_INSTANCE_ID);
 
       const isPageLayoutEditingPage =
-        currentPage === CommandMenuPages.PageLayoutWidgetTypeSelect ||
-        currentPage === CommandMenuPages.PageLayoutGraphTypeSelect ||
-        currentPage === CommandMenuPages.PageLayoutIframeSettings ||
-        currentPage === CommandMenuPages.PageLayoutTabSettings;
+        currentPage === SidePanelPages.PageLayoutWidgetTypeSelect ||
+        currentPage === SidePanelPages.PageLayoutGraphTypeSelect ||
+        currentPage === SidePanelPages.PageLayoutIframeSettings ||
+        currentPage === SidePanelPages.PageLayoutTabSettings;
 
       if (isPageLayoutEditingPage) {
         if (
@@ -96,23 +107,26 @@ export const useCommandMenuCloseAnimationCompleteCleanup = () => {
       }
 
       store.set(viewableRecordIdState.atom, null);
-      store.set(commandMenuPageState.atom, CommandMenuPages.Root);
-      store.set(commandMenuPageInfoState.atom, {
+      store.set(sidePanelPageState.atom, SidePanelPages.CommandMenuDisplay);
+      store.set(sidePanelPageInfoState.atom, {
         title: undefined,
         Icon: undefined,
         instanceId: '',
       });
-      store.set(isCommandMenuOpenedState.atom, false);
-      store.set(commandMenuSearchState.atom, '');
-      store.set(commandMenuNavigationMorphItemsByPageState.atom, new Map());
-      store.set(commandMenuNavigationStackState.atom, []);
+      store.set(isSidePanelOpenedState.atom, false);
+      store.set(sidePanelSearchState.atom, '');
+      store.set(sidePanelSearchObjectFilterState.atom, null);
+      store.set(sidePanelShowHiddenObjectsState.atom, false);
+      store.set(sidePanelNavigationMorphItemsByPageState.atom, new Map());
+      store.set(sidePanelNavigationStackState.atom, []);
+      resetNavigationMenuItemState();
       resetSelectedItem();
-      store.set(hasUserSelectedCommandState.atom, false);
+      store.set(hasUserSelectedSidePanelListItemState.atom, false);
 
       if (options?.emitSidePanelCloseEvent !== false) {
         emitSidePanelCloseEvent();
       }
-      store.set(isCommandMenuClosingState.atom, false);
+      store.set(isSidePanelClosingState.atom, false);
       store.set(
         activeTabIdComponentState.atomFamily({
           instanceId: WORKFLOW_LOGIC_FUNCTION_TAB_LIST_COMPONENT_ID,
@@ -132,10 +146,16 @@ export const useCommandMenuCloseAnimationCompleteCleanup = () => {
         );
       }
     },
-    [closeDropdown, resetContextStoreStates, resetSelectedItem, store],
+    [
+      closeDropdown,
+      resetContextStoreStates,
+      resetNavigationMenuItemState,
+      resetSelectedItem,
+      store,
+    ],
   );
 
   return {
-    commandMenuCloseAnimationCompleteCleanup,
+    sidePanelCloseAnimationCompleteCleanup,
   };
 };
