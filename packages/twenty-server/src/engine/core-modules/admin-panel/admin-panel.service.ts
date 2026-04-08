@@ -7,6 +7,7 @@ import { FeatureFlagKey, FileFolder } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { Repository } from 'typeorm';
 import * as z from 'zod';
+import { FeatureFlagKey } from 'twenty-shared/types';
 
 import { type ConfigVariableDTO } from 'src/engine/core-modules/admin-panel/dtos/config-variable.dto';
 import { type ConfigVariablesGroupDataDTO } from 'src/engine/core-modules/admin-panel/dtos/config-variables-group.dto';

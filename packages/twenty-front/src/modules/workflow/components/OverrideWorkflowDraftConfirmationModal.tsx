@@ -1,3 +1,4 @@
+import { CoreObjectNameSingular, AppPath } from 'twenty-shared/types';
 import {
   ConfirmationModal,
   StyledCenteredButton,
@@ -6,7 +7,6 @@ import { useModal } from '@/ui/layout/modal/hooks/useModal';
 import { OVERRIDE_WORKFLOW_DRAFT_CONFIRMATION_MODAL_ID } from '@/workflow/constants/OverrideWorkflowDraftConfirmationModalId';
 import { useCreateDraftFromWorkflowVersion } from '@/workflow/hooks/useCreateDraftFromWorkflowVersion';
 import { useLingui } from '@lingui/react/macro';
-import { AppPath, CoreObjectNameSingular } from 'twenty-shared/types';
 import { getAppPath } from 'twenty-shared/utils';
 import { useNavigateApp } from '~/hooks/useNavigateApp';
 
@@ -58,7 +58,6 @@ export const OverrideWorkflowDraftConfirmationModal = ({
             variant="secondary"
             title={t`Go to Draft`}
             fullWidth
-            justify="center"
           />
         }
       />
