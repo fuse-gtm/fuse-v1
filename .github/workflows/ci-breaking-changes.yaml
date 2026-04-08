@@ -152,7 +152,6 @@ jobs:
           set_env_var "CLICKHOUSE_PASSWORD" "clickhousePassword"
 
           npx nx run twenty-server:database:init:prod
-          npx nx run twenty-server:database:migrate:prod
 
       - name: Seed current branch database with test data
         run: |
@@ -305,7 +304,6 @@ jobs:
           set_env_var "CLICKHOUSE_PASSWORD" "clickhousePassword"
 
           npx nx run twenty-server:database:init:prod
-          npx nx run twenty-server:database:migrate:prod
 
       - name: Seed main branch database with test data
         run: |
