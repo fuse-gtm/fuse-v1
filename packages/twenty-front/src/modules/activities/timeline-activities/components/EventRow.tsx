@@ -63,6 +63,11 @@ const StyledVerticalLine = styled.div`
 `;
 
 const StyledSummary = styled.summary`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  gap: ${themeCssVariables.spacing[1]};
   width: 100%;
 `;
 

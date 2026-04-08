@@ -2,23 +2,16 @@ import { styled } from '@linaria/react';
 import { Card } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const StyledListContainer = styled.div`
-  max-width: 100%;
-  width: 100%;
-
-  > * {
-    & > :not(:last-child) {
-      border-bottom: 1px solid ${themeCssVariables.border.color.light};
-    }
-    overflow: auto;
-    width: calc(100% - 2px);
+const StyledList = styled(Card)`
+  & > :not(:last-child) {
+    border-bottom: 1px solid ${themeCssVariables.border.color.light};
   }
+
+  width: calc(100% - 2px);
+
+  overflow: auto;
 `;
 
 export const ActivityList = ({ children }: React.PropsWithChildren) => {
-  return (
-    <StyledListContainer>
-      <Card>{children}</Card>
-    </StyledListContainer>
-  );
+  return <StyledList>{children}</StyledList>;
 };

@@ -9,20 +9,17 @@ import { Logo } from '@/auth/components/Logo';
 import { SubTitle } from '@/auth/components/SubTitle';
 import { Title } from '@/auth/components/Title';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
-import { useFetchAndLoadIndexViews } from '@/metadata-store/hooks/useFetchAndLoadIndexViews';
-import { useMetadataStore } from '@/metadata-store/hooks/useMetadataStore';
 import { useRefreshObjectMetadataItems } from '@/object-metadata/hooks/useRefreshObjectMetadataItems';
-import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboardingStatus';
 import { WorkspaceLogoUploader } from '@/settings/workspace/components/WorkspaceLogoUploader';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
-import { ModalContent } from 'twenty-ui/layout';
+import { Modal } from '@/ui/layout/modal/components/Modal';
 import { useLoadCurrentUser } from '@/users/hooks/useLoadCurrentUser';
 import { ApolloError } from '@apollo/client';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
-import { useStore } from 'jotai';
+import { motion } from 'framer-motion';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { isDefined } from 'twenty-shared/utils';
 import { H2Title } from 'twenty-ui/display';
@@ -48,9 +45,9 @@ const StyledLoaderContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-bottom: ${themeCssVariables.spacing[8]};
   margin-top: ${themeCssVariables.spacing[8]};
   width: 100%;
+  margin-bottom: ${themeCssVariables.spacing[8]};
 `;
 
 enum PendingCreationLoaderStep {
@@ -60,11 +57,11 @@ enum PendingCreationLoaderStep {
   Step3 = 'step-3',
 }
 
-const StyledPendingCreationLoader = styled.div`
-  align-items: center;
+const StyledPendingCreationLoader = styled(motion.div)`
+  width: 100%;
   display: flex;
   justify-content: center;
-  width: 100%;
+  align-items: center;
 `;
 
 export const CreateWorkspace = () => {
@@ -72,9 +69,6 @@ export const CreateWorkspace = () => {
   const { enqueueErrorSnackBar } = useSnackBar();
   const setNextOnboardingStatus = useSetNextOnboardingStatus();
   const { refreshObjectMetadataItems } = useRefreshObjectMetadataItems();
-  const { updateDraft, applyChanges } = useMetadataStore();
-  const { fetchAndLoadIndexViews } = useFetchAndLoadIndexViews();
-  const store = useStore();
 
   const { loadCurrentUser } = useLoadCurrentUser();
   const [activateWorkspace] = useActivateWorkspaceMutation();
@@ -124,18 +118,12 @@ export const CreateWorkspace = () => {
             },
           },
         });
+
         if (isDefined(result.errors)) {
           throw result.errors ?? new Error(t`Unknown error`);
         }
 
         await refreshObjectMetadataItems();
-
-        const loadedObjects = store.get(objectMetadataItemsState.atom);
-        updateDraft('objectMetadataItems', loadedObjects);
-        applyChanges();
-
-        await fetchAndLoadIndexViews();
-
         await loadCurrentUser();
         setNextOnboardingStatus();
       } catch (error: any) {
@@ -151,10 +139,6 @@ export const CreateWorkspace = () => {
       enqueueErrorSnackBar,
       loadCurrentUser,
       refreshObjectMetadataItems,
-      updateDraft,
-      applyChanges,
-      store,
-      fetchAndLoadIndexViews,
       setNextOnboardingStatus,
       t,
     ],
@@ -168,7 +152,7 @@ export const CreateWorkspace = () => {
   };
 
   return (
-    <ModalContent isVerticallyCentered isHorizontallyCentered>
+    <Modal.Content isVerticalCentered isHorizontalCentered>
       {pendingCreationLoaderStep !== PendingCreationLoaderStep.None && (
         <>
           <Logo
@@ -257,6 +241,6 @@ export const CreateWorkspace = () => {
           </StyledButtonContainer>
         </>
       )}
-    </ModalContent>
+    </Modal.Content>
   );
 };

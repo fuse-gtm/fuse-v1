@@ -12,7 +12,7 @@ import {
 } from '@/ai/components/LazyMarkdownRendererStyledComponents';
 import { lazy, Suspense, useContext } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { getSafeUrl, isDefined } from 'twenty-shared/utils';
+import { isDefined } from 'twenty-shared/utils';
 import { ThemeContext } from 'twenty-ui/theme';
 
 const TextWithRecordLinks = ({ text }: { text: string }) => {
@@ -99,13 +99,13 @@ const MarkdownRenderer = lazy(async () => {
           li: ({ children }) => (
             <li>{processChildrenForRecordLinks(children)}</li>
           ),
-          a: ({ children, href, title, node: _node }) => (
+          a: ({ children, href, title, target, rel, node: _node }) => (
             <a
               className="markdown-link"
-              href={getSafeUrl(href)}
+              href={href}
               title={title}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={target}
+              rel={rel}
             >
               {processChildrenForRecordLinks(children)}
             </a>

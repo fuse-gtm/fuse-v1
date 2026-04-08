@@ -15,7 +15,6 @@ const StyledTitle = styled.div<Pick<TitleProps, 'noMarginTop'>>`
   margin-bottom: ${themeCssVariables.spacing[4]};
   margin-top: ${({ noMarginTop }) =>
     !noMarginTop ? themeCssVariables.spacing[4] : '0'};
-  text-align: center;
 `;
 
 export const Title = ({

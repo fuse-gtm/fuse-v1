@@ -16,6 +16,7 @@ type CalendarDayCardContentProps = {
 
 const StyledCardContent = styled(CardContent)`
   align-items: flex-start;
+  border-color: ${themeCssVariables.border.color.light};
   display: flex;
   flex-direction: row;
   gap: ${themeCssVariables.spacing[3]};
