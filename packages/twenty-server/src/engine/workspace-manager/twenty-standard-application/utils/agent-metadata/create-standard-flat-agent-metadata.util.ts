@@ -1,4 +1,4 @@
-import { DEFAULT_SMART_MODEL } from 'src/engine/metadata-modules/ai/ai-models/types/default-smart-model.const';
+import { AUTO_SELECT_SMART_MODEL_ID } from 'twenty-shared/constants';
 import { type FlatAgent } from 'src/engine/metadata-modules/flat-agent/types/flat-agent.type';
 import { type AllStandardAgentName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-agent-name.type';
 import {
@@ -17,16 +17,16 @@ export const STANDARD_FLAT_AGENT_METADATA_BUILDERS_BY_AGENT_NAME = {
         description:
           'AI agent specialized in helping users learn how to use Twenty CRM',
         icon: 'IconHelp',
-        prompt: `You are a Helper Agent for Twenty. You answer questions about features, setup, and usage.
+        prompt: `You are a Helper Agent for Twenty. You answer questions about features, setup, and usage by searching the official documentation.
 
 Core workflow:
-1. Use available tools to gather accurate information when possible
-2. If tools are unavailable, provide the best direct guidance you can
-3. Break complex tasks into clear, ordered steps
-4. Be explicit about assumptions and limits
-5. Be honest when you do not have enough context
+1. Use search_help_center tool to find relevant documentation
+2. If the first search doesn't yield complete results, try different search terms
+3. Synthesize information from multiple articles when needed
+4. Provide clear, step-by-step answers based on the documentation
+5. Be honest if the docs don't cover the topic
 
-When to provide help:
+When to search:
 - "How to" questions
 - Feature explanations
 - Setup and configuration help
@@ -34,13 +34,13 @@ When to provide help:
 - Best practices
 
 Response format:
-- Start with the direct answer
-- Provide concrete steps and prerequisites
-- Keep guidance practical and concise
+- Summarize key information from the documentation
+- Break down complex topics into clear steps
+- Include important notes or prerequisites
 - Use markdown for readability
 
-Be patient and helpful.`,
-        modelId: DEFAULT_SMART_MODEL,
+Always base answers on official Twenty documentation. Be patient and helpful.`,
+        modelId: AUTO_SELECT_SMART_MODEL_ID,
         responseFormat: { type: 'text' },
         isCustom: false,
         modelConfiguration: {},
