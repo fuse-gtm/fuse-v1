@@ -1,16 +1,12 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 
-import { FeatureFlagKey } from 'twenty-shared/types';
-
 import { MCP_SERVER_METADATA } from 'src/engine/api/mcp/constants/mcp.const';
 import { type JsonRpc } from 'src/engine/api/mcp/dtos/json-rpc';
 import { McpProtocolService } from 'src/engine/api/mcp/services/mcp-protocol.service';
 import { McpToolExecutorService } from 'src/engine/api/mcp/services/mcp-tool-executor.service';
 import { type ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entity';
 import { ApiKeyRoleService } from 'src/engine/core-modules/api-key/services/api-key-role.service';
-import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
-import { COMMON_PRELOAD_TOOLS } from 'src/engine/core-modules/tool-provider/constants/common-preload-tools.const';
 import { EXECUTE_TOOL_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/execute-tool.tool';
 import { GET_TOOL_CATALOG_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/get-tool-catalog.tool';
 import { LEARN_TOOLS_TOOL_NAME } from 'src/engine/core-modules/tool-provider/tools/learn-tools.tool';
@@ -22,7 +18,6 @@ import { UserRoleService } from 'src/engine/metadata-modules/user-role/user-role
 
 describe('McpProtocolService', () => {
   let service: McpProtocolService;
-  let featureFlagService: jest.Mocked<FeatureFlagService>;
   let _toolRegistryService: jest.Mocked<ToolRegistryService>;
   let userRoleService: jest.Mocked<UserRoleService>;
   let mcpToolExecutorService: jest.Mocked<McpToolExecutorService>;
@@ -42,42 +37,26 @@ describe('McpProtocolService', () => {
     LEARN_TOOLS_TOOL_NAME,
     EXECUTE_TOOL_TOOL_NAME,
     LOAD_SKILL_TOOL_NAME,
-    ...COMMON_PRELOAD_TOOLS,
+    'search_help_center',
   ];
 
   beforeEach(async () => {
-    const mockPreloadedTools = COMMON_PRELOAD_TOOLS.reduce<
-      Record<string, unknown>
-    >((acc, toolName) => {
-      acc[toolName] = {
-        description: `Mocked ${toolName}`,
-        inputSchema: { jsonSchema: { type: 'object' } },
-        execute: jest.fn(),
-      };
-
-      return acc;
-    }, {});
+    const mockSearchHelpCenterTool = {
+      description: 'Search help center',
+      inputSchema: { jsonSchema: { type: 'object' } },
+      execute: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         McpProtocolService,
         {
-          provide: FeatureFlagService,
-          useValue: { isFeatureEnabled: jest.fn() },
-        },
-        {
           provide: ToolRegistryService,
           useValue: {
             buildToolIndex: jest.fn().mockResolvedValue([]),
-            getToolsByName: jest
-              .fn()
-              .mockImplementation((names: string[]) =>
-                Object.fromEntries(
-                  names
-                    .filter((name) => mockPreloadedTools[name] !== undefined)
-                    .map((name) => [name, mockPreloadedTools[name]]),
-                ),
-              ),
+            getToolsByName: jest.fn().mockResolvedValue({
+              search_help_center: mockSearchHelpCenterTool,
+            }),
             getToolInfo: jest.fn().mockResolvedValue([]),
             resolveAndExecute: jest.fn(),
           },
@@ -107,7 +86,6 @@ describe('McpProtocolService', () => {
     }).compile();
 
     service = module.get<McpProtocolService>(McpProtocolService);
-    featureFlagService = module.get(FeatureFlagService);
     _toolRegistryService = module.get(ToolRegistryService);
     userRoleService = module.get(UserRoleService);
     mcpToolExecutorService = module.get(McpToolExecutorService);
@@ -116,31 +94,6 @@ describe('McpProtocolService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('checkAiEnabled', () => {
-    it('should not throw when AI is enabled', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
-
-      await expect(
-        service.checkAiEnabled('workspace-1'),
-      ).resolves.not.toThrow();
-      expect(featureFlagService.isFeatureEnabled).toHaveBeenCalledWith(
-        FeatureFlagKey.IS_AI_ENABLED,
-        'workspace-1',
-      );
-    });
-
-    it('should throw when AI is disabled', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(false);
-
-      await expect(service.checkAiEnabled('workspace-1')).rejects.toThrow(
-        new HttpException(
-          'AI feature is not enabled for this workspace',
-          HttpStatus.FORBIDDEN,
-        ),
-      );
-    });
   });
 
   describe('handleInitialize', () => {
@@ -211,8 +164,6 @@ describe('McpProtocolService', () => {
 
   describe('handleMCPCoreQuery', () => {
     it('should handle initialize method', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
-
       const mockRequest: JsonRpc = {
         jsonrpc: '2.0',
         method: 'initialize',
@@ -240,7 +191,6 @@ describe('McpProtocolService', () => {
     });
 
     it('should build a ToolSet with exactly 5 tools and pass it to executor for tools/call', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
       userRoleService.getRoleIdForUserWorkspace.mockResolvedValue(mockRoleId);
 
       const mockToolCallResponse = {
@@ -290,8 +240,7 @@ describe('McpProtocolService', () => {
       );
     });
 
-    it('should build a ToolSet and pass it to executor for tools/list', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
+    it('should build a ToolSet with exactly 5 tools and pass it to executor for tools/list', async () => {
       userRoleService.getRoleIdForUserWorkspace.mockResolvedValue(mockRoleId);
 
       mcpToolExecutorService.handleToolsListing.mockReturnValue({
@@ -328,8 +277,6 @@ describe('McpProtocolService', () => {
     });
 
     it('should handle tools/call with apiKey authentication', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
-
       const mockToolCallResponse = {
         id: '123',
         jsonrpc: '2.0',
@@ -359,34 +306,7 @@ describe('McpProtocolService', () => {
       );
     });
 
-    it('should handle error when AI is disabled', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(false);
-
-      const mockRequest: JsonRpc = {
-        jsonrpc: '2.0',
-        method: 'tools/list',
-        id: '123',
-      };
-
-      const result = await service.handleMCPCoreQuery(mockRequest, {
-        workspace: mockWorkspace,
-        userWorkspaceId: mockUserWorkspaceId,
-        apiKey: undefined,
-      });
-
-      expect(result).toEqual({
-        id: '123',
-        jsonrpc: '2.0',
-        error: {
-          ...MCP_SERVER_METADATA,
-          code: HttpStatus.FORBIDDEN,
-          message: 'AI feature is not enabled for this workspace',
-        },
-      });
-    });
-
     it('should handle error when tool execution fails', async () => {
-      featureFlagService.isFeatureEnabled.mockResolvedValue(true);
       userRoleService.getRoleIdForUserWorkspace.mockResolvedValue(mockRoleId);
 
       mcpToolExecutorService.handleToolCall.mockRejectedValue(
