@@ -14,7 +14,6 @@ import {
   type WorkflowAction,
   WorkflowActionType,
 } from 'src/modules/workflow/workflow-executor/workflow-actions/types/workflow-action.type';
-import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
 import { WorkflowExecutorWorkspaceService } from 'src/modules/workflow/workflow-executor/workspace-services/workflow-executor.workspace-service';
 import { WorkflowRunWorkspaceService } from 'src/modules/workflow/workflow-runner/workflow-run/workflow-run.workspace-service';
 
@@ -57,10 +56,6 @@ describe('WorkflowExecutorWorkspaceService', () => {
     canBillMeteredProduct: jest.fn().mockReturnValue(true),
   };
 
-  const mockExceptionHandlerService = {
-    captureExceptions: jest.fn(),
-  };
-
   const mockMessageQueueService = {
     add: jest.fn(),
   };
@@ -88,10 +83,6 @@ describe('WorkflowExecutorWorkspaceService', () => {
         {
           provide: BillingService,
           useValue: mockBillingService,
-        },
-        {
-          provide: ExceptionHandlerService,
-          useValue: mockExceptionHandlerService,
         },
         {
           provide: `MESSAGE_QUEUE_${MessageQueue.workflowQueue}`,
@@ -511,30 +502,6 @@ describe('WorkflowExecutorWorkspaceService', () => {
         executedStep: step,
         executedStepOutput: {
           shouldFailSafely: true,
-        },
-      });
-
-      expect(result).toEqual({
-        nextStepIdsToExecute: ['after-loop'],
-      });
-    });
-
-    it('should return nextStepIds for a skipped iterator instead of entering the loop', async () => {
-      const step = {
-        id: 'iterator-1',
-        type: WorkflowActionType.ITERATOR,
-        nextStepIds: ['after-loop'],
-        settings: {
-          input: {
-            initialLoopStepIds: ['loop-step-1'],
-          },
-        },
-      } as WorkflowAction;
-
-      const result = await service.getNextStepIdsToExecute({
-        executedStep: step,
-        executedStepOutput: {
-          shouldSkipStepExecution: true,
         },
       });
 

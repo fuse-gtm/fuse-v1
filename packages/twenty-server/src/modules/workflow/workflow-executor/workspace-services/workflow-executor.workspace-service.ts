@@ -15,17 +15,12 @@ import { BillingMeterEventName } from 'src/engine/core-modules/billing/enums/bil
 import { BillingProductKey } from 'src/engine/core-modules/billing/enums/billing-product-key.enum';
 import { BillingService } from 'src/engine/core-modules/billing/services/billing.service';
 import { type BillingUsageEvent } from 'src/engine/core-modules/billing/types/billing-usage-event.type';
-import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 import { MessageQueueService } from 'src/engine/core-modules/message-queue/services/message-queue.service';
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 import { WorkflowRunStatus } from 'src/modules/workflow/common/standard-objects/workflow-run.workspace-entity';
 import { workflowHasRunningSteps } from 'src/modules/workflow/common/utils/workflow-has-running-steps.util';
-import {
-  WorkflowStepExecutorException,
-  WorkflowStepExecutorExceptionCode,
-} from 'src/modules/workflow/workflow-executor/exceptions/workflow-step-executor.exception';
 import { WorkflowActionFactory } from 'src/modules/workflow/workflow-executor/factories/workflow-action.factory';
 import { type WorkflowActionOutput } from 'src/modules/workflow/workflow-executor/types/workflow-action-output.type';
 import {
@@ -56,7 +51,6 @@ export class WorkflowExecutorWorkspaceService {
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
     private readonly workflowRunWorkspaceService: WorkflowRunWorkspaceService,
     private readonly billingService: BillingService,
-    private readonly exceptionHandlerService: ExceptionHandlerService,
     @InjectMessageQueue(MessageQueue.workflowQueue)
     private readonly messageQueueService: MessageQueueService,
   ) {}
@@ -247,8 +241,7 @@ export class WorkflowExecutorWorkspaceService {
 
       if (
         !iteratorStepResult?.hasProcessedAllItems &&
-        !executedStepOutput.shouldFailSafely &&
-        !executedStepOutput.shouldSkipStepExecution
+        !executedStepOutput.shouldFailSafely
       ) {
         const nextStepIdsToExecute = isString(
           executedStep.settings.input.initialLoopStepIds,
@@ -491,25 +484,13 @@ export class WorkflowExecutorWorkspaceService {
         },
       });
     } catch (error) {
-      const isUserError =
-        error instanceof WorkflowStepExecutorException &&
-        (error.code === WorkflowStepExecutorExceptionCode.INVALID_STEP_TYPE ||
-          error.code === WorkflowStepExecutorExceptionCode.INVALID_STEP_INPUT ||
-          error.code === WorkflowStepExecutorExceptionCode.STEP_NOT_FOUND);
-
-      if (!isUserError) {
-        this.exceptionHandlerService.captureExceptions([error], {
-          workspace: { id: workspaceId },
-        });
-      }
-
       return {
         error: error.message ?? 'Execution result error, no data or error',
       };
     }
   }
 
-  async skipAndFailSafelyStepsThenContinue({
+  private async skipAndFailSafelyStepsThenContinue({
     stepIdsToSkip,
     stepIdsToFailSafely,
     steps,
@@ -524,41 +505,39 @@ export class WorkflowExecutorWorkspaceService {
     workspaceId: string;
     executedStepsCount: number;
   }) {
-    const stepInfos: Record<string, WorkflowRunStepInfo> = {};
+    const stepsToSkip = stepIdsToSkip.map((stepId) => ({
+      stepId,
+      status: StepStatus.SKIPPED,
+    }));
+    const stepsToFailSafely = stepIdsToFailSafely.map((stepId) => ({
+      stepId,
+      status: StepStatus.FAILED_SAFELY,
+    }));
+    const stepsToProcess = [...stepsToSkip, ...stepsToFailSafely];
 
-    for (const stepId of stepIdsToSkip) {
-      stepInfos[stepId] = { status: StepStatus.SKIPPED };
-    }
+    await Promise.all(
+      stepsToProcess.map(async ({ stepId, status }) => {
+        await this.workflowRunWorkspaceService.updateWorkflowRunStepInfo({
+          stepId,
+          stepInfo: { status },
+          workflowRunId,
+          workspaceId,
+        });
 
-    for (const stepId of stepIdsToFailSafely) {
-      stepInfos[stepId] = { status: StepStatus.FAILED_SAFELY };
-    }
+        const step = steps.find((step) => step.id === stepId);
+        const stepNextStepIds = step?.nextStepIds ?? [];
 
-    await this.workflowRunWorkspaceService.updateWorkflowRunStepInfos({
-      stepInfos,
-      workflowRunId,
-      workspaceId,
-    });
-
-    const nextStepIds = new Set<string>();
-
-    for (const stepId of [...stepIdsToSkip, ...stepIdsToFailSafely]) {
-      const step = steps.find((step) => step.id === stepId);
-
-      for (const nextStepId of step?.nextStepIds ?? []) {
-        nextStepIds.add(nextStepId);
-      }
-    }
-
-    if (nextStepIds.size > 0) {
-      await this.executeFromSteps({
-        stepIds: Array.from(nextStepIds),
-        workflowRunId,
-        workspaceId,
-        shouldComputeWorkflowRunStatus: false,
-        executedStepsCount,
-      });
-    }
+        if (stepNextStepIds.length > 0) {
+          await this.executeFromSteps({
+            stepIds: stepNextStepIds,
+            workflowRunId,
+            workspaceId,
+            shouldComputeWorkflowRunStatus: false,
+            executedStepsCount,
+          });
+        }
+      }),
+    );
   }
 
   private async continueExecutionFromStepInAnotherJob({
