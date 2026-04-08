@@ -36,6 +36,7 @@ const createCommand = (commands: MockCronCommand[]) =>
     commands[21] as never,
     commands[22] as never,
     commands[23] as never,
+    commands[24] as never,
   );
 
 describe('CronRegisterAllCommand', () => {
@@ -55,7 +56,7 @@ describe('CronRegisterAllCommand', () => {
   });
 
   it('should register every cron command when all commands resolve', async () => {
-    const commands = Array.from({ length: 24 }, () => createMockCronCommand());
+    const commands = Array.from({ length: 25 }, () => createMockCronCommand());
     const command = createCommand(commands);
 
     await expect(command.run()).resolves.toBeUndefined();
@@ -75,7 +76,7 @@ describe('CronRegisterAllCommand', () => {
     const commands = [
       hangingCommand,
       followingCommand,
-      ...Array.from({ length: 22 }, () => createMockCronCommand()),
+      ...Array.from({ length: 23 }, () => createMockCronCommand()),
     ];
 
     const command = createCommand(commands);

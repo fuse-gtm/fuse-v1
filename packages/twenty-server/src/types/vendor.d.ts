@@ -47,7 +47,7 @@ declare module '@clickhouse/client' {
       query: string;
       format?: string;
       query_params?: Record<string, any>;
-    }): Promise<{ json<T>(): Promise<T[]> }>;
+    }): Promise<{ json<T>(): Promise<T[] & { data: T[] }> }>;
     insert(params: {
       table: string;
       values: any[];

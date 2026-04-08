@@ -25,6 +25,7 @@ import { MessagingRelaunchFailedMessageChannelsCronCommand } from 'src/modules/m
 import { WorkflowCleanWorkflowRunsCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-clean-workflow-runs.cron.command';
 import { WorkflowHandleStaledRunsCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-handle-staled-runs.cron.command';
 import { WorkflowRunEnqueueCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-run-enqueue.cron.command';
+import { StaleHandoffReminderCronCommand } from 'src/modules/partner-os/crons/commands/stale-handoff-reminder.cron.command';
 import { WorkflowCronTriggerCronCommand } from 'src/modules/workflow/workflow-trigger/automated-trigger/crons/commands/workflow-cron-trigger.cron.command';
 
 @Command({
@@ -63,6 +64,7 @@ export class CronRegisterAllCommand extends CommandRunner {
     private readonly marketplaceCatalogSyncCronCommand: MarketplaceCatalogSyncCronCommand,
     private readonly applicationVersionCheckCronCommand: ApplicationVersionCheckCronCommand,
     private readonly staleRegistrationCleanupCronCommand: StaleRegistrationCleanupCronCommand,
+    private readonly staleHandoffReminderCronCommand: StaleHandoffReminderCronCommand,
   ) {
     super();
   }
@@ -187,6 +189,10 @@ export class CronRegisterAllCommand extends CommandRunner {
       {
         name: 'StaleRegistrationCleanup',
         command: this.staleRegistrationCleanupCronCommand,
+      },
+      {
+        name: 'StaleHandoffReminder',
+        command: this.staleHandoffReminderCronCommand,
       },
     ];
 

@@ -8,6 +8,7 @@ import { ViewFilterModule } from 'src/engine/metadata-modules/view-filter/view-f
 import { ViewSortModule } from 'src/engine/metadata-modules/view-sort/view-sort.module';
 import { ViewModule } from 'src/engine/metadata-modules/view/view.module';
 import { ExaWebhookController } from 'src/modules/partner-os/controllers/exa-webhook.controller';
+import { StaleHandoffReminderCronJob } from 'src/modules/partner-os/crons/jobs/stale-handoff-reminder.cron.job';
 import { PartnerCustomerMapHandoffListener } from 'src/modules/partner-os/listeners/partner-customer-map-handoff.listener';
 import { ExaClientService } from 'src/modules/partner-os/services/exa-client.service';
 import { PartnerDiscoveryAdapterService } from 'src/modules/partner-os/services/partner-discovery-adapter.service';
@@ -33,6 +34,7 @@ import { PartnerScoringService } from 'src/modules/partner-os/services/partner-s
     PartnerDiscoveryOrchestratorService,
     ExaClientService,
     PartnerCustomerMapHandoffListener,
+    StaleHandoffReminderCronJob,
   ],
   exports: [
     PartnerOsMetadataBootstrapService,

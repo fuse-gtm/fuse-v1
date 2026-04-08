@@ -191,12 +191,29 @@ export const createBootstrapMocks = () => {
       .mockResolvedValue(buildFakeFlatMaps([]).flatObjectMetadataMaps),
   };
 
+  const mockViewFilterService = {
+    createOne: jest.fn().mockResolvedValue({ id: 'new-view-filter-id' }),
+  };
+
+  const mockViewSortService = {
+    createOne: jest.fn().mockResolvedValue({ id: 'new-view-sort-id' }),
+  };
+
+  const mockGlobalWorkspaceOrmManager = {
+    getGlobalWorkspaceDataSource: jest.fn().mockResolvedValue({
+      query: jest.fn().mockResolvedValue([]),
+    }),
+  };
+
   const service = new PartnerOsMetadataBootstrapService(
     mockDataSourceService as any,
     mockObjectMetadataService as any,
     mockFieldMetadataService as any,
     mockViewService as any,
+    mockViewFilterService as any,
+    mockViewSortService as any,
     mockFlatEntityMapsCacheService as any,
+    mockGlobalWorkspaceOrmManager as any,
   );
 
   return {
@@ -205,7 +222,10 @@ export const createBootstrapMocks = () => {
     mockObjectMetadataService,
     mockFieldMetadataService,
     mockViewService,
+    mockViewFilterService,
+    mockViewSortService,
     mockFlatEntityMapsCacheService,
+    mockGlobalWorkspaceOrmManager,
   };
 };
 

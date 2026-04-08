@@ -19,6 +19,7 @@ import { MarketplaceModule } from 'src/engine/core-modules/application/applicati
 import { StaleRegistrationCleanupModule } from 'src/engine/core-modules/application/application-oauth/stale-registration-cleanup/stale-registration-cleanup.module';
 import { ApplicationUpgradeModule } from 'src/engine/core-modules/application/application-upgrade/application-upgrade.module';
 import { EnterpriseKeyValidationCronCommand } from 'src/engine/core-modules/enterprise/cron/command/enterprise-key-validation.cron.command';
+import { StaleHandoffReminderCronCommand } from 'src/modules/partner-os/crons/commands/stale-handoff-reminder.cron.command';
 import { EnterpriseModule } from 'src/engine/core-modules/enterprise/enterprise.module';
 import { EventLogCleanupModule } from 'src/engine/core-modules/event-logs/cleanup/event-log-cleanup.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
@@ -96,6 +97,7 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     EnterpriseKeyValidationCronCommand,
     GenerateApiKeyCommand,
     WorkspaceBootstrapPartnerOsCommand,
+    StaleHandoffReminderCronCommand,
   ],
 })
 export class DatabaseCommandModule {}

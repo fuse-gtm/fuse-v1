@@ -9,6 +9,8 @@ import {
 import { isDefined } from 'twenty-shared/utils';
 
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
+import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
+import { getWorkspaceSchemaName } from 'src/engine/workspace-datasource/utils/get-workspace-schema-name.util';
 import { FieldMetadataService } from 'src/engine/metadata-modules/field-metadata/services/field-metadata.service';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
@@ -76,6 +78,7 @@ export class PartnerOsMetadataBootstrapService {
     private readonly viewFilterService: ViewFilterService,
     private readonly viewSortService: ViewSortService,
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
+    private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
   async bootstrap(workspaceId: string): Promise<void> {
@@ -145,9 +148,37 @@ export class PartnerOsMetadataBootstrapService {
       }
     }
 
+    await this.ensureUniqueConstraints(workspaceId);
+
     this.logger.log(
       `Partner OS metadata bootstrap completed for workspace ${workspaceId}`,
     );
+  }
+
+  private async ensureUniqueConstraints(workspaceId: string): Promise<void> {
+    const schemaName = getWorkspaceSchemaName(workspaceId);
+    const dataSource =
+      await this.globalWorkspaceOrmManager.getGlobalWorkspaceDataSource();
+
+    // Prevent duplicate active maps for the same partner + company + motion
+    try {
+      await dataSource.query(
+        `CREATE UNIQUE INDEX IF NOT EXISTS "uq_partner_customer_map_active"
+         ON "${schemaName}"."_partnerCustomerMap" (
+           "partnerProfileId", "customerCompanyId", "motionType"
+         )
+         WHERE "deletedAt" IS NULL
+           AND "mapStage" NOT IN ('CLOSED_WON', 'CLOSED_LOST')`,
+      );
+
+      this.logger.log(
+        'Ensured unique constraint on partnerCustomerMap (partner, company, motion)',
+      );
+    } catch (error) {
+      this.logger.warn(
+        `Failed to create unique index on partnerCustomerMap: ${(error as Error).message}`,
+      );
+    }
   }
 
   private async ensureScalarFields({
