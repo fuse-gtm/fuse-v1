@@ -123,6 +123,10 @@ export class AdminPanelService {
     )) {
       const { group, description } = metadata;
 
+      if (metadata.isHiddenInAdminPanel) {
+        continue;
+      }
+
       const envVar: ConfigVariableDTO = {
         name: varName,
         description,
@@ -144,6 +148,9 @@ export class AdminPanelService {
     const groups: ConfigVariablesGroupDataDTO[] = Array.from(
       groupedData.entries(),
     )
+      .filter(
+        ([name]) => !CONFIG_VARIABLES_GROUP_METADATA[name].isHiddenInAdminPanel,
+      )
       .sort((a, b) => {
         const positionA = CONFIG_VARIABLES_GROUP_METADATA[a[0]].position;
         const positionB = CONFIG_VARIABLES_GROUP_METADATA[b[0]].position;
