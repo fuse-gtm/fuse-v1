@@ -1,32 +1,31 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { useUpdateMetadataStoreDraft } from '@/metadata-store/hooks/useUpdateMetadataStoreDraft';
-import { splitCompositeObjectMetadataItems } from '@/metadata-store/utils/splitCompositeObjectMetadataItems';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
+import { useMetadataStore } from '@/metadata-store/hooks/useMetadataStore';
+import { splitObjectMetadataItemWithRelated } from '@/metadata-store/utils/splitObjectMetadataItemWithRelated';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
 
 export const JestObjectMetadataItemSetter = ({
   children,
   objectMetadataItems,
 }: {
   children: ReactNode;
-  objectMetadataItems?: EnrichedObjectMetadataItem[];
+  objectMetadataItems?: ObjectMetadataItem[];
 }) => {
-  const { replaceDraft, applyChanges } = useUpdateMetadataStoreDraft();
+  const { updateDraft, applyChanges } = useMetadataStore();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const items =
-      objectMetadataItems ?? getTestEnrichedObjectMetadataItemsMock();
+    const items = objectMetadataItems ?? generatedMockObjectMetadataItems;
     const { flatObjects, flatFields, flatIndexes } =
-      splitCompositeObjectMetadataItems(items);
+      splitObjectMetadataItemWithRelated(items);
 
-    replaceDraft('objectMetadataItems', flatObjects);
-    replaceDraft('fieldMetadataItems', flatFields);
-    replaceDraft('indexMetadataItems', flatIndexes);
+    updateDraft('objectMetadataItems', flatObjects);
+    updateDraft('fieldMetadataItems', flatFields);
+    updateDraft('indexMetadataItems', flatIndexes);
     applyChanges();
     setIsLoaded(true);
-  }, [objectMetadataItems, replaceDraft, applyChanges]);
+  }, [objectMetadataItems, updateDraft, applyChanges]);
 
   return isLoaded ? <>{children}</> : null;
 };
