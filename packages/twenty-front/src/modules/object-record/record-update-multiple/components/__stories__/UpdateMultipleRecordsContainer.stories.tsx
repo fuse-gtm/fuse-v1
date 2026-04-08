@@ -50,7 +50,7 @@ const mocks = [
 const mockLink = new MockLink(mocks);
 const mockApolloCoreClient = new ApolloClient({
   link: mockLink,
-  cache: new InMemoryCache({ addTypename: false }),
+  cache: new InMemoryCache(),
 });
 
 const SelectedRecordsSeedDecorator: Decorator = (Story) => {

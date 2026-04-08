@@ -3,18 +3,23 @@ import { useCallback } from 'react';
 import { useMetadataErrorHandler } from '@/metadata-error-handler/hooks/useMetadataErrorHandler';
 import { type MetadataRequestResult } from '@/object-metadata/types/MetadataRequestResult.type';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
+import { useTriggerViewGroupOptimisticEffect } from '@/views/optimistic-effects/hooks/useTriggerViewGroupOptimisticEffect';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
+import { isDefined } from 'twenty-shared/utils';
 import { useMutation } from '@apollo/client/react';
 import {
-  type UpdateManyViewGroupsMutationVariables,
-  UpdateManyViewGroupsDocument,
+  type UpdateCoreViewGroupMutationVariables,
+  UpdateCoreViewGroupDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewGroupAPIPersist = () => {
-  const [updateManyViewGroupsMutation] = useMutation(
-    UpdateManyViewGroupsDocument,
+  const { triggerViewGroupOptimisticEffect } =
+    useTriggerViewGroupOptimisticEffect();
+
+  const [updateCoreViewGroupMutation] = useMutation(
+    UpdateCoreViewGroupDocument,
   );
 
   const { handleMetadataError } = useMetadataErrorHandler();
@@ -22,30 +27,41 @@ export const usePerformViewGroupAPIPersist = () => {
 
   const performViewGroupAPIUpdate = useCallback(
     async (
-      updateViewGroupInputs: UpdateManyViewGroupsMutationVariables,
+      updateCoreViewGroupInputs: UpdateCoreViewGroupMutationVariables[],
     ): Promise<
-      MetadataRequestResult<Awaited<
-        ReturnType<typeof updateManyViewGroupsMutation>
-      > | null>
+      MetadataRequestResult<
+        Awaited<ReturnType<typeof updateCoreViewGroupMutation>>[]
+      >
     > => {
-      if (
-        !Array.isArray(updateViewGroupInputs.inputs) ||
-        updateViewGroupInputs.inputs.length === 0
-      ) {
+      if (updateCoreViewGroupInputs.length === 0) {
         return {
           status: 'successful',
-          response: null,
+          response: [],
         };
       }
 
       try {
-        const result = await updateManyViewGroupsMutation({
-          variables: updateViewGroupInputs,
-        });
+        const results = await Promise.all(
+          updateCoreViewGroupInputs.map((variables) =>
+            updateCoreViewGroupMutation({
+              variables,
+              update: (_cache, { data }) => {
+                const updatedViewGroup = data?.updateCoreViewGroup;
+                if (!isDefined(updatedViewGroup)) {
+                  return;
+                }
+
+                triggerViewGroupOptimisticEffect({
+                  updatedViewGroups: [updatedViewGroup],
+                });
+              },
+            }),
+          ),
+        );
 
         return {
           status: 'successful',
-          response: result,
+          response: results,
         };
       } catch (error) {
         if (CombinedGraphQLErrors.is(error)) {
@@ -63,7 +79,12 @@ export const usePerformViewGroupAPIPersist = () => {
         };
       }
     },
-    [updateManyViewGroupsMutation, handleMetadataError, enqueueErrorSnackBar],
+    [
+      triggerViewGroupOptimisticEffect,
+      updateCoreViewGroupMutation,
+      handleMetadataError,
+      enqueueErrorSnackBar,
+    ],
   );
 
   return {

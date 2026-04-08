@@ -88,22 +88,20 @@ export const SSEQuerySubscribeEffect = () => {
     } catch (error) {
       if (CombinedGraphQLErrors.is(error)) {
         const subCode = error.errors[0]?.extensions?.subCode;
-        const code = error.errors[0]?.extensions?.code;
 
-        const isRecoverable =
-          subCode === 'EVENT_STREAM_DOES_NOT_EXIST' ||
-          subCode === 'EVENT_STREAM_ALREADY_EXISTS' ||
-          subCode === 'NOT_AUTHORIZED' ||
-          code === 'UNAUTHENTICATED' ||
-          code === 'FORBIDDEN';
-
-        if (isRecoverable) {
-          store.set(activeQueryListenersState.atom, []);
-          store.set(shouldDestroyEventStreamState.atom, true);
-          return;
+        switch (subCode) {
+          case 'EVENT_STREAM_DOES_NOT_EXIST':
+          case 'EVENT_STREAM_ALREADY_EXISTS': {
+            store.set(activeQueryListenersState.atom, []);
+            store.set(shouldDestroyEventStreamState.atom, true);
+            return;
+          }
+          default: {
+            throw new Error(
+              `Unhandled error for event stream: ${error.message}`,
+            );
+          }
         }
-
-        throw new Error(`Unhandled error for event stream: ${error.message}`);
       }
     }
 

@@ -34,16 +34,13 @@ export const useSingleRecordPickerPerformSearch = ({
 
   const { objectMetadataItems } = useObjectMetadataItems();
 
-  const hasSelectedIds = selectedIds.length > 0;
-  const selectedIdsFilter = hasSelectedIds
-    ? { id: { in: selectedIds } }
-    : undefined;
+  const selectedIdsFilter = { id: { in: selectedIds } };
 
   const { loading: selectedRecordsLoading, searchRecords: selectedRecords } =
     useObjectRecordSearchRecords({
       objectNameSingulars,
       filter: selectedIdsFilter,
-      skip: !hasSelectedIds,
+      skip: !selectedIds.length,
       searchInput: '',
     });
 
@@ -53,7 +50,7 @@ export const useSingleRecordPickerPerformSearch = ({
   } = useObjectRecordSearchRecords({
     objectNameSingulars,
     filter: selectedIdsFilter,
-    skip: !hasSelectedIds,
+    skip: !selectedIds.length,
     searchInput: searchFilter,
   });
 
@@ -75,7 +72,6 @@ export const useSingleRecordPickerPerformSearch = ({
     [selectedRecords, filteredSelectedRecords, recordsToSelect],
   );
 
-  // TODO: Refactor this useEffect to avoid unnecessary re-renders (see PR #18584 review)
   useEffect(() => {
     allSearchRecords.forEach((searchRecord) => {
       store.set(
