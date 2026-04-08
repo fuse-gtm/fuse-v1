@@ -13,17 +13,10 @@ import { LightIconButton } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { FeatureFlagKey } from '~/generated-metadata/graphql';
 
-<<<<<<< HEAD
 import { FOLDER_ICON_DEFAULT } from '@/navigation-menu-item/constants/FolderIconDefault';
 import { NavigationMenuItemType } from '@/navigation-menu-item/constants/NavigationMenuItemType';
 import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/hooks/useOpenNavigationMenuItemInSidePanel';
 import { useSortedNavigationMenuItems } from '@/navigation-menu-item/hooks/useSortedNavigationMenuItems';
-=======
-import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
-import { FOLDER_ICON_DEFAULT } from '@/navigation-menu-item/constants/FolderIconDefault';
-import { NavigationMenuItemType } from '@/navigation-menu-item/constants/NavigationMenuItemType';
-import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/hooks/useOpenNavigationMenuItemInSidePanel';
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
 import {
   type NavigationMenuItemClickParams,
   useWorkspaceSectionItems,
@@ -46,10 +39,6 @@ import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomStat
 import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 import { useStore } from 'jotai';
 import { SidePanelPages } from 'twenty-shared/types';
-<<<<<<< HEAD
-=======
-import { isDefined } from 'twenty-shared/utils';
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
 
 const StyledRightIconsContainer = styled.div`
   align-items: center;
@@ -84,10 +73,7 @@ export const WorkspaceNavigationMenuItems = () => {
   const setOpenNavigationMenuItemFolderIds = useSetAtomState(
     openNavigationMenuItemFolderIdsState,
   );
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
   const { navigateSidePanel } = useNavigateSidePanel();
   const { openNavigationMenuItemInSidePanel } =
     useOpenNavigationMenuItemInSidePanel();
@@ -146,7 +132,6 @@ export const WorkspaceNavigationMenuItems = () => {
     params: NavigationMenuItemClickParams,
   ) => {
     const { item, objectMetadataItem } = params;
-<<<<<<< HEAD
     setSelectedNavigationMenuItemInEditMode(item.id);
 
     switch (item.itemType) {
@@ -161,34 +146,6 @@ export const WorkspaceNavigationMenuItems = () => {
         break;
       default:
         openViewOrRecordEditPanelAndNavigate(item, objectMetadataItem);
-=======
-    const id = item.id;
-    setSelectedNavigationMenuItemInEditMode(id);
-    if (item.itemType === NavigationMenuItemType.FOLDER) {
-      setOpenNavigationMenuItemFolderIds((currentOpenFolders) =>
-        currentOpenFolders.includes(id)
-          ? currentOpenFolders
-          : [...currentOpenFolders, id],
-      );
-      openNavigationMenuItemInSidePanel({
-        pageTitle: t`Edit folder`,
-        pageIcon: getIcon(item.icon ?? item.Icon ?? FOLDER_ICON_DEFAULT),
-      });
-    } else if (item.itemType === NavigationMenuItemType.LINK) {
-      openNavigationMenuItemInSidePanel({
-        pageTitle: t`Edit link`,
-        pageIcon: IconLink,
-      });
-    } else if (isDefined(objectMetadataItem)) {
-      const pageTitle =
-        item.itemType === NavigationMenuItemType.VIEW
-          ? item.labelIdentifier
-          : objectMetadataItem.labelSingular;
-      openNavigationMenuItemInSidePanel({
-        pageTitle,
-        pageIcon: getIcon(objectMetadataItem.icon),
-      });
->>>>>>> 5853891b02 (refactor!: rename Command Menu page/navigation layer to Side Panel (#18393))
     }
   };
 
