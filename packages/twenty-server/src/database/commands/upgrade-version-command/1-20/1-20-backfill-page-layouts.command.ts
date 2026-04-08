@@ -135,12 +135,11 @@ export class BackfillPageLayoutsCommand extends ActiveOrSuspendedWorkspacesMigra
         tabUniversalIdentifiers.has(widget.pageLayoutTabUniversalIdentifier),
       );
 
-    // TODO: upstream cherry-pick stub - workspaceCacheService not yet injected in fork
     const {
       flatViewMaps: existingFlatViewMaps,
       flatViewFieldMaps: existingFlatViewFieldMaps,
       flatViewFieldGroupMaps: existingFlatViewFieldGroupMaps,
-    } = await (this as any).workspaceCacheService.getOrRecompute(workspaceId, [
+    } = await this.workspaceCacheService.getOrRecompute(workspaceId, [
       'flatViewMaps',
       'flatViewFieldMaps',
       'flatViewFieldGroupMaps',
