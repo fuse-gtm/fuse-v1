@@ -12,7 +12,7 @@ import { useIsCurrentLocationOnAWorkspace } from '@/domain-manager/hooks/useIsCu
 import { useRedirect } from '@/domain-manager/hooks/useRedirect';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
-import { Modal } from '@/ui/layout/modal/components/Modal';
+import { ModalContent } from 'twenty-ui/layout';
 import { ApolloError } from '@apollo/client';
 import { styled } from '@linaria/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -212,7 +212,7 @@ export const PasswordReset = () => {
 
   return (
     isTokenValid && (
-      <Modal.Content isVerticalCentered isHorizontalCentered>
+      <ModalContent isVerticallyCentered isHorizontallyCentered>
         <StyledMainContainer>
           <AnimatedEaseIn>
             <Logo
@@ -297,7 +297,7 @@ export const PasswordReset = () => {
             )}
           </StyledContentContainer>
         </StyledMainContainer>
-      </Modal.Content>
+      </ModalContent>
     )
   );
 };
