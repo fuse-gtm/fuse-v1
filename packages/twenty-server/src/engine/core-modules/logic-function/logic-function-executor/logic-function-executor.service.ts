@@ -214,7 +214,7 @@ export class LogicFunctionExecutorService {
     flatApplication: FlatApplication;
   }) {
     if (this.twentyConfigService.get('LOGIC_FUNCTION_LOGS_ENABLED')) {
-      /* eslint-disable no-console */
+      /* oxlint-disable no-console */
       console.log(result.logs);
     }
 
