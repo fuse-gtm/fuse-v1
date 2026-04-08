@@ -30,38 +30,10 @@ export class EnterpriseKeyValidationCronJob {
     ENTERPRISE_KEY_VALIDATION_CRON_PATTERN,
   )
   async handle(): Promise<void> {
+    // Fuse: phone-home disabled — enterprise features are always enabled
     this.logger.log(
-      'Starting enterprise validity token refresh and seat report...',
+      'Enterprise key validation cron skipped (Fuse self-hosted)',
     );
-
-    const refreshSuccess =
-      await this.enterprisePlanService.refreshValidityToken();
-
-    if (refreshSuccess) {
-      this.logger.log('Enterprise validity token refreshed successfully');
-    } else {
-      this.logger.warn(
-        'Enterprise validity token refresh did not succeed. ' +
-          'Existing validity token will continue to work until expiration.',
-      );
-    }
-
-    try {
-      const seatCount = await this.getActiveUserWorkspaceCount();
-
-      const reportSuccess =
-        await this.enterprisePlanService.reportSeats(seatCount);
-
-      if (reportSuccess) {
-        this.logger.log(`Reported ${seatCount} seats to enterprise API`);
-      } else {
-        this.logger.warn('Seat report did not succeed');
-      }
-    } catch (error) {
-      this.logger.warn(
-        `Failed to get seat count or report: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
-    }
   }
 
   private async getActiveUserWorkspaceCount(): Promise<number> {

@@ -36,6 +36,32 @@ declare module 'twenty-sdk/front-component-renderer/build' {
   export function getFrontComponentBuildPlugins(...args: any[]): any[];
 }
 
+declare module '@clickhouse/client' {
+  export enum ClickHouseLogLevel {
+    OFF = 'OFF',
+  }
+  export interface ClickHouseClient {
+    ping(): Promise<boolean>;
+    close(): Promise<void>;
+    query(params: {
+      query: string;
+      format?: string;
+      query_params?: Record<string, any>;
+    }): Promise<{ json<T>(): Promise<T[]> }>;
+    insert(params: {
+      table: string;
+      values: any[];
+      format?: string;
+    }): Promise<void>;
+    exec(params: { query: string }): Promise<void>;
+    command(params: {
+      query: string;
+      query_params?: Record<string, any>;
+    }): Promise<void>;
+  }
+  export function createClient(options: Record<string, any>): ClickHouseClient;
+}
+
 declare module '@file-type/pdf' {
   import { type Detector } from 'file-type';
 

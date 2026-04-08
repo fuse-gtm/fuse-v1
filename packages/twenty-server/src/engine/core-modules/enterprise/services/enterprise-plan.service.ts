@@ -143,19 +143,13 @@ export class EnterprisePlanService implements OnModuleInit {
   }
 
   hasValidEnterpriseKey(): boolean {
-    if (this.hasValidSignedEnterpriseKey()) {
-      return true;
-    }
-
-    return this.checkLegacyKey();
+    // Fuse: enterprise features are always enabled for self-hosted
+    return true;
   }
 
   isValid(): boolean {
-    if (this.hasValidEnterpriseValidityToken()) {
-      return true;
-    }
-
-    return this.checkLegacyKey(); // temporary
+    // Fuse: enterprise features are always enabled for self-hosted
+    return true;
   }
 
   isValidEnterpriseKeyFormat(key: string): boolean {
@@ -229,106 +223,13 @@ export class EnterprisePlanService implements OnModuleInit {
   }
 
   async refreshValidityToken(): Promise<boolean> {
-    const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
-
-    if (!enterpriseKey) {
-      this.logger.warn('No ENTERPRISE_KEY configured, skipping refresh');
-
-      return false;
-    }
-
-    this.refreshKeyPayload();
-
-    if (!isDefined(this.cachedKeyPayload)) {
-      this.logger.warn(
-        'ENTERPRISE_KEY is not a valid signed JWT, skipping refresh',
-      );
-
-      return false;
-    }
-
-    const apiUrl = this.twentyConfigService.get('ENTERPRISE_API_URL');
-    const validateUrl = `${apiUrl}/validate`;
-
-    try {
-      const response = await fetch(validateUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enterpriseKey }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-
-        this.logger.warn(
-          `Enterprise refresh failed with status ${response.status}: ${errorData.error ?? 'Unknown error'}`,
-        );
-
-        return false;
-      }
-
-      const data = await response.json();
-
-      if (!data.validityToken) {
-        this.logger.warn('Enterprise refresh response missing validityToken');
-
-        return false;
-      }
-
-      await this.saveNewValidityTokenToDb(data.validityToken);
-      await this.loadValidityToken();
-
-      this.logger.log('Enterprise validity token refreshed successfully');
-
-      return true;
-    } catch (error) {
-      this.logger.warn(
-        `Enterprise refresh failed: ${error instanceof Error ? error.message : 'Network error'}. Current validity token will continue to work until expiration.`,
-      );
-
-      return false;
-    }
+    // Fuse: no outbound phone-home calls
+    return true;
   }
 
-  async reportSeats(seatCount: number): Promise<boolean> {
-    const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
-
-    if (!enterpriseKey) {
-      return false;
-    }
-
-    if (!isDefined(this.cachedKeyPayload)) {
-      return false;
-    }
-
-    const apiUrl = this.twentyConfigService.get('ENTERPRISE_API_URL');
-    const seatsUrl = `${apiUrl}/seats`;
-
-    try {
-      const response = await fetch(seatsUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enterpriseKey, seatCount }),
-      });
-
-      if (!response.ok) {
-        this.logger.warn(
-          `Seat reporting failed with status ${response.status}`,
-        );
-
-        return false;
-      }
-
-      this.logger.log(`Reported ${seatCount} seats to enterprise API`);
-
-      return true;
-    } catch (error) {
-      this.logger.warn(
-        `Seat reporting failed: ${error instanceof Error ? error.message : 'Network error'}`,
-      );
-
-      return false;
-    }
+  async reportSeats(_seatCount: number): Promise<boolean> {
+    // Fuse: no outbound phone-home calls
+    return true;
   }
 
   async getSubscriptionStatus(): Promise<{

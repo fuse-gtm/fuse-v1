@@ -11,7 +11,6 @@
     "worker:prod": "node dist/queue-worker/queue-worker",
     "database:init:prod": "node dist/database/scripts/setup-db.js && yarn database:migrate:prod --force",
     "database:migrate:prod": "node dist/command/command run-instance-commands",
-    "clickhouse:migrate:prod": "node dist/database/clickHouse/migrations/run-migrations.js",
     "typeorm": "../../node_modules/typeorm/.bin/typeorm"
   },
   "dependencies": {
@@ -31,7 +30,6 @@
     "@azure/msal-node": "^3.8.4",
     "@babel/preset-env": "7.26.9",
     "@blocknote/server-util": "^0.47.1",
-    "@clickhouse/client": "^1.18.1",
     "@dagrejs/dagre": "^1.1.2",
     "@e2b/code-interpreter": "^1.0.4",
     "@envelop/core": "4.0.3",
