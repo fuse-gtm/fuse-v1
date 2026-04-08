@@ -1,30 +1,23 @@
-import {
-  useApolloClient,
-  useLazyQuery,
-  useMutation,
-} from '@apollo/client/react';
-import { CombinedGraphQLErrors } from '@apollo/client/errors';
+import { ApolloError, useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 import { AppPath } from 'twenty-shared/types';
 
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
 import {
+  useCheckUserExistsLazyQuery,
+  useGetAuthTokensFromLoginTokenMutation,
+  useGetAuthTokensFromOtpMutation,
+  useGetLoginTokenFromCredentialsMutation,
+  useSignInMutation,
+  useSignUpInWorkspaceMutation,
+  useSignUpMutation,
+  useVerifyEmailAndGetLoginTokenMutation,
+  useVerifyEmailAndGetWorkspaceAgnosticTokenMutation,
   type AuthToken,
   type AuthTokenPair,
-  CheckUserExistsDocument,
-  GetAuthTokensFromLoginTokenDocument,
-  GetAuthTokensFromOtpDocument,
-  GetLoginTokenFromCredentialsDocument,
-  SignInDocument,
-  SignUpInWorkspaceDocument,
-  SignUpDocument,
-  VerifyEmailAndGetLoginTokenDocument,
-  VerifyEmailAndGetWorkspaceAgnosticTokenDocument,
 } from '~/generated-metadata/graphql';
 
 import { tokenPairState } from '@/auth/states/tokenPairState';
-import { clearSessionLocalStorageKeys } from '@/auth/utils/clearSessionLocalStorageKeys';
-import { broadcastSignOutToOtherTabs } from '@/auth/utils/crossTabSignOut';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 
@@ -36,8 +29,7 @@ import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMembe
 import { currentWorkspaceMembersState } from '@/auth/states/currentWorkspaceMembersState';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { useSignUpInNewWorkspace } from '@/auth/sign-in-up/hooks/useSignUpInNewWorkspace';
-import { useLoadMockedMetadata } from '@/metadata-store/hooks/useLoadMockedMetadata';
-import { preloadMockedMetadata } from '@/metadata-store/utils/preloadMockedMetadata';
+import { useReloadWorkspaceMetadata } from '@/metadata-store/hooks/useReloadWorkspaceMetadata';
 import { lastAuthenticatedMethodState } from '@/auth/states/lastAuthenticatedMethodState';
 import { loginTokenState } from '@/auth/states/loginTokenState';
 import {
@@ -45,6 +37,7 @@ import {
   signInUpStepState,
 } from '@/auth/states/signInUpStepState';
 import { workspacePublicDataState } from '@/auth/states/workspacePublicDataState';
+import { coreViewsState } from '@/views/states/coreViewState';
 import { type BillingCheckoutSession } from '@/auth/types/billingCheckoutSession.type';
 import {
   countAvailableWorkspaces,
@@ -66,6 +59,7 @@ import { i18n } from '@lingui/core';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SOURCE_LOCALE } from 'twenty-shared/translations';
 import { isDefined } from 'twenty-shared/utils';
+import { cookieStorage } from '~/utils/cookie-storage';
 import { getWorkspaceUrl } from '~/utils/getWorkspaceUrl';
 import { useStore } from 'jotai';
 
@@ -89,37 +83,33 @@ export const useAuth = () => {
   const { loadCurrentUser } = useLoadCurrentUser();
   const { clearSseClient } = useClearSseClient();
 
-  const { applyMockedMetadata } = useLoadMockedMetadata();
+  const { reloadWorkspaceMetadata, resetToMockedMetadata } =
+    useReloadWorkspaceMetadata();
   const { createWorkspace } = useSignUpInNewWorkspace();
 
   const setSignInUpStep = useSetAtomState(signInUpStepState);
   const { redirect } = useRedirect();
   const { redirectToWorkspaceDomain } = useRedirectToWorkspaceDomain();
 
-  const [getLoginTokenFromCredentials] = useMutation(
-    GetLoginTokenFromCredentialsDocument,
-  );
-  const [signIn] = useMutation(SignInDocument);
-  const [signUp] = useMutation(SignUpDocument);
-  const [signUpInWorkspace] = useMutation(SignUpInWorkspaceDocument);
-  const [getAuthTokensFromLoginToken] = useMutation(
-    GetAuthTokensFromLoginTokenDocument,
-  );
-  const [verifyEmailAndGetLoginToken] = useMutation(
-    VerifyEmailAndGetLoginTokenDocument,
-  );
-  const [verifyEmailAndGetWorkspaceAgnosticToken] = useMutation(
-    VerifyEmailAndGetWorkspaceAgnosticTokenDocument,
-  );
-  const [getAuthTokensFromOtp] = useMutation(GetAuthTokensFromOtpDocument);
+  const [getLoginTokenFromCredentials] =
+    useGetLoginTokenFromCredentialsMutation();
+  const [signIn] = useSignInMutation();
+  const [signUp] = useSignUpMutation();
+  const [signUpInWorkspace] = useSignUpInWorkspaceMutation();
+  const [getAuthTokensFromLoginToken] =
+    useGetAuthTokensFromLoginTokenMutation();
+  const [verifyEmailAndGetLoginToken] =
+    useVerifyEmailAndGetLoginTokenMutation();
+  const [verifyEmailAndGetWorkspaceAgnosticToken] =
+    useVerifyEmailAndGetWorkspaceAgnosticTokenMutation();
+  const [getAuthTokensFromOtp] = useGetAuthTokensFromOtpMutation();
 
   const workspacePublicData = useAtomStateValue(workspacePublicDataState);
 
   const { setLastAuthenticateWorkspaceDomain } =
     useLastAuthenticatedWorkspaceDomain();
-  const [checkUserExistsQuery, { data: checkUserExistsData }] = useLazyQuery(
-    CheckUserExistsDocument,
-  );
+  const [checkUserExistsQuery, { data: checkUserExistsData }] =
+    useCheckUserExistsLazyQuery();
 
   const client = useApolloClient();
 
@@ -129,9 +119,6 @@ export const useAuth = () => {
 
   const clearSession = useCallback(async () => {
     clearSseClient();
-    store.set(isAppEffectRedirectEnabledState.atom, false);
-
-    const mockedData = await preloadMockedMetadata();
 
     const authProvidersValue = store.get(workspaceAuthProvidersState.atom);
     const domainConfigurationValue = store.get(domainConfigurationState.atom);
@@ -146,7 +133,7 @@ export const useAuth = () => {
     store.set(isAppEffectRedirectEnabledState.atom, false);
 
     sessionStorage.clear();
-    clearSessionLocalStorageKeys();
+    localStorage.clear();
 
     store.set(workspaceAuthProvidersState.atom, authProvidersValue);
     store.set(workspacePublicDataState.atom, workspacePublicDataValue);
@@ -166,18 +153,18 @@ export const useAuth = () => {
     });
     store.set(loginTokenState.atom, null);
     store.set(signInUpStepState.atom, SignInUpStep.Init);
-
-    applyMockedMetadata(mockedData);
+    store.set(coreViewsState.atom, []);
 
     await client.clearStore();
     setLastAuthenticateWorkspaceDomain(null);
+    await resetToMockedMetadata();
     navigate(AppPath.SignInUp);
     store.set(isAppEffectRedirectEnabledState.atom, true);
   }, [
     clearSseClient,
     client,
     setLastAuthenticateWorkspaceDomain,
-    applyMockedMetadata,
+    resetToMockedMetadata,
     navigate,
     store,
   ]);
@@ -185,6 +172,7 @@ export const useAuth = () => {
   const handleSetAuthTokens = useCallback(
     (tokens: AuthTokenPair) => {
       setTokenPair(tokens);
+      cookieStorage.setItem('tokenPair', JSON.stringify(tokens));
     },
     [setTokenPair],
   );
@@ -200,8 +188,8 @@ export const useAuth = () => {
             origin,
           },
         });
-        if (isDefined(getLoginTokenResult.error)) {
-          throw getLoginTokenResult.error;
+        if (isDefined(getLoginTokenResult.errors)) {
+          throw getLoginTokenResult.errors;
         }
 
         if (!getLoginTokenResult.data?.getLoginTokenFromCredentials) {
@@ -212,8 +200,8 @@ export const useAuth = () => {
       } catch (error) {
         // TODO: Get intellisense for graphql error extensions code (codegen?)
         if (
-          CombinedGraphQLErrors.is(error) &&
-          error.errors[0]?.extensions?.subCode === 'EMAIL_NOT_VERIFIED'
+          error instanceof ApolloError &&
+          error.graphQLErrors[0]?.extensions?.subCode === 'EMAIL_NOT_VERIFIED'
         ) {
           setSearchParams({ email });
           setSignInUpStep(SignInUpStep.EmailVerification);
@@ -240,8 +228,8 @@ export const useAuth = () => {
         },
       });
 
-      if (isDefined(loginTokenResult.error)) {
-        throw loginTokenResult.error;
+      if (isDefined(loginTokenResult.errors)) {
+        throw loginTokenResult.errors;
       }
 
       if (!loginTokenResult.data?.verifyEmailAndGetLoginToken) {
@@ -259,7 +247,7 @@ export const useAuth = () => {
       email: string,
       captchaToken?: string,
     ) => {
-      const { data, error } = await verifyEmailAndGetWorkspaceAgnosticToken({
+      const { data, errors } = await verifyEmailAndGetWorkspaceAgnosticToken({
         variables: {
           email,
           emailVerificationToken,
@@ -267,8 +255,8 @@ export const useAuth = () => {
         },
       });
 
-      if (isDefined(error)) {
-        throw error;
+      if (isDefined(errors)) {
+        throw errors;
       }
 
       if (!data?.verifyEmailAndGetWorkspaceAgnosticToken) {
@@ -307,10 +295,14 @@ export const useAuth = () => {
       setIsAppEffectRedirectEnabled(false);
 
       await loadCurrentUser();
-
-      setIsAppEffectRedirectEnabled(true);
+      await reloadWorkspaceMetadata();
     },
-    [loadCurrentUser, handleSetAuthTokens, setIsAppEffectRedirectEnabled],
+    [
+      loadCurrentUser,
+      handleSetAuthTokens,
+      reloadWorkspaceMetadata,
+      setIsAppEffectRedirectEnabled,
+    ],
   );
 
   const handleGetAuthTokensFromLoginToken = useCallback(
@@ -323,8 +315,8 @@ export const useAuth = () => {
           },
         });
 
-        if (isDefined(getAuthTokensResult.error)) {
-          throw getAuthTokensResult.error;
+        if (isDefined(getAuthTokensResult.errors)) {
+          throw getAuthTokensResult.errors;
         }
 
         if (!getAuthTokensResult.data?.getAuthTokensFromLoginToken) {
@@ -336,8 +328,8 @@ export const useAuth = () => {
         );
       } catch (error) {
         if (
-          CombinedGraphQLErrors.is(error) &&
-          error.errors[0]?.extensions?.subCode ===
+          error instanceof ApolloError &&
+          error.graphQLErrors[0]?.extensions?.subCode ===
             'TWO_FACTOR_AUTHENTICATION_PROVISION_REQUIRED'
         ) {
           handleSetLoginToken(loginToken);
@@ -346,8 +338,8 @@ export const useAuth = () => {
         }
 
         if (
-          CombinedGraphQLErrors.is(error) &&
-          error.errors[0]?.extensions?.subCode ===
+          error instanceof ApolloError &&
+          error.graphQLErrors[0]?.extensions?.subCode ===
             'TWO_FACTOR_AUTHENTICATION_VERIFICATION_REQUIRED'
         ) {
           handleSetLoginToken(loginToken);
@@ -368,7 +360,7 @@ export const useAuth = () => {
 
   const handleCredentialsSignIn = useCallback(
     async (email: string, password: string, captchaToken?: string) => {
-      await signIn({
+      signIn({
         variables: { email, password, captchaToken },
         onCompleted: async (data) => {
           handleSetAuthTokens(data.signIn.tokens);
@@ -402,8 +394,8 @@ export const useAuth = () => {
         },
         onError: (error) => {
           if (
-            CombinedGraphQLErrors.is(error) &&
-            error.errors[0]?.extensions?.subCode === 'EMAIL_NOT_VERIFIED'
+            error instanceof ApolloError &&
+            error.graphQLErrors[0]?.extensions?.subCode === 'EMAIL_NOT_VERIFIED'
           ) {
             setSearchParams({ email });
             setSignInUpStep(SignInUpStep.EmailVerification);
@@ -435,8 +427,8 @@ export const useAuth = () => {
         },
       });
 
-      if (isDefined(signUpResult.error)) {
-        throw signUpResult.error;
+      if (isDefined(signUpResult.errors)) {
+        throw signUpResult.errors;
       }
 
       if (isEmailVerificationRequired) {
@@ -483,7 +475,6 @@ export const useAuth = () => {
   );
 
   const handleSignOut = useCallback(async () => {
-    broadcastSignOutToOtherTabs();
     await clearSession();
     if (isCaptchaScriptLoaded) await requestFreshCaptchaToken();
   }, [clearSession, isCaptchaScriptLoaded, requestFreshCaptchaToken]);
@@ -519,8 +510,8 @@ export const useAuth = () => {
         },
       });
 
-      if (isDefined(signUpInWorkspaceResult.error)) {
-        throw signUpInWorkspaceResult.error;
+      if (isDefined(signUpInWorkspaceResult.errors)) {
+        throw signUpInWorkspaceResult.errors;
       }
 
       if (!signUpInWorkspaceResult.data?.signUpInWorkspace) {
@@ -641,8 +632,8 @@ export const useAuth = () => {
         },
       });
 
-      if (isDefined(getAuthTokensFromOtpResult.error)) {
-        throw getAuthTokensFromOtpResult.error;
+      if (isDefined(getAuthTokensFromOtpResult.errors)) {
+        throw getAuthTokensFromOtpResult.errors;
       }
 
       if (!getAuthTokensFromOtpResult.data?.getAuthTokensFromOTP) {
