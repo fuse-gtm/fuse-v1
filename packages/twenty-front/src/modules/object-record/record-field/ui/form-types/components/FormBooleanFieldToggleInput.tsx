@@ -3,10 +3,9 @@ import { FormFieldInputInnerContainer } from '@/object-record/record-field/ui/fo
 import { FormFieldInputRowContainer } from '@/object-record/record-field/ui/form-types/components/FormFieldInputRowContainer';
 import { InputHint } from '@/ui/input/components/InputHint';
 import { InputLabel } from '@/ui/input/components/InputLabel';
-import { styled } from '@linaria/react';
+import styled from '@emotion/styled';
 import { useId } from 'react';
 import { Toggle } from 'twenty-ui/input';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 type FormBooleanFieldToggleInputProps = {
   label?: string;
@@ -19,10 +18,10 @@ type FormBooleanFieldToggleInputProps = {
 
 const StyledDescription = styled.span`
   align-items: center;
-  color: ${themeCssVariables.font.color.secondary};
+  color: ${({ theme }) => theme.font.color.secondary};
   display: flex;
-  font-size: ${themeCssVariables.font.size.md};
-  padding-left: ${themeCssVariables.spacing[2]};
+  font-size: ${({ theme }) => theme.font.size.md};
+  padding-left: ${({ theme }) => theme.spacing(2)};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -30,14 +29,14 @@ const StyledDescription = styled.span`
 
 const StyledToggleContainer = styled.div`
   align-items: center;
-  background-color: ${themeCssVariables.background.transparent.lighter};
-  border-top: 1px solid ${themeCssVariables.border.color.medium};
-  border-bottom: 1px solid ${themeCssVariables.border.color.medium};
-  border-right: 1px solid ${themeCssVariables.border.color.medium};
-  border-bottom-right-radius: ${themeCssVariables.border.radius.sm};
-  border-top-right-radius: ${themeCssVariables.border.radius.sm};
+  background-color: ${({ theme }) => theme.background.transparent.lighter};
+  border-top: 1px solid ${({ theme }) => theme.border.color.medium};
+  border-bottom: 1px solid ${({ theme }) => theme.border.color.medium};
+  border-right: 1px solid ${({ theme }) => theme.border.color.medium};
+  border-bottom-right-radius: ${({ theme }) => theme.border.radius.sm};
+  border-top-right-radius: ${({ theme }) => theme.border.radius.sm};
   display: flex;
-  padding-right: ${themeCssVariables.spacing[2]};
+  padding-right: ${({ theme }) => theme.spacing(2)};
 `;
 
 export const FormBooleanFieldToggleInput = ({

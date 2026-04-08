@@ -170,7 +170,8 @@ export const WorkflowRunDiagramStepNode = ({
                 </StyledStatusIconsContainer>
               )}
 
-              {data.runStatus === StepStatus.FAILED && (
+              {(data.runStatus === StepStatus.FAILED ||
+                data.runStatus === StepStatus.FAILED_SAFELY) && (
                 <StyledStatusIconsContainer>
                   <StyledColorIcon color={themeCssVariables.tag.background.red}>
                     <IconX color={themeCssVariables.tag.text.red} size={14} />
