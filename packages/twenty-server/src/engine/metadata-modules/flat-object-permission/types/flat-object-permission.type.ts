@@ -1,18 +1,4 @@
-// TODO: upstream cherry-pick stub - module not yet in fork
-export type FlatObjectPermission = {
-  id: string;
-  universalIdentifier: string;
-  applicationId: string;
-  applicationUniversalIdentifier: string;
-  workspaceId: string;
-  roleId: string;
-  roleUniversalIdentifier: string;
-  objectMetadataId: string;
-  objectMetadataUniversalIdentifier: string;
-  canReadObjectRecords: boolean;
-  canUpdateObjectRecords: boolean;
-  canSoftDeleteObjectRecords: boolean;
-  canDestroyObjectRecords: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
+import { type FlatEntityFrom } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-from.type';
+import { type ObjectPermissionEntity } from 'src/engine/metadata-modules/object-permission/object-permission.entity';
+
+export type FlatObjectPermission = FlatEntityFrom<ObjectPermissionEntity>;
