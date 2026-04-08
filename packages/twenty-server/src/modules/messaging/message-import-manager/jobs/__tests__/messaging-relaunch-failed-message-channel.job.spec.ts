@@ -1,6 +1,7 @@
 import { type Provider } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 
+import { MessageChannelDataAccessService } from 'src/engine/metadata-modules/message-channel/data-access/services/message-channel-data-access.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import {
   MessageChannelSyncStage,
@@ -29,10 +30,13 @@ describe('MessagingRelaunchFailedMessageChannelJob', () => {
           executeInWorkspaceContext: jest
             .fn()
             .mockImplementation((callback) => callback()),
-          getRepository: jest.fn().mockResolvedValue({
-            findOne: mockFindOne,
-            update: mockUpdate,
-          }),
+        },
+      },
+      {
+        provide: MessageChannelDataAccessService,
+        useValue: {
+          findOne: mockFindOne,
+          update: mockUpdate,
         },
       },
     ];
@@ -56,12 +60,16 @@ describe('MessagingRelaunchFailedMessageChannelJob', () => {
 
     await job.handle({ workspaceId, messageChannelId });
 
-    expect(mockUpdate).toHaveBeenCalledWith(messageChannelId, {
-      syncStage: MessageChannelSyncStage.MESSAGE_LIST_FETCH_PENDING,
-      syncStatus: MessageChannelSyncStatus.ACTIVE,
-      throttleFailureCount: 0,
-      throttleRetryAfter: null,
-      syncStageStartedAt: null,
-    });
+    expect(mockUpdate).toHaveBeenCalledWith(
+      workspaceId,
+      { id: messageChannelId },
+      {
+        syncStage: MessageChannelSyncStage.MESSAGE_LIST_FETCH_PENDING,
+        syncStatus: MessageChannelSyncStatus.ACTIVE,
+        throttleFailureCount: 0,
+        throttleRetryAfter: null,
+        syncStageStartedAt: null,
+      },
+    );
   });
 });
