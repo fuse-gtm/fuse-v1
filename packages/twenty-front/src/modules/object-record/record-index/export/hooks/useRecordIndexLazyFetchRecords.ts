@@ -89,6 +89,7 @@ export const useRecordIndexLazyFetchRecords = ({
 
   const findManyRecordsParams = useFindManyRecordIndexTableParams(
     objectMetadataItem.nameSingular,
+    recordIndexId,
   );
 
   const isEmptySelection =
@@ -110,6 +111,7 @@ export const useRecordIndexLazyFetchRecords = ({
 
   const visibleRecordFields = useAtomComponentSelectorValue(
     visibleRecordFieldsComponentSelector,
+    recordIndexId,
   );
 
   const finalColumns: Pick<
