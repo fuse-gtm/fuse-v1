@@ -38,8 +38,11 @@ import { WorkspaceCleanerModule } from 'src/engine/workspace-manager/workspace-c
 import { WorkspaceManagerModule } from 'src/engine/workspace-manager/workspace-manager.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { WorkspaceVersionModule } from 'src/engine/workspace-manager/workspace-version/workspace-version.module';
+import { WorkspaceBootstrapPartnerOsCommand } from 'src/database/commands/workspace-bootstrap-partner-os.command';
 import { CalendarEventImportManagerModule } from 'src/modules/calendar/calendar-event-import-manager/calendar-event-import-manager.module';
 import { MessagingImportManagerModule } from 'src/modules/messaging/message-import-manager/messaging-import-manager.module';
+import { PartnerOsSeedModule } from 'src/modules/partner-os/commands/partner-os-seed.module';
+import { PartnerOsModule } from 'src/modules/partner-os/partner-os.module';
 import { WorkflowRunQueueModule } from 'src/modules/workflow/workflow-runner/workflow-run-queue/workflow-run-queue.module';
 import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/automated-trigger/automated-trigger.module';
 
@@ -79,6 +82,8 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     CoreEngineVersionModule,
     WorkspaceVersionModule,
     UpgradeModule,
+    PartnerOsModule,
+    PartnerOsSeedModule,
   ],
   providers: [
     DataSeedWorkspaceCommand,
@@ -90,6 +95,7 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     ListOrphanedWorkspaceEntitiesCommand,
     EnterpriseKeyValidationCronCommand,
     GenerateApiKeyCommand,
+    WorkspaceBootstrapPartnerOsCommand,
   ],
 })
 export class DatabaseCommandModule {}
