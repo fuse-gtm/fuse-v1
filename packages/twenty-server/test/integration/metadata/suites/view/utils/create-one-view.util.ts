@@ -1,31 +1,41 @@
-// TODO: upstream cherry-pick stub - wrapper that renames createOneCoreView to createOneView
-import { createOneCoreView } from 'test/integration/metadata/suites/view/utils/create-one-core-view.util';
+import { makeMetadataAPIRequest } from 'test/integration/metadata/suites/utils/make-metadata-api-request.util';
+import { type CommonResponseBody } from 'test/integration/metadata/types/common-response-body.type';
+import { type PerformMetadataQueryParams } from 'test/integration/metadata/types/perform-metadata-query.type';
+import { warnIfErrorButNotExpectedToFail } from 'test/integration/metadata/utils/warn-if-error-but-not-expected-to-fail.util';
+import { warnIfNoErrorButExpectedToFail } from 'test/integration/metadata/utils/warn-if-no-error-but-expected-to-fail.util';
 
 import { type CreateViewInput } from 'src/engine/metadata-modules/view/dtos/inputs/create-view.input';
 import { type ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entity';
+
+import { createViewQueryFactory } from './create-view-query-factory.util';
 
 export const createOneView = async ({
   input,
   gqlFields,
   expectToFail,
-}: {
-  input: CreateViewInput;
-  gqlFields?: string;
-  expectToFail?: boolean;
-}): Promise<{
-  data: { createView: ViewEntity };
-  errors?: any;
+}: PerformMetadataQueryParams<CreateViewInput>): CommonResponseBody<{
+  createView: ViewEntity;
 }> => {
-  const result = await createOneCoreView({
+  const graphqlOperation = createViewQueryFactory({
     input,
     gqlFields,
-    expectToFail,
   });
 
-  return {
-    data: {
-      createView: (result.data as any)?.createCoreView,
-    },
-    errors: result.errors,
-  };
+  const response = await makeMetadataAPIRequest(graphqlOperation);
+
+  if (expectToFail === true) {
+    warnIfNoErrorButExpectedToFail({
+      response,
+      errorMessage: 'View creation should have failed but did not',
+    });
+  }
+
+  if (expectToFail === false) {
+    warnIfErrorButNotExpectedToFail({
+      response,
+      errorMessage: 'View creation has failed but should not',
+    });
+  }
+
+  return { data: response.body.data, errors: response.body.errors };
 };

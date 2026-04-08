@@ -1,5 +1,9 @@
-// TODO: upstream cherry-pick stub - wrapper that renames deleteOneCoreViewGroup to deleteOneViewGroup
-import { deleteOneCoreViewGroup } from 'test/integration/metadata/suites/view-group/utils/delete-one-core-view-group.util';
+import { makeMetadataAPIRequest } from 'test/integration/metadata/suites/utils/make-metadata-api-request.util';
+import { deleteViewGroupQueryFactory } from 'test/integration/metadata/suites/view-group/utils/delete-view-group-query-factory.util';
+import { type CommonResponseBody } from 'test/integration/metadata/types/common-response-body.type';
+import { type PerformMetadataQueryParams } from 'test/integration/metadata/types/perform-metadata-query.type';
+import { warnIfErrorButNotExpectedToFail } from 'test/integration/metadata/utils/warn-if-error-but-not-expected-to-fail.util';
+import { warnIfNoErrorButExpectedToFail } from 'test/integration/metadata/utils/warn-if-no-error-but-expected-to-fail.util';
 
 import { type DeleteViewGroupInput } from 'src/engine/metadata-modules/view-group/dtos/inputs/delete-view-group.input';
 import { type ViewGroupEntity } from 'src/engine/metadata-modules/view-group/entities/view-group.entity';
@@ -8,24 +12,29 @@ export const deleteOneViewGroup = async ({
   input,
   gqlFields,
   expectToFail,
-}: {
-  input: DeleteViewGroupInput;
-  gqlFields?: string;
-  expectToFail?: boolean;
-}): Promise<{
-  data: { deleteViewGroup: ViewGroupEntity };
-  errors?: any;
+}: PerformMetadataQueryParams<DeleteViewGroupInput>): CommonResponseBody<{
+  deleteViewGroup: ViewGroupEntity;
 }> => {
-  const result = await deleteOneCoreViewGroup({
+  const graphqlOperation = deleteViewGroupQueryFactory({
     input,
     gqlFields,
-    expectToFail,
   });
 
-  return {
-    data: {
-      deleteViewGroup: (result.data as any)?.deleteCoreViewGroup,
-    },
-    errors: result.errors,
-  };
+  const response = await makeMetadataAPIRequest(graphqlOperation);
+
+  if (expectToFail === true) {
+    warnIfNoErrorButExpectedToFail({
+      response,
+      errorMessage: 'View Group deletion should have failed but did not',
+    });
+  }
+
+  if (expectToFail === false) {
+    warnIfErrorButNotExpectedToFail({
+      response,
+      errorMessage: 'View Group deletion has failed but should not',
+    });
+  }
+
+  return { data: response.body.data, errors: response.body.errors };
 };

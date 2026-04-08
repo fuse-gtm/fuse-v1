@@ -66,7 +66,7 @@ export const RecordBoardFetchMoreInViewTriggerComponent = () => {
 
   const visibleRecordGroupIds = useAtomComponentFamilySelectorValue(
     visibleRecordGroupIdsComponentFamilySelector,
-    ViewType.Kanban,
+    ViewType.KANBAN,
   );
 
   const componentWidth =
