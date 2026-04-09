@@ -7,7 +7,7 @@ import {
   type ViewOpenRecordIn,
   type ViewType,
   type ViewVisibility,
-} from '@/types';
+} from '@/types/index';
 
 export type ViewManifestFilterValue =
   | string

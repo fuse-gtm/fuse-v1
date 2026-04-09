@@ -1,4 +1,4 @@
-import { type Nullable } from '@/types';
+import { type Nullable } from '@/types/index';
 
 export const checkIfFieldIsImageIdentifier = (
   fieldMetadataItem: {
