@@ -11,7 +11,7 @@ import {
   type ApplicationConfig,
   type FrontComponentConfig,
   type LogicFunctionConfig,
-} from '@/sdk';
+} from '@/sdk/index';
 import { type ObjectConfig } from '@/sdk/objects/object-config';
 import { type PageLayoutConfig } from '@/sdk/page-layouts/page-layout-config';
 import { type ViewConfig } from '@/sdk/views/view-config';

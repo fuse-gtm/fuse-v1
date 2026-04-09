@@ -15,7 +15,7 @@ import {
   type VariableStatement,
 } from 'typescript';
 
-import { type InputJsonSchema } from '@/logic-function';
+import { type InputJsonSchema } from '@/logic-function/index';
 import { isDefined } from '@/utils/validation/isDefined';
 
 const getTypeString = (typeNode: TypeNode): InputJsonSchema => {

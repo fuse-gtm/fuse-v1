@@ -1,4 +1,4 @@
-import { defineFrontComponent } from '@/sdk';
+import { defineFrontComponent } from '@/sdk/index';
 
 const StaticComponent = () => (
   <div

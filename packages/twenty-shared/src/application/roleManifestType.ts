@@ -1,4 +1,4 @@
-import { type PermissionFlagType } from '@/constants';
+import { type PermissionFlagType } from '@/constants/index';
 import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
 
 export type ObjectPermissionManifest = {

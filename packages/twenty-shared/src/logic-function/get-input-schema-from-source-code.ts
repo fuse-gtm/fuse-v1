@@ -2,14 +2,13 @@ import { isDefined } from '@/utils/validation/isDefined';
 import {
   DEFAULT_TOOL_INPUT_SCHEMA,
   type InputJsonSchema,
-} from '@/logic-function';
+} from '@/logic-function/index';
 
 export const getInputSchemaFromSourceCode = async (
   sourceCode: string,
 ): Promise<InputJsonSchema> => {
-  const { getFunctionInputSchema } = await import(
-    './get-function-input-schema'
-  );
+  const { getFunctionInputSchema } =
+    await import('./get-function-input-schema');
   const inputSchema = getFunctionInputSchema(sourceCode);
 
   // Logic functions take a single params object
