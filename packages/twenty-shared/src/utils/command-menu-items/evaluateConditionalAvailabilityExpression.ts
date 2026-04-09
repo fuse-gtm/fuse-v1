@@ -1,18 +1,7 @@
+import type { EvaluationContext, Value } from 'expr-eval-fork';
 import { isNonEmptyString } from '@sniptt/guards';
 
 import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
-
-type EvaluationValue =
-  | number
-  | string
-  | boolean
-  | null
-  | undefined
-  | EvaluationValue[]
-  | ((...args: EvaluationValue[]) => EvaluationValue)
-  | { [propertyName: string]: EvaluationValue };
-
-type EvaluationContext = Record<string, EvaluationValue>;
 
 export const evaluateConditionalAvailabilityExpression = (
   expression: string | null | undefined,
@@ -25,7 +14,7 @@ export const evaluateConditionalAvailabilityExpression = (
   try {
     const parsed = conditionalAvailabilityParser.parse(expression);
 
-    return parsed.evaluate(context) === true;
+    return parsed.evaluate(context as Value) === true;
   } catch {
     return false;
   }

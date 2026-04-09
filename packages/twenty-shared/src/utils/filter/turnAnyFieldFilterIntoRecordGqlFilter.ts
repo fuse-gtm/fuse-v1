@@ -9,18 +9,11 @@ import {
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
 } from '../../types';
-import {
-  filterSelectOptionsOfFieldMetadataItem,
-  type RecordFilter,
-} from '..';
+import { filterSelectOptionsOfFieldMetadataItem, type RecordFilter } from '..';
 import { isNonEmptyArray } from '../array/isNonEmptyArray';
 import { isDefined } from '../validation/isDefined';
-import {
-  turnRecordFilterIntoRecordGqlOperationFilter,
-} from './turnRecordFilterIntoGqlOperationFilter';
-import {
-  createAnyFieldRecordFilterBaseProperties,
-} from './utils/createAnyFieldRecordFilterBaseProperties';
+import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
+import { createAnyFieldRecordFilterBaseProperties } from './utils/createAnyFieldRecordFilterBaseProperties';
 
 const currencies: { value: CurrencyCode; label: string }[] = Object.entries(
   CURRENCY_CODE_LABELS,
