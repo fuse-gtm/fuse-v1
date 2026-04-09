@@ -62,6 +62,10 @@ const config: StorybookConfig = {
         find: '@/',
         replacement: `${resolvedSharedPath}/`,
       },
+      {
+        find: '@tabler/icons-react',
+        replacement: '@tabler/icons-react/dist/esm/icons/index.mjs',
+      },
     ];
 
     if (!isVitest && !isTypeCheckerDisabled) {
@@ -81,13 +85,6 @@ const config: StorybookConfig = {
         alias,
       },
       plugins,
-      resolve: {
-        ...viteConfig.resolve,
-        alias: {
-          ...(viteConfig.resolve?.alias ?? {}),
-          '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
-        },
-      },
     };
   },
 };

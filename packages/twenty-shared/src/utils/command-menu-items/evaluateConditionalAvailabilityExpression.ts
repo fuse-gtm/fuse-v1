@@ -1,7 +1,8 @@
 import { isNonEmptyString } from '@sniptt/guards';
-import { type EvaluationContext } from 'expr-eval-fork';
 
 import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
+
+type EvaluationContext = Record<string, unknown>;
 
 export const evaluateConditionalAvailabilityExpression = (
   expression: string | null | undefined,
