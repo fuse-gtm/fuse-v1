@@ -117,9 +117,9 @@ export class PartnerDiscoveryOrchestratorService {
 
     const exaSearchPayload = this.adapterService.toExaSearchPayload({
       query: track.entityType === 'COMPANY' ? 'companies' : 'people',
-      entityType: (
-        track.entityType === 'COMPANY' ? 'company' : 'person'
-      ) as PartnerCandidateEntityType,
+      entityType: (track.entityType === 'COMPANY'
+        ? 'company'
+        : 'person') as PartnerCandidateEntityType,
       retrievalChecks,
       exclusions: exclusionRows.map((exclusion) => exclusion.value),
     });
@@ -168,7 +168,12 @@ export class PartnerDiscoveryOrchestratorService {
       `UPDATE "${schemaName}"."_discoveryRun"
        SET "exaWebsetId" = $1, "status" = $2, "updatedAt" = $3
        WHERE "id" = $4`,
-      [websetResponse.id, 'STREAMING', new Date().toISOString(), discoveryRunId],
+      [
+        websetResponse.id,
+        'STREAMING',
+        new Date().toISOString(),
+        discoveryRunId,
+      ],
     );
 
     this.logger.log(

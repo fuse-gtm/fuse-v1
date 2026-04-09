@@ -3829,6 +3829,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@clickhouse/client-common@npm:1.18.2":
+  version: 1.18.2
+  resolution: "@clickhouse/client-common@npm:1.18.2"
+  checksum: 10c0/543078c7255a8e335df55f88d6121a299a67d9b8c2377c4a8afbd68fd7aacd05d056fe1c8380d7d87329f02229a4920ec9a04896ce6cf115bf9a0fe3c07333d4
+  languageName: node
+  linkType: hard
+
+"@clickhouse/client@npm:^1.18.1":
+  version: 1.18.2
+  resolution: "@clickhouse/client@npm:1.18.2"
+  dependencies:
+    "@clickhouse/client-common": "npm:1.18.2"
+  checksum: 10c0/46782987e44da9759e9b7b43957df210bdcc8affed9d0ea367ab5252ee566e7e69d395bae4eb3960a2780430f57e805d37ffe9d720f49a7361c59811b717d3b9
+  languageName: node
+  linkType: hard
+
 "@codemirror/autocomplete@npm:^6.0.0, @codemirror/autocomplete@npm:^6.18.3, @codemirror/autocomplete@npm:^6.4.0":
   version: 6.18.6
   resolution: "@codemirror/autocomplete@npm:6.18.6"
@@ -60916,6 +60932,7 @@ __metadata:
     "@azure/msal-node": "npm:^3.8.4"
     "@babel/preset-env": "npm:7.26.9"
     "@blocknote/server-util": "npm:^0.47.1"
+    "@clickhouse/client": "npm:^1.18.1"
     "@dagrejs/dagre": "npm:^1.1.2"
     "@e2b/code-interpreter": "npm:^1.0.4"
     "@envelop/core": "npm:4.0.3"

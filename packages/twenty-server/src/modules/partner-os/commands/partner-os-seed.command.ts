@@ -114,8 +114,6 @@ export class PartnerOsSeedCommand extends CommandRunner {
       }
     });
 
-    this.logger.log(
-      `Partner OS demo data seeded for workspace ${workspaceId}`,
-    );
+    this.logger.log(`Partner OS demo data seeded for workspace ${workspaceId}`);
   }
 }
