@@ -7,11 +7,14 @@ import {
 } from '@/cli/utilities/build/manifest/manifest-extract-config';
 import { extractManifestFromFile } from '@/cli/utilities/build/manifest/manifest-extract-config-from-file';
 import { getDefaultFieldsInObjectFields } from '@/cli/utilities/build/manifest/utils/get-default-fields-in-object-fields';
-import { type ApplicationConfig, type LogicFunctionConfig } from '@/sdk/define';
-import { type FrontComponentConfig } from '@/sdk/define/front-component/front-component-config';
-import { type ObjectConfig } from '@/sdk/define/objects/object-config';
-import { type PageLayoutConfig } from '@/sdk/define/page-layouts/page-layout-config';
-import { type ViewConfig } from '@/sdk/define/views/view-config';
+import {
+  type ApplicationConfig,
+  type FrontComponentConfig,
+  type LogicFunctionConfig,
+} from '@/sdk';
+import { type ObjectConfig } from '@/sdk/objects/object-config';
+import { type PageLayoutConfig } from '@/sdk/page-layouts/page-layout-config';
+import { type ViewConfig } from '@/sdk/views/view-config';
 import { readFile } from 'node:fs/promises';
 import { basename, extname, relative } from 'path';
 import { glob } from 'tinyglobby';
@@ -31,16 +34,12 @@ import {
   type RoleManifest,
   type SkillManifest,
   type ViewManifest,
-  type PostInstallLogicFunctionApplicationManifest,
-  type PreInstallLogicFunctionApplicationManifest,
 } from 'twenty-shared/application';
 import { getInputSchemaFromSourceCode } from 'twenty-shared/logic-function';
 import { assertUnreachable } from 'twenty-shared/utils';
 import { addMissingFieldOptionIds } from '@/cli/utilities/build/manifest/utils/add-missing-field-option-ids';
-import { type PostInstallLogicFunctionConfig } from '@/sdk/define/logic-functions/post-install-logic-function-config';
-import { type PreInstallLogicFunctionConfig } from '@/sdk/define/logic-functions/pre-install-logic-function-config';
 import { fromRoleConfigToRoleManifest } from '@/cli/utilities/build/manifest/utils/from-role-config-to-role-manifest';
-import { type RoleConfig } from '@/sdk/define/roles/role-config';
+import { type RoleConfig } from '@/sdk/roles/role-config';
 
 const loadSources = async (appPath: string): Promise<string[]> => {
   return await glob(['**/*.ts', '**/*.tsx'], {
@@ -81,10 +80,9 @@ export const buildManifest = async (
   const views: ViewManifest[] = [];
   const navigationMenuItems: NavigationMenuItemManifest[] = [];
   const pageLayouts: PageLayoutManifest[] = [];
-  const postInstallLogicFunctions: PostInstallLogicFunctionApplicationManifest[] =
-    [];
-  const preInstallLogicFunctions: PreInstallLogicFunctionApplicationManifest[] =
-    [];
+  const preInstallLogicFunctionUniversalIdentifiers: string[] = [];
+  const postInstallLogicFunctionUniversalIdentifiers: string[] = [];
+
   const applicationFilePaths: string[] = [];
   const objectsFilePaths: string[] = [];
   const fieldsFilePaths: string[] = [];
@@ -233,31 +231,19 @@ export const buildManifest = async (
         logicFunctionsFilePaths.push(relativePath);
 
         if (
-          targetFunctionName === TargetFunction.DefinePostInstallLogicFunction
+          targetFunctionName === TargetFunction.DefinePreInstallLogicFunction
         ) {
-          const postInstallHookConfig =
-            extract.config as PostInstallLogicFunctionConfig;
-
-          postInstallLogicFunctions.push({
-            universalIdentifier: extract.config.universalIdentifier,
-            shouldRunOnVersionUpgrade:
-              postInstallHookConfig.shouldRunOnVersionUpgrade ?? false,
-            shouldRunSynchronously:
-              postInstallHookConfig.shouldRunSynchronously ?? false,
-          });
+          preInstallLogicFunctionUniversalIdentifiers.push(
+            extract.config.universalIdentifier,
+          );
         }
 
         if (
-          targetFunctionName === TargetFunction.DefinePreInstallLogicFunction
+          targetFunctionName === TargetFunction.DefinePostInstallLogicFunction
         ) {
-          const preInstallHookConfig =
-            extract.config as PreInstallLogicFunctionConfig;
-
-          preInstallLogicFunctions.push({
-            universalIdentifier: extract.config.universalIdentifier,
-            shouldRunOnVersionUpgrade:
-              preInstallHookConfig.shouldRunOnVersionUpgrade ?? false,
-          });
+          postInstallLogicFunctionUniversalIdentifiers.push(
+            extract.config.universalIdentifier,
+          );
         }
 
         break;
@@ -360,29 +346,31 @@ export const buildManifest = async (
     );
   }
 
-  if (postInstallLogicFunctions.length > 1) {
-    errors.push(
-      'Only one post install logic function is allowed per application',
-    );
-  }
-
-  if (preInstallLogicFunctions.length > 1) {
+  if (preInstallLogicFunctionUniversalIdentifiers.length > 1) {
     errors.push(
       'Only one pre install logic function is allowed per application',
     );
   }
 
-  if (application && postInstallLogicFunctions.length >= 1) {
+  if (postInstallLogicFunctionUniversalIdentifiers.length > 1) {
+    errors.push(
+      'Only one post install logic function is allowed per application',
+    );
+  }
+
+  if (application && preInstallLogicFunctionUniversalIdentifiers.length >= 1) {
     application = {
       ...application,
-      postInstallLogicFunction: postInstallLogicFunctions[0],
+      preInstallLogicFunctionUniversalIdentifier:
+        preInstallLogicFunctionUniversalIdentifiers[0],
     };
   }
 
-  if (application && preInstallLogicFunctions.length >= 1) {
+  if (application && postInstallLogicFunctionUniversalIdentifiers.length >= 1) {
     application = {
       ...application,
-      preInstallLogicFunction: preInstallLogicFunctions[0],
+      postInstallLogicFunctionUniversalIdentifier:
+        postInstallLogicFunctionUniversalIdentifiers[0],
     };
   }
 
