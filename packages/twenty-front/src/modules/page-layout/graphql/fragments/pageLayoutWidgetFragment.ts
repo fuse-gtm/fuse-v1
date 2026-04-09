@@ -9,6 +9,8 @@ export const PAGE_LAYOUT_WIDGET_FRAGMENT = gql`
     createdAt
     updatedAt
     deletedAt
+    conditionalDisplay
+    conditionalAvailabilityExpression
     gridPosition {
       column
       columnSpan
@@ -157,8 +159,13 @@ export const PAGE_LAYOUT_WIDGET_FRAGMENT = gql`
       ... on EmailsConfiguration {
         configurationType
       }
+      ... on EmailThreadConfiguration {
+        configurationType
+      }
       ... on FieldConfiguration {
         configurationType
+        fieldDisplayMode
+        fieldMetadataId
       }
       ... on FieldRichTextConfiguration {
         configurationType
@@ -166,10 +173,8 @@ export const PAGE_LAYOUT_WIDGET_FRAGMENT = gql`
       ... on FieldsConfiguration {
         configurationType
         viewId
-        newFieldDefaultConfiguration {
-          isVisible
-          viewFieldGroupId
-        }
+        newFieldDefaultVisibility
+        shouldAllowUserToSeeHiddenFields
       }
       ... on FilesConfiguration {
         configurationType
@@ -185,6 +190,10 @@ export const PAGE_LAYOUT_WIDGET_FRAGMENT = gql`
       }
       ... on ViewConfiguration {
         configurationType
+      }
+      ... on RecordTableConfiguration {
+        configurationType
+        viewId
       }
       ... on WorkflowConfiguration {
         configurationType
