@@ -17,7 +17,6 @@ const config: StorybookConfig = {
   stories: ['../src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
 
   addons: [
-    getAbsolutePath('@storybook-community/storybook-addon-cookie'),
     getAbsolutePath('@storybook/addon-links'),
     getAbsolutePath('@storybook/addon-coverage'),
     getAbsolutePath('storybook-addon-pseudo-states'),
@@ -96,5 +95,7 @@ export default config;
 // and https://nx.dev/recipes/storybook/custom-builder-configs
 
 function getAbsolutePath(value: string): string {
-  return path.dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
+  return path.dirname(
+    fileURLToPath(import.meta.resolve(`${value}/package.json`)),
+  );
 }
