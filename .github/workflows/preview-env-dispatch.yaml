@@ -43,7 +43,18 @@ jobs:
           event-type: preview-environment
           client-payload: '{"pr_number": "${{ github.event.pull_request.number }}", "pr_head_sha": "${{ github.event.pull_request.head.sha }}", "repo_full_name": "${{ github.repository }}"}'
 
+      - name: Check ci-privileged token
+        id: ci-privileged-token
+        run: |
+          if [ -n "${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CI_PRIVILEGED_DISPATCH_TOKEN is not configured; skipping ci-privileged dispatch"
+          fi
+
       - name: Dispatch to ci-privileged for PR comment
+        if: steps.ci-privileged-token.outputs.present == 'true'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}

@@ -126,8 +126,18 @@ jobs:
           path: /tmp/${{ steps.project.outputs.tarball_file }}
           retention-days: 1
 
+      - name: Check ci-privileged token
+        id: ci-privileged-token
+        run: |
+          if [ -n "${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CI_PRIVILEGED_DISPATCH_TOKEN is not configured; skipping ci-privileged dispatch"
+          fi
+
       - name: Dispatch to ci-privileged
-        if: steps.check-artifact.outputs.exists == 'true' && steps.pr-info.outputs.has_pr == 'true'
+        if: steps.check-artifact.outputs.exists == 'true' && steps.pr-info.outputs.has_pr == 'true' && steps.ci-privileged-token.outputs.present == 'true'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
