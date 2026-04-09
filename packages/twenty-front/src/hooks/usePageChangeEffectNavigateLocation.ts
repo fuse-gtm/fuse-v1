@@ -110,13 +110,6 @@ export const usePageChangeEffectNavigateLocation = () => {
   }
 
   if (
-    onboardingStatus === OnboardingStatus.PARTNER_PROFILE &&
-    !isMatchingLocation(location, AppPath.PartnerProfile)
-  ) {
-    return AppPath.PartnerProfile;
-  }
-
-  if (
     onboardingStatus === OnboardingStatus.SYNC_EMAIL &&
     !isMatchingLocation(location, AppPath.SyncEmails)
   ) {

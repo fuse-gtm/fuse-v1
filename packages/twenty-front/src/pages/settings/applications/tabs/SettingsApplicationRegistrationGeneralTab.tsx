@@ -20,7 +20,6 @@ import {
   IconCheck,
   IconDownload,
   IconTag,
-  IconTextCaption,
   IconTrash,
   IconWorld,
   Status,

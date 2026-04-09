@@ -5,7 +5,7 @@ import {
   type FieldMetadataType,
   type FieldMetadataUniversalSettings,
   type RelationAndMorphRelationFieldMetadataType,
-} from '@/types';
+} from '@/types/index';
 
 export type RegularFieldManifest<
   T extends FieldMetadataType = Exclude<

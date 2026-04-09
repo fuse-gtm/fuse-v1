@@ -9,14 +9,13 @@ import { FuseAuthLayout } from '@/auth/components/FuseAuthLayout';
 import { FuseOnboardingPreview } from '@/auth/components/FuseOnboardingPreview';
 import { FooterNote } from '@/auth/sign-in-up/components/FooterNote';
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboardingStatus';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { i18n, type MessageDescriptor } from '@lingui/core';
 import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { isDefined } from 'twenty-shared/utils';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import {
   Checkbox,
   CheckboxShape,
@@ -26,7 +25,7 @@ import {
 } from 'twenty-ui/input';
 import { TextInput } from '@/ui/input/components/TextInput';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { SKIP_PARTNER_PROFILE_ONBOARDING_STEP } from '@/onboarding/graphql/mutations/skipPartnerProfileOnboardingStep';
+import { SKIP_PARTNER_PROFILE_ONBOARDING_STEP } from '~/modules/onboarding/graphql/mutations/skipPartnerProfileOnboardingStep';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { IconCheck } from 'twenty-ui/display';
 
@@ -107,25 +106,22 @@ const StyledContentContainer = styled.div`
 `;
 
 const StyledButtonRow = styled.div`
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-top: ${themeCssVariables.spacing[8]};
   width: 100%;
 `;
 
 const StyledHelperText = styled.p`
-  font-size: ${themeCssVariables.font.size.xs};
   color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.xs};
   margin-top: ${themeCssVariables.spacing[3]};
   text-align: center;
 `;
 
 const StyledCheckboxRow = styled.div<{ isSelected: boolean }>`
-  display: flex;
   align-items: center;
-  gap: ${themeCssVariables.spacing[3]};
-  padding: ${themeCssVariables.spacing[3]} ${themeCssVariables.spacing[4]};
   border: 1px solid
     ${({ isSelected }) =>
       isSelected
@@ -133,6 +129,9 @@ const StyledCheckboxRow = styled.div<{ isSelected: boolean }>`
         : themeCssVariables.border.color.medium};
   border-radius: ${themeCssVariables.border.radius.sm};
   cursor: pointer;
+  display: flex;
+  gap: ${themeCssVariables.spacing[3]};
+  padding: ${themeCssVariables.spacing[3]} ${themeCssVariables.spacing[4]};
   transition: all 0.15s ease;
 
   &:hover {
@@ -146,8 +145,8 @@ const StyledCheckboxRow = styled.div<{ isSelected: boolean }>`
 
 const StyledCheckboxLabel = styled.div`
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
 `;
 
 const StyledCheckboxTitle = styled.span`
@@ -163,10 +162,10 @@ const StyledCheckboxDescription = styled.span`
 
 const StyledTwoColumnLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: ${themeCssVariables.spacing[6]};
-  width: 100%;
+  grid-template-columns: 1fr 1fr;
   margin-top: ${themeCssVariables.spacing[4]};
+  width: 100%;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -200,8 +199,8 @@ const StyledTrackDescription = styled.span`
 const StyledDashboardPreview = styled.div`
   background: ${themeCssVariables.background.secondary};
   border-radius: ${themeCssVariables.border.radius.md};
-  padding: ${themeCssVariables.spacing[4]};
   min-height: 200px;
+  padding: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledPreviewTitle = styled.div`
@@ -226,37 +225,37 @@ const StyledPreviewItem = styled.div`
 `;
 
 const StyledSetupContainer = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: ${themeCssVariables.spacing[4]};
   padding: ${themeCssVariables.spacing[8]} 0;
 `;
 
 const StyledSetupItem = styled.div<{ isComplete: boolean }>`
-  display: flex;
   align-items: center;
-  gap: ${themeCssVariables.spacing[3]};
-  font-size: ${themeCssVariables.font.size.md};
   color: ${themeCssVariables.font.color.primary};
+  display: flex;
+  font-size: ${themeCssVariables.font.size.md};
+  gap: ${themeCssVariables.spacing[3]};
   opacity: ${({ isComplete }) => (isComplete ? 1 : 0.4)};
   transition: opacity 0.3s ease;
 `;
 
 const StyledSetupCheckmark = styled.div<{ isComplete: boolean }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
   align-items: center;
-  justify-content: center;
   background: ${({ isComplete }) =>
     isComplete
       ? themeCssVariables.color.blue
       : themeCssVariables.background.quaternary};
+  border-radius: 50%;
   color: white;
+  display: flex;
   font-size: 12px;
+  height: 20px;
+  justify-content: center;
   transition: background 0.3s ease;
+  width: 20px;
 `;
 
 const StyledRoleInputContainer = styled.div`
@@ -301,13 +300,13 @@ export const PartnerProfile = () => {
   });
 
   // Derive recommended tracks from partner context selections
-  const recommendedTracks = useMemo(
-    () =>
-      partnerContext
-        .map((contextId) => TRACK_CONFIG[contextId])
-        .filter(isDefined),
-    [partnerContext],
-  );
+  const recommendedTracks = useMemo(() => {
+    return partnerContext.flatMap((contextId) => {
+      const track = TRACK_CONFIG[contextId];
+
+      return track === undefined ? [] : [track];
+    });
+  }, [partnerContext]);
 
   // Initialize selected tracks when moving to step 2
   useEffect(() => {
@@ -405,16 +404,15 @@ export const PartnerProfile = () => {
 
   // Active preview views based on selected tracks
   const previewViews = useMemo(() => {
-    return selectedTracks
-      .map((trackId) => {
-        const trackEntry = Object.values(TRACK_CONFIG).find(
-          (t) => t.id === trackId,
-        );
-        return trackEntry
-          ? { name: trackEntry.name, views: trackEntry.views }
-          : null;
-      })
-      .filter(isDefined);
+    return selectedTracks.flatMap((trackId) => {
+      const trackEntry = Object.values(TRACK_CONFIG).find(
+        (track) => track.id === trackId,
+      );
+
+      return trackEntry === undefined
+        ? []
+        : [{ name: trackEntry.name, views: trackEntry.views }];
+    });
   }, [selectedTracks]);
 
   const canProceed =

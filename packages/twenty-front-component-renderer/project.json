@@ -9,7 +9,13 @@
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": ["production", "^production"],
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build",
+        {
+          "target": "build",
+          "projects": "twenty-sdk"
+        }
+      ],
       "outputs": ["{projectRoot}/dist"],
       "options": {
         "cwd": "{projectRoot}",
@@ -20,7 +26,27 @@
         "parallel": false
       }
     },
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": [
+        "^build",
+        {
+          "target": "build",
+          "projects": "twenty-sdk"
+        }
+      ],
+      "options": {
+        "cwd": "packages/twenty-front-component-renderer",
+        "command": "tsgo -p tsconfig.json"
+      },
+      "configurations": {
+        "watch": {
+          "command": "tsgo -p tsconfig.json --watch"
+        }
+      }
+    },
+
     "lint": {},
     "generate-remote-dom-elements": {
       "executor": "nx:run-commands",

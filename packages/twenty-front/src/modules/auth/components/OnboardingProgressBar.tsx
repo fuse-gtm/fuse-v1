@@ -8,27 +8,27 @@ type OnboardingProgressBarProps = {
 };
 
 const StyledContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[3]};
-  width: 100%;
   margin-bottom: ${themeCssVariables.spacing[6]};
+  width: 100%;
 `;
 
 const StyledBarContainer = styled.div`
   display: flex;
-  gap: 4px;
   flex: 1;
+  gap: 4px;
 `;
 
 const StyledSegment = styled.div<{ isActive: boolean; isCompleted: boolean }>`
-  height: 4px;
-  flex: 1;
-  border-radius: 2px;
   background: ${({ isActive, isCompleted }) =>
     isCompleted || isActive
       ? themeCssVariables.color.blue
       : themeCssVariables.background.quaternary};
+  border-radius: 2px;
+  flex: 1;
+  height: 4px;
   opacity: ${({ isActive }) => (isActive ? 0.7 : 1)};
   transition:
     background 0.2s ease,

@@ -1,4 +1,4 @@
-import { type InputJsonSchema } from '@/logic-function';
+import { type InputJsonSchema } from '@/logic-function/index';
 
 export const SEED_LOGIC_FUNCTION_INPUT_SCHEMA: InputJsonSchema = {
   type: 'object',

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { defineFrontComponent } from '@/sdk';
+import { defineFrontComponent } from '@/sdk/index';
 import {
   Button,
   Chip,

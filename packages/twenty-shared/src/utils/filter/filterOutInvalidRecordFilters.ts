@@ -1,4 +1,4 @@
-import { type ViewFilterOperand } from '@/types';
+import { type ViewFilterOperand } from '@/types/index';
 
 import { isRecordFilterValueValid } from './isRecordFilterValueValid';
 

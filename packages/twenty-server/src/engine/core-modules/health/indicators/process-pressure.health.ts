@@ -46,8 +46,7 @@ export class ProcessPressureHealthIndicator {
       },
     };
 
-    const isHealthy =
-      details.rss.ok && details.heap.ok && details.eventLoop.ok;
+    const isHealthy = details.rss.ok && details.heap.ok && details.eventLoop.ok;
 
     if (isHealthy) {
       return indicator.up({ details });

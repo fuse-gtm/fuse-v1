@@ -22,9 +22,9 @@ const StyledFormContainer = styled.div`
 const StyledDescription = styled.p`
   color: ${themeCssVariables.font.color.tertiary};
   font-size: ${themeCssVariables.font.size.sm};
+  line-height: 1.5;
   margin: 0;
   margin-bottom: ${themeCssVariables.spacing[4]};
-  line-height: 1.5;
 `;
 
 const StyledBottomLinks = styled.div`
@@ -39,11 +39,11 @@ const StyledBottomLinks = styled.div`
 const StyledLinkButton = styled.button`
   background: none;
   border: none;
+  color: ${themeCssVariables.font.color.tertiary};
+  cursor: pointer;
   font-family: ${themeCssVariables.font.family};
   font-size: ${themeCssVariables.font.size.xs};
   font-weight: ${themeCssVariables.font.weight.regular};
-  color: ${themeCssVariables.font.color.tertiary};
-  cursor: pointer;
   padding: 0;
 
   &:hover {

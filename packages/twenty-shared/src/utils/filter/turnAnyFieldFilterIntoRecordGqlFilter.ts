@@ -1,3 +1,6 @@
+import { isNonEmptyString } from '@sniptt/guards';
+import { z } from 'zod';
+
 import { CURRENCY_CODE_LABELS } from '../../constants';
 import { type CurrencyCode } from '../../constants/CurrencyCode';
 import {
@@ -6,17 +9,11 @@ import {
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
 } from '../../types';
-import {
-  filterSelectOptionsOfFieldMetadataItem,
-  type RecordFilter,
-} from '..';
+import { filterSelectOptionsOfFieldMetadataItem, type RecordFilter } from '..';
 import { isNonEmptyArray } from '../array/isNonEmptyArray';
+import { isDefined } from '../validation/isDefined';
 import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
 import { createAnyFieldRecordFilterBaseProperties } from './utils/createAnyFieldRecordFilterBaseProperties';
-import { isDefined } from '../validation/isDefined';
-import { isNonEmptyString } from '@sniptt/guards';
-
-import { z } from 'zod';
 
 const currencies: { value: CurrencyCode; label: string }[] = Object.entries(
   CURRENCY_CODE_LABELS,

@@ -1,5 +1,5 @@
 import { generateDefaultFieldUniversalIdentifier } from '@/cli/utilities/build/manifest/utils/generate-default-field-universal-identifier';
-import { RelationType } from '@/sdk';
+import { RelationType } from '@/sdk/index';
 import type { ObjectConfig } from '@/sdk/objects/object-config';
 import {
   type FieldManifest,

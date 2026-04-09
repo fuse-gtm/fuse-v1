@@ -1,5 +1,5 @@
-import { type LeafType, type NodeType } from '@/workflow';
-import { type FieldMetadataType } from '@/types';
+import { type LeafType, type NodeType } from '@/workflow/index';
+import { type FieldMetadataType } from '@/types/index';
 
 export type InputSchemaPropertyType = LeafType | NodeType | FieldMetadataType;
 

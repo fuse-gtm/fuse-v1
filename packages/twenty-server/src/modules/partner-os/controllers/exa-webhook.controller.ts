@@ -12,6 +12,7 @@ import {
 
 import { createHmac, timingSafeEqual } from 'crypto';
 
+import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
 import { PartnerDiscoveryOrchestratorService } from 'src/modules/partner-os/services/partner-discovery-orchestrator.service';
 import { type ExaWebhookEvent } from 'src/modules/partner-os/types/exa-webhook.types';
@@ -25,7 +26,7 @@ export class ExaWebhookController {
   ) {}
 
   @Post('exa-webhook')
-  @UseGuards(PublicEndpointGuard)
+  @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   @HttpCode(200)
   async handleExaWebhook(
     @Body() body: ExaWebhookEvent,

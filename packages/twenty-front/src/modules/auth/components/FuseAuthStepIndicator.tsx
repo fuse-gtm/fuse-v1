@@ -2,14 +2,14 @@ import { styled } from '@linaria/react';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledPill = styled.div`
-  display: inline-flex;
   align-items: center;
-  padding: ${themeCssVariables.spacing[1]} ${themeCssVariables.spacing[3]};
-  border-radius: ${themeCssVariables.border.radius.pill};
   background: ${themeCssVariables.background.transparent.light};
+  border-radius: ${themeCssVariables.border.radius.pill};
+  color: ${themeCssVariables.font.color.secondary};
+  display: inline-flex;
   font-size: ${themeCssVariables.font.size.sm};
   font-weight: ${themeCssVariables.font.weight.medium};
-  color: ${themeCssVariables.font.color.secondary};
+  padding: ${themeCssVariables.spacing[1]} ${themeCssVariables.spacing[3]};
 `;
 
 type FuseAuthStepIndicatorProps = {

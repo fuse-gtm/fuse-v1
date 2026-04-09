@@ -17,7 +17,6 @@ const config: StorybookConfig = {
   stories: ['../src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
 
   addons: [
-    getAbsolutePath('@storybook-community/storybook-addon-cookie'),
     getAbsolutePath('@storybook/addon-links'),
     getAbsolutePath('@storybook/addon-coverage'),
     getAbsolutePath('storybook-addon-pseudo-states'),
@@ -62,6 +61,10 @@ const config: StorybookConfig = {
         find: '@/',
         replacement: `${resolvedSharedPath}/`,
       },
+      {
+        find: '@tabler/icons-react',
+        replacement: '@tabler/icons-react/dist/esm/icons/index.mjs',
+      },
     ];
 
     if (!isVitest && !isTypeCheckerDisabled) {
@@ -81,13 +84,6 @@ const config: StorybookConfig = {
         alias,
       },
       plugins,
-      resolve: {
-        ...viteConfig.resolve,
-        alias: {
-          ...(viteConfig.resolve?.alias ?? {}),
-          '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
-        },
-      },
     };
   },
 };
@@ -99,5 +95,7 @@ export default config;
 // and https://nx.dev/recipes/storybook/custom-builder-configs
 
 function getAbsolutePath(value: string): string {
-  return path.dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
+  return path.dirname(
+    fileURLToPath(import.meta.resolve(`${value}/package.json`)),
+  );
 }

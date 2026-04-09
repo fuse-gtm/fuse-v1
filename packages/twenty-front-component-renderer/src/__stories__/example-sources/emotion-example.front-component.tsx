@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { defineFrontComponent } from '@/sdk';
+import { defineFrontComponent } from '@/sdk/index';
 
 const Card = styled.div`
   padding: 24px;
