@@ -9,7 +9,13 @@
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": ["production", "^production"],
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build",
+        {
+          "target": "build",
+          "projects": "twenty-client-sdk"
+        }
+      ],
       "outputs": ["{projectRoot}/dist"],
       "options": {
         "cwd": "{projectRoot}",
@@ -37,7 +43,26 @@
       }
     },
     "set-local-version": {},
-    "typecheck": {},
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": [
+        "^build",
+        {
+          "target": "build",
+          "projects": "twenty-client-sdk"
+        }
+      ],
+      "options": {
+        "cwd": "packages/twenty-sdk",
+        "command": "tsgo -p tsconfig.json"
+      },
+      "configurations": {
+        "watch": {
+          "command": "tsgo -p tsconfig.json --watch"
+        }
+      }
+    },
     "lint": {},
     "test": {
       "executor": "@nx/vitest:test",

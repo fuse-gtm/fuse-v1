@@ -25,7 +25,7 @@ import {
 } from 'twenty-ui/input';
 import { TextInput } from '@/ui/input/components/TextInput';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { SKIP_PARTNER_PROFILE_ONBOARDING_STEP } from '@/modules/onboarding/graphql/mutations/skipPartnerProfileOnboardingStep';
+import { SKIP_PARTNER_PROFILE_ONBOARDING_STEP } from '~/modules/onboarding/graphql/mutations/skipPartnerProfileOnboardingStep';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { IconCheck } from 'twenty-ui/display';
 
