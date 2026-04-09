@@ -514,6 +514,11 @@ msgstr "12h"
 msgid "12h ({hour12Label})"
 msgstr "12h ({hour12Label})"
 
+#. js-lingui-id: rPUr2g
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "14-day Pro trial"
+msgstr "14-day Pro trial"
+
 #. js-lingui-id: yXvRMf
 #: src/modules/settings/data-model/components/SettingsDataModelNewFieldBreadcrumbDropDown.tsx
 #: src/modules/settings/data-model/components/SettingsDataModelNewFieldBreadcrumbDropDown.tsx
@@ -589,6 +594,11 @@ msgstr "A role must be selected for the API key"
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "A shared environment where you will be able to manage your customer relations with your team."
 msgstr "A shared environment where you will be able to manage your customer relations with your team."
+
+#. js-lingui-id: MLgllG
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
+msgid "A shared environment where you will manage your partner relationships."
+msgstr "A shared environment where you will manage your partner relationships."
 
 #. js-lingui-id: /cSHSG
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
@@ -1239,6 +1249,11 @@ msgstr "Advanced options"
 #: src/modules/navigation/components/SettingsNavigationDrawer.tsx
 msgid "Advanced:"
 msgstr "Advanced:"
+
+#. js-lingui-id: 21nI2G
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Affiliate / Referral"
+msgstr "Affiliate / Referral"
 
 #. js-lingui-id: 1Cox/a
 #: src/pages/settings/profile/appearance/components/LocalePicker.tsx
@@ -1912,6 +1927,7 @@ msgid "Appearance"
 msgstr "Appearance"
 
 #. js-lingui-id: QsDjlD
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/modules/settings/workspace/components/NameField.tsx
 msgid "Apple"
@@ -2270,6 +2286,7 @@ msgid "Authentication"
 msgstr "Authentication"
 
 #. js-lingui-id: htuqBH
+#: src/pages/auth/FuseCheckInbox.tsx
 #: src/modules/auth/hooks/useVerifyLogin.ts
 msgid "Authentication failed"
 msgstr "Authentication failed"
@@ -2424,6 +2441,11 @@ msgstr "Base URL"
 msgid "Base URL is required"
 msgstr "Base URL is required"
 
+#. js-lingui-id: 7nnbhu
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Based on your focus, we suggest starting with these"
+msgstr "Based on your focus, we suggest starting with these"
+
 #. js-lingui-id: /xLNEx
 #: src/modules/activities/emails/components/EmailComposerFields.tsx
 #: src/modules/activities/emails/components/EmailComposerFields.tsx
@@ -2561,6 +2583,11 @@ msgstr "Brown"
 msgid "Build a dashboard that shows: (1) total pipeline value by stage for the last 3 months, (2) count of deals won vs lost per month, (3) average deal size. Use our standard pipeline stages."
 msgstr "Build a dashboard that shows: (1) total pipeline value by stage for the last 3 months, (2) count of deals won vs lost per month, (3) average deal size. Use our standard pipeline stages."
 
+#. js-lingui-id: emfIOz
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Build and manage tech partnerships"
+msgstr "Build and manage tech partnerships"
+
 #. js-lingui-id: alSW5d
 #: src/modules/settings/data-model/fields/forms/morph-relation/components/SettingsDataModelFieldRelationJunctionForm.tsx
 msgid "Build many-to-many relations"
@@ -2596,10 +2623,10 @@ msgstr "Bullet List"
 msgid "by {author}"
 msgstr "by {author}"
 
-#. js-lingui-id: 8Pfllj
+#. js-lingui-id: lBCpcl
 #: src/modules/auth/sign-in-up/components/FooterNote.tsx
-msgid "By using Twenty, you agree to the"
-msgstr "By using Twenty, you agree to the"
+msgid "By using Fuse, you agree to the"
+msgstr "By using Fuse, you agree to the"
 
 #. js-lingui-id: Yx41df
 #: src/modules/auth/sign-in-up/components/FooterNote.tsx
@@ -2711,6 +2738,11 @@ msgstr "Calendars"
 #: src/modules/object-record/record-field/ui/form-types/components/FormPhoneFieldInput.tsx
 msgid "Calling Code"
 msgstr "Calling Code"
+
+#. js-lingui-id: khIgP5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Campaign Tracker"
+msgstr "Campaign Tracker"
 
 #. js-lingui-id: msssZq
 #: src/modules/settings/data-model/objects/forms/components/SettingsDataModelObjectAboutForm.tsx
@@ -2913,6 +2945,16 @@ msgstr "Change to Pro Plan?"
 msgid "Change to Yearly?"
 msgstr "Change to Yearly?"
 
+#. js-lingui-id: r3Ndbb
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Channel / Reseller"
+msgstr "Channel / Reseller"
+
+#. js-lingui-id: sZdOTp
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Channel Partners"
+msgstr "Channel Partners"
+
 #. js-lingui-id: nuBbBr
 #: src/modules/side-panel/pages/page-layout/components/SidePanelPageLayoutDashboardWidgetTypeSelect.tsx
 #: src/modules/side-panel/components/hooks/usePageLayoutHeaderInfo.ts
@@ -2949,10 +2991,15 @@ msgstr "Check your Emails"
 msgid "Check your inbox to verify your new email address."
 msgstr "Check your inbox to verify your new email address."
 
-#. js-lingui-id: SxwQE8
+#. js-lingui-id: 60j1Mi
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Check your inbox!"
+msgstr "Check your inbox!"
+
+#. js-lingui-id: tZCNwX
 #: src/modules/settings/billing/hooks/useHandleCheckoutSession.ts
-msgid "Checkout session error. Please retry or contact Twenty team"
-msgstr "Checkout session error. Please retry or contact Twenty team"
+msgid "Checkout session error. Please retry or contact Fuse support"
+msgstr "Checkout session error. Please retry or contact Fuse support"
 
 #. js-lingui-id: SviKkE
 #: src/pages/settings/profile/appearance/components/LocalePicker.tsx
@@ -2966,6 +3013,7 @@ msgstr "Chinese — Traditional"
 
 #. js-lingui-id: NFfUic
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Choose a Workspace"
 msgstr "Choose a Workspace"
 
@@ -3130,6 +3178,21 @@ msgstr "Close banner"
 msgid "Close side panel"
 msgstr "Close side panel"
 
+#. js-lingui-id: 9yxcVB
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Co-Sell / Co-Marketing"
+msgstr "Co-Sell / Co-Marketing"
+
+#. js-lingui-id: dzm8FT
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Co-sell and referral handoff tracking"
+msgstr "Co-sell and referral handoff tracking"
+
+#. js-lingui-id: unFPyd
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Co-Sell Partners"
+msgstr "Co-Sell Partners"
+
 #. js-lingui-id: EWPtMO
 #: src/modules/workflow/workflow-steps/workflow-actions/code-action/components/WorkflowEditActionCode.tsx
 #: src/modules/ai/components/CodeExecutionDisplay.tsx
@@ -3241,6 +3304,21 @@ msgstr "Commas and dot"
 #: src/pages/settings/ai/SettingsAgentTurnDetail.tsx
 msgid "Comment"
 msgstr "Comment"
+
+#. js-lingui-id: WttD0p
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission Tracker"
+msgstr "Commission Tracker"
+
+#. js-lingui-id: +QDw37
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission-based partner programs"
+msgstr "Commission-based partner programs"
+
+#. js-lingui-id: adlLHm
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission-based referral tracking"
+msgstr "Commission-based referral tracking"
 
 #. js-lingui-id: NM9bMd
 #: src/modules/object-record/object-options-dropdown/components/ObjectOptionsDropdownLayoutContent.tsx
@@ -3389,6 +3467,11 @@ msgstr "Configure your emails and calendar settings."
 #: src/modules/settings/admin-panel/ai/components/SettingsAdminAiProviderListCard.tsx
 msgid "Configured"
 msgstr "Configured"
+
+#. js-lingui-id: Antk8O
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Configuring views, fields, and recommended workflows"
+msgstr "Configuring views, fields, and recommended workflows"
 
 #. js-lingui-id: 7VpPHA
 #: src/modules/ui/layout/modal/components/ConfirmationModal.tsx
@@ -3543,10 +3626,19 @@ msgstr "Context window"
 #: src/pages/onboarding/SyncEmails.tsx
 #: src/pages/onboarding/SyncEmails.tsx
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/PartnerProfile.tsx
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/pages/onboarding/internal/ChooseYourPlanContent.tsx
+#: src/pages/auth/FuseCheckInbox.tsx
 #: src/modules/spreadsheet-import/steps/components/SelectHeaderStep/SelectHeaderStep.tsx
 #: src/modules/spreadsheet-import/steps/components/MatchColumnsStep/MatchColumnsStep.tsx
 #: src/modules/spreadsheet-import/components/StepNavigationButton.tsx
@@ -3577,6 +3669,7 @@ msgstr "Continue with Microsoft"
 
 #. js-lingui-id: lGbmpO
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Continue without sync"
 msgstr "Continue without sync"
 
@@ -3591,11 +3684,17 @@ msgid "Conversation"
 msgstr "Conversation"
 
 #. js-lingui-id: HRGl1X
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
 #: src/modules/settings/members/components/MemberNameFields.tsx
 msgid "Cook"
 msgstr "Cook"
+
+#. js-lingui-id: dIQfGX
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Coordinate joint opportunities and campaigns"
+msgstr "Coordinate joint opportunities and campaigns"
 
 #. js-lingui-id: FxVG/l
 #: src/hooks/useCopyToClipboard.tsx
@@ -3629,6 +3728,7 @@ msgstr "Copy commands"
 
 #. js-lingui-id: 7eVkEH
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Copy invitation link"
 msgstr "Copy invitation link"
 
@@ -3940,7 +4040,13 @@ msgstr "Create Webhook"
 msgid "Create Workspace"
 msgstr "Create Workspace"
 
+#. js-lingui-id: l07yJF
+#: src/pages/onboarding/FuseCreateProfile.tsx
+msgid "Create your profile"
+msgstr "Create your profile"
+
 #. js-lingui-id: 9chYz/
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Create your workspace"
@@ -3967,11 +4073,13 @@ msgid "Created by"
 msgstr "Created by"
 
 #. js-lingui-id: fR16ki
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Creating your data model..."
 msgstr "Creating your data model..."
 
 #. js-lingui-id: YO4SdK
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Creating your workspace"
 msgstr "Creating your workspace"
@@ -4144,6 +4252,11 @@ msgstr "Custom Providers"
 #: src/modules/object-record/object-options-dropdown/components/ObjectOptionsDropdownCustomView.tsx
 msgid "Custom View"
 msgstr "Custom View"
+
+#. js-lingui-id: Q1ctfg
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Custom views created"
+msgstr "Custom views created"
 
 #. js-lingui-id: MNGIVW
 #: src/modules/settings/data-model/object-details/components/tabs/ObjectFields.tsx
@@ -4456,6 +4569,11 @@ msgstr "Deactivate this field"
 #: src/modules/settings/data-model/fields/forms/components/text/constants/TextDataModelSelectOptions.ts
 msgid "Deactivated"
 msgstr "Deactivated"
+
+#. js-lingui-id: aGxmXh
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Deal Registration"
+msgstr "Deal Registration"
 
 #. js-lingui-id: Iotuxe
 #: src/modules/ai/components/RoutingDebugDisplay.tsx
@@ -4883,6 +5001,11 @@ msgstr "Developer"
 msgid "Developers links"
 msgstr "Developers links"
 
+#. js-lingui-id: 9Dgqvq
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Didn't receive an email? Check spam or try again."
+msgstr "Didn't receive an email? Check spam or try again."
+
 #. js-lingui-id: Xm/s+u
 #: src/modules/settings/accounts/components/SettingsAccountsCalendarChannelsGeneral.tsx
 msgid "Display"
@@ -5135,6 +5258,11 @@ msgstr "e.g. gpt-4o"
 #: src/pages/settings/admin-panel/SettingsAdminNewAiModel.tsx
 msgid "e.g. GPT-4o"
 msgstr "e.g. GPT-4o"
+
+#. js-lingui-id: xSOlS/
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "e.g. Head of Partnerships"
+msgstr "e.g. Head of Partnerships"
 
 #. js-lingui-id: Xh9FA2
 #: src/pages/settings/admin-panel/SettingsAdminNewAiProvider.tsx
@@ -5448,6 +5576,7 @@ msgstr "Emails"
 
 #. js-lingui-id: HtOaZO
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Emails and Calendar"
 msgstr "Emails and Calendar"
 
@@ -5714,6 +5843,11 @@ msgstr "Enter one option per line"
 msgid "Enter one option per line. Each line will become a new option."
 msgstr "Enter one option per line. Each line will become a new option."
 
+#. js-lingui-id: UQrJKS
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Enter password from email"
+msgstr "Enter password from email"
+
 #. js-lingui-id: waLOUb
 #: src/modules/object-record/record-field/ui/form-types/components/FormPhoneFieldInput.tsx
 msgid "Enter phone number"
@@ -5760,6 +5894,11 @@ msgstr "Enter the infos to set the connection"
 #: src/pages/settings/ai/components/SettingsAgentSettingsTab.tsx
 msgid "Enter the system prompt that defines this agent's behavior and capabilities"
 msgstr "Enter the system prompt that defines this agent's behavior and capabilities"
+
+#. js-lingui-id: GURGx9
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Enter the temporary password from your email to continue."
+msgstr "Enter the temporary password from your email to continue."
 
 #. js-lingui-id: tEWpbi
 #: src/pages/settings/applications/tabs/SettingsApplicationRegistrationGeneralTab.tsx
@@ -6011,10 +6150,10 @@ msgstr "Error while cancelling metered tier switching."
 msgid "Error while cancelling plan switching."
 msgstr "Error while cancelling plan switching."
 
-#. js-lingui-id: QmR+2U
+#. js-lingui-id: Hm5Tju
 #: src/modules/settings/billing/hooks/useEndSubscriptionTrialPeriod.ts
-msgid "Error while ending trial period. Please contact Twenty team."
-msgstr "Error while ending trial period. Please contact Twenty team."
+msgid "Error while ending trial period. Please contact Fuse support."
+msgstr "Error while ending trial period. Please contact Fuse support."
 
 #. js-lingui-id: 5g78zo
 #: src/pages/settings/members/SettingsWorkspaceMember.tsx
@@ -6177,6 +6316,11 @@ msgstr "Exclude non-professional emails"
 #: src/modules/settings/accounts/components/SettingsAccountsBlocklistSection.tsx
 msgid "Exclude the following people and domains from my email sync. Internal conversations will not be imported"
 msgstr "Exclude the following people and domains from my email sync. Internal conversations will not be imported"
+
+#. js-lingui-id: n1YUO1
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Executive Sponsors"
+msgstr "Executive Sponsors"
 
 #. js-lingui-id: YzI8cc
 #: src/modules/workflow/workflow-steps/workflow-actions/form-action/components/WorkflowFormFieldSettingsSelect.tsx
@@ -6829,6 +6973,7 @@ msgstr "Filters"
 
 #. js-lingui-id: JmZ/+d
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/pages/onboarding/BookCallDecision.tsx
 #: src/modules/settings/roles/role-permissions/object-level-permissions/object-form/components/SettingsRolePermissionsObjectLevelObjectForm.tsx
 msgid "Finish"
@@ -6880,6 +7025,7 @@ msgid "First 5 lines"
 msgstr "First 5 lines"
 
 #. js-lingui-id: kODvZJ
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/security/components/SettingsSecurityEditableProfileFields.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
@@ -6889,6 +7035,7 @@ msgid "First Name"
 msgstr "First Name"
 
 #. js-lingui-id: cgevMo
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "First name can not be empty"
 msgstr "First name can not be empty"
@@ -7077,8 +7224,14 @@ msgstr "Get Enterprise"
 msgid "Get Enterprise Key"
 msgstr "Get Enterprise Key"
 
+#. js-lingui-id: ZDIydz
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Get started"
+msgstr "Get started"
+
 #. js-lingui-id: NXEW3h
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Get the most out of your workspace by inviting your team."
 msgstr "Get the most out of your workspace by inviting your team."
 
@@ -7342,6 +7495,16 @@ msgstr "Hide hidden groups"
 msgid "Hide label"
 msgstr "Hide label"
 
+#. js-lingui-id: osoIfa
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "High-touch executive partnerships"
+msgstr "High-touch executive partnerships"
+
+#. js-lingui-id: eojPWY
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "High-touch partnerships with executive sponsors"
+msgstr "High-touch partnerships with executive sponsors"
+
 #. js-lingui-id: i0qMbr
 #: src/modules/page-layout/constants/StandardPageLayoutTabTitleTranslations.ts
 #: src/modules/navigation/components/MainNavigationDrawerTabsRow.tsx
@@ -7363,6 +7526,11 @@ msgstr "Hours"
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerCronForm.tsx
 msgid "Hours between triggers"
 msgstr "Hours between triggers"
+
+#. js-lingui-id: ZlRrYu
+#: src/pages/onboarding/FuseCreateProfile.tsx
+msgid "How you'll be identified in the app."
+msgstr "How you'll be identified in the app."
 
 #. js-lingui-id: B06Bgk
 #: src/pages/onboarding/CreateProfile.tsx
@@ -7818,6 +7986,16 @@ msgstr "Instructions"
 msgid "Instructions Editor"
 msgstr "Instructions Editor"
 
+#. js-lingui-id: sw/Per
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Integration Partners"
+msgstr "Integration Partners"
+
+#. js-lingui-id: vlcmQ+
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Integration Status"
+msgstr "Integration Status"
+
 #. js-lingui-id: RGm66q
 #: src/utils/title-utils.ts
 msgid "Integrations - Settings"
@@ -7932,6 +8110,11 @@ msgstr "Invalid minute value '{newMinute}'. Should be integer greater than 1"
 msgid "Invalid number"
 msgstr "Invalid number"
 
+#. js-lingui-id: WyTotw
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Invalid password. Please check your email and try again."
+msgstr "Invalid password. Please check your email and try again."
+
 #. js-lingui-id: sBZMWb
 #: src/modules/page-layout/widgets/components/PageLayoutWidgetNoDataDisplay.tsx
 msgid "Invalid URL"
@@ -7976,6 +8159,7 @@ msgstr "Invite by Link"
 
 #. js-lingui-id: 5IfmKA
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Invite link sent to email addresses"
 msgstr "Invite link sent to email addresses"
 
@@ -7986,6 +8170,7 @@ msgstr "Invite user"
 
 #. js-lingui-id: d+Y+rP
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Invite your team"
 msgstr "Invite your team"
 
@@ -8163,8 +8348,19 @@ msgstr "john.doe@example.com"
 
 #. js-lingui-id: fSPjtl
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Join {workspaceName} team"
 msgstr "Join {workspaceName} team"
+
+#. js-lingui-id: XFbZAI
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Joint go-to-market motions"
+msgstr "Joint go-to-market motions"
+
+#. js-lingui-id: 7bOJ6G
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Joint Opportunities"
+msgstr "Joint Opportunities"
 
 #. js-lingui-id: B2Zb/F
 #: src/pages/settings/ai/components/SettingsAgentResponseFormat.tsx
@@ -8307,6 +8503,7 @@ msgid "Last name"
 msgstr "Last name"
 
 #. js-lingui-id: UXBCwc
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/security/components/SettingsSecurityEditableProfileFields.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
@@ -8315,6 +8512,7 @@ msgid "Last Name"
 msgstr "Last Name"
 
 #. js-lingui-id: PnMGfO
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "Last name can not be empty"
 msgstr "Last name can not be empty"
@@ -8496,6 +8694,7 @@ msgstr "Link"
 
 #. js-lingui-id: pQjjYo
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/modules/workspace/components/WorkspaceInviteLink.tsx
 #: src/modules/object-record/record-table/record-table-cell/hooks/useGetSecondaryRecordTableCellButton.ts
 #: src/modules/object-record/record-field/ui/meta-types/display/components/LinksFieldDisplay.tsx
@@ -8782,6 +8981,11 @@ msgstr "Manage favorite"
 #: src/pages/settings/members/SettingsWorkspaceMembers.tsx
 msgid "Manage Members"
 msgstr "Manage Members"
+
+#. js-lingui-id: VSc6WD
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Manage reseller pipeline and deal registration"
+msgstr "Manage reseller pipeline and deal registration"
 
 #. js-lingui-id: eGGH1l
 #: src/modules/settings/roles/role-permissions/permission-flags/hooks/useSettingsRolePermissionFlagConfig.ts
@@ -9303,6 +9507,7 @@ msgstr "mySkill"
 #: src/pages/settings/ai/components/SettingsToolsTable.tsx
 #: src/pages/settings/ai/components/SettingsToolParameterTable.tsx
 #: src/pages/settings/admin-panel/SettingsAdminAiProviderDetail.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/workspace/components/NameField.tsx
 #: src/modules/settings/usage/components/UsageByUserTableSection.tsx
@@ -9344,6 +9549,7 @@ msgid "Name and description are managed via your app manifest (CLI)"
 msgstr "Name and description are managed via your app manifest (CLI)"
 
 #. js-lingui-id: XSwyCU
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Name can not be empty"
 msgstr "Name can not be empty"
@@ -10593,6 +10799,7 @@ msgstr "Options"
 
 #. js-lingui-id: BzEFor
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "or"
 msgstr "or"
 
@@ -10771,10 +10978,10 @@ msgstr "Page layouts defined by this app"
 msgid "Page Name"
 msgstr "Page Name"
 
-#. js-lingui-id: NRvxzv
+#. js-lingui-id: XZ566l
 #: src/pages/not-found/NotFound.tsx
-msgid "Page Not Found | Twenty"
-msgstr "Page Not Found | Twenty"
+msgid "Page Not Found | Fuse"
+msgstr "Page Not Found | Fuse"
 
 #. js-lingui-id: sF+Xp9
 #: src/pages/settings/security/event-logs/components/EventLogTableSelector.tsx
@@ -10796,6 +11003,31 @@ msgstr "Paragraph"
 #: src/pages/settings/ai/SettingsToolDetail.tsx
 msgid "Parameters"
 msgstr "Parameters"
+
+#. js-lingui-id: dvGoys
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Partner discovery with AI-powered search"
+msgstr "Partner discovery with AI-powered search"
+
+#. js-lingui-id: SetT8l
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Partner pipeline attribution reports"
+msgstr "Partner pipeline attribution reports"
+
+#. js-lingui-id: BQA/aK
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner Profiles"
+msgstr "Partner Profiles"
+
+#. js-lingui-id: cyLtx9
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner scoring enabled"
+msgstr "Partner scoring enabled"
+
+#. js-lingui-id: EKgmEi
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner tracks configured"
+msgstr "Partner tracks configured"
 
 #. js-lingui-id: 8ZsakT
 #: src/modules/settings/security/components/SettingsSecurityAuthProvidersOptionsList.tsx
@@ -10987,6 +11219,7 @@ msgstr "Pick an object"
 #. js-lingui-id: N0+GsR
 #: src/pages/settings/SettingsWorkspace.tsx
 #: src/pages/settings/SettingsProfile.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/members/components/MemberInfosTab.tsx
 msgid "Picture"
@@ -11057,6 +11290,11 @@ msgstr "Please check your email for a verification link."
 msgid "Please enter a valid URL"
 msgstr "Please enter a valid URL"
 
+#. js-lingui-id: dK4n8t
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Please enter your temporary password"
+msgstr "Please enter your temporary password"
+
 #. js-lingui-id: qg68zg
 #: src/modules/information-banner/components/reconnect-account/InformationBannerReconnectAccountEmailAliases.tsx
 msgid "Please reconnect your mailbox {mailboxHandle} to update your email aliases:"
@@ -11067,6 +11305,11 @@ msgstr "Please reconnect your mailbox {mailboxHandle} to update your email alias
 #: src/modules/error-handler/components/internal/AppErrorDisplay.tsx
 msgid "Please refresh the page."
 msgstr "Please refresh the page."
+
+#. js-lingui-id: uc2wSi
+#: src/modules/auth/sign-in-up/hooks/useFuseEmailValidation.ts
+msgid "Please retry with a company email"
+msgstr "Please retry with a company email"
 
 #. js-lingui-id: X5x85V
 #: src/modules/settings/admin-panel/components/SettingsAdminWorkspaceContent.tsx
@@ -11157,6 +11400,7 @@ msgid "Postcode"
 msgstr "Postcode"
 
 #. js-lingui-id: /v6Rp9
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Prefilling your workspace data..."
 msgstr "Prefilling your workspace data..."
@@ -11183,6 +11427,7 @@ msgid "Preview Not Available"
 msgstr "Preview Not Available"
 
 #. js-lingui-id: DHhJ7s
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/modules/settings/admin-panel/health-status/components/SettingsAdminQueueJobsTable.tsx
 msgid "Previous"
 msgstr "Previous"
@@ -11370,6 +11615,11 @@ msgstr "Purple"
 msgid "Python Code Execution"
 msgstr "Python Code Execution"
 
+#. js-lingui-id: XRt4rh
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "QBR Tracker"
+msgstr "QBR Tracker"
+
 #. js-lingui-id: 2vudsu
 #: src/modules/side-panel/pages/page-layout/utils/getDateGranularityLabel.ts
 msgid "Quarter"
@@ -11490,6 +11740,11 @@ msgstr "Recipients"
 #: src/modules/settings/admin-panel/ai/components/SettingsAdminAI.tsx
 msgid "Recommended Models"
 msgstr "Recommended Models"
+
+#. js-lingui-id: fG0td5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Recommended partner tracks"
+msgstr "Recommended partner tracks"
 
 #. js-lingui-id: gcoiFh
 #: src/modules/settings/accounts/components/SettingsAccountsRowDropdownMenu.tsx
@@ -11613,6 +11868,16 @@ msgstr "Redirect Url copied to clipboard"
 #: src/modules/settings/security/components/SSO/SettingsSSOOIDCForm.tsx
 msgid "Redirection URI"
 msgstr "Redirection URI"
+
+#. js-lingui-id: UlkYKJ
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Referral Leads"
+msgstr "Referral Leads"
+
+#. js-lingui-id: MAGbyP
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Referral Partners"
+msgstr "Referral Partners"
 
 #. js-lingui-id: lCF0wC
 #: src/pages/settings/security/event-logs/SettingsEventLogs.tsx
@@ -11874,6 +12139,11 @@ msgstr "Request Failed"
 msgid "Required"
 msgstr "Required"
 
+#. js-lingui-id: ZlPqcC
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Reseller Pipeline"
+msgstr "Reseller Pipeline"
+
 #. js-lingui-id: G42SNI
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
@@ -12050,6 +12320,11 @@ msgstr "Role"
 msgid "Role for {agentLabel} agent"
 msgstr "Role for {agentLabel} agent"
 
+#. js-lingui-id: S/AKv5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Role is required"
+msgstr "Role is required"
+
 #. js-lingui-id: iSfzXo
 #: src/modules/settings/roles/role-settings/components/SettingsRoleSettings.tsx
 #: src/modules/settings/roles/role/components/SettingsRoleLabelContainer.tsx
@@ -12203,6 +12478,11 @@ msgstr "Save"
 #: src/modules/views/components/UpdateViewButtonGroup.tsx
 msgid "Save as new view"
 msgstr "Save as new view"
+
+#. js-lingui-id: SI4R//
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Scale through distribution partners"
+msgstr "Scale through distribution partners"
 
 #. js-lingui-id: gmB6oO
 #: src/modules/workflow/workflow-trigger/components/CronExpressionHelper.tsx
@@ -12935,9 +13215,15 @@ msgid "Set your application configuration variables"
 msgstr "Set your application configuration variables"
 
 #. js-lingui-id: dQsqpC
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Setting up your database..."
 msgstr "Setting up your database..."
+
+#. js-lingui-id: eVZ6vl
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Setting up your partner workspace"
+msgstr "Setting up your partner workspace"
 
 #. js-lingui-id: Tz0i8g
 #: src/pages/settings/logic-functions/SettingsLogicFunctionDetail.tsx
@@ -12984,6 +13270,7 @@ msgstr "Setup key copied to clipboard"
 
 #. js-lingui-id: NQNJjc
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Setup your 2FA"
 msgstr "Setup your 2FA"
 
@@ -13079,6 +13366,11 @@ msgstr "Sign in"
 msgid "Sign in or Create an account"
 msgstr "Sign in or Create an account"
 
+#. js-lingui-id: 5o7RYu
+#: src/pages/auth/FuseSignInUp.tsx
+msgid "Sign in to Fuse"
+msgstr "Sign in to Fuse"
+
 #. js-lingui-id: e+RpCP
 #: src/modules/auth/sign-in-up/components/internal/SignInUpWithCredentials.tsx
 msgid "Sign up"
@@ -13088,6 +13380,11 @@ msgstr "Sign up"
 #: src/modules/auth/sign-in-up/components/internal/SignInUpWithCredentials.tsx
 msgid "Sign-up is temporarily unavailable during maintenance."
 msgstr "Sign-up is temporarily unavailable during maintenance."
+
+#. js-lingui-id: XOxZT4
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Signing in..."
+msgstr "Signing in..."
 
 #. js-lingui-id: BZdVGR
 #: src/modules/settings/data-model/fields/forms/select/components/SettingsDataModelFieldSelectForm.tsx
@@ -13177,7 +13474,9 @@ msgid "Skills provided by this app"
 msgstr "Skills provided by this app"
 
 #. js-lingui-id: 6Uau97
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/pages/onboarding/BookCall.tsx
 msgid "Skip"
 msgstr "Skip"
@@ -13410,6 +13709,11 @@ msgstr "Start date"
 msgid "Start Date"
 msgstr "Start Date"
 
+#. js-lingui-id: CzBN6D
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Start exploring"
+msgstr "Start exploring"
+
 #. js-lingui-id: s+K73L
 #: src/modules/settings/billing/components/SettingsBillingSubscriptionInfo.tsx
 msgid "Start Your Subscription"
@@ -13461,6 +13765,16 @@ msgstr "Stop impersonating"
 #: src/modules/settings/admin-panel/config-variables/utils/useSourceContent.ts
 msgid "Stored in database"
 msgstr "Stored in database"
+
+#. js-lingui-id: e0Hcrs
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Strategic Alliances"
+msgstr "Strategic Alliances"
+
+#. js-lingui-id: vYfOb6
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Strategic Partners"
+msgstr "Strategic Partners"
 
 #. js-lingui-id: C9VfWO
 #: src/modules/object-record/record-field/ui/form-types/components/FormAddressFieldInput.tsx
@@ -13698,18 +14012,21 @@ msgstr "Sync lost with mailbox {mailboxHandle}. Please reconnect for updates:"
 
 #. js-lingui-id: L4+l7C
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Sync with Google"
 msgstr "Sync with Google"
 
 #. js-lingui-id: EICVgB
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Sync with Outlook"
 msgstr "Sync with Outlook"
 
-#. js-lingui-id: +9x4tK
+#. js-lingui-id: nZrIKL
 #: src/pages/onboarding/SyncEmails.tsx
-msgid "Sync your Emails and Calendar with Twenty. Choose your privacy settings."
-msgstr "Sync your Emails and Calendar with Twenty. Choose your privacy settings."
+#: src/pages/onboarding/FuseSyncEmails.tsx
+msgid "Sync your Emails and Calendar with Fuse. Choose your privacy settings."
+msgstr "Sync your Emails and Calendar with Fuse. Choose your privacy settings."
 
 #. js-lingui-id: N2FcBE
 #: src/modules/settings/accounts/components/SettingsAccountsConnectedAccountsRowRightContainer.tsx
@@ -13840,10 +14157,20 @@ msgstr "Task Title"
 msgid "Tasks"
 msgstr "Tasks"
 
+#. js-lingui-id: 1Uu+xl
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Technology Integrations"
+msgstr "Technology Integrations"
+
 #. js-lingui-id: lKXcJz
 #: src/pages/settings/emailing-domains/utils/getEmailingDomainStatusText.ts
 msgid "Temporary Failure"
 msgstr "Temporary Failure"
+
+#. js-lingui-id: V8nq04
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Temporary password"
+msgstr "Temporary password"
 
 #. js-lingui-id: h0xgxg
 #: src/pages/settings/applications/SettingsAvailableApplicationDetails.tsx
@@ -13965,6 +14292,7 @@ msgid "The name of your Domain"
 msgstr "The name of your Domain"
 
 #. js-lingui-id: +C8Rdp
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "The name of your organization"
 msgstr "The name of your organization"
@@ -13973,6 +14301,16 @@ msgstr "The name of your organization"
 #: src/pages/not-found/NotFound.tsx
 msgid "The page you're seeking is either gone or never was. Let's get you back on track"
 msgstr "The page you're seeking is either gone or never was. Let's get you back on track"
+
+#. js-lingui-id: lO9x3Q
+#: src/modules/auth/components/FuseOnboardingPreview.tsx
+msgid "The partnerships operating system for modern GTM teams. Manage partner discovery, co-sell motions, and attribution — all in one place."
+msgstr "The partnerships operating system for modern GTM teams. Manage partner discovery, co-sell motions, and attribution — all in one place."
+
+#. js-lingui-id: qWWvSg
+#: src/pages/auth/FuseSignInUp.tsx
+msgid "The partnerships OS for modern GTM teams."
+msgstr "The partnerships OS for modern GTM teams."
 
 #. js-lingui-id: jrCR2X
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerManual.tsx
@@ -14164,6 +14502,11 @@ msgstr "This file type cannot be previewed. Please download the file to view it.
 msgid "This form will appear in workflow runs."
 msgstr "This form will appear in workflow runs."
 
+#. js-lingui-id: 18/+iZ
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "This helps us calibrate your partnership workspace"
+msgstr "This helps us calibrate your partnership workspace"
+
 #. js-lingui-id: njWene
 #: src/modules/settings/data-model/fields/forms/morph-relation/components/SettingsDataModelFieldRelationJunctionForm.tsx
 msgid "This is a relation to a Junction Object"
@@ -14252,6 +14595,11 @@ msgstr "This view uses {usageLabel} on object \"{0}\" which is not accessible."
 msgid "This week"
 msgstr "This week"
 
+#. js-lingui-id: 7SQhYE
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "This will appear on your profile and in partner communications"
+msgstr "This will appear on your profile and in partner communications"
+
 #. js-lingui-id: VbVocX
 #: src/modules/side-panel/pages/page-layout/components/WidgetSettingsManageSection.tsx
 msgid "This will cancel all modifications done on the widget. This action cannot be undone."
@@ -14313,6 +14661,7 @@ msgid "Tidy up workflow"
 msgstr "Tidy up workflow"
 
 #. js-lingui-id: umgyhx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
 #: src/modules/settings/members/components/MemberNameFields.tsx
@@ -14399,6 +14748,11 @@ msgstr "Toggle all object permissions"
 #: src/modules/settings/roles/role-permissions/permission-flags/components/SettingsRolePermissionsSettingsTableHeader.tsx
 msgid "Toggle all settings permissions"
 msgstr "Toggle all settings permissions"
+
+#. js-lingui-id: 9GQRv0
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Toggle tracks to see your workspace preview"
+msgstr "Toggle tracks to see your workspace preview"
 
 #. js-lingui-id: IHtFjq
 #: src/pages/settings/admin-panel/SettingsAdminNewAiModel.tsx
@@ -14488,6 +14842,11 @@ msgstr "Total time"
 #: src/pages/settings/ai/components/SettingsAIUsageTab.tsx
 msgid "Track AI consumption across your workspace."
 msgstr "Track AI consumption across your workspace."
+
+#. js-lingui-id: dCebhf
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Track and manage technology partnerships"
+msgstr "Track and manage technology partnerships"
 
 #. js-lingui-id: YT/cKI
 #: src/modules/settings/billing/components/SettingsBillingCreditsSection.tsx
@@ -14827,6 +15186,7 @@ msgid "Unknown chart configuration type"
 msgstr "Unknown chart configuration type"
 
 #. js-lingui-id: 29VNqC
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerCronForm.tsx
 #: src/modules/workflow/workflow-trigger/components/CronExpressionHelper.tsx
@@ -14854,6 +15214,11 @@ msgstr "Unknown object"
 #: src/pages/onboarding/internal/ChooseYourPlanContent.tsx
 msgid "Unlimited contacts"
 msgstr "Unlimited contacts"
+
+#. js-lingui-id: aiDeB9
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Unlimited team members"
+msgstr "Unlimited team members"
 
 #. js-lingui-id: WDcQq9
 #: src/modules/object-record/object-options-dropdown/components/ObjectOptionsDropdownVisibilityContent.tsx
@@ -15338,6 +15703,7 @@ msgstr "Verify"
 
 #. js-lingui-id: IoglDq
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Verify code from the app"
 msgstr "Verify code from the app"
 
@@ -15608,6 +15974,11 @@ msgstr "We encountered an issue verifying"
 msgid "We match on these fields. If a {objectLabelSingular} already exists, we update it. Otherwise, we create a new one."
 msgstr "We match on these fields. If a {objectLabelSingular} already exists, we update it. Otherwise, we create a new one."
 
+#. js-lingui-id: xzQ1ZT
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "We sent a temporary password to {email}"
+msgstr "We sent a temporary password to {email}"
+
 #. js-lingui-id: id6ein
 #: src/modules/ui/input/components/ImageInput.tsx
 msgid "We support your square PNGs, JPEGs and GIFs under 10MB"
@@ -15632,6 +16003,11 @@ msgstr "We will send a POST request to this endpoint for each new event in appli
 #: src/pages/settings/security/SettingsSecurityApprovedAccessDomain.tsx
 msgid "We will send your a link to verify domain ownership"
 msgstr "We will send your a link to verify domain ownership"
+
+#. js-lingui-id: x414F8
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "We'll use this to calibrate your partnerships experience"
+msgstr "We'll use this to calibrate your partnerships experience"
 
 #. js-lingui-id: X56YGk
 #: src/pages/onboarding/PaymentSuccess.tsx
@@ -15713,18 +16089,26 @@ msgstr "weeks"
 msgid "Weight"
 msgstr "Weight"
 
-#. js-lingui-id: nTuObL
+#. js-lingui-id: 6+VsPT
 #: src/pages/auth/SignInUp.tsx
-msgid "Welcome to Twenty"
-msgstr "Welcome to Twenty"
+#: src/modules/auth/components/FuseOnboardingPreview.tsx
+msgid "Welcome to Fuse"
+msgstr "Welcome to Fuse"
+
+#. js-lingui-id: /XrG98
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Welcome to Fuse Pro"
+msgstr "Welcome to Fuse Pro"
 
 #. js-lingui-id: t8ZvkC
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Welcome to your workspace"
 msgstr "Welcome to your workspace"
 
 #. js-lingui-id: Vin3Dv
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Welcome, {workspaceName}."
 msgstr "Welcome, {workspaceName}."
 
@@ -15733,11 +16117,21 @@ msgstr "Welcome, {workspaceName}."
 msgid "What can I help you with?"
 msgstr "What can I help you with?"
 
+#. js-lingui-id: S3uUMM
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "What do you partner on?"
+msgstr "What do you partner on?"
+
 #. js-lingui-id: cE4SvC
 #: src/pages/settings/developers/api-keys/SettingsDevelopersApiKeysNew.tsx
 #: src/pages/settings/developers/api-keys/SettingsDevelopersApiKeyDetail.tsx
 msgid "What this API can do: Select a user role to define its permissions."
 msgstr "What this API can do: Select a user role to define its permissions."
+
+#. js-lingui-id: XhEcNN
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "What's your role?"
+msgstr "What's your role?"
 
 #. js-lingui-id: m7GziZ
 #: src/modules/ai/components/suggested-prompts/default-suggested-prompts.ts
@@ -15940,6 +16334,7 @@ msgid "Workspace Instructions"
 msgstr "Workspace Instructions"
 
 #. js-lingui-id: Y0Fj4S
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Workspace logo"
 msgstr "Workspace logo"
@@ -15950,6 +16345,7 @@ msgid "Workspace Member"
 msgstr "Workspace Member"
 
 #. js-lingui-id: CozWO1
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Workspace name"
 msgstr "Workspace name"
@@ -16080,6 +16476,11 @@ msgstr "You already belong to this workspace"
 #: src/modules/object-record/record-table/empty-state/components/RecordTableEmptyStateReadOnly.tsx
 msgid "You are not allowed to create records for this object"
 msgstr "You are not allowed to create records for this object"
+
+#. js-lingui-id: gedV4L
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "You can always change this later in Settings"
+msgstr "You can always change this later in Settings"
 
 #. js-lingui-id: iibZbD
 #: src/pages/settings/applications/tabs/SettingsApplicationsDeveloperTab.tsx
@@ -16212,6 +16613,7 @@ msgid "Your name as it will be displayed"
 msgstr "Your name as it will be displayed"
 
 #. js-lingui-id: 3RASGN
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "Your name as it will be displayed on the app"
 msgstr "Your name as it will be displayed on the app"
@@ -16220,6 +16622,11 @@ msgstr "Your name as it will be displayed on the app"
 #: src/pages/settings/admin-panel/SettingsAdminNewAiProvider.tsx
 msgid "Your provider API key for authentication"
 msgstr "Your provider API key for authentication"
+
+#. js-lingui-id: kl8H/q
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Your role"
+msgstr "Your role"
 
 #. js-lingui-id: 319YPG
 #: src/pages/settings/enterprise/SettingsEnterprise.tsx
@@ -16260,6 +16667,16 @@ msgstr "Your workspace doesn't have an active subscription."
 #: src/modules/information-banner/components/billing/InformationBannerNoBillingSubscription.tsx
 msgid "Your workspace doesn't have an active subscription. Please contact your admin."
 msgstr "Your workspace doesn't have an active subscription. Please contact your admin."
+
+#. js-lingui-id: pD/icY
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Your workspace is ready. Explore the full power of Fuse with a 14-day Pro trial — no credit card required."
+msgstr "Your workspace is ready. Explore the full power of Fuse with a 14-day Pro trial — no credit card required."
+
+#. js-lingui-id: P6WC0h
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Your workspace views"
+msgstr "Your workspace views"
 
 #. js-lingui-id: RhNbPE
 #: src/modules/settings/billing/components/SettingsBillingContent.tsx

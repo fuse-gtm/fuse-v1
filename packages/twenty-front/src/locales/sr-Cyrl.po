@@ -519,6 +519,11 @@ msgstr ""
 msgid "12h ({hour12Label})"
 msgstr "12 часова ({hour12Label})"
 
+#. js-lingui-id: rPUr2g
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "14-day Pro trial"
+msgstr ""
+
 #. js-lingui-id: yXvRMf
 #: src/modules/settings/data-model/components/SettingsDataModelNewFieldBreadcrumbDropDown.tsx
 #: src/modules/settings/data-model/components/SettingsDataModelNewFieldBreadcrumbDropDown.tsx
@@ -594,6 +599,11 @@ msgstr "Мора бити изабрана улога за API кључ"
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "A shared environment where you will be able to manage your customer relations with your team."
 msgstr "Заједничко окружење у којем ћете моћи да управљате својим односима с купцима са вашим тимом."
+
+#. js-lingui-id: MLgllG
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
+msgid "A shared environment where you will manage your partner relationships."
+msgstr ""
 
 #. js-lingui-id: /cSHSG
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
@@ -1244,6 +1254,11 @@ msgstr ""
 #: src/modules/navigation/components/SettingsNavigationDrawer.tsx
 msgid "Advanced:"
 msgstr "Напредно:"
+
+#. js-lingui-id: 21nI2G
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Affiliate / Referral"
+msgstr ""
 
 #. js-lingui-id: 1Cox/a
 #: src/pages/settings/profile/appearance/components/LocalePicker.tsx
@@ -1917,6 +1932,7 @@ msgid "Appearance"
 msgstr "Изглед"
 
 #. js-lingui-id: QsDjlD
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/modules/settings/workspace/components/NameField.tsx
 msgid "Apple"
@@ -2275,6 +2291,7 @@ msgid "Authentication"
 msgstr "Аутентификација"
 
 #. js-lingui-id: htuqBH
+#: src/pages/auth/FuseCheckInbox.tsx
 #: src/modules/auth/hooks/useVerifyLogin.ts
 msgid "Authentication failed"
 msgstr "Аутентификација није успела"
@@ -2429,6 +2446,11 @@ msgstr "Основни URL"
 msgid "Base URL is required"
 msgstr "Основни URL је обавезан"
 
+#. js-lingui-id: 7nnbhu
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Based on your focus, we suggest starting with these"
+msgstr ""
+
 #. js-lingui-id: /xLNEx
 #: src/modules/activities/emails/components/EmailComposerFields.tsx
 #: src/modules/activities/emails/components/EmailComposerFields.tsx
@@ -2566,6 +2588,11 @@ msgstr "Браон"
 msgid "Build a dashboard that shows: (1) total pipeline value by stage for the last 3 months, (2) count of deals won vs lost per month, (3) average deal size. Use our standard pipeline stages."
 msgstr "Креирајте контролну таблу која приказује: (1) укупну вредност продајног левка по фази за последња 3 месеца, (2) број добијених наспрам изгубљених договора по месецу, (3) просечну вредност договора. Користите наше стандардне фазе левка."
 
+#. js-lingui-id: emfIOz
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Build and manage tech partnerships"
+msgstr ""
+
 #. js-lingui-id: alSW5d
 #: src/modules/settings/data-model/fields/forms/morph-relation/components/SettingsDataModelFieldRelationJunctionForm.tsx
 msgid "Build many-to-many relations"
@@ -2601,10 +2628,10 @@ msgstr ""
 msgid "by {author}"
 msgstr ""
 
-#. js-lingui-id: 8Pfllj
+#. js-lingui-id: lBCpcl
 #: src/modules/auth/sign-in-up/components/FooterNote.tsx
-msgid "By using Twenty, you agree to the"
-msgstr "Коришћењем Twenty, слажете се са"
+msgid "By using Fuse, you agree to the"
+msgstr ""
 
 #. js-lingui-id: Yx41df
 #: src/modules/auth/sign-in-up/components/FooterNote.tsx
@@ -2716,6 +2743,11 @@ msgstr "Календари"
 #: src/modules/object-record/record-field/ui/form-types/components/FormPhoneFieldInput.tsx
 msgid "Calling Code"
 msgstr "Позивни код"
+
+#. js-lingui-id: khIgP5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Campaign Tracker"
+msgstr ""
 
 #. js-lingui-id: msssZq
 #: src/modules/settings/data-model/objects/forms/components/SettingsDataModelObjectAboutForm.tsx
@@ -2918,6 +2950,16 @@ msgstr "Промени на Про План?"
 msgid "Change to Yearly?"
 msgstr "Променити на годишње?"
 
+#. js-lingui-id: r3Ndbb
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Channel / Reseller"
+msgstr ""
+
+#. js-lingui-id: sZdOTp
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Channel Partners"
+msgstr ""
+
 #. js-lingui-id: nuBbBr
 #: src/modules/side-panel/pages/page-layout/components/SidePanelPageLayoutDashboardWidgetTypeSelect.tsx
 #: src/modules/side-panel/components/hooks/usePageLayoutHeaderInfo.ts
@@ -2954,10 +2996,15 @@ msgstr "Проверите имејл пошту"
 msgid "Check your inbox to verify your new email address."
 msgstr "Проверите пријемно сандуче да потврдите своју нову имејл адресу."
 
-#. js-lingui-id: SxwQE8
+#. js-lingui-id: 60j1Mi
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Check your inbox!"
+msgstr ""
+
+#. js-lingui-id: tZCNwX
 #: src/modules/settings/billing/hooks/useHandleCheckoutSession.ts
-msgid "Checkout session error. Please retry or contact Twenty team"
-msgstr "Грешка у сесији наплате. Молимо да покушате поново или контактирајте Twenty тим"
+msgid "Checkout session error. Please retry or contact Fuse support"
+msgstr ""
 
 #. js-lingui-id: SviKkE
 #: src/pages/settings/profile/appearance/components/LocalePicker.tsx
@@ -2971,6 +3018,7 @@ msgstr "Кинески — Традиционални"
 
 #. js-lingui-id: NFfUic
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Choose a Workspace"
 msgstr "Изаберите радни простор"
 
@@ -3135,6 +3183,21 @@ msgstr "Затвори банер"
 msgid "Close side panel"
 msgstr "Затвори бочни панел"
 
+#. js-lingui-id: 9yxcVB
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Co-Sell / Co-Marketing"
+msgstr ""
+
+#. js-lingui-id: dzm8FT
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Co-sell and referral handoff tracking"
+msgstr ""
+
+#. js-lingui-id: unFPyd
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Co-Sell Partners"
+msgstr ""
+
 #. js-lingui-id: EWPtMO
 #: src/modules/workflow/workflow-steps/workflow-actions/code-action/components/WorkflowEditActionCode.tsx
 #: src/modules/ai/components/CodeExecutionDisplay.tsx
@@ -3245,6 +3308,21 @@ msgstr ""
 #. js-lingui-id: NBdIgR
 #: src/pages/settings/ai/SettingsAgentTurnDetail.tsx
 msgid "Comment"
+msgstr ""
+
+#. js-lingui-id: WttD0p
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission Tracker"
+msgstr ""
+
+#. js-lingui-id: +QDw37
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission-based partner programs"
+msgstr ""
+
+#. js-lingui-id: adlLHm
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Commission-based referral tracking"
 msgstr ""
 
 #. js-lingui-id: NM9bMd
@@ -3394,6 +3472,11 @@ msgstr "Подесите своје подешавања е-поште и кал
 #: src/modules/settings/admin-panel/ai/components/SettingsAdminAiProviderListCard.tsx
 msgid "Configured"
 msgstr "Конфигурисано"
+
+#. js-lingui-id: Antk8O
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Configuring views, fields, and recommended workflows"
+msgstr ""
 
 #. js-lingui-id: 7VpPHA
 #: src/modules/ui/layout/modal/components/ConfirmationModal.tsx
@@ -3548,10 +3631,19 @@ msgstr "Контекстни прозор"
 #: src/pages/onboarding/SyncEmails.tsx
 #: src/pages/onboarding/SyncEmails.tsx
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/PartnerProfile.tsx
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/pages/onboarding/internal/ChooseYourPlanContent.tsx
+#: src/pages/auth/FuseCheckInbox.tsx
 #: src/modules/spreadsheet-import/steps/components/SelectHeaderStep/SelectHeaderStep.tsx
 #: src/modules/spreadsheet-import/steps/components/MatchColumnsStep/MatchColumnsStep.tsx
 #: src/modules/spreadsheet-import/components/StepNavigationButton.tsx
@@ -3582,6 +3674,7 @@ msgstr "Настави са Microsoft"
 
 #. js-lingui-id: lGbmpO
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Continue without sync"
 msgstr "Настави без синхронизације"
 
@@ -3596,11 +3689,17 @@ msgid "Conversation"
 msgstr "Разговор"
 
 #. js-lingui-id: HRGl1X
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
 #: src/modules/settings/members/components/MemberNameFields.tsx
 msgid "Cook"
 msgstr "Кук"
+
+#. js-lingui-id: dIQfGX
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Coordinate joint opportunities and campaigns"
+msgstr ""
 
 #. js-lingui-id: FxVG/l
 #: src/hooks/useCopyToClipboard.tsx
@@ -3634,6 +3733,7 @@ msgstr "Копирај команде"
 
 #. js-lingui-id: 7eVkEH
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Copy invitation link"
 msgstr "Копирај позивни линк"
 
@@ -3945,7 +4045,13 @@ msgstr "Креирај Webhook"
 msgid "Create Workspace"
 msgstr "Креирај радни простор"
 
+#. js-lingui-id: l07yJF
+#: src/pages/onboarding/FuseCreateProfile.tsx
+msgid "Create your profile"
+msgstr ""
+
 #. js-lingui-id: 9chYz/
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Create your workspace"
 msgstr "Креирај свој радни простор"
@@ -3972,11 +4078,13 @@ msgid "Created by"
 msgstr "Креирао/ла"
 
 #. js-lingui-id: fR16ki
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Creating your data model..."
 msgstr "Креирање вашег модела података..."
 
 #. js-lingui-id: YO4SdK
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Creating your workspace"
 msgstr "Креирање вашег радног простора"
@@ -4149,6 +4257,11 @@ msgstr "Прилагођени провајдери"
 #: src/modules/object-record/object-options-dropdown/components/ObjectOptionsDropdownCustomView.tsx
 msgid "Custom View"
 msgstr "Прилагођени приказ"
+
+#. js-lingui-id: Q1ctfg
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Custom views created"
+msgstr ""
 
 #. js-lingui-id: MNGIVW
 #: src/modules/settings/data-model/object-details/components/tabs/ObjectFields.tsx
@@ -4461,6 +4574,11 @@ msgstr "Деактивирај ово поље"
 #: src/modules/settings/data-model/fields/forms/components/text/constants/TextDataModelSelectOptions.ts
 msgid "Deactivated"
 msgstr "Деактивирано"
+
+#. js-lingui-id: aGxmXh
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Deal Registration"
+msgstr ""
 
 #. js-lingui-id: Iotuxe
 #: src/modules/ai/components/RoutingDebugDisplay.tsx
@@ -4888,6 +5006,11 @@ msgstr "Програмер"
 msgid "Developers links"
 msgstr ""
 
+#. js-lingui-id: 9Dgqvq
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Didn't receive an email? Check spam or try again."
+msgstr ""
+
 #. js-lingui-id: Xm/s+u
 #: src/modules/settings/accounts/components/SettingsAccountsCalendarChannelsGeneral.tsx
 msgid "Display"
@@ -5140,6 +5263,11 @@ msgstr "нпр. gpt-4o"
 #: src/pages/settings/admin-panel/SettingsAdminNewAiModel.tsx
 msgid "e.g. GPT-4o"
 msgstr "нпр. GPT-4o"
+
+#. js-lingui-id: xSOlS/
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "e.g. Head of Partnerships"
+msgstr ""
 
 #. js-lingui-id: Xh9FA2
 #: src/pages/settings/admin-panel/SettingsAdminNewAiProvider.tsx
@@ -5453,6 +5581,7 @@ msgstr "Имејлови"
 
 #. js-lingui-id: HtOaZO
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Emails and Calendar"
 msgstr "Имејлови и календар"
 
@@ -5719,6 +5848,11 @@ msgstr "Унесите по једну опцију у сваки ред"
 msgid "Enter one option per line. Each line will become a new option."
 msgstr "Унесите по једну опцију у сваки ред. Сваки ред ће постати нова опција."
 
+#. js-lingui-id: UQrJKS
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Enter password from email"
+msgstr ""
+
 #. js-lingui-id: waLOUb
 #: src/modules/object-record/record-field/ui/form-types/components/FormPhoneFieldInput.tsx
 msgid "Enter phone number"
@@ -5765,6 +5899,11 @@ msgstr "Унесите информације за подешавање везе
 #: src/pages/settings/ai/components/SettingsAgentSettingsTab.tsx
 msgid "Enter the system prompt that defines this agent's behavior and capabilities"
 msgstr "Унесите системски упит који дефинише понашање и могућности овог агента"
+
+#. js-lingui-id: GURGx9
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Enter the temporary password from your email to continue."
+msgstr ""
 
 #. js-lingui-id: tEWpbi
 #: src/pages/settings/applications/tabs/SettingsApplicationRegistrationGeneralTab.tsx
@@ -6016,10 +6155,10 @@ msgstr "Грешка при отказивању промене мерног н�
 msgid "Error while cancelling plan switching."
 msgstr "Грешка при отказивању промене плана."
 
-#. js-lingui-id: QmR+2U
+#. js-lingui-id: Hm5Tju
 #: src/modules/settings/billing/hooks/useEndSubscriptionTrialPeriod.ts
-msgid "Error while ending trial period. Please contact Twenty team."
-msgstr "Грешка приликом завршетка пробног периода. Молимо вас контактирајте Twenty тим."
+msgid "Error while ending trial period. Please contact Fuse support."
+msgstr ""
 
 #. js-lingui-id: 5g78zo
 #: src/pages/settings/members/SettingsWorkspaceMember.tsx
@@ -6182,6 +6321,11 @@ msgstr "Изузми непрофесионалне имејлове"
 #: src/modules/settings/accounts/components/SettingsAccountsBlocklistSection.tsx
 msgid "Exclude the following people and domains from my email sync. Internal conversations will not be imported"
 msgstr "Искључи следеће особе и домене из моје синхронизације е-поште. Интерни разговори неће бити увезени"
+
+#. js-lingui-id: n1YUO1
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Executive Sponsors"
+msgstr ""
 
 #. js-lingui-id: YzI8cc
 #: src/modules/workflow/workflow-steps/workflow-actions/form-action/components/WorkflowFormFieldSettingsSelect.tsx
@@ -6834,6 +6978,7 @@ msgstr "Филтери"
 
 #. js-lingui-id: JmZ/+d
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/pages/onboarding/BookCallDecision.tsx
 #: src/modules/settings/roles/role-permissions/object-level-permissions/object-form/components/SettingsRolePermissionsObjectLevelObjectForm.tsx
 msgid "Finish"
@@ -6885,6 +7030,7 @@ msgid "First 5 lines"
 msgstr "Првих 5 линија"
 
 #. js-lingui-id: kODvZJ
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/security/components/SettingsSecurityEditableProfileFields.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
@@ -6894,6 +7040,7 @@ msgid "First Name"
 msgstr "Име"
 
 #. js-lingui-id: cgevMo
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "First name can not be empty"
 msgstr "Име не може бити празно"
@@ -7082,8 +7229,14 @@ msgstr "Набавите Enterprise"
 msgid "Get Enterprise Key"
 msgstr "Преузмите Enterprise кључ"
 
+#. js-lingui-id: ZDIydz
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Get started"
+msgstr ""
+
 #. js-lingui-id: NXEW3h
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Get the most out of your workspace by inviting your team."
 msgstr "Искористите максимално свој радни простор тако што ћете позвати свој тим."
 
@@ -7347,6 +7500,16 @@ msgstr "Сакриј скривене групе"
 msgid "Hide label"
 msgstr ""
 
+#. js-lingui-id: osoIfa
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "High-touch executive partnerships"
+msgstr ""
+
+#. js-lingui-id: eojPWY
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "High-touch partnerships with executive sponsors"
+msgstr ""
+
 #. js-lingui-id: i0qMbr
 #: src/modules/page-layout/constants/StandardPageLayoutTabTitleTranslations.ts
 #: src/modules/navigation/components/MainNavigationDrawerTabsRow.tsx
@@ -7368,6 +7531,11 @@ msgstr "Сати"
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerCronForm.tsx
 msgid "Hours between triggers"
 msgstr "Сати између окидача"
+
+#. js-lingui-id: ZlRrYu
+#: src/pages/onboarding/FuseCreateProfile.tsx
+msgid "How you'll be identified in the app."
+msgstr ""
 
 #. js-lingui-id: B06Bgk
 #: src/pages/onboarding/CreateProfile.tsx
@@ -7823,6 +7991,16 @@ msgstr "Упутства"
 msgid "Instructions Editor"
 msgstr "Уређивач упутстава"
 
+#. js-lingui-id: sw/Per
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Integration Partners"
+msgstr ""
+
+#. js-lingui-id: vlcmQ+
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Integration Status"
+msgstr ""
+
 #. js-lingui-id: RGm66q
 #: src/utils/title-utils.ts
 msgid "Integrations - Settings"
@@ -7937,6 +8115,11 @@ msgstr "Неважећа вредност минута '{newMinute}'. Треба
 msgid "Invalid number"
 msgstr "Неважећи број"
 
+#. js-lingui-id: WyTotw
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Invalid password. Please check your email and try again."
+msgstr ""
+
 #. js-lingui-id: sBZMWb
 #: src/modules/page-layout/widgets/components/PageLayoutWidgetNoDataDisplay.tsx
 msgid "Invalid URL"
@@ -7981,6 +8164,7 @@ msgstr "Позив помоћу везе"
 
 #. js-lingui-id: 5IfmKA
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Invite link sent to email addresses"
 msgstr "Позивни линк послат на адресе е-поште"
 
@@ -7991,6 +8175,7 @@ msgstr "Позови корисника"
 
 #. js-lingui-id: d+Y+rP
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "Invite your team"
 msgstr "Позовите свој тим"
 
@@ -8168,8 +8353,19 @@ msgstr "john.doe@example.com"
 
 #. js-lingui-id: fSPjtl
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Join {workspaceName} team"
 msgstr "Придружите се тиму {workspaceName}"
+
+#. js-lingui-id: XFbZAI
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Joint go-to-market motions"
+msgstr ""
+
+#. js-lingui-id: 7bOJ6G
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Joint Opportunities"
+msgstr ""
 
 #. js-lingui-id: B2Zb/F
 #: src/pages/settings/ai/components/SettingsAgentResponseFormat.tsx
@@ -8312,6 +8508,7 @@ msgid "Last name"
 msgstr ""
 
 #. js-lingui-id: UXBCwc
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/security/components/SettingsSecurityEditableProfileFields.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
@@ -8320,6 +8517,7 @@ msgid "Last Name"
 msgstr "Презиме"
 
 #. js-lingui-id: PnMGfO
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "Last name can not be empty"
 msgstr "Презиме не може бити празно"
@@ -8501,6 +8699,7 @@ msgstr "Линк"
 
 #. js-lingui-id: pQjjYo
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/modules/workspace/components/WorkspaceInviteLink.tsx
 #: src/modules/object-record/record-table/record-table-cell/hooks/useGetSecondaryRecordTableCellButton.ts
 #: src/modules/object-record/record-field/ui/meta-types/display/components/LinksFieldDisplay.tsx
@@ -8787,6 +8986,11 @@ msgstr "Управљање омиљеним"
 #: src/pages/settings/members/SettingsWorkspaceMembers.tsx
 msgid "Manage Members"
 msgstr "Управљање члановима"
+
+#. js-lingui-id: VSc6WD
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Manage reseller pipeline and deal registration"
+msgstr ""
 
 #. js-lingui-id: eGGH1l
 #: src/modules/settings/roles/role-permissions/permission-flags/hooks/useSettingsRolePermissionFlagConfig.ts
@@ -9308,6 +9512,7 @@ msgstr "mySkill"
 #: src/pages/settings/ai/components/SettingsToolsTable.tsx
 #: src/pages/settings/ai/components/SettingsToolParameterTable.tsx
 #: src/pages/settings/admin-panel/SettingsAdminAiProviderDetail.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/workspace/components/NameField.tsx
 #: src/modules/settings/usage/components/UsageByUserTableSection.tsx
@@ -9349,6 +9554,7 @@ msgid "Name and description are managed via your app manifest (CLI)"
 msgstr "Називом и описом се управља помоћу манифеста ваше апликације (CLI)"
 
 #. js-lingui-id: XSwyCU
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Name can not be empty"
 msgstr "Име не може бити празно"
@@ -10598,6 +10804,7 @@ msgstr "Опције"
 
 #. js-lingui-id: BzEFor
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 msgid "or"
 msgstr "или"
 
@@ -10776,10 +10983,10 @@ msgstr ""
 msgid "Page Name"
 msgstr "Назив странице"
 
-#. js-lingui-id: NRvxzv
+#. js-lingui-id: XZ566l
 #: src/pages/not-found/NotFound.tsx
-msgid "Page Not Found | Twenty"
-msgstr "Страница није пронађена | Twenty"
+msgid "Page Not Found | Fuse"
+msgstr ""
 
 #. js-lingui-id: sF+Xp9
 #: src/pages/settings/security/event-logs/components/EventLogTableSelector.tsx
@@ -10800,6 +11007,31 @@ msgstr "Пасус"
 #. js-lingui-id: F18WP3
 #: src/pages/settings/ai/SettingsToolDetail.tsx
 msgid "Parameters"
+msgstr ""
+
+#. js-lingui-id: dvGoys
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Partner discovery with AI-powered search"
+msgstr ""
+
+#. js-lingui-id: SetT8l
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Partner pipeline attribution reports"
+msgstr ""
+
+#. js-lingui-id: BQA/aK
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner Profiles"
+msgstr ""
+
+#. js-lingui-id: cyLtx9
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner scoring enabled"
+msgstr ""
+
+#. js-lingui-id: EKgmEi
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Partner tracks configured"
 msgstr ""
 
 #. js-lingui-id: 8ZsakT
@@ -10992,6 +11224,7 @@ msgstr "Изаберите објекат"
 #. js-lingui-id: N0+GsR
 #: src/pages/settings/SettingsWorkspace.tsx
 #: src/pages/settings/SettingsProfile.tsx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/members/components/MemberInfosTab.tsx
 msgid "Picture"
@@ -11062,6 +11295,11 @@ msgstr "Молимо проверите свој имејл за верифик�
 msgid "Please enter a valid URL"
 msgstr "Унесите важећи URL"
 
+#. js-lingui-id: dK4n8t
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Please enter your temporary password"
+msgstr ""
+
 #. js-lingui-id: qg68zg
 #: src/modules/information-banner/components/reconnect-account/InformationBannerReconnectAccountEmailAliases.tsx
 msgid "Please reconnect your mailbox {mailboxHandle} to update your email aliases:"
@@ -11072,6 +11310,11 @@ msgstr "Поново повежите свој поштански сандучи
 #: src/modules/error-handler/components/internal/AppErrorDisplay.tsx
 msgid "Please refresh the page."
 msgstr "Молимо вас, освежите страну."
+
+#. js-lingui-id: uc2wSi
+#: src/modules/auth/sign-in-up/hooks/useFuseEmailValidation.ts
+msgid "Please retry with a company email"
+msgstr ""
 
 #. js-lingui-id: X5x85V
 #: src/modules/settings/admin-panel/components/SettingsAdminWorkspaceContent.tsx
@@ -11162,6 +11405,7 @@ msgid "Postcode"
 msgstr "Поштански број"
 
 #. js-lingui-id: /v6Rp9
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Prefilling your workspace data..."
 msgstr "Унапред попуњавање података вашег радног простора..."
@@ -11188,6 +11432,7 @@ msgid "Preview Not Available"
 msgstr ""
 
 #. js-lingui-id: DHhJ7s
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/modules/settings/admin-panel/health-status/components/SettingsAdminQueueJobsTable.tsx
 msgid "Previous"
 msgstr "Претходно"
@@ -11375,6 +11620,11 @@ msgstr "Љубичаста"
 msgid "Python Code Execution"
 msgstr "Извршавање Python кода"
 
+#. js-lingui-id: XRt4rh
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "QBR Tracker"
+msgstr ""
+
 #. js-lingui-id: 2vudsu
 #: src/modules/side-panel/pages/page-layout/utils/getDateGranularityLabel.ts
 msgid "Quarter"
@@ -11495,6 +11745,11 @@ msgstr ""
 #: src/modules/settings/admin-panel/ai/components/SettingsAdminAI.tsx
 msgid "Recommended Models"
 msgstr "Препоручени модели"
+
+#. js-lingui-id: fG0td5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Recommended partner tracks"
+msgstr ""
 
 #. js-lingui-id: gcoiFh
 #: src/modules/settings/accounts/components/SettingsAccountsRowDropdownMenu.tsx
@@ -11618,6 +11873,16 @@ msgstr "URL за преусмеравање копиран у клипборд"
 #: src/modules/settings/security/components/SSO/SettingsSSOOIDCForm.tsx
 msgid "Redirection URI"
 msgstr "URI за преусмеравање"
+
+#. js-lingui-id: UlkYKJ
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Referral Leads"
+msgstr ""
+
+#. js-lingui-id: MAGbyP
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Referral Partners"
+msgstr ""
 
 #. js-lingui-id: lCF0wC
 #: src/pages/settings/security/event-logs/SettingsEventLogs.tsx
@@ -11879,6 +12144,11 @@ msgstr "Захтев није успео"
 msgid "Required"
 msgstr "Обавезно"
 
+#. js-lingui-id: ZlPqcC
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Reseller Pipeline"
+msgstr ""
+
 #. js-lingui-id: G42SNI
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
 #: src/modules/auth/sign-in-up/components/EmailVerificationSent.tsx
@@ -12055,6 +12325,11 @@ msgstr "Улога"
 msgid "Role for {agentLabel} agent"
 msgstr ""
 
+#. js-lingui-id: S/AKv5
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Role is required"
+msgstr ""
+
 #. js-lingui-id: iSfzXo
 #: src/modules/settings/roles/role-settings/components/SettingsRoleSettings.tsx
 #: src/modules/settings/roles/role/components/SettingsRoleLabelContainer.tsx
@@ -12208,6 +12483,11 @@ msgstr "Сачувај"
 #: src/modules/views/components/UpdateViewButtonGroup.tsx
 msgid "Save as new view"
 msgstr "Сачувај као ново приказ"
+
+#. js-lingui-id: SI4R//
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Scale through distribution partners"
+msgstr ""
 
 #. js-lingui-id: gmB6oO
 #: src/modules/workflow/workflow-trigger/components/CronExpressionHelper.tsx
@@ -12940,9 +13220,15 @@ msgid "Set your application configuration variables"
 msgstr "Подесите променљиве конфигурације ваше апликације"
 
 #. js-lingui-id: dQsqpC
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Setting up your database..."
 msgstr "Подешавање ваше базе података..."
+
+#. js-lingui-id: eVZ6vl
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Setting up your partner workspace"
+msgstr ""
 
 #. js-lingui-id: Tz0i8g
 #: src/pages/settings/logic-functions/SettingsLogicFunctionDetail.tsx
@@ -12989,6 +13275,7 @@ msgstr "Подешавање кључа је копирано у клипбор�
 
 #. js-lingui-id: NQNJjc
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Setup your 2FA"
 msgstr "Подесите вашу 2FA"
 
@@ -13084,6 +13371,11 @@ msgstr "Пријавите се"
 msgid "Sign in or Create an account"
 msgstr "Пријавите се или креирајте налог"
 
+#. js-lingui-id: 5o7RYu
+#: src/pages/auth/FuseSignInUp.tsx
+msgid "Sign in to Fuse"
+msgstr ""
+
 #. js-lingui-id: e+RpCP
 #: src/modules/auth/sign-in-up/components/internal/SignInUpWithCredentials.tsx
 msgid "Sign up"
@@ -13092,6 +13384,11 @@ msgstr "Региструјте се"
 #. js-lingui-id: mHC57v
 #: src/modules/auth/sign-in-up/components/internal/SignInUpWithCredentials.tsx
 msgid "Sign-up is temporarily unavailable during maintenance."
+msgstr ""
+
+#. js-lingui-id: XOxZT4
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Signing in..."
 msgstr ""
 
 #. js-lingui-id: BZdVGR
@@ -13182,7 +13479,9 @@ msgid "Skills provided by this app"
 msgstr ""
 
 #. js-lingui-id: 6Uau97
+#: src/pages/onboarding/PartnerProfile.tsx
 #: src/pages/onboarding/InviteTeam.tsx
+#: src/pages/onboarding/FuseInviteTeam.tsx
 #: src/pages/onboarding/BookCall.tsx
 msgid "Skip"
 msgstr "Прескочи"
@@ -13415,6 +13714,11 @@ msgstr ""
 msgid "Start Date"
 msgstr "Датум почетка"
 
+#. js-lingui-id: CzBN6D
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Start exploring"
+msgstr ""
+
 #. js-lingui-id: s+K73L
 #: src/modules/settings/billing/components/SettingsBillingSubscriptionInfo.tsx
 msgid "Start Your Subscription"
@@ -13466,6 +13770,16 @@ msgstr "Заустави имперсонацију"
 #: src/modules/settings/admin-panel/config-variables/utils/useSourceContent.ts
 msgid "Stored in database"
 msgstr "Сачувано у бази података"
+
+#. js-lingui-id: e0Hcrs
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Strategic Alliances"
+msgstr ""
+
+#. js-lingui-id: vYfOb6
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Strategic Partners"
+msgstr ""
 
 #. js-lingui-id: C9VfWO
 #: src/modules/object-record/record-field/ui/form-types/components/FormAddressFieldInput.tsx
@@ -13703,18 +14017,21 @@ msgstr "Синхронизација са поштанским сандучић�
 
 #. js-lingui-id: L4+l7C
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Sync with Google"
 msgstr "Синхронизујте са Google-ом"
 
 #. js-lingui-id: EICVgB
 #: src/pages/onboarding/SyncEmails.tsx
+#: src/pages/onboarding/FuseSyncEmails.tsx
 msgid "Sync with Outlook"
 msgstr "Синхронизујте са Outlook-ом"
 
-#. js-lingui-id: +9x4tK
+#. js-lingui-id: nZrIKL
 #: src/pages/onboarding/SyncEmails.tsx
-msgid "Sync your Emails and Calendar with Twenty. Choose your privacy settings."
-msgstr "Синхронизујте своје имејлове и календар са Twenty. Изаберите ваша подешавања приватности."
+#: src/pages/onboarding/FuseSyncEmails.tsx
+msgid "Sync your Emails and Calendar with Fuse. Choose your privacy settings."
+msgstr ""
 
 #. js-lingui-id: N2FcBE
 #: src/modules/settings/accounts/components/SettingsAccountsConnectedAccountsRowRightContainer.tsx
@@ -13845,10 +14162,20 @@ msgstr "Наслов задатка"
 msgid "Tasks"
 msgstr "Задаци"
 
+#. js-lingui-id: 1Uu+xl
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Technology Integrations"
+msgstr ""
+
 #. js-lingui-id: lKXcJz
 #: src/pages/settings/emailing-domains/utils/getEmailingDomainStatusText.ts
 msgid "Temporary Failure"
 msgstr "Привремена грешка"
+
+#. js-lingui-id: V8nq04
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "Temporary password"
+msgstr ""
 
 #. js-lingui-id: h0xgxg
 #: src/pages/settings/applications/SettingsAvailableApplicationDetails.tsx
@@ -13970,6 +14297,7 @@ msgid "The name of your Domain"
 msgstr "Име вашег домена"
 
 #. js-lingui-id: +C8Rdp
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "The name of your organization"
 msgstr "Име ваше организације"
@@ -13978,6 +14306,16 @@ msgstr "Име ваше организације"
 #: src/pages/not-found/NotFound.tsx
 msgid "The page you're seeking is either gone or never was. Let's get you back on track"
 msgstr "Страница коју тражите је или уклоњена или никад није постојала. Вратимо вас на прави пут"
+
+#. js-lingui-id: lO9x3Q
+#: src/modules/auth/components/FuseOnboardingPreview.tsx
+msgid "The partnerships operating system for modern GTM teams. Manage partner discovery, co-sell motions, and attribution — all in one place."
+msgstr ""
+
+#. js-lingui-id: qWWvSg
+#: src/pages/auth/FuseSignInUp.tsx
+msgid "The partnerships OS for modern GTM teams."
+msgstr ""
 
 #. js-lingui-id: jrCR2X
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerManual.tsx
@@ -14167,6 +14505,11 @@ msgstr ""
 msgid "This form will appear in workflow runs."
 msgstr "Овај образац ће се појавити у извршавањима радног тока."
 
+#. js-lingui-id: 18/+iZ
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "This helps us calibrate your partnership workspace"
+msgstr ""
+
 #. js-lingui-id: njWene
 #: src/modules/settings/data-model/fields/forms/morph-relation/components/SettingsDataModelFieldRelationJunctionForm.tsx
 msgid "This is a relation to a Junction Object"
@@ -14255,6 +14598,11 @@ msgstr ""
 msgid "This week"
 msgstr "Ове недеље"
 
+#. js-lingui-id: 7SQhYE
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "This will appear on your profile and in partner communications"
+msgstr ""
+
 #. js-lingui-id: VbVocX
 #: src/modules/side-panel/pages/page-layout/components/WidgetSettingsManageSection.tsx
 msgid "This will cancel all modifications done on the widget. This action cannot be undone."
@@ -14316,6 +14664,7 @@ msgid "Tidy up workflow"
 msgstr "Средити workflow"
 
 #. js-lingui-id: umgyhx
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 #: src/modules/settings/profile/components/NameFields.tsx
 #: src/modules/settings/members/components/MemberNameFields.tsx
@@ -14402,6 +14751,11 @@ msgstr "Промени све дозволе објеката"
 #: src/modules/settings/roles/role-permissions/permission-flags/components/SettingsRolePermissionsSettingsTableHeader.tsx
 msgid "Toggle all settings permissions"
 msgstr "Промени све дозволе за подешавања"
+
+#. js-lingui-id: 9GQRv0
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Toggle tracks to see your workspace preview"
+msgstr ""
 
 #. js-lingui-id: IHtFjq
 #: src/pages/settings/admin-panel/SettingsAdminNewAiModel.tsx
@@ -14490,6 +14844,11 @@ msgstr "Укупно време"
 #: src/pages/settings/ai/components/SettingsAIUsageTab.tsx
 #: src/pages/settings/ai/components/SettingsAIUsageTab.tsx
 msgid "Track AI consumption across your workspace."
+msgstr ""
+
+#. js-lingui-id: dCebhf
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Track and manage technology partnerships"
 msgstr ""
 
 #. js-lingui-id: YT/cKI
@@ -14830,6 +15189,7 @@ msgid "Unknown chart configuration type"
 msgstr "Непозната врста конфигурације дијаграма"
 
 #. js-lingui-id: 29VNqC
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 #: src/modules/workflow/workflow-trigger/components/WorkflowEditTriggerCronForm.tsx
 #: src/modules/workflow/workflow-trigger/components/CronExpressionHelper.tsx
@@ -14857,6 +15217,11 @@ msgstr "Непознат објекат"
 #: src/pages/onboarding/internal/ChooseYourPlanContent.tsx
 msgid "Unlimited contacts"
 msgstr "Неограничени контакти"
+
+#. js-lingui-id: aiDeB9
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Unlimited team members"
+msgstr ""
 
 #. js-lingui-id: WDcQq9
 #: src/modules/object-record/object-options-dropdown/components/ObjectOptionsDropdownVisibilityContent.tsx
@@ -15341,6 +15706,7 @@ msgstr "Верификујте"
 
 #. js-lingui-id: IoglDq
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Verify code from the app"
 msgstr "Проверите код из апликације"
 
@@ -15611,6 +15977,11 @@ msgstr "Дошло је до проблема приликом верифика�
 msgid "We match on these fields. If a {objectLabelSingular} already exists, we update it. Otherwise, we create a new one."
 msgstr "Ми одговарамо на овим пољима. Ако {objectLabelSingular} већ постоји, ажурирамо га. У супротном, креирамо нови."
 
+#. js-lingui-id: xzQ1ZT
+#: src/pages/auth/FuseCheckInbox.tsx
+msgid "We sent a temporary password to {email}"
+msgstr ""
+
 #. js-lingui-id: id6ein
 #: src/modules/ui/input/components/ImageInput.tsx
 msgid "We support your square PNGs, JPEGs and GIFs under 10MB"
@@ -15635,6 +16006,11 @@ msgstr "Слаћемо POST захтеве овом ендпоинту за св
 #: src/pages/settings/security/SettingsSecurityApprovedAccessDomain.tsx
 msgid "We will send your a link to verify domain ownership"
 msgstr "Послаћемо вам линк за проверу власништва домена"
+
+#. js-lingui-id: x414F8
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "We'll use this to calibrate your partnerships experience"
+msgstr ""
 
 #. js-lingui-id: X56YGk
 #: src/pages/onboarding/PaymentSuccess.tsx
@@ -15716,18 +16092,26 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
-#. js-lingui-id: nTuObL
+#. js-lingui-id: 6+VsPT
 #: src/pages/auth/SignInUp.tsx
-msgid "Welcome to Twenty"
-msgstr "Добродошли у Twenty"
+#: src/modules/auth/components/FuseOnboardingPreview.tsx
+msgid "Welcome to Fuse"
+msgstr ""
+
+#. js-lingui-id: /XrG98
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Welcome to Fuse Pro"
+msgstr ""
 
 #. js-lingui-id: t8ZvkC
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Welcome to your workspace"
 msgstr "Добродошли у ваш радни простор"
 
 #. js-lingui-id: Vin3Dv
 #: src/pages/auth/SignInUp.tsx
+#: src/pages/auth/FuseSignInUp.tsx
 msgid "Welcome, {workspaceName}."
 msgstr "Добродошли, {workspaceName}."
 
@@ -15736,11 +16120,21 @@ msgstr "Добродошли, {workspaceName}."
 msgid "What can I help you with?"
 msgstr "Чиме могу да вам помогнем?"
 
+#. js-lingui-id: S3uUMM
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "What do you partner on?"
+msgstr ""
+
 #. js-lingui-id: cE4SvC
 #: src/pages/settings/developers/api-keys/SettingsDevelopersApiKeysNew.tsx
 #: src/pages/settings/developers/api-keys/SettingsDevelopersApiKeyDetail.tsx
 msgid "What this API can do: Select a user role to define its permissions."
 msgstr "Шта овај АПИ може: Изаберите корисничку улогу да дефинишете њене дозволе."
+
+#. js-lingui-id: XhEcNN
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "What's your role?"
+msgstr ""
 
 #. js-lingui-id: m7GziZ
 #: src/modules/ai/components/suggested-prompts/default-suggested-prompts.ts
@@ -15943,6 +16337,7 @@ msgid "Workspace Instructions"
 msgstr "Упутства за радни простор"
 
 #. js-lingui-id: Y0Fj4S
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Workspace logo"
 msgstr "Лого радног простора"
@@ -15953,6 +16348,7 @@ msgid "Workspace Member"
 msgstr "Члан простора за рад"
 
 #. js-lingui-id: CozWO1
+#: src/pages/onboarding/FuseCreateWorkspace.tsx
 #: src/pages/onboarding/CreateWorkspace.tsx
 msgid "Workspace name"
 msgstr "Име радног простора"
@@ -16083,6 +16479,11 @@ msgstr "Већ припадате овом радном простору"
 #: src/modules/object-record/record-table/empty-state/components/RecordTableEmptyStateReadOnly.tsx
 msgid "You are not allowed to create records for this object"
 msgstr "Није дозвољено креирање записа за овај објекат"
+
+#. js-lingui-id: gedV4L
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "You can always change this later in Settings"
+msgstr ""
 
 #. js-lingui-id: iibZbD
 #: src/pages/settings/applications/tabs/SettingsApplicationsDeveloperTab.tsx
@@ -16215,6 +16616,7 @@ msgid "Your name as it will be displayed"
 msgstr "Ваше име како ће бити приказано"
 
 #. js-lingui-id: 3RASGN
+#: src/pages/onboarding/FuseCreateProfile.tsx
 #: src/pages/onboarding/CreateProfile.tsx
 msgid "Your name as it will be displayed on the app"
 msgstr "Ваше име како ће бити приказано у апликацији"
@@ -16223,6 +16625,11 @@ msgstr "Ваше име како ће бити приказано у аплик�
 #: src/pages/settings/admin-panel/SettingsAdminNewAiProvider.tsx
 msgid "Your provider API key for authentication"
 msgstr "Ваш API кључ провајдера за аутентикацију"
+
+#. js-lingui-id: kl8H/q
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Your role"
+msgstr ""
 
 #. js-lingui-id: 319YPG
 #: src/pages/settings/enterprise/SettingsEnterprise.tsx
@@ -16263,6 +16670,16 @@ msgstr "Ваш радни простор нема активну претпла�
 #: src/modules/information-banner/components/billing/InformationBannerNoBillingSubscription.tsx
 msgid "Your workspace doesn't have an active subscription. Please contact your admin."
 msgstr "Ваш радни простор нема активну претплату. Молимо вас ступите у контакт са вашим администратором."
+
+#. js-lingui-id: pD/icY
+#: src/modules/onboarding/components/WelcomeProTrialModal.tsx
+msgid "Your workspace is ready. Explore the full power of Fuse with a 14-day Pro trial — no credit card required."
+msgstr ""
+
+#. js-lingui-id: P6WC0h
+#: src/pages/onboarding/PartnerProfile.tsx
+msgid "Your workspace views"
+msgstr ""
 
 #. js-lingui-id: RhNbPE
 #: src/modules/settings/billing/components/SettingsBillingContent.tsx
