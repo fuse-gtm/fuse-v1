@@ -18,9 +18,9 @@ const StyledWelcomeText = styled.div`
 `;
 
 const StyledWelcomeTitle = styled.h2`
+  color: ${themeCssVariables.font.color.primary};
   font-size: ${themeCssVariables.font.size.xl};
   font-weight: ${themeCssVariables.font.weight.semiBold};
-  color: ${themeCssVariables.font.color.primary};
   margin: 0;
   margin-bottom: ${themeCssVariables.spacing[4]};
 `;
@@ -35,9 +35,9 @@ const StyledWelcomeDescription = styled.p`
 const StyledDashboardSkeleton = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 560px;
   gap: ${themeCssVariables.spacing[3]};
+  max-width: 560px;
+  width: 100%;
 `;
 
 const StyledSkeletonRow = styled.div<{ width?: string; height?: string }>`
@@ -58,8 +58,8 @@ const StyledSkeletonCard = styled.div`
 `;
 
 const StyledSkeletonHeader = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[3]};
   margin-bottom: ${themeCssVariables.spacing[3]};
 `;
