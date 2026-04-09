@@ -1,4 +1,4 @@
-import { type RichTextFilter } from '@/types';
+import { type RichTextFilter } from '@/types/index';
 import escapeRegExp from 'lodash.escaperegexp';
 
 export const isMatchingRichTextFilter = ({

@@ -5,7 +5,7 @@ import {
   type FieldMetadataType,
   type FieldMetadataUniversalSettings,
   type RelationAndMorphRelationFieldMetadataType,
-} from '@/types';
+} from '@/types/index';
 
 export type RegularFieldManifest<
   T extends FieldMetadataType = Exclude<
@@ -26,8 +26,8 @@ export type RegularFieldManifest<
 };
 
 export type RelationFieldManifest<
-  T extends
-    RelationAndMorphRelationFieldMetadataType = RelationAndMorphRelationFieldMetadataType,
+  T extends RelationAndMorphRelationFieldMetadataType =
+    RelationAndMorphRelationFieldMetadataType,
 > = Omit<RegularFieldManifest<T>, 'universalSettings' | 'type'> & {
   type: T;
   relationTargetFieldMetadataUniversalIdentifier: string;
