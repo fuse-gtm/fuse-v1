@@ -2,7 +2,17 @@ import { isNonEmptyString } from '@sniptt/guards';
 
 import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
 
-type EvaluationContext = Record<string, unknown>;
+type EvaluationValue =
+  | number
+  | string
+  | boolean
+  | null
+  | undefined
+  | EvaluationValue[]
+  | ((...args: EvaluationValue[]) => EvaluationValue)
+  | { [propertyName: string]: EvaluationValue };
+
+type EvaluationContext = Record<string, EvaluationValue>;
 
 export const evaluateConditionalAvailabilityExpression = (
   expression: string | null | undefined,
