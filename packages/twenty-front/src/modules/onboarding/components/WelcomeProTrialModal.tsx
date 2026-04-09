@@ -1,4 +1,4 @@
-import { Modal } from '@/ui/layout/modal/components/Modal';
+import { ModalStatefulWrapper } from '@/ui/layout/modal/components/ModalStatefulWrapper';
 import { useModal } from '@/ui/layout/modal/hooks/useModal';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
@@ -81,11 +81,11 @@ export const WelcomeProTrialModal = () => {
   };
 
   return (
-    <Modal
-      modalId={WELCOME_PRO_TRIAL_MODAL_ID}
+    <ModalStatefulWrapper
+      modalInstanceId={WELCOME_PRO_TRIAL_MODAL_ID}
       size="small"
       padding="none"
-      isClosable={true}
+      isClosable
       onClose={handleStart}
     >
       <StyledContent>
@@ -120,6 +120,6 @@ export const WelcomeProTrialModal = () => {
           />
         </StyledButtonContainer>
       </StyledContent>
-    </Modal>
+    </ModalStatefulWrapper>
   );
 };

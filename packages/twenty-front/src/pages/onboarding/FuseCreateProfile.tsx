@@ -3,7 +3,6 @@ import { FuseOnboardingPreview } from '@/auth/components/FuseOnboardingPreview';
 import { FooterNote } from '@/auth/sign-in-up/components/FooterNote';
 import { currentUserState } from '@/auth/states/currentUserState';
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboardingStatus';
 import { WorkspaceMemberPictureUploader } from '@/settings/workspace-member/components/WorkspaceMemberPictureUploader';
@@ -12,13 +11,14 @@ import { TextInput } from '@/ui/input/components/TextInput';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { styled } from '@linaria/react';
-import { ApolloError } from '@apollo/client';
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useState } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { H2Title } from 'twenty-ui/display';
 import { MainButton } from 'twenty-ui/input';
@@ -135,7 +135,7 @@ export const FuseCreateProfile = () => {
         setNextOnboardingStatus();
       } catch (error: unknown) {
         enqueueErrorSnackBar({
-          apolloError: error instanceof ApolloError ? error : undefined,
+          apolloError: CombinedGraphQLErrors.is(error) ? error : undefined,
         });
       }
     },

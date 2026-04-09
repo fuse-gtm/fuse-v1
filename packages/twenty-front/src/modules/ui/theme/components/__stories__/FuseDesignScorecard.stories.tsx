@@ -1,8 +1,7 @@
-import { useTheme } from '@emotion/react';
 import { type Meta, type StoryObj } from '@storybook/react-vite';
-import { type ChangeEvent, useMemo, useState } from 'react';
+import { type ChangeEvent, useContext, useMemo, useState } from 'react';
 import { ComponentDecorator } from 'twenty-ui/testing';
-import { type ThemeType } from 'twenty-ui/theme';
+import { ThemeContext } from 'twenty-ui/theme-constants';
 
 const DESIGN_OPTIONS = [
   { id: 'twenty-default', label: 'Twenty Default' },
@@ -89,7 +88,7 @@ const getWeightedPercent = (weightedScore: number) =>
 const formatPercent = (value: number) => `${value.toFixed(1)}%`;
 
 const FuseDesignScorecard = () => {
-  const theme = useTheme() as ThemeType;
+  const { theme } = useContext(ThemeContext);
   const [scenario, setScenario] = useState(
     'Primary user: RevOps lead at a 20-200 person SaaS team evaluating a CRM migration.',
   );

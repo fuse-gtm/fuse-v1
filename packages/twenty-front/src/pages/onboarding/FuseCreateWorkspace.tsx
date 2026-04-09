@@ -5,14 +5,13 @@ import { Logo } from '@/auth/components/Logo';
 import { SubTitle } from '@/auth/components/SubTitle';
 import { Title } from '@/auth/components/Title';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
-import { useRefreshObjectMetadataItems } from '@/object-metadata/hooks/useRefreshObjectMetadataItems';
 import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboardingStatus';
 import { WorkspaceLogoUploader } from '@/settings/workspace/components/WorkspaceLogoUploader';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { useLoadCurrentUser } from '@/users/hooks/useLoadCurrentUser';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
-import { ApolloError } from '@apollo/client';
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
@@ -26,7 +25,8 @@ import { MainButton } from 'twenty-ui/input';
 import { TextInput } from '@/ui/input/components/TextInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useActivateWorkspaceMutation } from '~/generated-metadata/graphql';
+import { useMutation } from '@apollo/client/react';
+import { ActivateWorkspaceDocument } from '~/generated-metadata/graphql';
 
 const StyledContentContainer = styled.div`
   width: 100%;
@@ -51,10 +51,10 @@ const StyledLoaderContainer = styled.div`
 `;
 
 const StyledPendingCreationLoader = styled(motion.div)`
-  width: 100%;
+  align-items: center;
   display: flex;
   justify-content: center;
-  align-items: center;
+  width: 100%;
 `;
 
 enum PendingCreationLoaderStep {
@@ -68,9 +68,8 @@ export const FuseCreateWorkspace = () => {
   const { t } = useLingui();
   const { enqueueErrorSnackBar } = useSnackBar();
   const setNextOnboardingStatus = useSetNextOnboardingStatus();
-  const { refreshObjectMetadataItems } = useRefreshObjectMetadataItems();
   const { loadCurrentUser } = useLoadCurrentUser();
-  const [activateWorkspace] = useActivateWorkspaceMutation();
+  const [activateWorkspace] = useMutation(ActivateWorkspaceDocument);
   const [pendingCreationLoaderStep, setPendingCreationLoaderStep] = useState(
     PendingCreationLoaderStep.None,
   );
@@ -117,18 +116,17 @@ export const FuseCreateWorkspace = () => {
           },
         });
 
-        if (isDefined(result.errors)) {
-          throw result.errors ?? new Error(t`Unknown error`);
+        if (isDefined(result.error)) {
+          throw result.error ?? new Error(t`Unknown error`);
         }
 
-        await refreshObjectMetadataItems();
         await loadCurrentUser();
         setNextOnboardingStatus();
       } catch (error: unknown) {
         setPendingCreationLoaderStep(PendingCreationLoaderStep.None);
 
         enqueueErrorSnackBar({
-          apolloError: error instanceof ApolloError ? error : undefined,
+          apolloError: CombinedGraphQLErrors.is(error) ? error : undefined,
         });
       }
     },
@@ -136,7 +134,6 @@ export const FuseCreateWorkspace = () => {
       activateWorkspace,
       enqueueErrorSnackBar,
       loadCurrentUser,
-      refreshObjectMetadataItems,
       setNextOnboardingStatus,
       t,
     ],

@@ -1,5 +1,6 @@
 import * as RadixColors from '@radix-ui/colors';
-import { type ThemeType, THEME_LIGHT } from 'twenty-ui/theme';
+import { THEME_LIGHT } from 'twenty-ui/theme';
+import { type ThemeType } from 'twenty-ui/theme-constants';
 
 const FUSE_SIGNAL_THEME: ThemeType = {
   ...THEME_LIGHT,

@@ -19,10 +19,10 @@ import { isMultiWorkspaceEnabledState } from '@/client-config/states/isMultiWork
 import { useGetPublicWorkspaceDataByDomain } from '@/domain-manager/hooks/useGetPublicWorkspaceDataByDomain';
 import { useIsCurrentLocationOnAWorkspace } from '@/domain-manager/hooks/useIsCurrentLocationOnAWorkspace';
 import { useIsCurrentLocationOnDefaultDomain } from '@/domain-manager/hooks/useIsCurrentLocationOnDefaultDomain';
-import { Modal } from '@/ui/layout/modal/components/Modal';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { ModalContent } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -165,9 +165,9 @@ export const FuseSignInUp = () => {
   // Email verification uses the original modal layout
   if (signInUpStep === SignInUpStep.EmailVerification) {
     return (
-      <Modal.Content isVerticalCentered isHorizontalCentered>
+      <ModalContent isVerticallyCentered isHorizontallyCentered>
         <EmailVerificationSent email={searchParams.get('email')} />
-      </Modal.Content>
+      </ModalContent>
     );
   }
 

@@ -14,25 +14,25 @@ import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useTheme } from '@emotion/react';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { useState } from 'react';
+import { useMutation } from '@apollo/client/react';
+import { useContext, useState } from 'react';
 import { AppPath, ConnectedAccountProvider } from 'twenty-shared/types';
 import { IconGoogle, IconMicrosoft } from 'twenty-ui/display';
 import { MainButton } from 'twenty-ui/input';
 import { ClickToActionLink } from 'twenty-ui/navigation';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import {
   CalendarChannelVisibility,
   MessageChannelVisibility,
 } from '~/generated/graphql';
-import { useSkipSyncEmailOnboardingStepMutation } from '~/generated-metadata/graphql';
+import { SkipSyncEmailOnboardingStepDocument } from '~/generated-metadata/graphql';
 
 const StyledSyncEmailsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%;
-  margin: ${themeCssVariables.spacing[4]} 0;
   gap: ${themeCssVariables.spacing[2]};
+  margin: ${themeCssVariables.spacing[4]} 0;
+  width: 100%;
 `;
 
 const StyledProviderContainer = styled.div`
@@ -50,15 +50,16 @@ const StyledActionLinkContainer = styled.div`
 
 export const FuseSyncEmails = () => {
   const { t } = useLingui();
-  const theme = useTheme();
+  const { theme } = useContext(ThemeContext);
   const { triggerApisOAuth } = useTriggerApisOAuth();
   const setNextOnboardingStatus = useSetNextOnboardingStatus();
   const [visibility, setVisibility] = useState<MessageChannelVisibility>(
     MessageChannelVisibility.SHARE_EVERYTHING,
   );
   const [lastAuthenticatedMethod] = useAtomState(lastAuthenticatedMethodState);
-  const [skipSyncEmailOnboardingStatusMutation] =
-    useSkipSyncEmailOnboardingStepMutation();
+  const [skipSyncEmailOnboardingStatusMutation] = useMutation(
+    SkipSyncEmailOnboardingStepDocument,
+  );
 
   const handleButtonClick = async (provider: ConnectedAccountProvider) => {
     const calendarChannelVisibility =
