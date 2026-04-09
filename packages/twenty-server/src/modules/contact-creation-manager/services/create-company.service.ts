@@ -259,9 +259,10 @@ export class CreateCompanyService {
     }
 
     try {
-      const httpService: AxiosInstance = this.secureHttpClientService.getHttpClient({
-        baseURL: TWENTY_COMPANIES_BASE_URL,
-      });
+      const httpService: AxiosInstance =
+        this.secureHttpClientService.getHttpClient({
+          baseURL: TWENTY_COMPANIES_BASE_URL,
+        });
       const response = await httpService.get(`/${domainName}`);
 
       const data = response.data;

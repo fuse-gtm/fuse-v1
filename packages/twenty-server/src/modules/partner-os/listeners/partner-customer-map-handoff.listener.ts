@@ -24,9 +24,7 @@ type PartnerCustomerMapRecord = {
 
 @Injectable()
 export class PartnerCustomerMapHandoffListener {
-  private readonly logger = new Logger(
-    PartnerCustomerMapHandoffListener.name,
-  );
+  private readonly logger = new Logger(PartnerCustomerMapHandoffListener.name);
 
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
@@ -62,9 +60,7 @@ export class PartnerCustomerMapHandoffListener {
     }
   }
 
-  private async handleHandoffStageTransition(
-    map: PartnerCustomerMapRecord,
-  ) {
+  private async handleHandoffStageTransition(map: PartnerCustomerMapRecord) {
     const dataSource =
       await this.globalWorkspaceOrmManager.getGlobalWorkspaceDataSource();
 
