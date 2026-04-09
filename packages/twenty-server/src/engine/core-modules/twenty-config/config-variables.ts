@@ -1736,6 +1736,38 @@ export class ConfigVariables {
   })
   @IsOptional()
   APP_REGISTRY_TOKEN: string;
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Maximum resident set size in megabytes before readiness fails closed',
+    type: ConfigVariableType.NUMBER,
+    isEnvOnly: true,
+  })
+  @CastToPositiveNumber()
+  @IsOptional()
+  READINESS_MAX_RSS_MB: number = 1200;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Maximum heap usage ratio before readiness fails closed',
+    type: ConfigVariableType.NUMBER,
+    isEnvOnly: true,
+  })
+  @CastToPositiveNumber()
+  @IsOptional()
+  READINESS_MAX_HEAP_USED_RATIO: number = 0.92;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.OTHER,
+    description:
+      'Maximum event loop lag in milliseconds before readiness fails closed',
+    type: ConfigVariableType.NUMBER,
+    isEnvOnly: true,
+  })
+  @CastToPositiveNumber()
+  @IsOptional()
+  READINESS_MAX_EVENT_LOOP_LAG_MS: number = 500;
 }
 
 export const validate = (config: Record<string, unknown>): ConfigVariables => {

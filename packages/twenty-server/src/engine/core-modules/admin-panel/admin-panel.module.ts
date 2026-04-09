@@ -62,6 +62,11 @@ import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permi
     ConnectedAccountHealth,
     AppHealthIndicator,
   ],
-  exports: [AdminPanelService, MaintenanceModeService],
+  exports: [
+    AdminPanelService,
+    MaintenanceModeService,
+    DatabaseHealthIndicator,
+    RedisHealthIndicator,
+  ],
 })
 export class AdminPanelModule {}

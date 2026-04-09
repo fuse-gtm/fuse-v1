@@ -3,6 +3,7 @@ name: twenty
 services:
   server:
     image: twentycrm/twenty:${TAG:-latest}
+    mem_limit: 1536m
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
     ports:
@@ -74,7 +75,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: curl --fail http://localhost:3000/healthz
+      test: curl --fail http://localhost:3000/readyz
       interval: 5s
       timeout: 5s
       retries: 20
@@ -82,6 +83,7 @@ services:
 
   worker:
     image: twentycrm/twenty:${TAG:-latest}
+    mem_limit: 1024m
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
     command: ["yarn", "worker:prod"]
@@ -169,7 +171,7 @@ services:
   redis:
     image: redis
     restart: always
-    command: ["--maxmemory-policy", "noeviction"]
+    command: ["--maxmemory", "512mb", "--maxmemory-policy", "noeviction"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
