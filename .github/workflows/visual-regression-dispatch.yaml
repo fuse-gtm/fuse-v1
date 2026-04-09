@@ -20,6 +20,8 @@ jobs:
       github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      CI_PRIVILEGED_DISPATCH_TOKEN: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
     steps:
       - name: Determine project and artifact name
         id: project
@@ -127,10 +129,10 @@ jobs:
           retention-days: 1
 
       - name: Dispatch to ci-privileged
-        if: steps.check-artifact.outputs.exists == 'true' && steps.pr-info.outputs.has_pr == 'true'
+        if: steps.check-artifact.outputs.exists == 'true' && steps.pr-info.outputs.has_pr == 'true' && env.CI_PRIVILEGED_DISPATCH_TOKEN != ''
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
+          token: ${{ env.CI_PRIVILEGED_DISPATCH_TOKEN }}
           repository: twentyhq/ci-privileged
           event-type: visual-regression
           client-payload: >-

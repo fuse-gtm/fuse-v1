@@ -13,6 +13,8 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      CI_PRIVILEGED_DISPATCH_TOKEN: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
     steps:
       - name: Get PR number from workflow run
         id: pr-info
@@ -62,10 +64,10 @@ jobs:
             core.info(`PR #${prNumber}, Run ID: ${runId}`);
 
       - name: Dispatch to ci-privileged
-        if: steps.pr-info.outputs.has_pr == 'true'
+        if: steps.pr-info.outputs.has_pr == 'true' && env.CI_PRIVILEGED_DISPATCH_TOKEN != ''
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
+          token: ${{ env.CI_PRIVILEGED_DISPATCH_TOKEN }}
           repository: twentyhq/ci-privileged
           event-type: breaking-changes-report
           client-payload: '{"pr_number": ${{ toJSON(steps.pr-info.outputs.pr_number) }}, "run_id": ${{ toJSON(steps.pr-info.outputs.run_id) }}, "repo": ${{ toJSON(github.repository) }}, "branch_state": ${{ toJSON(github.event.workflow_run.head_branch) }}}'

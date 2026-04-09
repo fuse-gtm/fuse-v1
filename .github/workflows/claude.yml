@@ -98,6 +98,8 @@ jobs:
     if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      CI_PRIVILEGED_DISPATCH_TOKEN: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
     permissions:
       contents: write
       pull-requests: write
@@ -158,10 +160,10 @@ jobs:
               }
             }
       - name: Dispatch response to ci-privileged
-        if: always()
+        if: always() && env.CI_PRIVILEGED_DISPATCH_TOKEN != ''
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
+          token: ${{ env.CI_PRIVILEGED_DISPATCH_TOKEN }}
           repository: twentyhq/ci-privileged
           event-type: claude-cross-repo-response
           client-payload: '{"repo": ${{ toJSON(steps.prompt.outputs.repo) }}, "issue_number": ${{ toJSON(steps.prompt.outputs.issue_number) }}, "run_id": ${{ toJSON(github.run_id) }}, "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
