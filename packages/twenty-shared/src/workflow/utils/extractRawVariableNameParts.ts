@@ -1,4 +1,4 @@
-import { isDefined } from '@/utils';
+import { isDefined } from '@/utils/validation/isDefined';
 import { CAPTURE_ALL_VARIABLE_TAG_INNER_REGEX } from '../constants/CaptureAllVariableTagInnerRegex';
 
 export const extractRawVariableNamePart = ({

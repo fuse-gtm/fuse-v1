@@ -1,5 +1,5 @@
 import { type Nullable } from '@/types';
-import { isDefined } from '@/utils';
+import { isDefined } from '@/utils/validation/isDefined';
 
 export const DEFAULT_LABEL_IDENTIFIER_FIELD_NAME = 'name';
 

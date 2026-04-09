@@ -1,4 +1,4 @@
-import { isDefined } from '@/utils';
+import { isDefined } from '@/utils/validation/isDefined';
 import {
   type BaseOutputSchemaV2,
   type Leaf,
