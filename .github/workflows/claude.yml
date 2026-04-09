@@ -157,8 +157,17 @@ jobs:
                 "PG_DATABASE_URL": "postgres://postgres:postgres@localhost:5432/default"
               }
             }
+      - name: Check ci-privileged token
+        id: ci-privileged-token
+        run: |
+          if [ -n "${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CI_PRIVILEGED_DISPATCH_TOKEN is not configured; skipping ci-privileged dispatch"
+          fi
       - name: Dispatch response to ci-privileged
-        if: always()
+        if: always() && steps.ci-privileged-token.outputs.present == 'true'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CI_PRIVILEGED_DISPATCH_TOKEN }}
