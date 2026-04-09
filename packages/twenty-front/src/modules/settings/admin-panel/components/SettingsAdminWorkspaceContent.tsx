@@ -7,7 +7,7 @@ import { useImpersonationAuth } from '@/settings/admin-panel/hooks/useImpersonat
 import { useImpersonationRedirect } from '@/settings/admin-panel/hooks/useImpersonationRedirect';
 import { userLookupResultState } from '@/settings/admin-panel/states/userLookupResultState';
 import { type WorkspaceInfo } from '@/settings/admin-panel/types/WorkspaceInfo';
-import { getWorkspaceSchemaName } from '@/settings/admin-panel/utils/get-workspace-schema-name.util';
+import { getWorkspaceSchemaName } from '@/settings/admin-panel/utils/getWorkspaceSchemaName';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { Table } from '@/ui/layout/table/components/Table';
 import { TableBody } from '@/ui/layout/table/components/TableBody';
@@ -35,10 +35,11 @@ import { Button, Toggle } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
+import { useMutation } from '@apollo/client/react';
 import {
   type FeatureFlagKey,
-  useImpersonateMutation,
-  useUpdateWorkspaceFeatureFlagMutation,
+  ImpersonateDocument,
+  UpdateWorkspaceFeatureFlagDocument,
 } from '~/generated-metadata/graphql';
 
 type SettingsAdminWorkspaceContentProps = {
@@ -64,11 +65,11 @@ export const SettingsAdminWorkspaceContent = ({
   const [currentUser] = useAtomState(currentUserState);
   const currentWorkspace = useAtomStateValue(currentWorkspaceState);
 
-  const [updateFeatureFlag] = useUpdateWorkspaceFeatureFlagMutation();
+  const [updateFeatureFlag] = useMutation(UpdateWorkspaceFeatureFlagDocument);
   const [isImpersonateLoading, setIsImpersonationLoading] = useState(false);
   const { executeImpersonationAuth } = useImpersonationAuth();
   const { executeImpersonationRedirect } = useImpersonationRedirect();
-  const [impersonate] = useImpersonateMutation();
+  const [impersonate] = useMutation(ImpersonateDocument);
 
   const { updateFeatureFlagState } = useFeatureFlagState();
   const userLookupResult = useAtomStateValue(userLookupResultState);

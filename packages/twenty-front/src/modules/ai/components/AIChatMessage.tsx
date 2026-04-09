@@ -5,9 +5,12 @@ import { AgentMessageRole } from '@/ai/constants/AgentMessageRole';
 
 import { AIChatAssistantMessageRenderer } from '@/ai/components/AIChatAssistantMessageRenderer';
 import { AIChatErrorRenderer } from '@/ai/components/AIChatErrorRenderer';
+import { agentChatMessageComponentFamilySelector } from '@/ai/states/agentChatMessageComponentFamilySelector';
 import { LightCopyIconButton } from '@/object-record/record-field/ui/components/LightCopyIconButton';
+import { useAtomComponentFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentFamilySelectorValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { type ExtendedUIMessage } from 'twenty-shared/ai';
+
+import { isExtendedFileUIPart } from 'twenty-shared/ai';
 import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { dateLocaleState } from '~/localization/states/dateLocaleState';
@@ -38,44 +41,44 @@ const StyledMessageText = styled.div<{ isUser?: boolean }>`
   font-weight: ${({ isUser }) => (isUser ? 500 : 400)};
   line-height: 1.4em;
   max-width: 100%;
+  overflow-wrap: break-word;
   padding: ${({ isUser }) =>
     isUser ? `0 ${themeCssVariables.spacing[2]}` : '0'};
-  width: fit-content;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: normal;
+  width: ${({ isUser }) => (isUser ? 'fit-content' : '100%')};
   /* Pre-wrap within the whole container turns every newline between block
      elements into extra spacing; keep normal flow and only pre-wrap code. */
-  white-space: normal;
+  word-wrap: break-word;
 
   code {
+    background: ${themeCssVariables.background.tertiary};
+    border-radius: ${themeCssVariables.border.radius.sm};
+    line-height: 1.4;
+    max-width: 100%;
     overflow: auto;
+    padding: 1px 3px;
     white-space: pre-wrap;
     word-wrap: break-word;
-    max-width: 100%;
-    line-height: 1.4;
-    padding: 1px 3px;
-    border-radius: ${themeCssVariables.border.radius.sm};
-    background: ${themeCssVariables.background.tertiary};
   }
 
   pre {
     background: ${themeCssVariables.background.tertiary};
-    padding: ${themeCssVariables.spacing[2]};
     border-radius: ${themeCssVariables.border.radius.sm};
-    overflow-x: auto;
     max-width: 100%;
+    overflow-x: auto;
+    padding: ${themeCssVariables.spacing[2]};
 
     code {
-      padding: 0;
-      border-radius: 0;
       background: none;
+      border-radius: 0;
+      padding: 0;
     }
   }
 
   p {
+    line-height: 1.4em;
     margin-block: ${({ isUser }) =>
       isUser ? '0' : themeCssVariables.spacing[1]};
-    line-height: 1.4em;
   }
 
   ul,
@@ -98,9 +101,9 @@ const StyledMessageText = styled.div<{ isUser?: boolean }>`
 
   blockquote {
     border-left: 3px solid ${themeCssVariables.border.color.medium};
+    color: ${themeCssVariables.font.color.secondary};
     margin: ${themeCssVariables.spacing[2]} 0;
     padding-left: ${themeCssVariables.spacing[2]};
-    color: ${themeCssVariables.font.color.secondary};
   }
 `;
 
@@ -131,36 +134,48 @@ const StyledMessageContainer = styled.div<{ isUser?: boolean }>`
 const StyledFilesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  gap: ${themeCssVariables.spacing[2]};
   flex-wrap: wrap;
+  gap: ${themeCssVariables.spacing[2]};
   margin-top: ${themeCssVariables.spacing[2]};
 `;
 
+type AIChatMessageProps = {
+  messageId: string;
+  isLastMessageStreaming?: boolean;
+  error?: Error | undefined;
+};
+
 export const AIChatMessage = ({
-  message,
-  isLastMessageStreaming,
+  messageId,
+  isLastMessageStreaming = false,
   error,
-}: {
-  message: ExtendedUIMessage;
-  isLastMessageStreaming: boolean;
-  error?: Error | null;
-}) => {
+}: AIChatMessageProps) => {
+  const agentChatMessage = useAtomComponentFamilySelectorValue(
+    agentChatMessageComponentFamilySelector,
+    { messageId },
+  );
+
   const { localeCatalog } = useAtomStateValue(dateLocaleState);
 
-  const isUser = message.role === AgentMessageRole.USER;
-  const showError =
-    isDefined(error) && message.role === AgentMessageRole.ASSISTANT;
+  if (!isDefined(agentChatMessage)) {
+    return null;
+  }
 
-  const fileParts = message.parts.filter((part) => part.type === 'file');
+  const isUser = agentChatMessage.role === AgentMessageRole.USER;
+  const isLastAssistantMessage =
+    agentChatMessage.role === AgentMessageRole.ASSISTANT;
+  const shouldShowError = isDefined(error) && isLastAssistantMessage;
+
+  const fileParts = agentChatMessage.parts.filter(isExtendedFileUIPart);
 
   return (
-    <StyledMessageBubble key={message.id} isUser={isUser}>
+    <StyledMessageBubble isUser={isUser}>
       <StyledMessageContainer isUser={isUser}>
         <StyledMessageText isUser={isUser}>
           <AIChatAssistantMessageRenderer
             isLastMessageStreaming={isLastMessageStreaming}
-            messageParts={message.parts}
-            hasError={showError}
+            messageParts={agentChatMessage.parts}
+            hasError={shouldShowError}
           />
         </StyledMessageText>
         {fileParts.length > 0 && (
@@ -170,19 +185,22 @@ export const AIChatMessage = ({
             ))}
           </StyledFilesContainer>
         )}
-        {showError && <AIChatErrorRenderer error={error} />}
+        {shouldShowError && isDefined(error) && (
+          <AIChatErrorRenderer error={error} />
+        )}
       </StyledMessageContainer>
-      {message.parts.length > 0 && message.metadata?.createdAt && (
+      {agentChatMessage.parts.length > 0 && (
         <StyledMessageFooter className="message-footer">
           <StyledMessageTimestamp>
             {beautifyPastDateRelativeToNow(
-              message.metadata?.createdAt,
+              agentChatMessage.metadata?.createdAt ?? new Date(),
               localeCatalog,
             )}
           </StyledMessageTimestamp>
           <LightCopyIconButton
             copyText={
-              message.parts.find((part) => part.type === 'text')?.text ?? ''
+              agentChatMessage.parts.find((part) => part.type === 'text')
+                ?.text ?? ''
             }
           />
         </StyledMessageFooter>

@@ -11,6 +11,7 @@ import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twent
 import { type OutboundRequestContext } from './outbound-request-context.type';
 
 const MAX_REDIRECTS = 5;
+const ALLOWED_PROTOCOLS = new Set(['http:', 'https:']);
 
 type SecureHttpClientConfig = CreateAxiosDefaults & {
   retries?: number;
@@ -61,6 +62,24 @@ export class SecureHttpClientService {
       });
     }
 
+    if (isSafeModeEnabled) {
+      client.interceptors.request.use((requestConfig) => {
+        const url = requestConfig.url || requestConfig.baseURL;
+
+        if (url) {
+          const parsed = new URL(url, requestConfig.baseURL);
+
+          if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
+            throw new Error(
+              `Protocol ${parsed.protocol} is not allowed. Only HTTP and HTTPS are permitted.`,
+            );
+          }
+        }
+
+        return requestConfig;
+      });
+    }
+
     if (context) {
       client.interceptors.request.use((requestConfig) => {
         this.logger.log(
@@ -88,18 +107,6 @@ export class SecureHttpClientService {
     }
 
     return resolveAndValidateHostname(hostnameOrUrl);
-  }
-
-  async getValidatedUrl(serverUrl: string): Promise<string> {
-    if (!this.isSafeModeEnabled()) {
-      return serverUrl;
-    }
-    const resolvedIp = await resolveAndValidateHostname(serverUrl);
-    const url = new URL(serverUrl);
-
-    url.hostname = resolvedIp;
-
-    return url.toString();
   }
 
   private isSafeModeEnabled(): boolean {

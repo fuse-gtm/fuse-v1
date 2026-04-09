@@ -1,3 +1,4 @@
+import { AIChatCompactionIndicator } from '@/ai/components/AIChatCompactionIndicator';
 import { CodeExecutionDisplay } from '@/ai/components/CodeExecutionDisplay';
 import { RoutingStatusDisplay } from '@/ai/components/RoutingStatusDisplay';
 import { ThinkingStepsDisplay } from '@/ai/components/ThinkingStepsDisplay';
@@ -6,12 +7,12 @@ import { IconDotsVertical } from 'twenty-ui/display';
 import { LazyMarkdownRenderer } from '@/ai/components/LazyMarkdownRenderer';
 import { ToolStepRenderer } from '@/ai/components/ToolStepRenderer';
 import { groupContiguousThinkingStepParts } from '@/ai/utils/groupContiguousThinkingStepParts';
+import { isCodeInterpreterToolPart } from '@/ai/utils/isCodeInterpreterToolPart';
 import { styled } from '@linaria/react';
-import { useContext } from 'react';
 import { isToolUIPart, type ToolUIPart } from 'ai';
 import { type ExtendedUIMessagePart } from 'twenty-shared/ai';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { useContext } from 'react';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledMessagePartsContainer = styled.div`
   display: flex;
@@ -28,8 +29,9 @@ const StyledLoadingIconContainer = styled.div`
   padding-inline: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledLoadingIcon = styled(IconDotsVertical)`
+const StyledLoadingIconWrapper = styled.span`
   color: ${themeCssVariables.font.color.light};
+  display: flex;
   transform: rotate(90deg);
 `;
 
@@ -38,7 +40,9 @@ const InitialLoadingIndicator = () => {
 
   return (
     <StyledLoadingIconContainer>
-      <StyledLoadingIcon size={theme.icon.size.xl} />
+      <StyledLoadingIconWrapper>
+        <IconDotsVertical size={theme.icon.size.xl} />
+      </StyledLoadingIconWrapper>
     </StyledLoadingIconContainer>
   );
 };
@@ -55,6 +59,8 @@ const MessagePartRenderer = ({
       return <LazyMarkdownRenderer text={part.text} />;
     case 'data-routing-status':
       return <RoutingStatusDisplay data={part.data} />;
+    case 'data-compaction':
+      return <AIChatCompactionIndicator />;
     case 'data-code-execution':
       return (
         <CodeExecutionDisplay
@@ -90,16 +96,13 @@ export const AIChatAssistantMessageRenderer = ({
   isLastMessageStreaming: boolean;
   hasError?: boolean;
 }) => {
-  // Filter out data-code-execution parts when tool-code_interpreter exists
-  // (the tool part contains the final result, data-code-execution is for streaming updates)
-  // Also filter out data-thread-title (consumed by useAgentChat, not rendered)
-  const hasCodeInterpreterTool = messageParts.some(
-    (part) => part.type === 'tool-code_interpreter',
+  const hasCodeExecutionData = messageParts.some(
+    (part) => part.type === 'data-code-execution',
   );
   const filteredParts = messageParts.filter(
     (part) =>
       part.type !== 'data-thread-title' &&
-      (!hasCodeInterpreterTool || part.type !== 'data-code-execution'),
+      !(hasCodeExecutionData && isCodeInterpreterToolPart(part)),
   );
   const renderItems = groupContiguousThinkingStepParts(filteredParts);
 

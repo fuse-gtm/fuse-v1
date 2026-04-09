@@ -11,10 +11,11 @@ import { Button, ButtonGroup } from 'twenty-ui/input';
 import { styled } from '@linaria/react';
 import { SettingsDomainRecords } from '@/settings/domains/components/SettingsDomainRecords';
 import { useCheckPublicDomainValidRecords } from '@/settings/domains/hooks/useCheckPublicDomainValidRecords';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  useCreatePublicDomainMutation,
-  useDeletePublicDomainMutation,
-  useFindManyPublicDomainsQuery,
+  CreatePublicDomainDocument,
+  DeletePublicDomainDocument,
+  FindManyPublicDomainsDocument,
 } from '~/generated-metadata/graphql';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { CheckPublicDomainValidRecordsEffect } from '@/settings/domains/components/CheckPublicDomainValidRecordsEffect';
@@ -22,16 +23,16 @@ import { selectedPublicDomainState } from '@/settings/domains/states/selectedPub
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useState } from 'react';
 import { SaveAndCancelButtons } from '@/settings/components/SaveAndCancelButtons/SaveAndCancelButtons';
-import { getDomainValidationSchema } from '@/settings/domains/utils/get-domain-validation-schema';
+import { getDomainValidationSchema } from '@/settings/domains/utils/getDomainValidationSchema';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const StyledButtonGroup = styled(ButtonGroup)`
-  & > :not(:first-of-type) > button {
+const StyledButtonGroupContainer = styled.div`
+  > * > :not(:first-of-type) > button {
     border-left: none;
   }
 `;
 
-const StyledButton = styled(Button)`
+const StyledButtonContainer = styled.div`
   align-self: flex-start;
 `;
 
@@ -56,7 +57,9 @@ export const SettingPublicDomain = () => {
   const navigate = useNavigateSettings();
   const { enqueueSuccessSnackBar, enqueueErrorSnackBar } = useSnackBar();
 
-  const [createPublicDomain, { loading }] = useCreatePublicDomainMutation();
+  const [createPublicDomain, { loading }] = useMutation(
+    CreatePublicDomainDocument,
+  );
 
   const [newPublicDomain, setNewPublicDomain] = useState<string | undefined>(
     selectedPublicDomain?.domain ?? '',
@@ -66,9 +69,11 @@ export const SettingPublicDomain = () => {
     string | undefined
   >(undefined);
 
-  const { refetch: refetchPublicDomains } = useFindManyPublicDomainsQuery();
+  const { refetch: refetchPublicDomains } = useQuery(
+    FindManyPublicDomainsDocument,
+  );
 
-  const [deletePublicDomain] = useDeletePublicDomainMutation();
+  const [deletePublicDomain] = useMutation(DeletePublicDomainDocument);
 
   const { isLoading, publicDomainRecords, checkPublicDomainRecords } =
     useCheckPublicDomainValidRecords();
@@ -94,7 +99,7 @@ export const SettingPublicDomain = () => {
     });
   };
 
-  const validationSchema = getDomainValidationSchema(t);
+  const validationSchema = getDomainValidationSchema();
 
   const onCreate = async () => {
     if (!isDefined(newPublicDomain)) {
@@ -171,28 +176,34 @@ export const SettingPublicDomain = () => {
               fullWidth
             />
             {isDefined(selectedPublicDomain) && (
-              <StyledButtonGroup>
-                <StyledButton
-                  isLoading={isLoading}
-                  Icon={IconReload}
-                  title={t`Reload`}
-                  variant="primary"
-                  onClick={() =>
-                    checkPublicDomainRecords(selectedPublicDomain.domain)
-                  }
-                  type="button"
-                />
-                <StyledButton
-                  Icon={IconTrash}
-                  variant="primary"
-                  onClick={onDelete}
-                />
-              </StyledButtonGroup>
+              <StyledButtonGroupContainer>
+                <ButtonGroup>
+                  <StyledButtonContainer>
+                    <Button
+                      isLoading={isLoading}
+                      Icon={IconReload}
+                      title={t`Reload`}
+                      variant="primary"
+                      onClick={() =>
+                        checkPublicDomainRecords(selectedPublicDomain.domain)
+                      }
+                      type="button"
+                    />
+                  </StyledButtonContainer>
+                  <StyledButtonContainer>
+                    <Button
+                      Icon={IconTrash}
+                      variant="primary"
+                      onClick={onDelete}
+                    />
+                  </StyledButtonContainer>
+                </ButtonGroup>
+              </StyledButtonGroupContainer>
             )}
           </StyledDomainFormWrapper>
           {isDefined(selectedPublicDomain) && publicDomainRecords?.domain && (
             <StyledRecordsWrapper>
-              {publicDomainRecords.records && (
+              {isDefined(publicDomainRecords.records) && (
                 <SettingsDomainRecords records={publicDomainRecords.records} />
               )}
             </StyledRecordsWrapper>

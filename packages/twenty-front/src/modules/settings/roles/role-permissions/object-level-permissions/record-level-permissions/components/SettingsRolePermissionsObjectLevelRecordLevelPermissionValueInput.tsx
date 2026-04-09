@@ -3,14 +3,13 @@
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 import { useContext, useMemo } from 'react';
-import { FieldMetadataType } from 'twenty-shared/types';
+import { FieldMetadataType, CoreObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { AppTooltip, IconEraser, TooltipDelay } from 'twenty-ui/display';
 import { type JsonValue } from 'type-fest';
 
 import { useFieldMetadataItemById } from '@/object-metadata/hooks/useFieldMetadataItemById';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { formatFieldMetadataItemAsFieldDefinition } from '@/object-metadata/utils/formatFieldMetadataItemAsFieldDefinition';
 import { AdvancedFilterContext } from '@/object-record/advanced-filter/states/context/AdvancedFilterContext';
 import { useApplyObjectFilterDropdownFilterValue } from '@/object-record/object-filter-dropdown/hooks/useApplyObjectFilterDropdownFilterValue';
@@ -25,8 +24,7 @@ import { currentRecordFiltersComponentState } from '@/object-record/record-filte
 import { type CompositeFieldType } from '@/settings/data-model/types/CompositeFieldType';
 import { createRecordLevelPermissionVariablePicker } from '@/settings/roles/role-permissions/object-level-permissions/record-level-permissions/components/SettingsRolePermissionsObjectLevelRecordLevelPermissionVariablePicker';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div`
   align-items: stretch;
@@ -39,16 +37,16 @@ const StyledContainer = styled.div`
 
 const StyledIconContainer = styled.div`
   align-items: center;
+  background-color: ${themeCssVariables.background.transparent.lighter};
+  border: 1px solid ${themeCssVariables.border.color.medium};
+  border-bottom-right-radius: ${themeCssVariables.border.radius.sm};
+  border-left: none;
+  border-top-right-radius: ${themeCssVariables.border.radius.sm};
+  color: ${themeCssVariables.font.color.tertiary};
+  cursor: pointer;
   display: flex;
   justify-content: center;
-  background-color: ${themeCssVariables.background.transparent.lighter};
-  border-top-right-radius: ${themeCssVariables.border.radius.sm};
-  border-bottom-right-radius: ${themeCssVariables.border.radius.sm};
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  border-left: none;
-  cursor: pointer;
   padding: ${themeCssVariables.spacing[2]};
-  color: ${themeCssVariables.font.color.tertiary};
 
   &:hover {
     background-color: ${themeCssVariables.background.transparent.light};
@@ -56,20 +54,20 @@ const StyledIconContainer = styled.div`
 `;
 
 const StyledReadOnlyInput = styled.div`
-  display: flex;
   align-items: center;
-  flex: 1;
-  padding: ${themeCssVariables.spacing[2]};
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  border-top-left-radius: ${themeCssVariables.border.radius.sm};
-  border-bottom-left-radius: ${themeCssVariables.border.radius.sm};
   background-color: ${themeCssVariables.background.secondary};
-  color: ${themeCssVariables.font.color.primary};
-  font-size: ${themeCssVariables.font.size.md};
-  height: 32px;
+  border: 1px solid ${themeCssVariables.border.color.medium};
+  border-bottom-left-radius: ${themeCssVariables.border.radius.sm};
+  border-top-left-radius: ${themeCssVariables.border.radius.sm};
   box-sizing: border-box;
+  color: ${themeCssVariables.font.color.primary};
+  display: flex;
+  flex: 1;
+  font-size: ${themeCssVariables.font.size.md};
   gap: ${themeCssVariables.spacing[1]};
+  height: 32px;
   overflow: hidden;
+  padding: ${themeCssVariables.spacing[2]};
 `;
 
 const StyledMeText = styled.span`
@@ -78,10 +76,10 @@ const StyledMeText = styled.span`
 `;
 
 const StyledFieldLabel = styled.span`
-  white-space: nowrap;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
+  white-space: nowrap;
 `;
 
 const StyledFormFieldInputWrapper = styled.div`
@@ -100,7 +98,6 @@ export const SettingsRolePermissionsObjectLevelRecordLevelPermissionValueInput =
     recordFilterId,
   }: SettingsRolePermissionsObjectLevelRecordLevelPermissionValueInputProps) => {
     const { theme } = useContext(ThemeContext);
-
     const { objectMetadataItem } = useContext(AdvancedFilterContext);
 
     const currentRecordFilters = useAtomComponentStateValue(

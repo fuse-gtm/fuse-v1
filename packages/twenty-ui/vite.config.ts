@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react-swc';
 import wyw from '@wyw-in-js/vite';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createWywProfilingPlugin } from 'twenty-shared/vite';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
 import dts, { type PluginOptions } from 'vite-plugin-dts';
@@ -37,9 +38,8 @@ const entryFileNames = (chunk: any, extension: 'cjs' | 'mjs') => {
   return `${moduleDirectory}.${extension}`;
 };
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command }) => {
   const isBuildCommand = command === 'build';
-  const isCI = process.env.CI === 'true';
 
   const tsConfigPath = isBuildCommand
     ? path.resolve(__dirname, './tsconfig.lib.json')
@@ -56,11 +56,14 @@ export default defineConfig(({ command, mode }) => {
     tsconfigPath: tsConfigPath,
   };
 
+  const BUNDLED_DEPS = ['@tabler/icons-react'];
+
   return {
     resolve: {
       alias: {
         '@ui/': path.resolve(__dirname, 'src') + '/',
         '@assets/': path.resolve(__dirname, 'src/assets') + '/',
+        '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
       },
     },
     css: {
@@ -82,19 +85,18 @@ export default defineConfig(({ command, mode }) => {
       }),
       svgr(),
       dts(dtsConfig),
-      !isCI && checker(checkersConfig),
-      {
-        ...wyw({
+      checker(checkersConfig),
+      createWywProfilingPlugin(
+        wyw({
           include: [path.resolve(__dirname, 'src') + '/**/*.{ts,tsx}'],
           babelOptions: {
             presets: ['@babel/preset-typescript', '@babel/preset-react'],
           },
         }),
-        enforce: 'pre',
-      },
+      ),
       {
         name: 'copy-theme-css',
-        closeBundle: () => {
+        closeBundle() {
           const themeCssFiles = ['theme-light.css', 'theme-dark.css'];
           for (const file of themeCssFiles) {
             fs.copyFileSync(
@@ -123,7 +125,9 @@ export default defineConfig(({ command, mode }) => {
         name: 'twenty-ui',
       },
       rollupOptions: {
-        external: Object.keys(packageJson.dependencies || {}),
+        external: Object.keys(packageJson.dependencies || {}).filter(
+          (dep) => !BUNDLED_DEPS.includes(dep),
+        ),
         output: [
           {
             assetFileNames: 'style.css',

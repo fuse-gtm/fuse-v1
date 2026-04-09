@@ -2,17 +2,18 @@ import { SKELETON_LOADER_HEIGHT_SIZES } from '@/activities/components/SkeletonLo
 import { Logo } from '@/auth/components/Logo';
 import { Title } from '@/auth/components/Title';
 import { useAuth } from '@/auth/hooks/useAuth';
-import { useIsLogged } from '@/auth/hooks/useIsLogged';
+import { useHasAccessTokenPair } from '@/auth/hooks/useHasAccessTokenPair';
 import { currentUserState } from '@/auth/states/currentUserState';
 import { workspacePublicDataState } from '@/auth/states/workspacePublicDataState';
 import { PASSWORD_REGEX } from '@/auth/utils/passwordRegex';
 import { useReadCaptchaToken } from '@/captcha/hooks/useReadCaptchaToken';
 import { useCaptcha } from '@/client-config/hooks/useCaptcha';
+import { useIsCurrentLocationOnAWorkspace } from '@/domain-manager/hooks/useIsCurrentLocationOnAWorkspace';
 import { useRedirect } from '@/domain-manager/hooks/useRedirect';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
-import { Modal } from '@/ui/layout/modal/components/Modal';
-import { ApolloError } from '@apollo/client';
+import { ModalContent } from 'twenty-ui/layout';
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { styled } from '@linaria/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { msg } from '@lingui/core/macro';
@@ -20,7 +21,7 @@ import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyString } from '@sniptt/guards';
 import { motion } from 'framer-motion';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
@@ -28,13 +29,13 @@ import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomState
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { AppPath } from 'twenty-shared/types';
 import { MainButton } from 'twenty-ui/input';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { AnimatedEaseIn } from 'twenty-ui/utilities';
 import { z } from 'zod';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  useUpdatePasswordViaResetTokenMutation,
-  useValidatePasswordResetTokenQuery,
+  UpdatePasswordViaResetTokenDocument,
+  ValidatePasswordResetTokenDocument,
 } from '~/generated-metadata/graphql';
 import { useNavigateApp } from '~/hooks/useNavigateApp';
 import { logError } from '~/utils/logError';
@@ -53,10 +54,10 @@ const validationSchema = z
 type Form = z.infer<typeof validationSchema>;
 
 const StyledMainContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
+  display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   width: 100%;
 `;
 
@@ -73,7 +74,7 @@ const StyledForm = styled.form`
   width: 100%;
 `;
 
-const StyledFullWidthMotionDiv = styled(motion.div)`
+const StyledFullWidthContainer = styled.div`
   width: 100%;
 `;
 
@@ -81,11 +82,12 @@ const StyledInputContainer = styled.div`
   margin-bottom: ${themeCssVariables.spacing[3]};
 `;
 
-const StyledMainButton = styled(MainButton)`
+const StyledMainButtonContainer = styled.div`
   margin-top: ${themeCssVariables.spacing[2]};
 `;
 
 export const PasswordReset = () => {
+  const { theme } = useContext(ThemeContext);
   const { t } = useLingui();
   const { enqueueErrorSnackBar, enqueueSuccessSnackBar } = useSnackBar();
 
@@ -98,12 +100,9 @@ export const PasswordReset = () => {
   const [email, setEmail] = useState('');
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [isTargetUserPasswordSet, setIsTargetUserPasswordSet] = useState(false);
-
-  const { theme } = useContext(ThemeContext);
-
   const passwordResetToken = useParams().passwordResetToken;
 
-  const isLoggedIn = useIsLogged();
+  const hasAccessTokenPair = useHasAccessTokenPair();
 
   const { control, handleSubmit } = useForm<Form>({
     mode: 'onChange',
@@ -114,33 +113,44 @@ export const PasswordReset = () => {
     resolver: zodResolver(validationSchema),
   });
 
-  useValidatePasswordResetTokenQuery({
-    variables: {
-      token: passwordResetToken ?? '',
+  const { data: tokenValidationData, error: tokenValidationError } = useQuery(
+    ValidatePasswordResetTokenDocument,
+    {
+      variables: {
+        token: passwordResetToken ?? '',
+      },
+      skip: !passwordResetToken || isTokenValid,
     },
-    skip: !passwordResetToken || isTokenValid,
-    onError: (error) => {
+  );
+
+  useEffect(() => {
+    if (tokenValidationError) {
       enqueueErrorSnackBar({
-        apolloError: error,
+        apolloError: tokenValidationError,
       });
       navigate(AppPath.Index);
-    },
-    onCompleted: (data) => {
+    }
+  }, [tokenValidationError, enqueueErrorSnackBar, navigate]);
+
+  useEffect(() => {
+    if (tokenValidationData) {
       setIsTokenValid(true);
-      const validationResult = data?.validatePasswordResetToken;
+      const validationResult = tokenValidationData?.validatePasswordResetToken;
       if (isNonEmptyString(validationResult?.email)) {
         setEmail(validationResult.email);
       }
       if (validationResult?.hasPassword) {
         setIsTargetUserPasswordSet(validationResult.hasPassword);
       }
-    },
-  });
+    }
+  }, [tokenValidationData]);
 
-  const [updatePasswordViaToken, { loading: isUpdatingPassword }] =
-    useUpdatePasswordViaResetTokenMutation();
+  const [updatePasswordViaToken, { loading: isUpdatingPassword }] = useMutation(
+    UpdatePasswordViaResetTokenDocument,
+  );
 
-  const { signInWithCredentialsInWorkspace } = useAuth();
+  const { signInWithCredentialsInWorkspace, signInWithCredentials } = useAuth();
+  const { isOnAWorkspace } = useIsCurrentLocationOnAWorkspace();
   const { readCaptchaToken } = useReadCaptchaToken();
   const { isCaptchaReady } = useCaptcha();
 
@@ -169,7 +179,7 @@ export const PasswordReset = () => {
         currentUser ? { ...currentUser, hasPassword: true } : currentUser,
       );
 
-      if (isLoggedIn) {
+      if (hasAccessTokenPair) {
         enqueueSuccessSnackBar({
           message: successMessage,
         });
@@ -186,17 +196,21 @@ export const PasswordReset = () => {
 
       const token = readCaptchaToken();
 
-      await signInWithCredentialsInWorkspace(
-        email || '',
-        formData.newPassword,
-        token,
-      );
+      if (isOnAWorkspace) {
+        await signInWithCredentialsInWorkspace(
+          email || '',
+          formData.newPassword,
+          token,
+        );
+      } else {
+        await signInWithCredentials(email || '', formData.newPassword, token);
+      }
 
       redirect(AppPath.Index);
     } catch (err) {
       logError(err);
       enqueueErrorSnackBar({
-        apolloError: err instanceof ApolloError ? err : undefined,
+        apolloError: CombinedGraphQLErrors.is(err) ? err : undefined,
       });
     }
   };
@@ -206,7 +220,7 @@ export const PasswordReset = () => {
 
   return (
     isTokenValid && (
-      <Modal.Content isVerticalCentered isHorizontalCentered>
+      <ModalContent isVerticallyCentered isHorizontallyCentered>
         <StyledMainContainer>
           <AnimatedEaseIn>
             <Logo
@@ -224,74 +238,82 @@ export const PasswordReset = () => {
                 <Skeleton
                   height={SKELETON_LOADER_HEIGHT_SIZES.standard.m}
                   count={2}
-                  style={{ marginBottom: theme.spacing(2) }}
+                  style={{
+                    marginBottom: themeCssVariables.spacing[2],
+                  }}
                 />
               </SkeletonTheme>
             ) : (
               <StyledForm onSubmit={handleSubmit(onSubmit)}>
-                <StyledFullWidthMotionDiv
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 800,
-                    damping: 35,
-                  }}
-                >
-                  <StyledInputContainer>
-                    <TextInput
-                      autoFocus
-                      value={email}
-                      placeholder={t`Email`}
-                      fullWidth
-                      disabled
+                <StyledFullWidthContainer>
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 800,
+                      damping: 35,
+                    }}
+                  >
+                    <StyledInputContainer>
+                      <TextInput
+                        autoFocus
+                        value={email}
+                        placeholder={t`Email`}
+                        fullWidth
+                        disabled
+                      />
+                    </StyledInputContainer>
+                  </motion.div>
+                </StyledFullWidthContainer>
+                <StyledFullWidthContainer>
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 800,
+                      damping: 35,
+                    }}
+                  >
+                    <Controller
+                      name="newPassword"
+                      control={control}
+                      render={({
+                        field: { onChange, onBlur, value },
+                        fieldState: { error },
+                      }) => (
+                        <StyledInputContainer>
+                          <TextInput
+                            autoFocus
+                            value={value}
+                            type="password"
+                            placeholder={t`New Password`}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={error?.message}
+                            fullWidth
+                          />
+                        </StyledInputContainer>
+                      )}
                     />
-                  </StyledInputContainer>
-                </StyledFullWidthMotionDiv>
-                <StyledFullWidthMotionDiv
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 800,
-                    damping: 35,
-                  }}
-                >
-                  <Controller
-                    name="newPassword"
-                    control={control}
-                    render={({
-                      field: { onChange, onBlur, value },
-                      fieldState: { error },
-                    }) => (
-                      <StyledInputContainer>
-                        <TextInput
-                          autoFocus
-                          value={value}
-                          type="password"
-                          placeholder={t`New Password`}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={error?.message}
-                          fullWidth
-                        />
-                      </StyledInputContainer>
-                    )}
-                  />
-                </StyledFullWidthMotionDiv>
+                  </motion.div>
+                </StyledFullWidthContainer>
 
-                <StyledMainButton
-                  variant="secondary"
-                  title={passwordActionLabel}
-                  type="submit"
-                  fullWidth
-                  disabled={isUpdatingPassword}
-                />
+                <StyledMainButtonContainer>
+                  <MainButton
+                    variant="secondary"
+                    title={passwordActionLabel}
+                    type="submit"
+                    fullWidth
+                    disabled={isUpdatingPassword}
+                  />
+                </StyledMainButtonContainer>
               </StyledForm>
             )}
           </StyledContentContainer>
         </StyledMainContainer>
-      </Modal.Content>
+      </ModalContent>
     )
   );
 };

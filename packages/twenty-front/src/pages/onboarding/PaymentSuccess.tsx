@@ -2,7 +2,7 @@ import { SubTitle } from '@/auth/components/SubTitle';
 import { Title } from '@/auth/components/Title';
 import { currentUserState } from '@/auth/states/currentUserState';
 import { OnboardingModalCircularIcon } from '@/onboarding/components/OnboardingModalCircularIcon';
-import { Modal } from '@/ui/layout/modal/components/Modal';
+import { ModalContent } from 'twenty-ui/layout';
 import { useSubscriptionStatus } from '@/workspace/hooks/useSubscriptionStatus';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
@@ -13,26 +13,24 @@ import { isDefined } from 'twenty-shared/utils';
 import { IconCheck } from 'twenty-ui/display';
 import { Loader } from 'twenty-ui/feedback';
 import { MainButton } from 'twenty-ui/input';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { AnimatedEaseIn } from 'twenty-ui/utilities';
-import { useGetCurrentUserLazyQuery } from '~/generated-metadata/graphql';
+import { useLazyQuery } from '@apollo/client/react';
+import { GetCurrentUserDocument } from '~/generated-metadata/graphql';
 import { useNavigateApp } from '~/hooks/useNavigateApp';
 
-const StyledModalContent = styled(Modal.Content)`
-  gap: ${themeCssVariables.spacing[8]};
-`;
-
 const StyledTitleContainer = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   text-align: center;
 `;
 
 export const PaymentSuccess = () => {
   const navigate = useNavigateApp();
   const subscriptionStatus = useSubscriptionStatus();
-  const [getCurrentUser] = useGetCurrentUserLazyQuery();
+  const [getCurrentUser] = useLazyQuery(GetCurrentUserDocument, {
+    fetchPolicy: 'network-only',
+  });
   const setCurrentUser = useSetAtomState(currentUserState);
   const [isLoading, setIsLoading] = useState(false);
   const navigateWithSubscriptionCheck = async () => {
@@ -46,7 +44,7 @@ export const PaymentSuccess = () => {
         return;
       }
 
-      const result = await getCurrentUser({ fetchPolicy: 'network-only' });
+      const result = await getCurrentUser();
       const currentUser = result.data?.currentUser;
       const refreshedSubscriptionStatus =
         currentUser?.currentWorkspace?.currentBillingSubscription?.status;
@@ -67,7 +65,7 @@ export const PaymentSuccess = () => {
   };
 
   return (
-    <StyledModalContent isVerticalCentered isHorizontalCentered>
+    <ModalContent gap={8} isVerticallyCentered isHorizontallyCentered>
       <AnimatedEaseIn>
         <OnboardingModalCircularIcon Icon={IconCheck} />
       </AnimatedEaseIn>
@@ -82,6 +80,6 @@ export const PaymentSuccess = () => {
         Icon={() => (isLoading ? <Loader /> : null)}
         disabled={isLoading}
       />
-    </StyledModalContent>
+    </ModalContent>
   );
 };

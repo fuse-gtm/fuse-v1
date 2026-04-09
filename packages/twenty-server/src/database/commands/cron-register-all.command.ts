@@ -1,11 +1,16 @@
 import { Logger } from '@nestjs/common';
 
-import { Command, CommandRunner } from 'nest-commander';
+import { Command, CommandRunner, Option } from 'nest-commander';
 
+import { MarketplaceCatalogSyncCronCommand } from 'src/engine/core-modules/application/application-marketplace/crons/commands/marketplace-catalog-sync.cron.command';
+import { StaleRegistrationCleanupCronCommand } from 'src/engine/core-modules/application/application-oauth/stale-registration-cleanup/commands/stale-registration-cleanup.cron.command';
+import { ApplicationVersionCheckCronCommand } from 'src/engine/core-modules/application/application-upgrade/crons/commands/application-version-check.cron.command';
+import { EnterpriseKeyValidationCronCommand } from 'src/engine/core-modules/enterprise/cron/command/enterprise-key-validation.cron.command';
 import { EventLogCleanupCronCommand } from 'src/engine/core-modules/event-logs/cleanup/commands/event-log-cleanup.cron.command';
-import { CheckPublicDomainsValidRecordsCronCommand } from 'src/engine/core-modules/public-domain/crons/commands/check-public-domains-valid-records.cron.command';
-import { CheckCustomDomainValidRecordsCronCommand } from 'src/engine/core-modules/workspace/crons/commands/check-custom-domain-valid-records.cron.command';
 import { CronTriggerCronCommand } from 'src/engine/core-modules/logic-function/logic-function-trigger/triggers/cron/cron-trigger.cron.command';
+import { CheckPublicDomainsValidRecordsCronCommand } from 'src/engine/core-modules/public-domain/crons/commands/check-public-domains-valid-records.cron.command';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
+import { CheckCustomDomainValidRecordsCronCommand } from 'src/engine/core-modules/workspace/crons/commands/check-custom-domain-valid-records.cron.command';
 import { TrashCleanupCronCommand } from 'src/engine/trash-cleanup/commands/trash-cleanup.cron.command';
 import { CleanOnboardingWorkspacesCronCommand } from 'src/engine/workspace-manager/workspace-cleaner/commands/clean-onboarding-workspaces.cron.command';
 import { CleanSuspendedWorkspacesCronCommand } from 'src/engine/workspace-manager/workspace-cleaner/commands/clean-suspended-workspaces.cron.command';
@@ -20,6 +25,7 @@ import { MessagingRelaunchFailedMessageChannelsCronCommand } from 'src/modules/m
 import { WorkflowCleanWorkflowRunsCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-clean-workflow-runs.cron.command';
 import { WorkflowHandleStaledRunsCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-handle-staled-runs.cron.command';
 import { WorkflowRunEnqueueCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-run-enqueue.cron.command';
+import { StaleHandoffReminderCronCommand } from 'src/modules/partner-os/crons/commands/stale-handoff-reminder.cron.command';
 import { WorkflowCronTriggerCronCommand } from 'src/modules/workflow/workflow-trigger/automated-trigger/crons/commands/workflow-cron-trigger.cron.command';
 
 @Command({
@@ -28,6 +34,7 @@ import { WorkflowCronTriggerCronCommand } from 'src/modules/workflow/workflow-tr
 })
 export class CronRegisterAllCommand extends CommandRunner {
   private readonly logger = new Logger(CronRegisterAllCommand.name);
+  private readonly commandTimeoutMs = this.getCommandTimeoutMs();
 
   constructor(
     private readonly messagingMessagesImportCronCommand: MessagingMessagesImportCronCommand,
@@ -52,14 +59,45 @@ export class CronRegisterAllCommand extends CommandRunner {
     private readonly cleanOnboardingWorkspacesCronCommand: CleanOnboardingWorkspacesCronCommand,
     private readonly trashCleanupCronCommand: TrashCleanupCronCommand,
     private readonly eventLogCleanupCronCommand: EventLogCleanupCronCommand,
+    private readonly enterpriseKeyValidationCronCommand: EnterpriseKeyValidationCronCommand,
+    private readonly twentyConfigService: TwentyConfigService,
+    private readonly marketplaceCatalogSyncCronCommand: MarketplaceCatalogSyncCronCommand,
+    private readonly applicationVersionCheckCronCommand: ApplicationVersionCheckCronCommand,
+    private readonly staleRegistrationCleanupCronCommand: StaleRegistrationCleanupCronCommand,
+    private readonly staleHandoffReminderCronCommand: StaleHandoffReminderCronCommand,
   ) {
     super();
   }
 
-  async run(): Promise<void> {
-    this.logger.log('Registering all background sync cron jobs...');
+  private devMode = false;
 
-    const commands = [
+  @Option({
+    flags: '--dev-mode',
+    description:
+      'Only register cron jobs relevant to app development (cron triggers, marketplace sync, version check, stale cleanup)',
+    required: false,
+  })
+  parseDevMode(): boolean {
+    this.devMode = true;
+
+    return true;
+  }
+
+  private static readonly DEV_MODE_COMMANDS = new Set([
+    'CronTrigger',
+    'MarketplaceCatalogSync',
+    'ApplicationVersionCheck',
+    'StaleRegistrationCleanup',
+  ]);
+
+  async run(): Promise<void> {
+    this.logger.log(
+      this.devMode
+        ? 'Registering app-dev cron jobs...'
+        : 'Registering all background sync cron jobs...',
+    );
+
+    const allCommands = [
       {
         name: 'MessagingMessagesImport',
         command: this.messagingMessagesImportCronCommand,
@@ -136,24 +174,67 @@ export class CronRegisterAllCommand extends CommandRunner {
         name: 'EventLogCleanup',
         command: this.eventLogCleanupCronCommand,
       },
+      {
+        name: 'MarketplaceCatalogSync',
+        command: this.marketplaceCatalogSyncCronCommand,
+      },
+      {
+        name: 'ApplicationVersionCheck',
+        command: this.applicationVersionCheckCronCommand,
+      },
+      {
+        name: 'EnterpriseKeyValidation',
+        command: this.enterpriseKeyValidationCronCommand,
+      },
+      {
+        name: 'StaleRegistrationCleanup',
+        command: this.staleRegistrationCleanupCronCommand,
+      },
+      {
+        name: 'StaleHandoffReminder',
+        command: this.staleHandoffReminderCronCommand,
+      },
     ];
+
+    const commands = this.devMode
+      ? allCommands.filter(({ name }) =>
+          CronRegisterAllCommand.DEV_MODE_COMMANDS.has(name),
+        )
+      : allCommands;
 
     let successCount = 0;
     let failureCount = 0;
+    let abortedDueToTimeout = false;
     const failures: string[] = [];
     const successes: string[] = [];
 
     for (const { name, command } of commands) {
       try {
         this.logger.log(`Registering ${name} cron job...`);
-        await command.run();
+        await this.runWithTimeout(name, command);
         this.logger.log(`Successfully registered ${name} cron job`);
         successCount++;
         successes.push(name);
       } catch (error) {
-        this.logger.error(`Failed to register ${name} cron job:`, error);
+        if (this.isTimeoutError(error)) {
+          this.logger.warn(
+            `Timed out registering ${name} cron job after ${this.commandTimeoutMs}ms`,
+          );
+          abortedDueToTimeout = true;
+        } else {
+          this.logger.error(`Failed to register ${name} cron job:`, error);
+        }
         failureCount++;
         failures.push(name);
+
+        // A timed-out registration can keep running in the current process.
+        // Stop here to avoid stacking more potentially hanging commands.
+        if (abortedDueToTimeout) {
+          this.logger.warn(
+            `Aborting remaining cron registrations after timeout on ${name}`,
+          );
+          break;
+        }
       }
     }
 
@@ -168,5 +249,55 @@ export class CronRegisterAllCommand extends CommandRunner {
     if (successCount > 0) {
       this.logger.log(`Successful commands: ${successes.join(', ')}`);
     }
+
+    if (failureCount > 0) {
+      throw new Error(
+        `Cron registration failed (${failureCount}): ${failures.join(', ')}`,
+      );
+    }
+  }
+
+  private getCommandTimeoutMs(): number {
+    const rawValue = process.env.CRON_REGISTER_COMMAND_TIMEOUT_MS;
+    const parsedValue = Number(rawValue);
+
+    if (Number.isFinite(parsedValue) && parsedValue > 0) {
+      return parsedValue;
+    }
+
+    return 5000;
+  }
+
+  private async runWithTimeout(
+    commandName: string,
+    command: { run: () => Promise<void> },
+  ): Promise<void> {
+    let timeoutHandle: NodeJS.Timeout | undefined = undefined;
+
+    try {
+      await Promise.race([
+        command.run(),
+        new Promise<never>((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            reject(
+              new Error(
+                `Timed out while registering ${commandName} after ${this.commandTimeoutMs}ms`,
+              ),
+            );
+          }, this.commandTimeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+    }
+  }
+
+  private isTimeoutError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      error.message.includes('Timed out while registering')
+    );
   }
 }

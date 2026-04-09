@@ -1,0 +1,280 @@
+- generic [ref=e1570]:
+  - generic [ref=e1572]:
+    - generic [ref=e1573]:
+      - button "Y YCombinator" [ref=e1574]:
+        - generic [ref=e1575] [cursor=pointer]:
+          - generic [ref=e1577]: "Y"
+          - generic [ref=e1579]: YCombinator
+          - img [ref=e1581]
+      - generic [ref=e1583]:
+        - button "Search" [ref=e1584] [cursor=pointer]:
+          - img [ref=e1585]
+        - button [ref=e1589] [cursor=pointer]:
+          - img [ref=e1590]
+    - generic [ref=e1596]:
+      - tablist "Navigation tabs" [ref=e1598]:
+        - tab "Home" [selected] [ref=e1599] [cursor=pointer]:
+          - img [ref=e1601]
+        - tab "Chat" [ref=e1605] [cursor=pointer]:
+          - img [ref=e1607]
+      - button "New chat" [ref=e1610] [cursor=pointer]:
+        - img [ref=e1611]
+        - text: New chat
+    - generic [ref=e1616]:
+      - generic [ref=e1618]:
+        - generic [ref=e1620]:
+          - generic [ref=e1622]: Workspace
+          - button [ref=e1625] [cursor=pointer]:
+            - img [ref=e1626]
+        - generic [ref=e1628]:
+          - link "Companies" [ref=e1632] [cursor=pointer]:
+            - /url: /objects/companies?viewId=3aee668e-3d15-495c-b9c9-ad8540c0dd1b
+            - generic [ref=e1633]:
+              - img [ref=e1636]
+              - generic [ref=e1640]: Companies
+          - link "People" [ref=e1644] [cursor=pointer]:
+            - /url: /objects/people?viewId=7ec9d238-93f1-403d-b9c2-b07da3aa12eb
+            - generic [ref=e1645]:
+              - img [ref=e1648]
+              - generic [ref=e1652]: People
+          - link "Opportunities" [ref=e1656] [cursor=pointer]:
+            - /url: /objects/opportunities?viewId=a92eca08-d9e4-4265-908f-c41c2db0fd36
+            - generic [ref=e1657]:
+              - img [ref=e1660]
+              - generic [ref=e1667]: Opportunities
+          - link "Tasks" [ref=e1671] [cursor=pointer]:
+            - /url: /objects/tasks?viewId=c66057c3-8cdb-4de0-80cd-bed2f012bbbf
+            - generic [ref=e1672]:
+              - img [ref=e1675]
+              - generic [ref=e1679]: Tasks
+          - link "Notes" [ref=e1683] [cursor=pointer]:
+            - /url: /objects/notes?viewId=334266eb-42c4-4a8d-b244-7f15b7847a24
+            - generic [ref=e1684]:
+              - img [ref=e1687]
+              - generic [ref=e1690]: Notes
+          - link "Dashboards" [ref=e1694] [cursor=pointer]:
+            - /url: /objects/dashboards?viewId=a30af32d-c69d-47fb-a987-95628e3b17e3
+            - generic [ref=e1695]:
+              - img [ref=e1698]
+              - generic [ref=e1704]: Dashboards
+          - button "Workflows" [ref=e1712] [cursor=pointer]:
+            - generic [ref=e1713]:
+              - img [ref=e1716]
+              - generic [ref=e1720]: Workflows
+              - img [ref=e1722]
+          - link "Survey results" [ref=e1727] [cursor=pointer]:
+            - /url: /objects/surveyResults?viewId=535c0ef2-7e85-4b11-bb0c-bac1b5f5c6c0
+            - generic [ref=e1728]:
+              - img [ref=e1731]
+              - generic [ref=e1734]: Survey results
+          - link "Leads" [ref=e1738] [cursor=pointer]:
+            - /url: /objects/leads?viewId=fe0b320f-afaa-4522-83ec-219e719ff190
+            - generic [ref=e1739]:
+              - img [ref=e1742]
+              - generic [ref=e1746]: Leads
+          - link "Partner Profiles" [ref=e1750] [cursor=pointer]:
+            - /url: /objects/partnerProfiles?viewId=dfc9ec55-d5db-47ae-87fd-ad9da17a5376
+            - generic [ref=e1751]:
+              - img [ref=e1754]
+              - generic [ref=e1759]: Partner Profiles
+          - link "Partner Contact Assignments" [ref=e1763] [cursor=pointer]:
+            - /url: /objects/partnerContactAssignments?viewId=d0acf54a-1d85-47c0-9af1-8429b595cb15
+            - generic [ref=e1764]:
+              - img [ref=e1767]
+              - generic [ref=e1772]: Partner Contact Assignments
+          - link "Partner Customer Maps" [ref=e1776] [cursor=pointer]:
+            - /url: /objects/partnerCustomerMaps?viewId=dd6837eb-3225-4689-8304-39ef2bcf4dc2
+            - generic [ref=e1777]:
+              - img [ref=e1780]
+              - generic [ref=e1785]: Partner Customer Maps
+          - link "Partner Attribution Events" [ref=e1789] [cursor=pointer]:
+            - /url: /objects/partnerAttributionEvents?viewId=ed6c21cd-1653-4e79-a8f3-85edbd83b84e
+            - generic [ref=e1790]:
+              - img [ref=e1793]
+              - generic [ref=e1797]: Partner Attribution Events
+          - link "Partner Attribution Snapshots" [ref=e1801] [cursor=pointer]:
+            - /url: /objects/partnerAttributionSnapshots?viewId=69ffa5ce-2785-4823-b200-33df24916e25
+            - generic [ref=e1802]:
+              - img [ref=e1805]
+              - generic [ref=e1809]: Partner Attribution Snapshots
+          - link "Customer Events" [ref=e1813] [cursor=pointer]:
+            - /url: /objects/customerEvents?viewId=f21df60c-8ce0-4185-a081-e06415871b16
+            - generic [ref=e1814]:
+              - img [ref=e1817]
+              - generic [ref=e1821]: Customer Events
+          - link "Customer Snapshots" [ref=e1825] [cursor=pointer]:
+            - /url: /objects/customerSnapshots?viewId=c789855c-7c26-4da9-be27-b7931a64f34d
+            - generic [ref=e1826]:
+              - img [ref=e1829]
+              - generic [ref=e1833]: Customer Snapshots
+          - link "Partner Plays" [ref=e1837] [cursor=pointer]:
+            - /url: /objects/partnerPlays?viewId=5340321f-65d1-4b71-aad3-05a32d18eb79
+            - generic [ref=e1838]:
+              - img [ref=e1841]
+              - generic [ref=e1845]: Partner Plays
+          - link "Play Checks" [ref=e1849] [cursor=pointer]:
+            - /url: /objects/playChecks?viewId=12e021e7-2ab6-4edd-8b04-7f47baa57df7
+            - generic [ref=e1850]:
+              - img [ref=e1853]
+              - generic [ref=e1857]: Play Checks
+          - link "Play Enrichments" [ref=e1861] [cursor=pointer]:
+            - /url: /objects/playEnrichments?viewId=b58be9c0-cb0a-4aff-91a1-ce6145cd975b
+            - generic [ref=e1862]:
+              - img [ref=e1865]
+              - generic [ref=e1868]: Play Enrichments
+          - link "Play Exclusions" [ref=e1872] [cursor=pointer]:
+            - /url: /objects/playExclusions?viewId=36ee349c-ea48-474d-8bcd-f087de98e1ad
+            - generic [ref=e1873]:
+              - img [ref=e1876]
+              - generic [ref=e1881]: Play Exclusions
+          - link "Discovery Runs" [ref=e1885] [cursor=pointer]:
+            - /url: /objects/discoveryRuns?viewId=b310e6cd-e6ad-4a62-887f-891310c2ec21
+            - generic [ref=e1886]:
+              - img [ref=e1889]
+              - generic [ref=e1892]: Discovery Runs
+          - link "Partner Candidates" [ref=e1896] [cursor=pointer]:
+            - /url: /objects/partnerCandidates?viewId=53d09177-d8aa-43ef-b408-c9bc2b9e7e91
+            - generic [ref=e1897]:
+              - img [ref=e1900]
+              - generic [ref=e1904]: Partner Candidates
+          - button "Check Evaluations" [ref=e1908] [cursor=pointer]:
+            - generic [ref=e1909]:
+              - img [ref=e1912]
+              - generic [ref=e1916]: Check Evaluations
+          - link "Enrichment Evaluations" [ref=e1920] [cursor=pointer]:
+            - /url: /objects/enrichmentEvaluations?viewId=b95ae194-5003-496d-86e2-7a9f19683c9e
+            - generic [ref=e1921]:
+              - img [ref=e1924]
+              - generic [ref=e1927]: Enrichment Evaluations
+      - generic [ref=e1929]:
+        - generic [ref=e1933]: Other
+        - button "Settings" [ref=e1935] [cursor=pointer]:
+          - generic [ref=e1936]:
+            - img [ref=e1938]
+            - generic [ref=e1942]: Settings
+        - link "Documentation" [ref=e1944] [cursor=pointer]:
+          - /url: https://docs.twenty.com/user-guide/introduction
+          - generic [ref=e1945]:
+            - img [ref=e1947]
+            - generic [ref=e1951]: Documentation
+  - generic [ref=e1954]:
+    - generic [ref=e1955]:
+      - generic [ref=e1957]:
+        - img [ref=e1960]
+        - generic [ref=e1964]: Check Evaluations
+      - generic [ref=e1965]:
+        - button "Create new record" [ref=e1968] [cursor=pointer]:
+          - generic:
+            - generic:
+              - img
+          - generic [ref=e1969]:
+            - generic [ref=e1970]: New record
+            - generic [ref=e1971]: ...
+        - button "Open command menu" [ref=e1974] [cursor=pointer]:
+          - img [ref=e1976]
+          - generic [ref=e1986]: ⌘K
+    - generic [ref=e1987]:
+      - generic [ref=e1992]:
+        - generic [ref=e1994]:
+          - button "All Check Evaluations · 0" [ref=e1996]:
+            - generic [ref=e1997] [cursor=pointer]:
+              - img [ref=e1999]
+              - generic [ref=e2001]: All Check Evaluations
+              - generic [ref=e2002]:
+                - text: · 0
+                - img [ref=e2003]
+          - generic [ref=e2005]:
+            - button "Filter" [ref=e2006]:
+              - button "Filter" [ref=e2007] [cursor=pointer]
+            - button "Sort" [ref=e2008]:
+              - button "Sort" [ref=e2009] [cursor=pointer]
+            - button "Options" [ref=e2010]:
+              - button "Options" [ref=e2011] [cursor=pointer]
+        - generic [ref=e4852]:
+          - generic [ref=e4853]:
+            - checkbox [disabled] [ref=e4858]
+            - generic [ref=e4860] [cursor=pointer]:
+              - button "Name" [ref=e4861]:
+                - generic [ref=e4862]:
+                  - img [ref=e4864]
+                  - generic [ref=e4868]: Name
+              - separator [ref=e4869]
+            - generic [ref=e4870] [cursor=pointer]:
+              - separator [ref=e4871]
+              - button "Creation date" [ref=e4872]:
+                - generic [ref=e4873]:
+                  - img [ref=e4875]
+                  - generic [ref=e4877]: Creation date
+              - separator [ref=e4878]
+            - generic [ref=e4879] [cursor=pointer]:
+              - separator [ref=e4880]
+              - button "Created by" [ref=e4881]:
+                - generic [ref=e4882]:
+                  - img [ref=e4884]
+                  - generic [ref=e4888]: Created by
+              - separator [ref=e4889]
+            - generic [ref=e4890] [cursor=pointer]:
+              - separator [ref=e4891]
+              - button "Last update" [ref=e4892]:
+                - generic [ref=e4893]:
+                  - img [ref=e4895]
+                  - generic [ref=e4899]: Last update
+              - separator [ref=e4900]
+            - generic [ref=e4901] [cursor=pointer]:
+              - separator [ref=e4902]
+              - button "Updated by" [ref=e4903]:
+                - generic [ref=e4904]:
+                  - img [ref=e4906]
+                  - generic [ref=e4910]: Updated by
+              - separator [ref=e4911]
+            - generic [ref=e4912] [cursor=pointer]:
+              - separator [ref=e4913]
+              - button "Timeline Activities" [ref=e4914]:
+                - generic [ref=e4915]:
+                  - img [ref=e4917]
+                  - generic [ref=e4920]: Timeline Activities
+              - separator [ref=e4921]
+            - generic [ref=e4922] [cursor=pointer]:
+              - separator [ref=e4923]
+              - button "Favorites" [ref=e4924]:
+                - generic [ref=e4925]:
+                  - img [ref=e4927]
+                  - generic [ref=e4930]: Favorites
+              - separator [ref=e4931]
+            - generic [ref=e4932] [cursor=pointer]:
+              - separator [ref=e4933]
+              - button "Attachments" [ref=e4934]:
+                - generic [ref=e4935]:
+                  - img [ref=e4937]
+                  - generic [ref=e4940]: Attachments
+              - separator [ref=e4941]
+            - generic [ref=e4942] [cursor=pointer]:
+              - separator [ref=e4943]
+              - button "Note Targets" [ref=e4944]:
+                - generic [ref=e4945]:
+                  - img [ref=e4947]
+                  - generic [ref=e4950]: Note Targets
+              - separator [ref=e4951]
+            - generic [ref=e4952] [cursor=pointer]:
+              - separator [ref=e4953]
+              - button "Task Targets" [ref=e4954]:
+                - generic [ref=e4955]:
+                  - img [ref=e4957]
+                  - generic [ref=e4960]: Task Targets
+              - separator [ref=e4961]
+            - generic [ref=e4962] [cursor=pointer]:
+              - separator [ref=e4963]
+              - button [ref=e4965]:
+                - img [ref=e4967]
+          - generic [ref=e4969]:
+            - generic [ref=e4971]:
+              - generic [ref=e4972]: Add your first Check Evaluation
+              - generic [ref=e4973]: Use our API or add your first Check Evaluation manually
+            - button "Add a Check Evaluation ..." [ref=e4975] [cursor=pointer]:
+              - generic:
+                - generic:
+                  - img
+              - generic [ref=e4976]:
+                - generic [ref=e4977]: Add a Check Evaluation
+                - generic [ref=e4978]: ...
+      - complementary [ref=e4850]

@@ -1,5 +1,5 @@
-import { styled } from '@linaria/react';
 import { Draggable, type DroppableProvided } from '@hello-pangea/dnd';
+import { styled } from '@linaria/react';
 import { useContext } from 'react';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
@@ -47,7 +47,7 @@ export const RecordBoardColumnCardsContainer = ({
   return (
     <StyledColumnCardsContainer
       ref={droppableProvided?.innerRef}
-      // eslint-disable-next-line react/jsx-props-no-spreading
+      // oxlint-disable-next-line react/jsx-props-no-spreading
       {...droppableProvided?.droppableProps}
     >
       {recordIndexRecordIdsByGroup.map((recordId, index) => (
@@ -68,7 +68,7 @@ export const RecordBoardColumnCardsContainer = ({
         {(draggableProvided) => (
           <div
             ref={draggableProvided.innerRef}
-            // eslint-disable-next-line react/jsx-props-no-spreading
+            // oxlint-disable-next-line react/jsx-props-no-spreading
             {...draggableProvided.draggableProps}
           ></div>
         )}

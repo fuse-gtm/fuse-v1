@@ -5,16 +5,16 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { z } from 'zod';
 
-import { OnboardingProgressBar } from '@/auth/components/OnboardingProgressBar';
-import { SubTitle } from '@/auth/components/SubTitle';
-import { Title } from '@/auth/components/Title';
+import { FuseAuthLayout } from '@/auth/components/FuseAuthLayout';
+import { FuseOnboardingPreview } from '@/auth/components/FuseOnboardingPreview';
+import { FooterNote } from '@/auth/sign-in-up/components/FooterNote';
 import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
 import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboardingStatus';
-import { Modal } from '@/ui/layout/modal/components/Modal';
 import { useMutation } from '@apollo/client';
-import { t } from '@lingui/core/macro';
+import { i18n, type MessageDescriptor } from '@lingui/core';
+import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
 import {
@@ -30,71 +30,74 @@ import { SKIP_PARTNER_PROFILE_ONBOARDING_STEP } from '@/onboarding/graphql/mutat
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { IconCheck } from 'twenty-ui/display';
 
-const TOTAL_SUB_STEPS = 4;
-
 // Partnership context options
 const PARTNER_CONTEXT_OPTIONS = [
   {
     id: 'technology_integrations',
-    label: 'Technology Integrations',
-    description: 'Build and manage tech partnerships',
+    label: msg`Technology Integrations`,
+    description: msg`Build and manage tech partnerships`,
   },
   {
     id: 'channel_reseller',
-    label: 'Channel / Reseller',
-    description: 'Scale through distribution partners',
+    label: msg`Channel / Reseller`,
+    description: msg`Scale through distribution partners`,
   },
   {
     id: 'cosell_comarketing',
-    label: 'Co-Sell / Co-Marketing',
-    description: 'Joint go-to-market motions',
+    label: msg`Co-Sell / Co-Marketing`,
+    description: msg`Joint go-to-market motions`,
   },
   {
     id: 'strategic_alliances',
-    label: 'Strategic Alliances',
-    description: 'High-touch executive partnerships',
+    label: msg`Strategic Alliances`,
+    description: msg`High-touch executive partnerships`,
   },
   {
     id: 'affiliate_referral',
-    label: 'Affiliate / Referral',
-    description: 'Commission-based partner programs',
+    label: msg`Affiliate / Referral`,
+    description: msg`Commission-based partner programs`,
   },
 ] as const;
 
 // Track recommendations mapped from context selections
 const TRACK_CONFIG: Record<
   string,
-  { id: string; name: string; description: string; views: string[] }
+  {
+    id: string;
+    name: MessageDescriptor;
+    description: MessageDescriptor;
+    views: MessageDescriptor[];
+  }
 > = {
   technology_integrations: {
     id: 'integration_partners',
-    name: 'Integration Partners',
-    description: 'Track and manage technology partnerships',
-    views: ['Partner Profiles', 'Integration Status'],
+    name: msg`Integration Partners`,
+    description: msg`Track and manage technology partnerships`,
+    views: [msg`Partner Profiles`, msg`Integration Status`],
   },
   channel_reseller: {
     id: 'channel_partners',
-    name: 'Channel Partners',
-    description: 'Manage reseller pipeline and deal registration',
-    views: ['Reseller Pipeline', 'Deal Registration'],
+    name: msg`Channel Partners`,
+    description: msg`Manage reseller pipeline and deal registration`,
+    views: [msg`Reseller Pipeline`, msg`Deal Registration`],
   },
   cosell_comarketing: {
     id: 'cosell_partners',
-    name: 'Co-Sell Partners',
-    description: 'Coordinate joint opportunities and campaigns',
-    views: ['Joint Opportunities', 'Campaign Tracker'],
+    name: msg`Co-Sell Partners`,
+    description: msg`Coordinate joint opportunities and campaigns`,
+    views: [msg`Joint Opportunities`, msg`Campaign Tracker`],
   },
   strategic_alliances: {
     id: 'strategic_partners',
-    name: 'Strategic Partners',
-    description: 'High-touch partnerships with executive sponsors',
-    views: ['Executive Sponsors', 'QBR Tracker'],
+    name: msg`Strategic Partners`,
+    description: msg`High-touch partnerships with executive sponsors`,
+    views: [msg`Executive Sponsors`, msg`QBR Tracker`],
   },
   affiliate_referral: {
     id: 'referral_partners',
-    name: 'Referral Partners',
-    description: 'Commission-based referral tracking',
-    views: ['Referral Leads', 'Commission Tracker'],
+    name: msg`Referral Partners`,
+    description: msg`Commission-based referral tracking`,
+    views: [msg`Referral Leads`, msg`Commission Tracker`],
   },
 };
 
@@ -148,14 +151,14 @@ const StyledCheckboxLabel = styled.div`
 `;
 
 const StyledCheckboxTitle = styled.span`
+  color: ${themeCssVariables.font.color.primary};
   font-size: ${themeCssVariables.font.size.md};
   font-weight: ${themeCssVariables.font.weight.medium};
-  color: ${themeCssVariables.font.color.primary};
 `;
 
 const StyledCheckboxDescription = styled.span`
-  font-size: ${themeCssVariables.font.size.sm};
   color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.sm};
 `;
 
 const StyledTwoColumnLayout = styled.div`
@@ -171,11 +174,11 @@ const StyledTwoColumnLayout = styled.div`
 `;
 
 const StyledTrackToggle = styled.div`
-  display: flex;
   align-items: center;
+  border-bottom: 1px solid ${themeCssVariables.border.color.light};
+  display: flex;
   justify-content: space-between;
   padding: ${themeCssVariables.spacing[3]} 0;
-  border-bottom: 1px solid ${themeCssVariables.border.color.light};
 `;
 
 const StyledTrackInfo = styled.div`
@@ -184,14 +187,14 @@ const StyledTrackInfo = styled.div`
 `;
 
 const StyledTrackName = styled.span`
+  color: ${themeCssVariables.font.color.primary};
   font-size: ${themeCssVariables.font.size.md};
   font-weight: ${themeCssVariables.font.weight.medium};
-  color: ${themeCssVariables.font.color.primary};
 `;
 
 const StyledTrackDescription = styled.span`
-  font-size: ${themeCssVariables.font.size.xs};
   color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.xs};
 `;
 
 const StyledDashboardPreview = styled.div`
@@ -202,24 +205,24 @@ const StyledDashboardPreview = styled.div`
 `;
 
 const StyledPreviewTitle = styled.div`
+  color: ${themeCssVariables.font.color.secondary};
   font-size: ${themeCssVariables.font.size.sm};
   font-weight: ${themeCssVariables.font.weight.medium};
-  color: ${themeCssVariables.font.color.secondary};
+  letter-spacing: 0.5px;
   margin-bottom: ${themeCssVariables.spacing[3]};
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 `;
 
 const StyledPreviewItem = styled.div`
-  display: flex;
   align-items: center;
-  gap: ${themeCssVariables.spacing[2]};
-  padding: ${themeCssVariables.spacing[2]} ${themeCssVariables.spacing[3]};
-  font-size: ${themeCssVariables.font.size.sm};
-  color: ${themeCssVariables.font.color.primary};
-  border-radius: ${themeCssVariables.border.radius.sm};
   background: ${themeCssVariables.background.primary};
+  border-radius: ${themeCssVariables.border.radius.sm};
+  color: ${themeCssVariables.font.color.primary};
+  display: flex;
+  font-size: ${themeCssVariables.font.size.sm};
+  gap: ${themeCssVariables.spacing[2]};
   margin-bottom: ${themeCssVariables.spacing[1]};
+  padding: ${themeCssVariables.spacing[2]} ${themeCssVariables.spacing[3]};
 `;
 
 const StyledSetupContainer = styled.div`
@@ -248,7 +251,9 @@ const StyledSetupCheckmark = styled.div<{ isComplete: boolean }>`
   align-items: center;
   justify-content: center;
   background: ${({ isComplete }) =>
-    isComplete ? themeCssVariables.color.blue : themeCssVariables.background.quaternary};
+    isComplete
+      ? themeCssVariables.color.blue
+      : themeCssVariables.background.quaternary};
   color: white;
   font-size: 12px;
   transition: background 0.3s ease;
@@ -261,7 +266,7 @@ const StyledRoleInputContainer = styled.div`
 
 // Role validation schema
 const roleValidationSchema = z.object({
-  partnerRole: z.string().min(1, { message: 'Role is required' }),
+  partnerRole: z.string().min(1, { message: i18n._(msg`Role is required`) }),
 });
 
 type RoleForm = z.infer<typeof roleValidationSchema>;
@@ -277,9 +282,7 @@ export const PartnerProfile = () => {
   ]);
   const [setupComplete, setSetupComplete] = useState(false);
 
-  const currentWorkspaceMember = useAtomStateValue(
-    currentWorkspaceMemberState,
-  );
+  const currentWorkspaceMember = useAtomStateValue(currentWorkspaceMemberState);
   const setNextOnboardingStatus = useSetNextOnboardingStatus();
   const { enqueueErrorSnackBar } = useSnackBar();
   const { updateOneRecord } = useUpdateOneRecord();
@@ -407,7 +410,9 @@ export const PartnerProfile = () => {
         const trackEntry = Object.values(TRACK_CONFIG).find(
           (t) => t.id === trackId,
         );
-        return trackEntry ? { name: trackEntry.name, views: trackEntry.views } : null;
+        return trackEntry
+          ? { name: trackEntry.name, views: trackEntry.views }
+          : null;
       })
       .filter(isDefined);
   }, [selectedTracks]);
@@ -433,14 +438,14 @@ export const PartnerProfile = () => {
   ];
 
   return (
-    <Modal.Content isVerticalCentered isHorizontalCentered>
-      <OnboardingProgressBar
-        totalSteps={TOTAL_SUB_STEPS}
-        currentStep={currentSubStep}
-      />
-      <Title noMarginTop>{subStepTitles[currentSubStep]}</Title>
-      <SubTitle>{subStepSubtitles[currentSubStep]}</SubTitle>
-
+    <FuseAuthLayout
+      title={subStepTitles[currentSubStep]}
+      subtitle={subStepSubtitles[currentSubStep]}
+      stepNumber={4}
+      totalSteps={5}
+      footer={<FooterNote />}
+      previewContent={<FuseOnboardingPreview variant="partner-profile" />}
+    >
       <StyledContentContainer>
         {/* Sub-step 0: Partnership context selection */}
         {currentSubStep === 0 && (
@@ -458,9 +463,11 @@ export const PartnerProfile = () => {
                     shape={CheckboxShape.Squared}
                   />
                   <StyledCheckboxLabel>
-                    <StyledCheckboxTitle>{option.label}</StyledCheckboxTitle>
+                    <StyledCheckboxTitle>
+                      {i18n._(option.label)}
+                    </StyledCheckboxTitle>
                     <StyledCheckboxDescription>
-                      {option.description}
+                      {i18n._(option.description)}
                     </StyledCheckboxDescription>
                   </StyledCheckboxLabel>
                 </StyledCheckboxRow>
@@ -508,9 +515,9 @@ export const PartnerProfile = () => {
                 return (
                   <StyledTrackToggle key={track.id}>
                     <StyledTrackInfo>
-                      <StyledTrackName>{track.name}</StyledTrackName>
+                      <StyledTrackName>{i18n._(track.name)}</StyledTrackName>
                       <StyledTrackDescription>
-                        {track.description}
+                        {i18n._(track.description)}
                       </StyledTrackDescription>
                     </StyledTrackInfo>
                     <Toggle
@@ -527,8 +534,8 @@ export const PartnerProfile = () => {
               </StyledPreviewTitle>
               {previewViews.map((trackPreview) =>
                 trackPreview.views.map((viewName) => (
-                  <StyledPreviewItem key={viewName}>
-                    {viewName}
+                  <StyledPreviewItem key={i18n._(viewName)}>
+                    {i18n._(viewName)}
                   </StyledPreviewItem>
                 )),
               )}
@@ -582,11 +589,7 @@ export const PartnerProfile = () => {
           />
         ) : (
           <MainButton
-            title={
-              currentSubStep === 3
-                ? t`Get started`
-                : t`Continue`
-            }
+            title={currentSubStep === 3 ? t`Get started` : t`Continue`}
             onClick={handleNext}
             disabled={!canProceed}
           />
@@ -598,6 +601,6 @@ export const PartnerProfile = () => {
           <Trans>You can always change this later in Settings</Trans>
         </StyledHelperText>
       )}
-    </Modal.Content>
+    </FuseAuthLayout>
   );
 };

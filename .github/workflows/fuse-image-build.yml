@@ -1,0 +1,133 @@
+name: Fuse Image Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Optional image tag override (defaults to partner-os-<shortsha>)
+        required: false
+        type: string
+      push_branch_alias:
+        description: Also push a branch alias tag
+        required: false
+        default: true
+        type: boolean
+  push:
+    branches:
+      - feat/partner-os-schema-spine
+      - release/**
+    paths:
+      - ".github/workflows/fuse-image-build.yml"
+      - "packages/twenty-docker/**"
+      - "packages/twenty-server/**"
+      - "packages/twenty-front/**"
+      - "packages/twenty-shared/**"
+      - "packages/twenty-ui/**"
+      - "packages/twenty-sdk/**"
+      - "packages/twenty-emails/**"
+      - ".yarn/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".yarnrc.yml"
+      - "nx.json"
+      - "tsconfig.base.json"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          IMAGE_REPO="ghcr.io/fuse-gtm/fuse-v1"
+          SHORT_SHA="$(git rev-parse --short=10 HEAD)"
+
+          INPUT_TAG="${{ github.event.inputs.image_tag }}"
+          if [ -n "${INPUT_TAG}" ]; then
+            IMAGE_TAG="${INPUT_TAG}"
+          else
+            IMAGE_TAG="partner-os-${SHORT_SHA}"
+          fi
+
+          BRANCH_ALIAS="$(echo "${GITHUB_REF_NAME}" | tr '[:upper:]/' '[:lower:]-' | tr -cd 'a-z0-9._-')"
+          BRANCH_ALIAS_TAG="partner-os-${BRANCH_ALIAS}"
+
+          echo "image_repo=${IMAGE_REPO}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${IMAGE_REPO}:${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "branch_alias_tag=${BRANCH_ALIAS_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve tags list
+        id: tags
+        env:
+          PUSH_BRANCH_ALIAS: ${{ github.event_name == 'push' && 'true' || github.event.inputs.push_branch_alias }}
+        run: |
+          set -euo pipefail
+          IMAGE_REF="${{ steps.meta.outputs.image_ref }}"
+          IMAGE_REPO="${{ steps.meta.outputs.image_repo }}"
+          BRANCH_ALIAS_TAG="${{ steps.meta.outputs.branch_alias_tag }}"
+
+          TAGS="${IMAGE_REF}"
+          if [ "${PUSH_BRANCH_ALIAS}" = "true" ]; then
+            TAGS="${TAGS},${IMAGE_REPO}:${BRANCH_ALIAS_TAG}"
+          fi
+
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push linux/amd64 image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/twenty-docker/twenty/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha,scope=fuse-image-build
+          cache-to: type=gha,mode=max,scope=fuse-image-build
+
+      - name: Persist image reference artifact
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          {
+            echo "IMAGE_REF=${{ steps.meta.outputs.image_ref }}"
+            echo "IMAGE_TAG=${{ steps.meta.outputs.image_tag }}"
+            echo "IMAGE_REPO=${{ steps.meta.outputs.image_repo }}"
+          } > dist/fuse-image.txt
+
+      - name: Upload image reference artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuse-image-reference
+          path: dist/fuse-image.txt
+
+      - name: Write workflow summary
+        run: |
+          {
+            echo "## Fuse image build complete"
+            echo ""
+            echo "- Primary image: \`${{ steps.meta.outputs.image_ref }}\`"
+            echo "- Tags pushed: \`${{ steps.tags.outputs.tags }}\`"
+            echo "- Platform: \`linux/amd64\`"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,76 @@
+image:
+  repository: ghcr.io/fuse-gtm/fuse-v1
+  tag: partner-os-latest
+  pullPolicy: IfNotPresent
+
+server:
+  replicaCount: 2
+  env:
+    SERVER_URL: https://crm.your-domain.com
+    SIGN_IN_PREFILLED: "false"
+    ACCESS_TOKEN_EXPIRES_IN: "7d"
+    LOGIN_TOKEN_EXPIRES_IN: "1h"
+  ingress:
+    enabled: true
+    className: nginx
+    acme: true
+    hosts:
+      - host: crm.your-domain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: twenty-tls
+        hosts:
+          - crm.your-domain.com
+  persistence:
+    enabled: true
+    size: 50Gi
+  dockerDataPersistence:
+    enabled: true
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      cpu: 2000m
+      memory: 4096Mi
+
+worker:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      cpu: 2000m
+      memory: 4096Mi
+
+storage:
+  type: local
+
+# Prefer external managed DB/Redis for production.
+db:
+  enabled: false
+  external:
+    host: postgres.your-domain.internal
+    port: 5432
+    user: twenty_app_user
+    password: replace_me
+    database: twenty
+    ssl: true
+
+redisInternal:
+  enabled: false
+
+redis:
+  external:
+    host: redis.your-domain.internal
+    port: 6379
+
+secrets:
+  tokens:
+    create: true
+    name: tokens
+    accessToken: replace_with_long_random_secret

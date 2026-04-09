@@ -1,11 +1,8 @@
-import { useAgentChatContextOrThrow } from '@/ai/hooks/useAgentChatContextOrThrow';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
+import { IconAlertCircle } from 'twenty-ui/display';
 import { useContext } from 'react';
-import { IconAlertCircle, IconRefresh } from 'twenty-ui/display';
-import { Button } from 'twenty-ui/input';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledErrorContainer = styled.div`
   align-items: center;
@@ -25,9 +22,9 @@ const StyledErrorIcon = styled.div`
 
 const StyledErrorContent = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: ${themeCssVariables.spacing['0.5']};
-  flex: 1;
 `;
 
 const StyledErrorTitle = styled.div`
@@ -48,7 +45,6 @@ type AIChatErrorMessageProps = {
 
 export const AIChatErrorMessage = ({ error }: AIChatErrorMessageProps) => {
   const { theme } = useContext(ThemeContext);
-  const { handleRetry, isStreaming } = useAgentChatContextOrThrow();
 
   return (
     <StyledErrorContainer>
@@ -61,14 +57,6 @@ export const AIChatErrorMessage = ({ error }: AIChatErrorMessageProps) => {
           {error.message || t`An error occurred while processing your message`}
         </StyledErrorMessage>
       </StyledErrorContent>
-      <Button
-        variant="secondary"
-        size="small"
-        Icon={IconRefresh}
-        onClick={handleRetry}
-        disabled={isStreaming}
-        title={t`Retry`}
-      />
     </StyledErrorContainer>
   );
 };

@@ -9,15 +9,15 @@ import { addMilliseconds } from 'date-fns';
 import ms from 'ms';
 import { PasswordUpdateNotifyEmail } from 'twenty-emails';
 import { PermissionFlagType } from 'twenty-shared/constants';
-import { AppPath } from 'twenty-shared/types';
+import { AppPath, ConnectedAccountProvider } from 'twenty-shared/types';
 import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 import { IsNull, Repository } from 'typeorm';
 
-import { ApplicationRegistrationService } from 'src/engine/core-modules/application-registration/application-registration.service';
 import {
   AppTokenEntity,
   AppTokenType,
 } from 'src/engine/core-modules/app-token/app-token.entity';
+import { ApplicationRegistrationService } from 'src/engine/core-modules/application/application-registration/application-registration.service';
 import { AuditService } from 'src/engine/core-modules/audit/services/audit.service';
 import {
   AuthException,
@@ -29,7 +29,6 @@ import {
   hashPassword,
 } from 'src/engine/core-modules/auth/auth.util';
 import { type AuthTokens } from 'src/engine/core-modules/auth/dto/auth-tokens.dto';
-import { validateRedirectUri } from 'src/engine/core-modules/auth/utils/validate-redirect-uri.util';
 import { type AuthorizeAppDTO } from 'src/engine/core-modules/auth/dto/authorize-app.dto';
 import { type AuthorizeAppInput } from 'src/engine/core-modules/auth/dto/authorize-app.input';
 import { type UpdatePasswordDTO } from 'src/engine/core-modules/auth/dto/update-password.dto';
@@ -37,6 +36,7 @@ import { type UserCredentialsInput } from 'src/engine/core-modules/auth/dto/user
 import { type CheckUserExistDTO } from 'src/engine/core-modules/auth/dto/user-exists.dto';
 import { type WorkspaceInviteHashValidDTO } from 'src/engine/core-modules/auth/dto/workspace-invite-hash-valid.dto';
 import { AuthSsoService } from 'src/engine/core-modules/auth/services/auth-sso.service';
+import { CreateSSOConnectedAccountService } from 'src/engine/core-modules/auth/services/create-sso-connected-account.service';
 import { SignInUpService } from 'src/engine/core-modules/auth/services/sign-in-up.service';
 import { type GoogleRequest } from 'src/engine/core-modules/auth/strategies/google.auth.strategy';
 import { type MicrosoftRequest } from 'src/engine/core-modules/auth/strategies/microsoft.auth.strategy';
@@ -44,17 +44,22 @@ import { AccessTokenService } from 'src/engine/core-modules/auth/token/services/
 import { LoginTokenService } from 'src/engine/core-modules/auth/token/services/login-token.service';
 import { RefreshTokenService } from 'src/engine/core-modules/auth/token/services/refresh-token.service';
 import { WorkspaceAgnosticTokenService } from 'src/engine/core-modules/auth/token/services/workspace-agnostic-token.service';
-import { JwtTokenTypeEnum } from 'src/engine/core-modules/auth/types/auth-context.type';
+import {
+  AuthContextUser,
+  JwtTokenTypeEnum,
+} from 'src/engine/core-modules/auth/types/auth-context.type';
 import {
   type AuthProviderWithPasswordType,
   type ExistingUserOrNewUser,
   type SignInUpBaseParams,
   type SignInUpNewUserPayload,
 } from 'src/engine/core-modules/auth/types/signInUp.type';
+import { validateRedirectUri } from 'src/engine/core-modules/auth/utils/validate-redirect-uri.util';
 import { DomainServerConfigService } from 'src/engine/core-modules/domain/domain-server-config/services/domain-server-config.service';
 import { WorkspaceDomainsService } from 'src/engine/core-modules/domain/workspace-domains/services/workspace-domains.service';
 import { WorkspaceDomainConfig } from 'src/engine/core-modules/domain/workspace-domains/types/workspace-domain-config.type';
 import { EmailService } from 'src/engine/core-modules/email/email.service';
+import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { GuardRedirectService } from 'src/engine/core-modules/guard-redirect/services/guard-redirect.service';
 import { I18nService } from 'src/engine/core-modules/i18n/i18n.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
@@ -66,9 +71,10 @@ import { AuthProviderEnum } from 'src/engine/core-modules/workspace/types/worksp
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { workspaceValidator } from 'src/engine/core-modules/workspace/workspace.validate';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
+// import { DEFAULT_FEATURE_FLAGS } from 'src/engine/workspace-manager/workspace-migration/constant/default-feature-flags';
 
 @Injectable()
-// eslint-disable-next-line twenty/inject-workspace-repository
+// oxlint-disable-next-line twenty/inject-workspace-repository
 export class AuthService {
   constructor(
     private readonly accessTokenService: AccessTokenService,
@@ -95,6 +101,8 @@ export class AuthService {
     private readonly i18nService: I18nService,
     private readonly auditService: AuditService,
     private readonly applicationRegistrationService: ApplicationRegistrationService,
+    private readonly featureFlagService: FeatureFlagService,
+    private readonly createSSOConnectedAccountService: CreateSSOConnectedAccountService,
   ) {}
 
   private async checkAccessAndUseInvitationOrThrow(
@@ -494,7 +502,7 @@ export class AuthService {
 
   async generateAuthorizationCode(
     authorizeAppInput: AuthorizeAppInput,
-    user: UserEntity,
+    user: AuthContextUser,
     workspace: WorkspaceEntity,
   ): Promise<AuthorizeAppDTO> {
     const { clientId, codeChallenge } = authorizeAppInput;
@@ -516,15 +524,45 @@ export class AuthService {
       );
     }
 
-    if (
-      !applicationRegistration.oAuthRedirectUris.includes(
-        authorizeAppInput.redirectUrl,
-      )
-    ) {
-      throw new AuthException(
-        `redirectUrl mismatch for '${clientId}'`,
-        AuthExceptionCode.FORBIDDEN_EXCEPTION,
-      );
+    // RFC 8252 §7.3: Native apps using loopback redirect URIs may use any port.
+    // When a registration has no explicit redirect URIs (e.g. the seeded CLI registration),
+    // allow any loopback redirect URI.
+    const hasRegisteredRedirectUris =
+      applicationRegistration.oAuthRedirectUris.length > 0;
+
+    if (hasRegisteredRedirectUris) {
+      if (
+        !applicationRegistration.oAuthRedirectUris.includes(
+          authorizeAppInput.redirectUrl,
+        )
+      ) {
+        throw new AuthException(
+          `redirectUrl mismatch for '${clientId}'`,
+          AuthExceptionCode.FORBIDDEN_EXCEPTION,
+        );
+      }
+    } else {
+      let redirectUrl: URL;
+
+      try {
+        redirectUrl = new URL(authorizeAppInput.redirectUrl);
+      } catch {
+        throw new AuthException(
+          `Invalid redirectUrl for '${clientId}'`,
+          AuthExceptionCode.FORBIDDEN_EXCEPTION,
+        );
+      }
+
+      const isLoopback =
+        redirectUrl.hostname === 'localhost' ||
+        redirectUrl.hostname === '127.0.0.1';
+
+      if (!isLoopback) {
+        throw new AuthException(
+          `redirectUrl mismatch for '${clientId}'`,
+          AuthExceptionCode.FORBIDDEN_EXCEPTION,
+        );
+      }
     }
 
     // Validate requested scopes are a subset of the registration's allowed scopes
@@ -998,6 +1036,13 @@ export class AuthService {
         billingCheckoutSessionState,
       });
 
+      await this.createSSOConnectedAccountIfFeatureFlagIsOn({
+        workspaceId: workspace.id,
+        userId: user.id,
+        handle: email,
+        authProvider,
+      });
+
       const loginToken = await this.loginTokenService.generateLoginToken(
         user.email,
         workspace.id,
@@ -1018,6 +1063,74 @@ export class AuthService {
           ),
         pathname: AppPath.Verify,
       });
+    }
+  }
+
+  async createSSOConnectedAccountIfFeatureFlagIsOn(input: {
+    workspaceId: string;
+    userId: string;
+    handle: string;
+    authProvider:
+      | AuthProviderEnum.Google
+      | AuthProviderEnum.Microsoft
+      | AuthProviderEnum.SSO;
+    oidcTokenClaims?: Record<string, unknown>;
+    connectedAccountProvider?: ConnectedAccountProvider;
+  }): Promise<void> {
+    const provider =
+      input.connectedAccountProvider ??
+      this.mapAuthProviderToConnectedAccountProvider(input.authProvider);
+
+    const scopes = this.getSSOScopes(provider);
+
+    await this.createSSOConnectedAccountService.createOrUpdateSSOConnectedAccount(
+      {
+        workspaceId: input.workspaceId,
+        userId: input.userId,
+        handle: input.handle,
+        provider,
+        scopes,
+        oidcTokenClaims: input.oidcTokenClaims,
+      },
+    );
+  }
+
+  private mapAuthProviderToConnectedAccountProvider(
+    authProvider:
+      | AuthProviderEnum.Google
+      | AuthProviderEnum.Microsoft
+      | AuthProviderEnum.SSO,
+  ): ConnectedAccountProvider {
+    switch (authProvider) {
+      case AuthProviderEnum.Google:
+        return ConnectedAccountProvider.GOOGLE;
+      case AuthProviderEnum.Microsoft:
+        return ConnectedAccountProvider.MICROSOFT;
+      case AuthProviderEnum.SSO:
+        return ConnectedAccountProvider.OIDC;
+      default:
+        throw new Error(
+          `Unsupported auth provider: ${authProvider satisfies never}`,
+        );
+    }
+  }
+
+  private getSSOScopes(provider: ConnectedAccountProvider): string[] {
+    switch (provider) {
+      case ConnectedAccountProvider.GOOGLE:
+        return ['email', 'profile'];
+      case ConnectedAccountProvider.MICROSOFT:
+        return ['user.read'];
+      case ConnectedAccountProvider.OIDC:
+        return ['openid', 'email', 'profile'];
+      case ConnectedAccountProvider.SAML:
+        return [];
+      case ConnectedAccountProvider.IMAP_SMTP_CALDAV:
+        return [];
+      default:
+        throw new Error(
+          `Unsupported connected account provider: ${provider satisfies never}`,
+        );
     }
   }
 }

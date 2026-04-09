@@ -10,8 +10,8 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div<{ fullWidth?: boolean }>`
   display: flex;
-  gap: ${themeCssVariables.spacing[3]};
   flex-wrap: wrap;
+  gap: ${themeCssVariables.spacing[3]};
 
   > * {
     flex: 1;
@@ -38,7 +38,7 @@ export const WorkflowEditActionCodeFields = ({
 }: WorkflowEditActionCodeFieldsProps) => {
   return (
     <StyledContainer fullWidth={fullWidth}>
-      {Object.entries(functionInput).map(([inputKey, inputValue]) => {
+      {Object.entries(functionInput ?? {}).map(([inputKey, inputValue]) => {
         const currentPath = [...path, inputKey];
         const pathKey = currentPath.join('.');
 

@@ -10,7 +10,7 @@ import { useCurrentWidget } from '@/page-layout/widgets/hooks/useCurrentWidget';
 import { useTargetRecord } from '@/ui/layout/contexts/useTargetRecord';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
-import { coreIndexViewIdFromObjectMetadataItemFamilySelector } from '@/views/states/selectors/coreIndexViewIdFromObjectMetadataItemFamilySelector';
+import { indexViewIdFromObjectMetadataItemFamilySelector } from '@/views/states/selectors/indexViewIdFromObjectMetadataItemFamilySelector';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 import { Link } from 'react-router-dom';
@@ -26,9 +26,12 @@ import { LightIconButton } from 'twenty-ui/input';
 import { RelationType } from '~/generated-metadata/graphql';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const StyledLink = styled(Link)`
+const StyledLinkContainer = styled.div`
   display: flex;
-  text-decoration: none;
+
+  > * {
+    text-decoration: none;
+  }
 `;
 
 const StyledSeeAllButtonWrapper = styled.div<{ isMobile: boolean }>`
@@ -91,7 +94,7 @@ export const WidgetActionFieldSeeAll = () => {
   );
 
   const indexViewId = useAtomFamilySelectorValue(
-    coreIndexViewIdFromObjectMetadataItemFamilySelector,
+    indexViewIdFromObjectMetadataItemFamilySelector,
     { objectMetadataItemId: relationObjectMetadataItem?.id ?? '' },
   );
 
@@ -123,23 +126,30 @@ export const WidgetActionFieldSeeAll = () => {
     filterQueryParams,
   );
 
+  const tooltipId = `widget-see-all-${widget.id}`;
   const relationLabelPlural =
     relationObjectMetadataItem.labelPlural.toLowerCase();
   const tooltipContent = t`See all ${relationLabelPlural} linked to this record`;
 
   return (
-    <AppTooltip
-      content={tooltipContent}
-      place={TooltipPosition.Top}
-      delay={TooltipDelay.mediumDelay}
-      offset={5}
-      noArrow
-    >
-      <StyledLink to={filterLinkHref} data-testid="widget-see-all-link">
-        <StyledSeeAllButtonWrapper isMobile={isMobile}>
-          <LightIconButton Icon={IconArrowUpRight} accent="secondary" />
-        </StyledSeeAllButtonWrapper>
-      </StyledLink>
-    </AppTooltip>
+    <>
+      <div id={tooltipId}>
+        <StyledLinkContainer>
+          <Link to={filterLinkHref} data-testid="widget-see-all-link">
+            <StyledSeeAllButtonWrapper isMobile={isMobile}>
+              <LightIconButton Icon={IconArrowUpRight} accent="secondary" />
+            </StyledSeeAllButtonWrapper>
+          </Link>
+        </StyledLinkContainer>
+      </div>
+      <AppTooltip
+        anchorSelect={`#${tooltipId}`}
+        content={tooltipContent}
+        place={TooltipPosition.Top}
+        delay={TooltipDelay.mediumDelay}
+        offset={5}
+        noArrow
+      />
+    </>
   );
 };

@@ -3,12 +3,12 @@ import { SubTitle } from '@/auth/components/SubTitle';
 import { Title } from '@/auth/components/Title';
 import { useAuth } from '@/auth/hooks/useAuth';
 import { billingCheckoutSessionState } from '@/auth/states/billingCheckoutSessionState';
-import { SubscriptionBenefit } from '@/billing/components/SubscriptionBenefit';
-import { SubscriptionPrice } from '@/billing/components/SubscriptionPrice';
-import { TrialCard } from '@/billing/components/TrialCard';
-import { useBaseLicensedPriceByPlanKeyAndInterval } from '@/billing/hooks/useBaseLicensedPriceByPlanKeyAndInterval';
-import { useBaseProductByPlanKey } from '@/billing/hooks/useBaseProductByPlanKey';
-import { useHandleCheckoutSession } from '@/billing/hooks/useHandleCheckoutSession';
+import { SubscriptionBenefit } from '@/settings/billing/components/SubscriptionBenefit';
+import { SubscriptionPrice } from '@/settings/billing/components/SubscriptionPrice';
+import { TrialCard } from '@/settings/billing/components/TrialCard';
+import { useBaseLicensedPriceByPlanKeyAndInterval } from '@/settings/billing/hooks/useBaseLicensedPriceByPlanKeyAndInterval';
+import { useBaseProductByPlanKey } from '@/settings/billing/hooks/useBaseProductByPlanKey';
+import { useHandleCheckoutSession } from '@/settings/billing/hooks/useHandleCheckoutSession';
 import { calendarBookingPageIdState } from '@/client-config/states/calendarBookingPageIdState';
 import { styled } from '@linaria/react';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -53,27 +53,27 @@ const StyledBenefitsContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 100%;
   gap: 16px;
   padding: ${themeCssVariables.spacing[4]} ${themeCssVariables.spacing[3]};
+  width: 100%;
 `;
 
 const StyledOrganizationBenefitsContainer = styled.div`
+  border-bottom: 1px solid ${themeCssVariables.border.color.light};
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 100%;
   gap: 16px;
   padding: ${themeCssVariables.spacing[4]} ${themeCssVariables.spacing[3]};
-  border-bottom: 1px solid ${themeCssVariables.border.color.light};
+  width: 100%;
 `;
 
 const StyledChooseTrialContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%;
-  margin-bottom: ${themeCssVariables.spacing[8]};
   gap: ${themeCssVariables.spacing[2]};
+  margin-bottom: ${themeCssVariables.spacing[8]};
+  width: 100%;
 `;
 
 const StyledLinkGroup = styled.div`

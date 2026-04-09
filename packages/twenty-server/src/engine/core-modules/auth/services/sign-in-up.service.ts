@@ -10,7 +10,7 @@ import { v4 } from 'uuid';
 
 import { USER_SIGNUP_EVENT_NAME } from 'src/engine/api/graphql/workspace-query-runner/constants/user-signup-event-name.constants';
 import { type AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
-import { ApplicationService } from 'src/engine/core-modules/application/services/application.service';
+import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import {
   AuthException,
   AuthExceptionCode,
@@ -20,6 +20,7 @@ import {
   compareHash,
   hashPassword,
 } from 'src/engine/core-modules/auth/auth.util';
+import { MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY } from 'src/engine/core-modules/auth/constants/max-workspaces-without-enterprise-key.constants';
 import {
   type AuthProviderWithPasswordType,
   type ExistingUserOrPartialUserWithPicture,
@@ -28,13 +29,12 @@ import {
   type SignInUpNewUserPayload,
 } from 'src/engine/core-modules/auth/types/signInUp.type';
 import { SubdomainManagerService } from 'src/engine/core-modules/domain/subdomain-manager/services/subdomain-manager.service';
-import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
-import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
+import { EnterprisePlanService } from 'src/engine/core-modules/enterprise/services/enterprise-plan.service';
 import { FileCorePictureService } from 'src/engine/core-modules/file/file-core-picture/services/file-core-picture.service';
 import { MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 import { MetricsKeys } from 'src/engine/core-modules/metrics/types/metrics-keys.type';
 import { OnboardingService } from 'src/engine/core-modules/onboarding/onboarding.service';
-import { SecureHttpClientService } from 'src/engine/core-modules/secure-http-client/secure-http-client.service';
+import { TelemetryEventType } from 'src/engine/core-modules/telemetry/telemetry-event.type';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { UserWorkspaceService } from 'src/engine/core-modules/user-workspace/user-workspace.service';
 import { UserService } from 'src/engine/core-modules/user/services/user.service';
@@ -46,10 +46,9 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 import { getDomainNameByEmail } from 'src/utils/get-domain-name-by-email';
 import { isWorkEmail } from 'src/utils/is-work-email';
-import { TelemetryEventType } from 'src/engine/core-modules/telemetry/telemetry-event.type';
 
 @Injectable()
-// eslint-disable-next-line twenty/inject-workspace-repository
+// oxlint-disable-next-line twenty/inject-workspace-repository
 export class SignInUpService {
   constructor(
     @InjectRepository(UserEntity)
@@ -59,9 +58,7 @@ export class SignInUpService {
     private readonly workspaceInvitationService: WorkspaceInvitationService,
     private readonly userWorkspaceService: UserWorkspaceService,
     private readonly onboardingService: OnboardingService,
-    private readonly featureFlagService: FeatureFlagService,
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
-    private readonly secureHttpClientService: SecureHttpClientService,
     private readonly twentyConfigService: TwentyConfigService,
     private readonly subdomainManagerService: SubdomainManagerService,
     private readonly userService: UserService,
@@ -69,6 +66,7 @@ export class SignInUpService {
     private readonly workspaceCacheService: WorkspaceCacheService,
     private readonly applicationService: ApplicationService,
     private readonly fileCorePictureService: FileCorePictureService,
+    private readonly enterprisePlanService: EnterprisePlanService,
     @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
@@ -315,7 +313,7 @@ export class SignInUpService {
       workspace,
       shouldShowConnectAccountStep,
     }: {
-      user: UserEntity;
+      user: Pick<UserEntity, 'id' | 'firstName' | 'lastName'>;
       workspace: WorkspaceEntity;
       shouldShowConnectAccountStep: boolean;
     },
@@ -334,22 +332,6 @@ export class SignInUpService {
 
     if (user.firstName === '' && user.lastName === '') {
       await this.onboardingService.setOnboardingCreateProfilePending(
-        {
-          userId: user.id,
-          workspaceId: workspace.id,
-          value: true,
-        },
-        queryRunner,
-      );
-    }
-
-    const isPartnerOsEnabled = await this.featureFlagService.isFeatureEnabled(
-      FeatureFlagKey.IS_PARTNER_OS_ENABLED,
-      workspace.id,
-    );
-
-    if (isPartnerOsEnabled) {
-      await this.onboardingService.setOnboardingPartnerProfilePending(
         {
           userId: user.id,
           workspaceId: workspace.id,
@@ -444,6 +426,8 @@ export class SignInUpService {
       return;
     }
 
+    await this.assertWorkspaceCountWithinLimit(workspaceCount);
+
     if (
       !this.twentyConfigService.get(
         'IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS',
@@ -465,6 +449,26 @@ export class SignInUpService {
       AuthExceptionCode.FORBIDDEN_EXCEPTION,
       {
         userFriendlyMessage: msg`Workspace creation is restricted to admins`,
+      },
+    );
+  }
+
+  private async assertWorkspaceCountWithinLimit(
+    workspaceCount: number,
+  ): Promise<void> {
+    if (this.enterprisePlanService.isValid()) {
+      return;
+    }
+
+    if (workspaceCount < MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY) {
+      return;
+    }
+
+    throw new AuthException(
+      `Cannot create more than ${MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY} workspaces without a valid enterprise key`,
+      AuthExceptionCode.FORBIDDEN_EXCEPTION,
+      {
+        userFriendlyMessage: msg`Workspace limit reached. A valid enterprise key is required to create more workspaces.`,
       },
     );
   }
@@ -572,7 +576,11 @@ export class SignInUpService {
       );
 
       await this.activateOnboardingForUser(
-        { user, workspace, shouldShowConnectAccountStep: true },
+        {
+          user,
+          workspace,
+          shouldShowConnectAccountStep: true,
+        },
         queryRunner,
       );
 
@@ -585,16 +593,18 @@ export class SignInUpService {
       );
 
       await queryRunner.commitTransaction();
-      await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
-        'flatApplicationMaps',
-      ]);
 
       return { user, workspace };
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
       throw error;
     } finally {
       await queryRunner.release();
+      await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
+        'flatApplicationMaps',
+      ]);
     }
   }
 

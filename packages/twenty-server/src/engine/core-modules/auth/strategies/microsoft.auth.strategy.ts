@@ -47,7 +47,7 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line @typescripttypescript/no-explicit-any
   authenticate(req: Request, options: any) {
     options = {
       ...options,
@@ -58,6 +58,9 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
         billingCheckoutSessionState: req.query.billingCheckoutSessionState,
         workspacePersonalInviteToken: req.query.workspacePersonalInviteToken,
         action: req.query.action,
+        oauthRetryCount: req.query.oauthRetryCount
+          ? Number(req.query.oauthRetryCount)
+          : undefined,
       }),
     };
 

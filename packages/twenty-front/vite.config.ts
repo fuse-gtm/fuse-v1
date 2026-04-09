@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { lingui } from '@lingui/vite-plugin';
 import { isNonEmptyString } from '@sniptt/guards';
 import react from '@vitejs/plugin-react-swc';
@@ -12,38 +11,27 @@ import {
   type PluginOption,
   searchForWorkspaceRoot,
 } from 'vite';
-import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
-type Checkers = Parameters<typeof checker>[0];
 
-export default defineConfig(({ command, mode }) => {
+import { createWywProfilingPlugin } from 'twenty-shared/vite';
+
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname, '');
 
   const {
     REACT_APP_SERVER_BASE_URL,
     VITE_BUILD_SOURCEMAP,
-    VITE_DISABLE_TYPESCRIPT_CHECKER,
     VITE_HOST,
     SSL_CERT_PATH,
     SSL_KEY_PATH,
     REACT_APP_PORT,
     IS_DEBUG_MODE,
-    CI,
-    ANALYZE,
   } = env;
-
-  const isCI = CI === 'true';
 
   const port = isNonEmptyString(REACT_APP_PORT)
     ? parseInt(REACT_APP_PORT)
     : 3001;
-
-  const isBuildCommand = command === 'build';
-
-  const tsConfigPath = isBuildCommand
-    ? path.resolve(__dirname, './tsconfig.build.json')
-    : path.resolve(__dirname, './tsconfig.json');
 
   const CHUNK_SIZE_WARNING_LIMIT = 1024 * 1024; // 1MB
   // Please don't increase this limit for main index chunk
@@ -52,24 +40,9 @@ export default defineConfig(({ command, mode }) => {
   const MAIN_CHUNK_SIZE_LIMIT = 6.8 * 1024 * 1024; // 6.8MB for main index chunk
   const OTHER_CHUNK_SIZE_LIMIT = 5 * 1024 * 1024; // 5MB for other chunks
 
-  const checkers: Checkers = {
-    overlay: false,
-  };
-
-  if (VITE_DISABLE_TYPESCRIPT_CHECKER === 'true') {
-    console.log(
-      `VITE_DISABLE_TYPESCRIPT_CHECKER: ${VITE_DISABLE_TYPESCRIPT_CHECKER}`,
-    );
-  }
-
   if (VITE_BUILD_SOURCEMAP === 'true') {
+    // oxlint-disable-next-line no-console
     console.log(`VITE_BUILD_SOURCEMAP: ${VITE_BUILD_SOURCEMAP}`);
-  }
-
-  if (VITE_DISABLE_TYPESCRIPT_CHECKER !== 'true') {
-    checkers['typescript'] = {
-      tsconfigPath: tsConfigPath,
-    };
   }
 
   return {
@@ -110,42 +83,53 @@ export default defineConfig(({ command, mode }) => {
       lingui({
         configPath: path.resolve(__dirname, './lingui.config.ts'),
       }),
-      !isCI && checker(checkers),
-      {
-        ...wyw({
-          include: [
-            // Only scan directories that actually contain styled usage (~12% of source)
-            path.resolve(__dirname, 'src') + '/**/components/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/pages/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/loading/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') + '/testing/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/blocknote-editor/blocks/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/advanced-text-editor/extensions/**/*.{ts,tsx}',
-            path.resolve(__dirname, 'src') +
-              '/modules/page-layout/widgets/graph/chart-core/layers/**/*.{ts,tsx}',
-          ],
+      createWywProfilingPlugin(
+        wyw({
+          include: [path.resolve(__dirname, 'src') + '/**/*.{ts,tsx}'],
           exclude: [
             '**/generated-metadata/**',
-            '**/testing/mock-data/generated/**',
+            '**/testing/mock-data/**',
+            '**/testing/jest/**',
+            '**/testing/hooks/**',
+            '**/testing/utils/**',
+            '**/testing/constants/**',
+            '**/testing/cache/**',
             '**/*.test.{ts,tsx}',
             '**/*.spec.{ts,tsx}',
+            '**/__tests__/**',
+            '**/__mocks__/**',
+            '**/types/**',
+            '**/constants/**',
+            '**/states/**',
+            '**/selectors/**',
+            '**/guards/**',
+            '**/schemas/**',
+            '**/utils/**',
+            '**/contexts/**',
+            '**/hooks/**',
+            '**/enums/**',
+            '**/queries/**',
+            '**/mutations/**',
+            '**/fragments/**',
+            '**/graphql/**',
+            '**/decorators/**',
           ],
           babelOptions: {
             presets: ['@babel/preset-typescript', '@babel/preset-react'],
             plugins: ['@babel/plugin-transform-export-namespace-from'],
           },
         }),
-        enforce: 'pre',
-      },
-      ANALYZE === 'true' &&
-        (visualizer({
-          open: !isCI,
-          gzipSize: true,
-          brotliSize: true,
-          filename: 'dist/stats.html',
-        }) as PluginOption), // https://github.com/btd/rollup-plugin-visualizer/issues/162#issuecomment-1538265997,
+      ),
+      ...(env.ANALYZE === 'true'
+        ? [
+            visualizer({
+              open: !process.env.CI,
+              gzipSize: true,
+              brotliSize: true,
+              filename: 'dist/stats.html',
+            }) as PluginOption,
+          ]
+        : []),
     ],
 
     optimizeDeps: {
@@ -159,7 +143,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       minify: 'esbuild',
       outDir: 'build',
-      sourcemap: VITE_BUILD_SOURCEMAP === 'true',
+      sourcemap: VITE_BUILD_SOURCEMAP === 'true' ? 'hidden' : false,
       chunkSizeWarningLimit: CHUNK_SIZE_WARNING_LIMIT,
       rollupOptions: {
         //  Don't use manual chunks as it causes many issue
@@ -264,7 +248,6 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         path: 'rollup-plugin-node-polyfills/polyfills/path',
-        '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
       },
     },
   };

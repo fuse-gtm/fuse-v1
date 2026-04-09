@@ -5,10 +5,10 @@ import { AppPageErrorFallback } from '@/error-handler/components/AppPageErrorFal
 import { FileUploadProvider } from '@/file-upload/components/FileUploadProvider';
 import { InformationBannerIsImpersonating } from '@/information-banner/components/impersonate/InformationBannerIsImpersonating';
 import { KeyboardShortcutMenu } from '@/keyboard-shortcut-menu/components/KeyboardShortcutMenu';
-import { NavigationMenuEditModeBar } from '@/navigation-menu-item/components/NavigationMenuEditModeBar';
+import { LayoutCustomizationBar } from '@/layout-customization/components/LayoutCustomizationBar';
 import { AppNavigationDrawer } from '@/navigation/components/AppNavigationDrawer';
 import { MobileNavigationBar } from '@/navigation/components/MobileNavigationBar';
-import { PageDragDropProvider } from '@/navigation/components/PageDragDropProvider';
+import { PageDragDropProvider } from '@/navigation-menu-item/display/dnd/providers/PageDragDropProvider';
 import { useIsSettingsPage } from '@/navigation/hooks/useIsSettingsPage';
 import { OBJECT_SETTINGS_WIDTH } from '@/settings/data-model/constants/ObjectSettings';
 import { SignInAppNavigationDrawerMock } from '@/sign-in-background-mock/components/SignInAppNavigationDrawerMock';
@@ -27,9 +27,7 @@ import { styled } from '@linaria/react';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
 import { useScreenSize } from 'twenty-ui/utilities';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { ThemeContext } from 'twenty-ui/theme';
-
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 const StyledLayout = styled.div`
   background: ${themeCssVariables.background.noisy};
   display: flex;
@@ -66,10 +64,10 @@ const StyledMainContainer = styled.div`
 export const DefaultLayout = () => {
   const isMobile = useIsMobile();
   const isSettingsPage = useIsSettingsPage();
-  const { theme } = useContext(ThemeContext);
   const windowsWidth = useScreenSize().width;
   const showAuthModal = useShowAuthModal();
   const useShowFullScreen = useShowFullscreen();
+  const { theme } = useContext(ThemeContext);
 
   return (
     <>
@@ -77,7 +75,7 @@ export const DefaultLayout = () => {
         <StyledLayout>
           <AppErrorBoundary FallbackComponent={AppFullScreenErrorFallback}>
             <InformationBannerIsImpersonating />
-            <NavigationMenuEditModeBar />
+            <LayoutCustomizationBar />
             <StyledPageContainer
               animate={{
                 marginLeft:

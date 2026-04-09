@@ -74,13 +74,7 @@ const createSignInUpServiceForTests = () => {
       createOnboardingStatusForWorkspaceMember: jest.fn(),
     } as any,
     {
-      isFeatureEnabled: jest.fn(),
-    } as any,
-    {
       emitCustomBatchEvent: jest.fn(),
-    } as any,
-    {
-      getHttpClient: jest.fn(),
     } as any,
     mockTwentyConfigService as any,
     {
@@ -102,6 +96,9 @@ const createSignInUpServiceForTests = () => {
     } as any,
     {
       uploadWorkspaceLogoFromUrl: jest.fn(),
+    } as any,
+    {
+      isValid: jest.fn().mockReturnValue(false),
     } as any,
     {
       createQueryRunner: jest.fn(() => queryRunnerMock),

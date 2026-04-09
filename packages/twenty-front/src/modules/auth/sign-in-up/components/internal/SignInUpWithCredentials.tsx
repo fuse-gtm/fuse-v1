@@ -1,3 +1,4 @@
+import { useFuseEmailValidation } from '@/auth/sign-in-up/hooks/useFuseEmailValidation';
 import { useHasMultipleAuthMethods } from '@/auth/sign-in-up/hooks/useHasMultipleAuthMethods';
 import { useSignInUp } from '@/auth/sign-in-up/hooks/useSignInUp';
 import { type Form } from '@/auth/sign-in-up/hooks/useSignInUpForm';
@@ -15,6 +16,7 @@ import { AuthenticatedMethod } from '@/auth/types/AuthenticatedMethod.enum';
 import { SignInUpMode } from '@/auth/types/signInUpMode';
 import { isRequestingCaptchaTokenState } from '@/captcha/states/isRequestingCaptchaTokenState';
 import { captchaState } from '@/client-config/states/captchaState';
+import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useMemo, useState } from 'react';
@@ -22,6 +24,7 @@ import { useFormContext } from 'react-hook-form';
 import { isDefined } from 'twenty-shared/utils';
 import { Loader } from 'twenty-ui/feedback';
 import { MainButton } from 'twenty-ui/input';
+import { InputHint } from '@/ui/input/components/InputHint';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
@@ -29,6 +32,7 @@ const StyledForm = styled.form`
   align-items: center;
   display: flex;
   flex-direction: column;
+  max-width: 100%;
   width: 100%;
 `;
 
@@ -43,6 +47,7 @@ export const SignInUpWithCredentials = ({
   const [signInUpStep, setSignInUpStep] = useAtomState(signInUpStepState);
   const [showErrors, setShowErrors] = useState(false);
   const captcha = useAtomStateValue(captchaState);
+  const isDDLLocked = useAtomStateValue(isDDLLockedState);
   const isRequestingCaptchaToken = useAtomStateValue(
     isRequestingCaptchaTokenState,
   );
@@ -50,6 +55,7 @@ export const SignInUpWithCredentials = ({
     lastAuthenticatedMethodState,
   );
   const hasMultipleAuthMethods = useHasMultipleAuthMethods();
+  const { validateEmail } = useFuseEmailValidation();
 
   const {
     signInUpMode,
@@ -75,6 +81,14 @@ export const SignInUpWithCredentials = ({
         setShowErrors(true);
         return;
       }
+      const emailValue = form.getValues('email');
+      const { isValid: isFuseValid, error: fuseError } =
+        validateEmail(emailValue);
+      if (!isFuseValid && isDefined(fuseError)) {
+        form.setError('email', { type: 'manual', message: fuseError });
+        setShowErrors(true);
+        return;
+      }
       continueWithCredentials();
     } else if (signInUpStep === SignInUpStep.Password) {
       if (!form.formState.isSubmitting) {
@@ -86,6 +100,7 @@ export const SignInUpWithCredentials = ({
 
   const onEmailChange = (email: string) => {
     if (email !== form.getValues('email')) {
+      form.clearErrors('email');
       setSignInUpStep(SignInUpStep.Email);
     }
   };
@@ -129,9 +144,15 @@ export const SignInUpWithCredentials = ({
       form.formState.isSubmitting ||
       shouldWaitForCaptchaToken);
 
+  const isSignUpBlockedByDDLLock =
+    isDDLLocked &&
+    signInUpMode === SignInUpMode.SignUp &&
+    signInUpStep === SignInUpStep.Password;
+
   const isSubmitButtonDisabled =
     isEmailStepSubmitButtonDisabledCondition ||
-    isPasswordStepSubmitButtonDisabledCondition;
+    isPasswordStepSubmitButtonDisabledCondition ||
+    isSignUpBlockedByDDLLock;
 
   return (
     <>
@@ -163,6 +184,9 @@ export const SignInUpWithCredentials = ({
               fullWidth
             />
             {isLastUsed && <LastUsedPill />}
+            {isSignUpBlockedByDDLLock && (
+              <InputHint>{t`Sign-up is temporarily unavailable during maintenance.`}</InputHint>
+            )}
           </StyledSSOButtonContainer>
         </StyledForm>
       )}

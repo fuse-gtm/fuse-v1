@@ -7,13 +7,11 @@ import {
   type ConnectedAccountProvider,
   type FieldActorSource,
 } from 'twenty-shared/types';
-import {
-  isDefined,
-  lowercaseUrlOriginAndRemoveTrailingSlash,
-} from 'twenty-shared/utils';
+import { isDefined, normalizeUrlOrigin } from 'twenty-shared/utils';
 import { type DeepPartial, ILike } from 'typeorm';
 
 import { SecureHttpClientService } from 'src/engine/core-modules/secure-http-client/secure-http-client.service';
+import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import { type WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
@@ -34,16 +32,11 @@ export type CompanyToCreate = {
 
 @Injectable()
 export class CreateCompanyService {
-  private readonly httpService: AxiosInstance;
-
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
     private readonly secureHttpClientService: SecureHttpClientService,
-  ) {
-    this.httpService = this.secureHttpClientService.getHttpClient({
-      baseURL: TWENTY_COMPANIES_BASE_URL,
-    });
-  }
+    private readonly twentyConfigService: TwentyConfigService,
+  ) {}
 
   async createOrRestoreCompanies(
     companies: CompanyToCreate[],
@@ -71,7 +64,7 @@ export class CreateCompanyService {
         const companiesWithoutTrailingSlash = companies.map((company) => ({
           ...company,
           domainName: company.domainName
-            ? lowercaseUrlOriginAndRemoveTrailingSlash(company.domainName)
+            ? normalizeUrlOrigin(company.domainName)
             : undefined,
         }));
 
@@ -252,8 +245,24 @@ export class CreateCompanyService {
     name: string;
     city: string;
   }> {
+    const shouldUseRemoteEnrichment =
+      this.twentyConfigService.get('COMPANY_ENRICHMENT_ENABLED') &&
+      String(
+        this.twentyConfigService.get('COMPANY_ENRICHMENT_PROVIDER'),
+      ).toLowerCase() === 'twenty';
+
+    if (!shouldUseRemoteEnrichment) {
+      return {
+        name: getCompanyNameFromDomainName(domainName ?? ''),
+        city: '',
+      };
+    }
+
     try {
-      const response = await this.httpService.get(`/${domainName}`);
+      const httpService: AxiosInstance = this.secureHttpClientService.getHttpClient({
+        baseURL: TWENTY_COMPANIES_BASE_URL,
+      });
+      const response = await httpService.get(`/${domainName}`);
 
       const data = response.data;
 

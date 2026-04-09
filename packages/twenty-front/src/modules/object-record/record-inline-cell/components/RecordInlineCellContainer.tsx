@@ -1,11 +1,11 @@
 import { styled } from '@linaria/react';
 import { useContext } from 'react';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { FieldContext } from '@/object-record/record-field/ui/contexts/FieldContext';
 import { useFieldFocus } from '@/object-record/record-field/ui/hooks/useFieldFocus';
 import { RecordInlineCellValue } from '@/object-record/record-inline-cell/components/RecordInlineCellValue';
+import { getRecordFieldInputInstanceId } from '@/object-record/utils/getRecordFieldInputId';
 
 import { assertFieldMetadata } from '@/object-record/record-field/ui/types/guards/assertFieldMetadata';
 import { isFieldText } from '@/object-record/record-field/ui/types/guards/isFieldText';
@@ -55,14 +55,14 @@ const StyledLabelContainer = styled.div<{ width?: number }>`
 `;
 
 const StyledInlineCellBaseContainer = styled.div<{ readonly: boolean }>`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  height: fit-content;
-  gap: ${themeCssVariables.spacing[1]};
-  user-select: none;
   align-items: center;
+  box-sizing: border-box;
   cursor: ${({ readonly }) => (readonly ? 'default' : 'pointer')};
+  display: flex;
+  gap: ${themeCssVariables.spacing[1]};
+  height: fit-content;
+  user-select: none;
+  width: 100%;
 `;
 
 export const StyledSkeletonDiv = styled.div`
@@ -72,8 +72,9 @@ export const StyledSkeletonDiv = styled.div`
 export const RecordInlineCellContainer = () => {
   const { readonly, IconLabel, label, labelWidth, showLabel } =
     useRecordInlineCellContext();
+  const { theme } = useContext(ThemeContext);
 
-  const { fieldDefinition, onMouseEnter, onMouseLeave, anchorId } =
+  const { recordId, fieldDefinition, onMouseEnter, onMouseLeave, anchorId } =
     useContext(FieldContext);
 
   if (isFieldText(fieldDefinition)) {
@@ -96,7 +97,10 @@ export const RecordInlineCellContainer = () => {
     onMouseLeave?.();
   };
 
-  const { theme } = useContext(ThemeContext);
+  const labelId = `label-${getRecordFieldInputInstanceId({
+    recordId,
+    fieldName: fieldDefinition?.metadata?.fieldName,
+  })}`;
 
   return (
     <StyledInlineCellBaseContainer
@@ -105,26 +109,30 @@ export const RecordInlineCellContainer = () => {
       onMouseLeave={handleContainerMouseLeave}
     >
       {(IconLabel || label) && (
-        <AppTooltip
-          content={label}
-          noArrow
-          place="bottom"
-          delay={TooltipDelay.shortDelay}
-          hidden={showLabel}
-        >
-          <StyledLabelAndIconContainer>
-            {IconLabel && (
-              <StyledIconContainer>
-                <IconLabel stroke={theme.icon.stroke.sm} />
-              </StyledIconContainer>
-            )}
-            {showLabel && (
-              <StyledLabelContainer width={labelWidth}>
-                <OverflowingTextWithTooltip text={label} displayedMaxRows={1} />
-              </StyledLabelContainer>
-            )}
-          </StyledLabelAndIconContainer>
-        </AppTooltip>
+        <StyledLabelAndIconContainer id={labelId}>
+          {IconLabel && (
+            <StyledIconContainer>
+              <IconLabel stroke={theme.icon.stroke.sm} />
+            </StyledIconContainer>
+          )}
+          {showLabel && (
+            <StyledLabelContainer width={labelWidth}>
+              <OverflowingTextWithTooltip text={label} displayedMaxRows={1} />
+            </StyledLabelContainer>
+          )}
+          {/* TODO: Displaying Tooltips on the board is causing performance issues https://react-tooltip.com/docs/examples/render */}
+          {!showLabel && (
+            <AppTooltip
+              anchorSelect={`#${labelId}`}
+              content={label}
+              clickable
+              noArrow
+              place="bottom"
+              positionStrategy="fixed"
+              delay={TooltipDelay.shortDelay}
+            />
+          )}
+        </StyledLabelAndIconContainer>
       )}
       <StyledValueContainer readonly={readonly ?? false} id={anchorId}>
         <RecordInlineCellValue />

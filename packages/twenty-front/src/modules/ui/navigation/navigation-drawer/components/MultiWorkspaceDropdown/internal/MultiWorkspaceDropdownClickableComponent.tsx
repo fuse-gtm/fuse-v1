@@ -1,20 +1,27 @@
-import { DEFAULT_WORKSPACE_LOGO } from '@/ui/navigation/navigation-drawer/constants/DefaultWorkspaceLogo';
-import { NavigationDrawerAnimatedCollapseWrapper } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerAnimatedCollapseWrapper';
+import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import {
   StyledContainer,
   StyledIconChevronDown,
   StyledLabel,
+  StyledLabelWrapper,
 } from '@/ui/navigation/navigation-drawer/components/MultiWorkspaceDropdown/internal/MultiWorkspacesDropdownStyles';
-import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
+import { NavigationDrawerAnimatedCollapseWrapper } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerAnimatedCollapseWrapper';
+import { DEFAULT_WORKSPACE_LOGO } from '@/ui/navigation/navigation-drawer/constants/DefaultWorkspaceLogo';
+import { isNavigationDrawerExpandedState } from '@/ui/navigation/states/isNavigationDrawerExpanded';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useContext } from 'react';
-import { isNavigationDrawerExpandedState } from '@/ui/navigation/states/isNavigationDrawerExpanded';
 import { Avatar } from 'twenty-ui/display';
-import { ThemeContext } from 'twenty-ui/theme';
+import { ThemeContext } from 'twenty-ui/theme-constants';
 
-export const MultiWorkspaceDropdownClickableComponent = () => {
-  const currentWorkspace = useAtomStateValue(currentWorkspaceState);
+type MultiWorkspaceDropdownClickableComponentProps = {
+  disabled?: boolean;
+};
+
+export const MultiWorkspaceDropdownClickableComponent = ({
+  disabled,
+}: MultiWorkspaceDropdownClickableComponentProps) => {
   const { theme } = useContext(ThemeContext);
+  const currentWorkspace = useAtomStateValue(currentWorkspaceState);
 
   const isNavigationDrawerExpanded = useAtomStateValue(
     isNavigationDrawerExpandedState,
@@ -23,14 +30,17 @@ export const MultiWorkspaceDropdownClickableComponent = () => {
     <StyledContainer
       data-testid="workspace-dropdown"
       isNavigationDrawerExpanded={isNavigationDrawerExpanded}
+      disabled={disabled}
     >
       <Avatar
         placeholder={currentWorkspace?.displayName || ''}
         avatarUrl={currentWorkspace?.logo ?? DEFAULT_WORKSPACE_LOGO}
       />
-      <NavigationDrawerAnimatedCollapseWrapper>
-        <StyledLabel>{currentWorkspace?.displayName ?? ''}</StyledLabel>
-      </NavigationDrawerAnimatedCollapseWrapper>
+      <StyledLabelWrapper>
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <StyledLabel>{currentWorkspace?.displayName ?? ''}</StyledLabel>
+        </NavigationDrawerAnimatedCollapseWrapper>
+      </StyledLabelWrapper>
       <NavigationDrawerAnimatedCollapseWrapper>
         <StyledIconChevronDown
           size={theme.icon.size.md}

@@ -1,3 +1,4 @@
+import { NavigationMenuItemType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
@@ -51,8 +52,12 @@ export const createStandardNavigationMenuItemFlatMetadata = ({
     );
   }
 
+  const isObjectType =
+    navigationMenuItemDefinition.type === NavigationMenuItemType.OBJECT;
+
   return {
     id: navigationMenuItemId,
+    type: navigationMenuItemDefinition.type,
     universalIdentifier: navigationMenuItemDefinition.universalIdentifier,
     applicationId: twentyStandardApplicationId,
     applicationUniversalIdentifier:
@@ -60,10 +65,12 @@ export const createStandardNavigationMenuItemFlatMetadata = ({
     workspaceId,
     userWorkspaceId: null,
     targetRecordId: null,
-    targetObjectMetadataId: null,
-    targetObjectMetadataUniversalIdentifier: null,
-    viewId: flatView.id,
-    viewUniversalIdentifier: flatView.universalIdentifier,
+    targetObjectMetadataId: isObjectType ? flatView.objectMetadataId : null,
+    targetObjectMetadataUniversalIdentifier: isObjectType
+      ? flatView.objectMetadataUniversalIdentifier
+      : null,
+    viewId: isObjectType ? null : flatView.id,
+    viewUniversalIdentifier: isObjectType ? null : flatView.universalIdentifier,
     folderId: null,
     folderUniversalIdentifier: null,
     name: null,

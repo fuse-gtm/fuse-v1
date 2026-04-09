@@ -8,22 +8,18 @@ import {
 } from 'twenty-ui/display';
 import { CodeEditor, CoreEditorHeader } from 'twenty-ui/input';
 import { AnimatedCircleLoading } from 'twenty-ui/utilities';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { themeCssVariables, ThemeContext } from 'twenty-ui/theme-constants';
 import { useContext } from 'react';
-import { ThemeContext } from 'twenty-ui/theme';
-
 const StyledContainer = styled.div`
   display: flex;
-  flex-direction: column;
   flex: 1;
-  min-height: 200px;
+  flex-direction: column;
 `;
 
 const StyledCodeEditorWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: 200px;
 `;
 
 type OutputAccent = 'default' | 'success' | 'error';
@@ -35,7 +31,6 @@ const StyledInfoContainer = styled.div`
 
 const StyledOutput = styled.div<{ accent?: OutputAccent }>`
   align-items: center;
-  gap: ${themeCssVariables.spacing[1]};
   color: ${({ accent }) =>
     accent === 'success'
       ? themeCssVariables.color.turquoise
@@ -43,13 +38,14 @@ const StyledOutput = styled.div<{ accent?: OutputAccent }>`
         ? themeCssVariables.color.red
         : themeCssVariables.font.color.secondary};
   display: flex;
+  gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledStatusInfo = styled.div`
-  display: flex;
-  gap: ${themeCssVariables.spacing[2]};
-  font-size: ${themeCssVariables.font.size.sm};
   color: ${themeCssVariables.font.color.tertiary};
+  display: flex;
+  font-size: ${themeCssVariables.font.size.sm};
+  gap: ${themeCssVariables.spacing[2]};
 `;
 
 export type ExecutionStatus = {
@@ -137,6 +133,7 @@ export const WorkflowStepExecutionResult = ({
       />
       <StyledCodeEditorWrapper>
         <CodeEditor
+          resizable={true}
           value={result}
           language={language}
           height={height}

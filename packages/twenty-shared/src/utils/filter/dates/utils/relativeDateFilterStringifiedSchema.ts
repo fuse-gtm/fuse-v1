@@ -1,9 +1,9 @@
-import { relativeDateFilterSchema } from '@/utils/filter/dates/utils/relativeDateFilterSchema';
+import { relativeDateFilterSchema } from './relativeDateFilterSchema';
 import { isNonEmptyArray } from '@sniptt/guards';
 import z from 'zod';
 
 const REGEX_FOR_RELATIVE_DATE_FILTER_STRINGIFIED_PARSING =
-  /((?:THIS)|(?:PAST)|(?:NEXT))_(\d*)_(DAY|MONTH|YEAR|WEEK|HOUR|MINUTE|SECOND)(?:(?:;;([^;;]*);;)?(?:(MONDAY|SUNDAY|SATURDAY);;)?)?/;
+  /((?:THIS)|(?:PAST)|(?:NEXT))_(\d*)_(DAY|MONTH|YEAR|WEEK|QUARTER|HOUR|MINUTE|SECOND)(?:(?:;;([^;;]*);;)?(?:(MONDAY|SUNDAY|SATURDAY);;)?)?/;
 
 export const relativeDateFilterStringifiedSchema = z
   .string()

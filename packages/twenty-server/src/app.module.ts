@@ -19,11 +19,11 @@ import { GraphQLConfigService } from 'src/engine/api/graphql/graphql-config/grap
 import { MetadataGraphQLApiModule } from 'src/engine/api/graphql/metadata-graphql-api.module';
 import { McpModule } from 'src/engine/api/mcp/mcp.module';
 import { RestApiModule } from 'src/engine/api/rest/rest-api.module';
+import { WorkspaceAuthContextMiddleware } from 'src/engine/core-modules/auth/middlewares/workspace-auth-context.middleware';
 import { MetricsModule } from 'src/engine/core-modules/metrics/metrics.module';
 import { DataloaderModule } from 'src/engine/dataloaders/dataloader.module';
 import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-source.module';
 import { WorkspaceMetadataVersionModule } from 'src/engine/metadata-modules/workspace-metadata-version/workspace-metadata-version.module';
-import { WorkspaceAuthContextMiddleware } from 'src/engine/core-modules/auth/middlewares/workspace-auth-context.middleware';
 import { GraphQLHydrateRequestFromTokenMiddleware } from 'src/engine/middlewares/graphql-hydrate-request-from-token.middleware';
 import { MiddlewareModule } from 'src/engine/middlewares/middleware.module';
 import { RestCoreMiddleware } from 'src/engine/middlewares/rest-core.middleware';
@@ -94,6 +94,27 @@ export class AppModule {
       modules.push(
         ServeStaticModule.forRoot({
           rootPath: frontPath,
+          serveStaticOptions: {
+            setHeaders: (res, filePath) => {
+              // Vite emits fingerprinted assets under /assets; they are safe to cache aggressively.
+              if (/[\\/]+assets[\\/]+/.test(filePath)) {
+                res.setHeader(
+                  'Cache-Control',
+                  'public, max-age=31536000, immutable',
+                );
+
+                return;
+              }
+
+              // Keep HTML revalidated so new deploys are picked up quickly.
+              if (filePath.endsWith('.html')) {
+                res.setHeader(
+                  'Cache-Control',
+                  'public, max-age=0, must-revalidate',
+                );
+              }
+            },
+          },
         }),
       );
     }

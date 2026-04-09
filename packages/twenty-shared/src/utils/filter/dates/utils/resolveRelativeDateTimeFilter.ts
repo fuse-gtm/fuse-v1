@@ -1,9 +1,9 @@
-import { addUnitToZonedDateTime } from '@/utils/filter/dates/utils/addUnitToZonedDateTime';
-import { getNextPeriodStart } from '@/utils/filter/dates/utils/getNextPeriodStart';
-import { getPeriodStart } from '@/utils/filter/dates/utils/getPeriodStart';
-import { type RelativeDateFilter } from '@/utils/filter/dates/utils/relativeDateFilterSchema';
-import { subUnitFromZonedDateTime } from '@/utils/filter/dates/utils/subUnitFromZonedDateTime';
-import { isDefined } from '@/utils/validation';
+import { addUnitToZonedDateTime } from './addUnitToZonedDateTime';
+import { getNextPeriodStart } from './getNextPeriodStart';
+import { getPeriodStart } from './getPeriodStart';
+import { type RelativeDateFilter } from './relativeDateFilterSchema';
+import { subUnitFromZonedDateTime } from './subUnitFromZonedDateTime';
+import { isDefined } from '../../../validation/isDefined';
 import { type Temporal } from 'temporal-polyfill';
 
 export const resolveRelativeDateTimeFilter = (
@@ -18,6 +18,19 @@ export const resolveRelativeDateTimeFilter = (
     case 'NEXT': {
       if (!isDefined(amount)) {
         throw new Error('Amount is required');
+      }
+
+      if (unit === 'QUARTER') {
+        const startOfNextQuarter = getNextPeriodStart(
+          referenceZonedDateTime,
+          'QUARTER',
+        );
+
+        return {
+          ...relativeDateFilter,
+          start: startOfNextQuarter,
+          end: addUnitToZonedDateTime(startOfNextQuarter, unit, amount),
+        };
       }
 
       if (isSubDayUnit) {
@@ -41,6 +54,19 @@ export const resolveRelativeDateTimeFilter = (
     case 'PAST': {
       if (!isDefined(amount)) {
         throw new Error('Amount is required');
+      }
+
+      if (unit === 'QUARTER') {
+        const startOfCurrentQuarter = getPeriodStart(
+          referenceZonedDateTime,
+          'QUARTER',
+        );
+
+        return {
+          ...relativeDateFilter,
+          start: subUnitFromZonedDateTime(startOfCurrentQuarter, unit, amount),
+          end: startOfCurrentQuarter,
+        };
       }
 
       if (isSubDayUnit) {

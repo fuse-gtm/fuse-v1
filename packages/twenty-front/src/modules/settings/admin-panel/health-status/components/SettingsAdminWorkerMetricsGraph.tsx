@@ -1,22 +1,23 @@
+import { isDefined } from 'twenty-shared/utils';
 import { SettingsAdminTableCard } from '@/settings/admin-panel/components/SettingsAdminTableCard';
 import { SettingsAdminWorkerMetricsTooltip } from '@/settings/admin-panel/health-status/components/SettingsAdminWorkerMetricsTooltip';
-import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
-import { useContext } from 'react';
+import { useSnackBarOnQueryError } from '@/apollo/hooks/useSnackBarOnQueryError';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 import { ResponsiveLine } from '@nivo/line';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { useContext } from 'react';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { useQuery } from '@apollo/client/react';
 import {
   QueueMetricsTimeRange,
-  useGetQueueMetricsQuery,
+  GetQueueMetricsDocument,
 } from '~/generated-metadata/graphql';
 
 const StyledGraphContainer = styled.div`
   background-color: ${themeCssVariables.background.secondary};
+  border: 1px solid ${themeCssVariables.border.color.medium};
   border-radius: ${themeCssVariables.border.radius.md};
   height: 240px;
-  border: 1px solid ${themeCssVariables.border.color.medium};
   margin-bottom: ${themeCssVariables.spacing[4]};
   padding-top: 10px;
   width: 100%;
@@ -30,9 +31,11 @@ const StyledNoDataMessage = styled.div`
   justify-content: center;
 `;
 
-const StyledSettingsAdminTableCard = styled(SettingsAdminTableCard)`
-  padding-left: ${themeCssVariables.spacing[2]};
-  padding-right: ${themeCssVariables.spacing[2]};
+const StyledSettingsAdminTableCardContainer = styled.div`
+  > * {
+    padding-left: ${themeCssVariables.spacing[2]};
+    padding-right: ${themeCssVariables.spacing[2]};
+  }
 `;
 
 type SettingsAdminWorkerMetricsGraphProps = {
@@ -46,21 +49,16 @@ export const SettingsAdminWorkerMetricsGraph = ({
   timeRange,
 }: SettingsAdminWorkerMetricsGraphProps) => {
   const { theme } = useContext(ThemeContext);
-  const { enqueueErrorSnackBar } = useSnackBar();
 
-  const { loading, data } = useGetQueueMetricsQuery({
+  const { loading, data, error } = useQuery(GetQueueMetricsDocument, {
     variables: {
       queueName,
       timeRange,
     },
     fetchPolicy: 'no-cache',
-    onError: (error) => {
-      const errorMessage = error.message;
-      enqueueErrorSnackBar({
-        message: t`Error fetching worker metrics: ${errorMessage}`,
-      });
-    },
   });
+
+  useSnackBarOnQueryError(error);
 
   const metricsData = data?.getQueueMetrics?.data || [];
   const hasData =
@@ -200,24 +198,26 @@ export const SettingsAdminWorkerMetricsGraph = ({
           <StyledNoDataMessage>{t`No metrics data available`}</StyledNoDataMessage>
         )}
       </StyledGraphContainer>
-      {metricsDetails && (
-        <StyledSettingsAdminTableCard
-          rounded
-          items={Object.entries(metricsDetails)
-            .filter(([key]) => key !== '__typename')
-            .map(([key, value]) => ({
-              label: key.charAt(0).toUpperCase() + key.slice(1),
-              value:
-                typeof value === 'number'
-                  ? value
-                  : Array.isArray(value)
-                    ? value.length
-                    : String(value),
-            }))}
-          gridAutoColumns="1fr 1fr"
-          labelAlign="left"
-          valueAlign="right"
-        />
+      {isDefined(metricsDetails) && (
+        <StyledSettingsAdminTableCardContainer>
+          <SettingsAdminTableCard
+            rounded
+            items={Object.entries(metricsDetails)
+              .filter(([key]) => key !== '__typename')
+              .map(([key, value]) => ({
+                label: key.charAt(0).toUpperCase() + key.slice(1),
+                value:
+                  typeof value === 'number'
+                    ? value
+                    : Array.isArray(value)
+                      ? value.length
+                      : String(value),
+              }))}
+            gridAutoColumns="1fr 1fr"
+            labelAlign="left"
+            valueAlign="right"
+          />
+        </StyledSettingsAdminTableCardContainer>
       )}
     </>
   );

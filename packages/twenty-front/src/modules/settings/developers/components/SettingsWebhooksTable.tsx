@@ -8,41 +8,40 @@ import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
-import { useGetWebhooksQuery } from '~/generated-metadata/graphql';
+import { useQuery } from '@apollo/client/react';
+import { GetWebhooksDocument } from '~/generated-metadata/graphql';
 
-const StyledTableBody = styled(TableBody)`
+const StyledTableBodyContainer = styled.div`
   border-bottom: 1px solid ${themeCssVariables.border.color.light};
   max-height: 260px;
   overflow-y: auto;
 `;
 
-const StyledTableRow = styled(TableRow)`
-  grid-template-columns: 444px 68px;
-`;
-
 export const SettingsWebhooksTable = () => {
-  const { data: webhooksData } = useGetWebhooksQuery();
+  const { data: webhooksData } = useQuery(GetWebhooksDocument);
 
   const webhooks = webhooksData?.webhooks;
 
   return (
     <Table>
-      <StyledTableRow>
+      <TableRow gridTemplateColumns="444px 68px">
         <TableHeader>URL</TableHeader>
         <TableHeader></TableHeader>
-      </StyledTableRow>
+      </TableRow>
       {!!webhooks?.length && (
-        <StyledTableBody>
-          {webhooks.map((webhookFieldItem) => (
-            <SettingsDevelopersWebhookTableRow
-              key={webhookFieldItem.id}
-              webhook={webhookFieldItem}
-              to={getSettingsPath(SettingsPath.WebhookDetail, {
-                webhookId: webhookFieldItem.id,
-              })}
-            />
-          ))}
-        </StyledTableBody>
+        <StyledTableBodyContainer>
+          <TableBody>
+            {webhooks.map((webhookFieldItem) => (
+              <SettingsDevelopersWebhookTableRow
+                key={webhookFieldItem.id}
+                webhook={webhookFieldItem}
+                to={getSettingsPath(SettingsPath.WebhookDetail, {
+                  webhookId: webhookFieldItem.id,
+                })}
+              />
+            ))}
+          </TableBody>
+        </StyledTableBodyContainer>
       )}
     </Table>
   );

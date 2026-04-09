@@ -4,18 +4,15 @@ import { useContext, useState } from 'react';
 import { IconChevronDown, IconChevronUp } from 'twenty-ui/display';
 import { JsonTree } from 'twenty-ui/json-visualizer';
 import { AnimatedExpandableContainer } from 'twenty-ui/layout';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { CodeExecutionDisplay } from '@/ai/components/CodeExecutionDisplay';
 import { ShimmeringText } from '@/ai/components/ShimmeringText';
-import { getToolIcon } from '@/ai/utils/getToolIcon';
 import {
   getToolDisplayMessage,
   resolveToolInput,
 } from '@/ai/utils/getToolDisplayMessage';
-import { ToolOutputMessageSchema } from '@/ai/schemas/toolOutputMessageSchema';
-import { ToolOutputResultSchema } from '@/ai/schemas/toolOutputResultSchema';
+import { getToolIcon } from '@/ai/utils/getToolIcon';
 import { useLingui } from '@lingui/react/macro';
 import { type ToolUIPart } from 'ai';
 import { isDefined } from 'twenty-shared/utils';
@@ -49,14 +46,14 @@ const StyledToggleButton = styled.div<{ isExpandable: boolean }>`
   align-items: center;
   background: none;
   border: none;
+  color: ${themeCssVariables.font.color.tertiary};
   cursor: ${({ isExpandable }) => (isExpandable ? 'pointer' : 'auto')};
   display: flex;
-  color: ${themeCssVariables.font.color.tertiary};
   gap: ${themeCssVariables.spacing[1]};
+  justify-content: space-between;
   padding: ${themeCssVariables.spacing[1]} 0;
   transition: color calc(${themeCssVariables.animation.duration.fast} * 1s)
     ease-in-out;
-  justify-content: space-between;
   width: 100%;
 
   &:hover {
@@ -74,14 +71,14 @@ const StyledToolName = styled.span`
 `;
 
 const StyledLeftContent = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledRightContent = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[2]};
 `;
 
@@ -92,8 +89,8 @@ const StyledDisplayMessage = styled.span`
 `;
 
 const StyledIconTextContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[1]};
 
   svg {
@@ -113,15 +110,15 @@ const StyledTab = styled.div<{ isActive: boolean }>`
     isActive
       ? themeCssVariables.font.color.primary
       : themeCssVariables.font.color.tertiary};
+  cursor: pointer;
   font-size: ${themeCssVariables.font.size.sm};
   font-weight: ${({ isActive }) =>
     isActive
       ? themeCssVariables.font.weight.medium
       : themeCssVariables.font.weight.regular};
-  cursor: pointer;
+  padding-bottom: ${themeCssVariables.spacing[2]};
   transition: color calc(${themeCssVariables.animation.duration.fast} * 1s)
     ease-in-out;
-  padding-bottom: ${themeCssVariables.spacing[2]};
 
   &:hover {
     color: ${themeCssVariables.font.color.primary};
@@ -137,8 +134,8 @@ export const ToolStepRenderer = ({
   toolPart: ToolUIPart;
   isStreaming: boolean;
 }) => {
-  const { t } = useLingui();
   const { theme } = useContext(ThemeContext);
+  const { t } = useLingui();
   const { copyToClipboard } = useCopyToClipboard();
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('output');
@@ -153,26 +150,38 @@ export const ToolStepRenderer = ({
   const isExpandable = isDefined(output) || hasError;
   const ToolIcon = getToolIcon(toolName);
 
+  const outputObj =
+    typeof output === 'object' && output !== null
+      ? (output as Record<string, unknown>)
+      : null;
+  const toolMessage =
+    typeof outputObj?.message === 'string' ? outputObj.message : null;
+  const toolError =
+    typeof outputObj?.error === 'string' ? outputObj.error : null;
+
   if (toolName === 'code_interpreter') {
     const codeInput = toolInput as { code?: string } | undefined;
-    const codeOutput = output as {
-      result?: {
-        stdout?: string;
-        stderr?: string;
-        exitCode?: number;
-        files?: Array<{ filename: string; url: string; mimeType?: string }>;
-      };
+    const codeOutput = outputObj as {
+      stdout?: string;
+      stderr?: string;
+      exitCode?: number;
+      files?: Array<{
+        fileId: string;
+        filename: string;
+        url: string;
+        mimeType?: string;
+      }>;
     } | null;
 
-    const isRunning = !output && !hasError && isStreaming;
+    const isRunning = !outputObj && !hasError && isStreaming;
 
     return (
       <CodeExecutionDisplay
         code={codeInput?.code ?? ''}
-        stdout={codeOutput?.result?.stdout ?? ''}
-        stderr={codeOutput?.result?.stderr || errorText || ''}
-        exitCode={codeOutput?.result?.exitCode}
-        files={codeOutput?.result?.files}
+        stdout={codeOutput?.stdout ?? ''}
+        stderr={codeOutput?.stderr || errorText || ''}
+        exitCode={codeOutput?.exitCode}
+        files={codeOutput?.files}
         isRunning={isRunning}
       />
     );
@@ -206,28 +215,15 @@ export const ToolStepRenderer = ({
     );
   }
 
-  const outputResult = ToolOutputResultSchema.safeParse(output);
-  const unwrappedOutput =
-    rawToolName === 'execute_tool' && outputResult.success
-      ? outputResult.data.result
-      : output;
-
-  const unwrappedResult = ToolOutputResultSchema.safeParse(unwrappedOutput);
-  const unwrappedMessage = ToolOutputMessageSchema.safeParse(unwrappedOutput);
-
   const displayMessage = hasError
     ? t`Tool execution failed`
     : rawToolName === 'learn_tools' ||
         rawToolName === 'execute_tool' ||
         rawToolName === 'load_skills'
       ? getToolDisplayMessage(input, rawToolName, true)
-      : unwrappedMessage.success
-        ? unwrappedMessage.data.message
-        : getToolDisplayMessage(input, rawToolName, true);
+      : (toolMessage ?? getToolDisplayMessage(input, rawToolName, true));
 
-  const result = unwrappedResult.success
-    ? unwrappedResult.data.result
-    : unwrappedOutput;
+  const result = toolError ? { error: toolError } : outputObj;
 
   return (
     <StyledContainer>

@@ -1,12 +1,12 @@
-import { useOpenRecordInCommandMenu } from '@/command-menu/hooks/useOpenRecordInCommandMenu';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
+import { useOpenRecordInSidePanel } from '@/side-panel/hooks/useOpenRecordInSidePanel';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { getLinkToShowPage } from '@/object-metadata/utils/getLinkToShowPage';
 import { useRecordChipData } from '@/object-record/hooks/useRecordChipData';
 import { recordIndexOpenRecordInState } from '@/object-record/record-index/states/recordIndexOpenRecordInState';
 import { type ObjectRecord } from '@/object-record/types/ObjectRecord';
 import { canOpenObjectInSidePanel } from '@/object-record/utils/canOpenObjectInSidePanel';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { ViewOpenRecordInType } from '@/views/types/ViewOpenRecordInType';
+import { ViewOpenRecordIn } from '~/generated-metadata/graphql';
 import { t } from '@lingui/core/macro';
 import { type MouseEvent } from 'react';
 import { isDefined } from 'twenty-shared/utils';
@@ -55,22 +55,22 @@ export const RecordChip = ({
     record,
   });
 
-  const { openRecordInCommandMenu } = useOpenRecordInCommandMenu();
+  const { openRecordInSidePanel } = useOpenRecordInSidePanel();
 
   const recordIndexOpenRecordIn = useAtomStateValue(
     recordIndexOpenRecordInState,
   );
   const canOpenInSidePanel = canOpenObjectInSidePanel(objectNameSingular);
 
-  const isSidePanelViewOpenRecordInType =
-    recordIndexOpenRecordIn === ViewOpenRecordInType.SIDE_PANEL &&
+  const isSidePanelViewOpenRecordIn =
+    recordIndexOpenRecordIn === ViewOpenRecordIn.SIDE_PANEL &&
     canOpenInSidePanel;
 
   const handleCustomClick = isDefined(onClick)
     ? onClick
-    : isSidePanelViewOpenRecordInType
+    : isSidePanelViewOpenRecordIn
       ? (_event: MouseEvent<HTMLElement>) => {
-          openRecordInCommandMenu({
+          openRecordInSidePanel({
             recordId: record.id,
             objectNameSingular,
           });

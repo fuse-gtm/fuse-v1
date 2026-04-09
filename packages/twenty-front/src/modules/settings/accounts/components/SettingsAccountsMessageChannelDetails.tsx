@@ -1,12 +1,8 @@
 import { styled } from '@linaria/react';
 
-import {
-  type MessageChannel,
-  type MessageChannelContactAutoCreationPolicy,
-  type MessageFolderImportPolicy,
-} from '@/accounts/types/MessageChannel';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
-import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
+import { type MessageChannel } from '@/accounts/types/MessageChannel';
+import { UPDATE_MESSAGE_CHANNEL } from '@/settings/accounts/graphql/mutations/updateMessageChannel';
+import { useMutation } from '@apollo/client/react';
 import { SettingsAccountsMessageAutoCreationCard } from '@/settings/accounts/components/SettingsAccountsMessageAutoCreationCard';
 import { SettingsAccountsMessageFolderCard } from '@/settings/accounts/components/SettingsAccountsMessageFolderCard';
 import { SettingsAccountsMessageVisibilityCard } from '@/settings/accounts/components/SettingsAccountsMessageVisibilityCard';
@@ -16,6 +12,10 @@ import { H2Title, IconBriefcase, IconUsers } from 'twenty-ui/display';
 import { Card, Section } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { type MessageChannelVisibility } from '~/generated/graphql';
+import {
+  type MessageChannelContactAutoCreationPolicy,
+  type MessageFolderImportPolicy,
+} from 'twenty-shared/types';
 
 type SettingsAccountsMessageChannelDetailsProps = {
   messageChannel: Pick<
@@ -26,7 +26,6 @@ type SettingsAccountsMessageChannelDetailsProps = {
     | 'excludeNonProfessionalEmails'
     | 'excludeGroupEmails'
     | 'isSyncEnabled'
-    | 'messageFolders'
     | 'messageFolderImportPolicy'
   >;
 };
@@ -40,58 +39,36 @@ const StyledDetailsContainer = styled.div`
 export const SettingsAccountsMessageChannelDetails = ({
   messageChannel,
 }: SettingsAccountsMessageChannelDetailsProps) => {
-  const { updateOneRecord } = useUpdateOneRecord();
+  const [updateMetadataChannel] = useMutation(UPDATE_MESSAGE_CHANNEL);
+
+  const updateChannel = (update: Record<string, unknown>) => {
+    updateMetadataChannel({
+      variables: { input: { id: messageChannel.id, update } },
+    });
+  };
 
   const handleVisibilityChange = (value: MessageChannelVisibility) => {
-    updateOneRecord({
-      objectNameSingular: CoreObjectNameSingular.MessageChannel,
-      idToUpdate: messageChannel.id,
-      updateOneRecordInput: {
-        visibility: value,
-      },
-    });
+    updateChannel({ visibility: value });
   };
 
   const handleContactAutoCreationChange = (
     value: MessageChannelContactAutoCreationPolicy,
   ) => {
-    updateOneRecord({
-      objectNameSingular: CoreObjectNameSingular.MessageChannel,
-      idToUpdate: messageChannel.id,
-      updateOneRecordInput: {
-        contactAutoCreationPolicy: value,
-      },
-    });
+    updateChannel({ contactAutoCreationPolicy: value });
   };
 
   const handleIsGroupEmailExcludedToggle = (value: boolean) => {
-    updateOneRecord({
-      objectNameSingular: CoreObjectNameSingular.MessageChannel,
-      idToUpdate: messageChannel.id,
-      updateOneRecordInput: {
-        excludeGroupEmails: value,
-      },
-    });
+    updateChannel({ excludeGroupEmails: value });
   };
 
   const handleIsNonProfessionalEmailExcludedToggle = (value: boolean) => {
-    updateOneRecord({
-      objectNameSingular: CoreObjectNameSingular.MessageChannel,
-      idToUpdate: messageChannel.id,
-      updateOneRecordInput: {
-        excludeNonProfessionalEmails: value,
-      },
-    });
+    updateChannel({ excludeNonProfessionalEmails: value });
   };
 
   const handleMessageFolderImportPolicyChange = (
     value: MessageFolderImportPolicy,
   ) => {
-    updateOneRecord({
-      objectNameSingular: CoreObjectNameSingular.MessageChannel,
-      idToUpdate: messageChannel.id,
-      updateOneRecordInput: { messageFolderImportPolicy: value },
-    });
+    updateChannel({ messageFolderImportPolicy: value });
   };
 
   return (

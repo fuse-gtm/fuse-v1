@@ -6,7 +6,7 @@ import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
 import { type QueryRunner } from 'typeorm';
 
 import { BillingService } from 'src/engine/core-modules/billing/services/billing.service';
-import { FeatureFlagKey } from 'src/engine/core-modules/feature-flag/enums/feature-flag-key.enum';
+import { FeatureFlagKey } from 'twenty-shared/types';
 import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
 import { OnboardingStatus } from 'src/engine/core-modules/onboarding/enums/onboarding-status.enum';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';

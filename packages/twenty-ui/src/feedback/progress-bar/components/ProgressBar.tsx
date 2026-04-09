@@ -37,6 +37,8 @@ const StyledBarFilling = styled.div<{
   width: 100%;
 `;
 
+const MIN_BAR_WIDTH_PX = 12;
+
 export const ProgressBar = ({
   value,
   className,
@@ -52,7 +54,10 @@ export const ProgressBar = ({
     aria-valuenow={Math.ceil(value)}
   >
     <motion.div
-      style={{ height: '100%' }}
+      style={{
+        height: '100%',
+        minWidth: value > 0 ? MIN_BAR_WIDTH_PX : 0,
+      }}
       animate={{ width: `${Math.ceil(value)}%` }}
       transition={{ duration: 0.3, ease: 'linear' }}
     >

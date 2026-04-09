@@ -6,12 +6,8 @@ import {
   TooltipPosition,
   type IconComponent,
 } from '@ui/display';
-import {
-  ICON_SIZES,
-  ICON_STROKES,
-  themeCssVariables,
-} from '@ui/theme-constants';
-import { type ReactNode } from 'react';
+import { ThemeContext, themeCssVariables } from '@ui/theme-constants';
+import { useContext } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 const StyledMenuPicker = styled.button<{
@@ -110,7 +106,7 @@ const StyledLabel = styled.div<{
 `;
 
 export type MenuPickerProps = {
-  id?: string;
+  id: string;
   className?: string;
   disabled?: boolean;
   icon: IconComponent;
@@ -125,6 +121,7 @@ export type MenuPickerProps = {
 };
 
 export const MenuPicker = ({
+  id,
   icon: Icon,
   label,
   selected = false,
@@ -137,42 +134,43 @@ export const MenuPicker = ({
   tooltipDelay = TooltipDelay.noDelay,
   tooltipOffset = 5,
 }: MenuPickerProps) => {
-  const button: ReactNode = (
-    <StyledMenuPicker
-      selected={selected}
-      disabled={disabled}
-      onClick={onClick}
-      className={className}
-      data-testid={testId}
-      aria-pressed={selected}
-      aria-disabled={disabled}
-      aria-label={label}
-    >
-      <StyledIconContainer>
-        <Icon size={ICON_SIZES.md} stroke={ICON_STROKES.sm} />
-      </StyledIconContainer>
+  const { theme } = useContext(ThemeContext);
 
-      {isDefined(label) && showLabel && (
-        <StyledLabel selected={selected} disabled={disabled}>
-          {label}
-        </StyledLabel>
-      )}
-    </StyledMenuPicker>
-  );
-
-  if (isNonEmptyString(tooltipContent)) {
-    return (
-      <AppTooltip
-        offset={tooltipOffset}
-        content={tooltipContent}
-        place={TooltipPosition.Bottom}
-        delay={tooltipDelay}
-        noArrow
+  return (
+    <>
+      <StyledMenuPicker
+        id={id}
+        selected={selected}
+        disabled={disabled}
+        onClick={onClick}
+        className={className}
+        data-testid={testId}
+        aria-pressed={selected}
+        aria-disabled={disabled}
+        aria-label={label}
       >
-        {button}
-      </AppTooltip>
-    );
-  }
+        <StyledIconContainer>
+          <Icon size={theme.icon.size.md} stroke={theme.icon.stroke.sm} />
+        </StyledIconContainer>
 
-  return button;
+        {isDefined(label) && showLabel && (
+          <StyledLabel selected={selected} disabled={disabled}>
+            {label}
+          </StyledLabel>
+        )}
+      </StyledMenuPicker>
+
+      {isNonEmptyString(tooltipContent) && (
+        <AppTooltip
+          anchorSelect={`#${id}`}
+          offset={tooltipOffset}
+          content={tooltipContent}
+          place={TooltipPosition.Bottom}
+          positionStrategy="fixed"
+          delay={tooltipDelay}
+          noArrow
+        />
+      )}
+    </>
+  );
 };

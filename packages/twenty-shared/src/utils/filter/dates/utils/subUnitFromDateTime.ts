@@ -1,4 +1,4 @@
-import { type RelativeDateFilterUnit } from '@/utils/filter/dates/utils/relativeDateFilterUnitSchema';
+import { type RelativeDateFilterUnit } from './relativeDateFilterUnitSchema';
 import {
   subDays,
   subHours,
@@ -27,6 +27,8 @@ export const subUnitFromDateTime = (
       return subWeeks(dateTime, amount);
     case 'MONTH':
       return subMonths(dateTime, amount);
+    case 'QUARTER':
+      return subMonths(dateTime, amount * 3);
     case 'YEAR':
       return subYears(dateTime, amount);
   }

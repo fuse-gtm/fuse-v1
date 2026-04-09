@@ -6,7 +6,7 @@ import { useSetNextOnboardingStatus } from '@/onboarding/hooks/useSetNextOnboard
 import { PageFocusId } from '@/types/PageFocusId';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { TextInput } from '@/ui/input/components/TextInput';
-import { Modal } from '@/ui/layout/modal/components/Modal';
+import { ModalContent } from 'twenty-ui/layout';
 import { useHotkeysOnFocusedElement } from '@/ui/utilities/hotkey/hooks/useHotkeysOnFocusedElement';
 import { styled } from '@linaria/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,10 +32,10 @@ import { useCreateWorkspaceInvitation } from '@/workspace-invitation/hooks/useCr
 const StyledAnimatedContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: ${themeCssVariables.spacing[8]} 0;
   gap: ${themeCssVariables.spacing[4]};
-  overflow-y: scroll;
   overflow-x: hidden;
+  overflow-y: scroll;
+  padding: ${themeCssVariables.spacing[8]} 0;
   width: 100%;
 `;
 
@@ -131,16 +131,12 @@ export const InviteTeam = () => {
         ),
       );
 
-      if (emails.length === 0) {
-        setNextOnboardingStatus();
-        return;
-      }
-
       const result = await sendInvitation({ emails });
 
-      if (isDefined(result.errors)) {
-        throw result.errors;
+      if (isDefined(result.error)) {
+        throw result.error;
       }
+
       if (emails.length > 0) {
         enqueueSuccessSnackBar({
           message: t`Invite link sent to email addresses`,
@@ -169,7 +165,7 @@ export const InviteTeam = () => {
   });
 
   return (
-    <Modal.Content isVerticalCentered isHorizontalCentered>
+    <ModalContent isVerticallyCentered isHorizontallyCentered>
       <Title>
         <Trans>Invite your team</Trans>
       </Title>
@@ -229,6 +225,6 @@ export const InviteTeam = () => {
           <Trans>Skip</Trans>
         </ClickToActionLink>
       </StyledActionSkipLinkContainer>
-    </Modal.Content>
+    </ModalContent>
   );
 };

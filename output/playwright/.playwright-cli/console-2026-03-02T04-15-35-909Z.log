@@ -1,0 +1,87 @@
+[    1744ms] [WARNING] Uncompiled message detected! Message:
+
+> 1oqxe6
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[    1803ms] [WARNING] Uncompiled message detected! Message:
+
+> cgevMo
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[    1805ms] [WARNING] Uncompiled message detected! Message:
+
+> PnMGfO
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[   41097ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[   41236ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[  121519ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[  121575ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[  128670ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://twenty-icons.com/cloudsoftwaregroup.com:0
+[  128672ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://twenty-icons.com/cadence.com:0
+[  128680ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://twenty-icons.com/seal-software.com:0
+[  128688ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://twenty-icons.com/ptc.co:0
+[  131025ms] [WARNING] An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.13.8%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22companies%22%2C%22Query%22%2C%22either%20ensure%20all%20objects%20of%20type%20CompanyConnection%20have%20an%20ID%20or%20a%20custom%20merge%20function%2C%20or%20%22%2C%22Query.companies%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22CompanyConnection%5C%22%2C%5Cn%20%20%5C%22totalCount%5C%22%3A%20599%5Cn%7D%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22CompanyConnection%5C%22%2C%5Cn%20%20%5C%22maxEmployees%5C%22%3A%20284571%5Cn%7D%22%5D%7D @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:146
+[  201644ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[  201702ms] [WARNING] Uncompiled message detected! Message:
+
+> Open command menu
+
+That means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.
+ICU features such as interpolation and plurals will not work properly for that message. 
+
+Please compile your catalog first. 
+ @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:138
+[  205237ms] [WARNING] An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.13.8%22%2C%22message%22%3A15%2C%22args%22%3A%5B%22people%22%2C%22Query%22%2C%22either%20ensure%20all%20objects%20of%20type%20PersonConnection%20have%20an%20ID%20or%20a%20custom%20merge%20function%2C%20or%20%22%2C%22Query.people%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22PersonConnection%5C%22%2C%5Cn%20%20%5C%22totalCount%5C%22%3A%201200%5Cn%7D%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22PersonConnection%5C%22%2C%5Cn%20%20%5C%22minCreatedAt%5C%22%3A%20%5C%222026-03-01T02%3A46%3A00.566Z%5C%22%5Cn%7D%22%5D%7D @ http://apple.localhost:3000/assets/index-BGNJDq6n.js:146

@@ -13,7 +13,7 @@ import { useCalendarEvents } from '@/activities/calendar/hooks/useCalendarEvents
 import { CustomResolverFetchMoreLoader } from '@/activities/components/CustomResolverFetchMoreLoader';
 import { SkeletonLoader } from '@/activities/components/SkeletonLoader';
 import { useCustomResolver } from '@/activities/hooks/useCustomResolver';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { useTargetRecord } from '@/ui/layout/contexts/useTargetRecord';
 import { H3Title } from 'twenty-ui/display';
 import {
@@ -34,9 +34,9 @@ const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[8]};
+  overflow: scroll;
   padding: ${themeCssVariables.spacing[6]};
   width: 100%;
-  overflow: scroll;
 `;
 
 const StyledYear = styled.span`
@@ -108,7 +108,7 @@ export const CalendarEventsCard = () => {
     // TODO: change animated placeholder
     return (
       <AnimatedPlaceholderEmptyContainer
-        // eslint-disable-next-line react/jsx-props-no-spreading
+        // oxlint-disable-next-line react/jsx-props-no-spreading
         {...EMPTY_PLACEHOLDER_TRANSITION_PROPS}
       >
         <AnimatedPlaceholder type="noMatchRecord" />

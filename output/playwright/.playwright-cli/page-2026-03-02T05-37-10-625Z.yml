@@ -1,0 +1,154 @@
+- generic [ref=e43]:
+  - generic [ref=e45]:
+    - link "Exit Settings" [ref=e47] [cursor=pointer]:
+      - /url: /
+      - button "Exit Settings" [ref=e48]:
+        - img [ref=e49]
+        - generic [ref=e52]: Exit Settings
+    - generic [ref=e55]:
+      - generic [ref=e57]:
+        - generic [ref=e60]: User
+        - link "Profile" [ref=e62] [cursor=pointer]:
+          - /url: /settings/profile
+          - generic [ref=e63]:
+            - img [ref=e65]
+            - generic [ref=e70]: Profile
+        - link "Experience" [ref=e72] [cursor=pointer]:
+          - /url: /settings/experience
+          - generic [ref=e73]:
+            - img [ref=e75]
+            - generic [ref=e80]: Experience
+        - generic [ref=e81]:
+          - link "Accounts" [ref=e83] [cursor=pointer]:
+            - /url: /settings/accounts
+            - generic [ref=e84]:
+              - img [ref=e86]
+              - generic [ref=e90]: Accounts
+          - link "Emails" [ref=e92] [cursor=pointer]:
+            - /url: /settings/accounts/emails
+            - generic [ref=e93]:
+              - img [ref=e99]
+              - generic [ref=e103]: Emails
+          - link "Calendars" [ref=e105] [cursor=pointer]:
+            - /url: /settings/accounts/calendars
+            - generic [ref=e106]:
+              - img [ref=e111]
+              - generic [ref=e115]: Calendars
+      - generic [ref=e117]:
+        - generic [ref=e120]: Workspace
+        - link "General" [ref=e122] [cursor=pointer]:
+          - /url: /settings/general
+          - generic [ref=e123]:
+            - img [ref=e125]
+            - generic [ref=e129]: General
+        - link "Data model" [ref=e131] [cursor=pointer]:
+          - /url: /settings/objects
+          - generic [ref=e132]:
+            - img [ref=e134]
+            - generic [ref=e140]: Data model
+        - link "Members" [ref=e142] [cursor=pointer]:
+          - /url: /settings/members
+          - generic [ref=e143]:
+            - img [ref=e145]
+            - generic [ref=e151]: Members
+        - link "Roles" [ref=e153] [cursor=pointer]:
+          - /url: /settings/roles
+          - generic [ref=e154]:
+            - img [ref=e156]
+            - generic [ref=e161]: Roles
+        - link "Domains" [ref=e163] [cursor=pointer]:
+          - /url: /settings/domains
+          - generic [ref=e164]:
+            - img [ref=e166]
+            - generic [ref=e171]: Domains
+        - link "APIs & Webhooks" [ref=e173] [cursor=pointer]:
+          - /url: /settings/api-webhooks
+          - generic [ref=e174]:
+            - img [ref=e176]
+            - generic [ref=e180]: APIs & Webhooks
+      - generic [ref=e182]:
+        - generic [ref=e185]: Other
+        - link "Admin Panel" [ref=e187] [cursor=pointer]:
+          - /url: /settings/admin-panel
+          - generic [ref=e188]:
+            - img [ref=e190]
+            - generic [ref=e194]: Admin Panel
+        - link "Updates" [ref=e196] [cursor=pointer]:
+          - /url: /settings/updates
+          - generic [ref=e197]:
+            - img [ref=e199]
+            - generic [ref=e204]: Updates
+        - button "Documentation" [ref=e206] [cursor=pointer]:
+          - generic [ref=e207]:
+            - img [ref=e209]
+            - generic [ref=e213]: Documentation
+        - button "Logout" [ref=e215] [cursor=pointer]:
+          - generic [ref=e216]:
+            - img [ref=e218]
+            - generic [ref=e222]: Logout
+    - generic [ref=e226]:
+      - img [ref=e228]
+      - generic [ref=e230] [cursor=pointer]:
+        - generic [ref=e231]: "Advanced:"
+        - checkbox "Advanced:" [ref=e233]
+  - generic [ref=e236]:
+    - navigation [ref=e241]:
+      - link "Other" [ref=e242] [cursor=pointer]:
+        - /url: /settings/admin-panel
+      - generic [ref=e243]: /
+      - generic "Admin Panel" [ref=e244]
+    - generic [ref=e247]:
+      - heading "Admin Panel" [level=3] [ref=e248]
+      - generic [ref=e250]:
+        - generic [ref=e253]:
+          - link "General" [ref=e254] [cursor=pointer]:
+            - /url: /settings/admin-panel#general
+            - generic [ref=e255]:
+              - img [ref=e256]
+              - text: General
+          - link "AI" [ref=e259] [cursor=pointer]:
+            - /url: /settings/admin-panel#ai
+            - generic [ref=e260]:
+              - img [ref=e261]
+              - text: AI
+          - link "Config" [ref=e263] [cursor=pointer]:
+            - /url: /settings/admin-panel#config-variables
+            - generic [ref=e264]:
+              - img [ref=e265]
+              - text: Config
+          - link "Health" [ref=e268] [cursor=pointer]:
+            - /url: /settings/admin-panel#health-status
+            - generic [ref=e269]:
+              - img [ref=e270]
+              - text: Health
+        - generic [ref=e272]:
+          - generic [ref=e273]:
+            - heading "About" [level=2] [ref=e275]
+            - heading "Version of the application" [level=3] [ref=e276]:
+              - generic [ref=e277]: Version of the application
+          - generic [ref=e280]:
+            - generic [ref=e281]:
+              - generic [ref=e282]:
+                - img [ref=e283]
+                - generic [ref=e286]: Current version
+              - generic [ref=e288]: Unknown
+            - generic [ref=e289]:
+              - generic [ref=e290]:
+                - img [ref=e291]
+                - generic [ref=e296]: Latest version
+              - link "v1.18.1" [ref=e298] [cursor=pointer]:
+                - /url: https://hub.docker.com/r/twentycrm/twenty/tags?name=v1.18.1
+        - generic [ref=e299]:
+          - generic [ref=e300]:
+            - heading "User Impersonation" [level=2] [ref=e302]
+            - heading "Look up users to impersonate them." [level=3] [ref=e303]:
+              - generic [ref=e304]: Look up users to impersonate them.
+          - generic [ref=e305]:
+            - textbox "Enter user ID or email address" [ref=e308]
+            - button "Search ..." [disabled] [ref=e311]:
+              - generic:
+                - generic:
+                  - img
+              - generic [ref=e312]:
+                - generic [ref=e313]: Search
+                - generic [ref=e314]: ...

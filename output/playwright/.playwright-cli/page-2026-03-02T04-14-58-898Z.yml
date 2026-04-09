@@ -1,0 +1,509 @@
+- generic [ref=e1570]:
+  - generic [ref=e1572]:
+    - generic [ref=e1573]:
+      - button "Y YCombinator" [ref=e1574]:
+        - generic [ref=e1575] [cursor=pointer]:
+          - generic [ref=e1577]: "Y"
+          - generic [ref=e1579]: YCombinator
+          - img [ref=e1581]
+      - generic [ref=e1583]:
+        - button "Search" [ref=e1584] [cursor=pointer]:
+          - img [ref=e1585]
+        - button [ref=e1589] [cursor=pointer]:
+          - img [ref=e1590]
+    - generic [ref=e1596]:
+      - tablist "Navigation tabs" [ref=e1598]:
+        - tab "Home" [selected] [ref=e1599] [cursor=pointer]:
+          - img [ref=e1601]
+        - tab "Chat" [ref=e1605] [cursor=pointer]:
+          - img [ref=e1607]
+      - button "New chat" [ref=e1610] [cursor=pointer]:
+        - img [ref=e1611]
+        - text: New chat
+    - generic [ref=e1616]:
+      - generic [ref=e1618]:
+        - generic [ref=e1620]:
+          - generic [ref=e1622]: Workspace
+          - button [ref=e1625] [cursor=pointer]:
+            - img [ref=e1626]
+        - generic [ref=e1628]:
+          - link "Companies" [ref=e1632] [cursor=pointer]:
+            - /url: /objects/companies?viewId=3aee668e-3d15-495c-b9c9-ad8540c0dd1b
+            - generic [ref=e1633]:
+              - img [ref=e1636]
+              - generic [ref=e1640]: Companies
+          - link "People" [ref=e1644] [cursor=pointer]:
+            - /url: /objects/people?viewId=7ec9d238-93f1-403d-b9c2-b07da3aa12eb
+            - generic [ref=e1645]:
+              - img [ref=e1648]
+              - generic [ref=e1652]: People
+          - link "Opportunities" [ref=e1656] [cursor=pointer]:
+            - /url: /objects/opportunities?viewId=a92eca08-d9e4-4265-908f-c41c2db0fd36
+            - generic [ref=e1657]:
+              - img [ref=e1660]
+              - generic [ref=e1667]: Opportunities
+          - link "Tasks" [ref=e1671] [cursor=pointer]:
+            - /url: /objects/tasks?viewId=c66057c3-8cdb-4de0-80cd-bed2f012bbbf
+            - generic [ref=e1672]:
+              - img [ref=e1675]
+              - generic [ref=e1679]: Tasks
+          - link "Notes" [ref=e1683] [cursor=pointer]:
+            - /url: /objects/notes?viewId=334266eb-42c4-4a8d-b244-7f15b7847a24
+            - generic [ref=e1684]:
+              - img [ref=e1687]
+              - generic [ref=e1690]: Notes
+          - link "Dashboards" [ref=e1694] [cursor=pointer]:
+            - /url: /objects/dashboards?viewId=a30af32d-c69d-47fb-a987-95628e3b17e3
+            - generic [ref=e1695]:
+              - img [ref=e1698]
+              - generic [ref=e1704]: Dashboards
+          - button "Workflows" [ref=e1712] [cursor=pointer]:
+            - generic [ref=e1713]:
+              - img [ref=e1716]
+              - generic [ref=e1720]: Workflows
+              - img [ref=e1722]
+          - link "Survey results" [ref=e1727] [cursor=pointer]:
+            - /url: /objects/surveyResults?viewId=535c0ef2-7e85-4b11-bb0c-bac1b5f5c6c0
+            - generic [ref=e1728]:
+              - img [ref=e1731]
+              - generic [ref=e1734]: Survey results
+          - link "Leads" [ref=e1738] [cursor=pointer]:
+            - /url: /objects/leads?viewId=fe0b320f-afaa-4522-83ec-219e719ff190
+            - generic [ref=e1739]:
+              - img [ref=e1742]
+              - generic [ref=e1746]: Leads
+          - link "Partner Profiles" [ref=e1750] [cursor=pointer]:
+            - /url: /objects/partnerProfiles?viewId=dfc9ec55-d5db-47ae-87fd-ad9da17a5376
+            - generic [ref=e1751]:
+              - img [ref=e1754]
+              - generic [ref=e1759]: Partner Profiles
+          - link "Partner Contact Assignments" [ref=e1763] [cursor=pointer]:
+            - /url: /objects/partnerContactAssignments?viewId=d0acf54a-1d85-47c0-9af1-8429b595cb15
+            - generic [ref=e1764]:
+              - img [ref=e1767]
+              - generic [ref=e1772]: Partner Contact Assignments
+          - link "Partner Customer Maps" [ref=e1776] [cursor=pointer]:
+            - /url: /objects/partnerCustomerMaps?viewId=dd6837eb-3225-4689-8304-39ef2bcf4dc2
+            - generic [ref=e1777]:
+              - img [ref=e1780]
+              - generic [ref=e1785]: Partner Customer Maps
+          - link "Partner Attribution Events" [ref=e1789] [cursor=pointer]:
+            - /url: /objects/partnerAttributionEvents?viewId=ed6c21cd-1653-4e79-a8f3-85edbd83b84e
+            - generic [ref=e1790]:
+              - img [ref=e1793]
+              - generic [ref=e1797]: Partner Attribution Events
+          - link "Partner Attribution Snapshots" [ref=e1801] [cursor=pointer]:
+            - /url: /objects/partnerAttributionSnapshots?viewId=69ffa5ce-2785-4823-b200-33df24916e25
+            - generic [ref=e1802]:
+              - img [ref=e1805]
+              - generic [ref=e1809]: Partner Attribution Snapshots
+          - link "Customer Events" [ref=e1813] [cursor=pointer]:
+            - /url: /objects/customerEvents?viewId=f21df60c-8ce0-4185-a081-e06415871b16
+            - generic [ref=e1814]:
+              - img [ref=e1817]
+              - generic [ref=e1821]: Customer Events
+          - link "Customer Snapshots" [ref=e1825] [cursor=pointer]:
+            - /url: /objects/customerSnapshots?viewId=c789855c-7c26-4da9-be27-b7931a64f34d
+            - generic [ref=e1826]:
+              - img [ref=e1829]
+              - generic [ref=e1833]: Customer Snapshots
+          - link "Partner Plays" [ref=e1837] [cursor=pointer]:
+            - /url: /objects/partnerPlays?viewId=5340321f-65d1-4b71-aad3-05a32d18eb79
+            - generic [ref=e1838]:
+              - img [ref=e1841]
+              - generic [ref=e1845]: Partner Plays
+          - link "Play Checks" [ref=e1849] [cursor=pointer]:
+            - /url: /objects/playChecks?viewId=12e021e7-2ab6-4edd-8b04-7f47baa57df7
+            - generic [ref=e1850]:
+              - img [ref=e1853]
+              - generic [ref=e1857]: Play Checks
+          - link "Play Enrichments" [ref=e1861] [cursor=pointer]:
+            - /url: /objects/playEnrichments?viewId=b58be9c0-cb0a-4aff-91a1-ce6145cd975b
+            - generic [ref=e1862]:
+              - img [ref=e1865]
+              - generic [ref=e1868]: Play Enrichments
+          - link "Play Exclusions" [ref=e1872] [cursor=pointer]:
+            - /url: /objects/playExclusions?viewId=36ee349c-ea48-474d-8bcd-f087de98e1ad
+            - generic [ref=e1873]:
+              - img [ref=e1876]
+              - generic [ref=e1881]: Play Exclusions
+          - link "Discovery Runs" [ref=e1885] [cursor=pointer]:
+            - /url: /objects/discoveryRuns?viewId=b310e6cd-e6ad-4a62-887f-891310c2ec21
+            - generic [ref=e1886]:
+              - img [ref=e1889]
+              - generic [ref=e1892]: Discovery Runs
+          - link "Partner Candidates" [ref=e1896] [cursor=pointer]:
+            - /url: /objects/partnerCandidates?viewId=53d09177-d8aa-43ef-b408-c9bc2b9e7e91
+            - generic [ref=e1897]:
+              - img [ref=e1900]
+              - generic [ref=e1904]: Partner Candidates
+          - button "Check Evaluations" [ref=e1908] [cursor=pointer]:
+            - generic [ref=e1909]:
+              - img [ref=e1912]
+              - generic [ref=e1916]: Check Evaluations
+          - link "Enrichment Evaluations" [ref=e1920] [cursor=pointer]:
+            - /url: /objects/enrichmentEvaluations?viewId=b95ae194-5003-496d-86e2-7a9f19683c9e
+            - generic [ref=e1921]:
+              - img [ref=e1924]
+              - generic [ref=e1927]: Enrichment Evaluations
+      - generic [ref=e1929]:
+        - generic [ref=e1933]: Other
+        - button "Settings" [ref=e1935] [cursor=pointer]:
+          - generic [ref=e1936]:
+            - img [ref=e1938]
+            - generic [ref=e1942]: Settings
+        - link "Documentation" [ref=e1944] [cursor=pointer]:
+          - /url: https://docs.twenty.com/user-guide/introduction
+          - generic [ref=e1945]:
+            - img [ref=e1947]
+            - generic [ref=e1951]: Documentation
+  - generic [ref=e1954]:
+    - generic [ref=e1955]:
+      - generic [ref=e1957]:
+        - img [ref=e1960]
+        - generic [ref=e1964]: Check Evaluations
+      - generic [ref=e1965]:
+        - button "Create new record" [ref=e1968] [cursor=pointer]:
+          - generic:
+            - generic:
+              - img
+          - generic [ref=e1969]:
+            - generic [ref=e1970]: New record
+            - generic [ref=e1971]: ...
+        - button "Open command menu" [ref=e1974] [cursor=pointer]:
+          - img [ref=e1976]
+          - generic [ref=e1986]: ⌘K
+    - generic [ref=e1987]:
+      - generic [ref=e1992]:
+        - generic [ref=e1994]:
+          - button "All Check Evaluations · 0" [ref=e1996]:
+            - generic [ref=e1997] [cursor=pointer]:
+              - img [ref=e1999]
+              - generic [ref=e2001]: All Check Evaluations
+              - generic [ref=e2002]:
+                - text: · 0
+                - img [ref=e2003]
+          - generic [ref=e2005]:
+            - button "Filter" [ref=e2006]:
+              - button "Filter" [ref=e2007] [cursor=pointer]
+            - button "Sort" [ref=e2008]:
+              - button "Sort" [ref=e2009] [cursor=pointer]
+            - button "Options" [ref=e2010]:
+              - button "Options" [ref=e2011] [cursor=pointer]
+        - generic [ref=e2014]:
+          - checkbox [ref=e2019] [cursor=pointer]
+          - generic [ref=e2021] [cursor=pointer]:
+            - button "Name" [ref=e2022]:
+              - generic [ref=e2023]:
+                - img [ref=e2025]
+                - generic [ref=e2029]: Name
+            - separator [ref=e2030]
+          - generic [ref=e2031] [cursor=pointer]:
+            - separator [ref=e2032]
+            - button "Creation date" [ref=e2033]:
+              - generic [ref=e2034]:
+                - img [ref=e2036]
+                - generic [ref=e2038]: Creation date
+            - separator [ref=e2039]
+          - generic [ref=e2040] [cursor=pointer]:
+            - separator [ref=e2041]
+            - button "Created by" [ref=e2042]:
+              - generic [ref=e2043]:
+                - img [ref=e2045]
+                - generic [ref=e2049]: Created by
+            - separator [ref=e2050]
+          - generic [ref=e2051] [cursor=pointer]:
+            - separator [ref=e2052]
+            - button "Last update" [ref=e2053]:
+              - generic [ref=e2054]:
+                - img [ref=e2056]
+                - generic [ref=e2060]: Last update
+            - separator [ref=e2061]
+          - generic [ref=e2062] [cursor=pointer]:
+            - separator [ref=e2063]
+            - button "Updated by" [ref=e2064]:
+              - generic [ref=e2065]:
+                - img [ref=e2067]
+                - generic [ref=e2071]: Updated by
+            - separator [ref=e2072]
+          - generic [ref=e2073] [cursor=pointer]:
+            - separator [ref=e2074]
+            - button "Timeline Activities" [ref=e2075]:
+              - generic [ref=e2076]:
+                - img [ref=e2078]
+                - generic [ref=e2081]: Timeline Activities
+            - separator [ref=e2082]
+          - generic [ref=e2083] [cursor=pointer]:
+            - separator [ref=e2084]
+            - button "Favorites" [ref=e2085]:
+              - generic [ref=e2086]:
+                - img [ref=e2088]
+                - generic [ref=e2091]: Favorites
+            - separator [ref=e2092]
+          - generic [ref=e2093] [cursor=pointer]:
+            - separator [ref=e2094]
+            - button "Attachments" [ref=e2095]:
+              - generic [ref=e2096]:
+                - img [ref=e2098]
+                - generic [ref=e2101]: Attachments
+            - separator [ref=e2102]
+          - generic [ref=e2103] [cursor=pointer]:
+            - separator [ref=e2104]
+            - button "Note Targets" [ref=e2105]:
+              - generic [ref=e2106]:
+                - img [ref=e2108]
+                - generic [ref=e2111]: Note Targets
+            - separator [ref=e2112]
+          - generic [ref=e2113] [cursor=pointer]:
+            - separator [ref=e2114]
+            - button "Task Targets" [ref=e2115]:
+              - generic [ref=e2116]:
+                - img [ref=e2118]
+                - generic [ref=e2121]: Task Targets
+            - separator [ref=e2122]
+          - generic [ref=e2123] [cursor=pointer]:
+            - separator [ref=e2124]
+            - button [ref=e2126]:
+              - img [ref=e2128]
+          - generic [ref=e2129]:
+            - generic [ref=e2130]:
+              - img [ref=e2134]
+              - checkbox [ref=e2141] [cursor=pointer]
+            - generic [ref=e2164]:
+              - img [ref=e2168]
+              - checkbox [ref=e2175] [cursor=pointer]
+            - generic [ref=e2198]:
+              - img [ref=e2202]
+              - checkbox [ref=e2209] [cursor=pointer]
+            - generic [ref=e2232]:
+              - img [ref=e2236]
+              - checkbox [ref=e2243] [cursor=pointer]
+            - generic [ref=e2266]:
+              - img [ref=e2270]
+              - checkbox [ref=e2277] [cursor=pointer]
+            - generic [ref=e2300]:
+              - img [ref=e2304]
+              - checkbox [ref=e2311] [cursor=pointer]
+            - generic [ref=e2334]:
+              - img [ref=e2338]
+              - checkbox [ref=e2345] [cursor=pointer]
+            - generic [ref=e2368]:
+              - img [ref=e2372]
+              - checkbox [ref=e2379] [cursor=pointer]
+            - generic [ref=e2402]:
+              - img [ref=e2406]
+              - checkbox [ref=e2413] [cursor=pointer]
+            - generic [ref=e2436]:
+              - img [ref=e2440]
+              - checkbox [ref=e2447] [cursor=pointer]
+            - generic [ref=e2470]:
+              - img [ref=e2474]
+              - checkbox [ref=e2481] [cursor=pointer]
+            - generic [ref=e2504]:
+              - img [ref=e2508]
+              - checkbox [ref=e2515] [cursor=pointer]
+            - generic [ref=e2538]:
+              - img [ref=e2542]
+              - checkbox [ref=e2549] [cursor=pointer]
+            - generic [ref=e2572]:
+              - img [ref=e2576]
+              - checkbox [ref=e2583] [cursor=pointer]
+            - generic [ref=e2606]:
+              - img [ref=e2610]
+              - checkbox [ref=e2617] [cursor=pointer]
+            - generic [ref=e2640]:
+              - img [ref=e2644]
+              - checkbox [ref=e2651] [cursor=pointer]
+            - generic [ref=e2674]:
+              - img [ref=e2678]
+              - checkbox [ref=e2685] [cursor=pointer]
+            - generic [ref=e2708]:
+              - img [ref=e2712]
+              - checkbox [ref=e2719] [cursor=pointer]
+            - generic [ref=e2742]:
+              - img [ref=e2746]
+              - checkbox [ref=e2753] [cursor=pointer]
+            - generic [ref=e2776]:
+              - img [ref=e2780]
+              - checkbox [ref=e2787] [cursor=pointer]
+            - generic [ref=e2810]:
+              - img [ref=e2814]
+              - checkbox [ref=e2821] [cursor=pointer]
+            - generic [ref=e2844]:
+              - img [ref=e2848]
+              - checkbox [ref=e2855] [cursor=pointer]
+            - generic [ref=e2878]:
+              - img [ref=e2882]
+              - checkbox [ref=e2889] [cursor=pointer]
+            - generic [ref=e2912]:
+              - img [ref=e2916]
+              - checkbox [ref=e2923] [cursor=pointer]
+            - generic [ref=e2946]:
+              - img [ref=e2950]
+              - checkbox [ref=e2957] [cursor=pointer]
+            - generic [ref=e2980]:
+              - img [ref=e2984]
+              - checkbox [ref=e2991] [cursor=pointer]
+            - generic [ref=e3014]:
+              - img [ref=e3018]
+              - checkbox [ref=e3025] [cursor=pointer]
+            - generic [ref=e3048]:
+              - img [ref=e3052]
+              - checkbox [ref=e3059] [cursor=pointer]
+            - generic [ref=e3082]:
+              - img [ref=e3086]
+              - checkbox [ref=e3093] [cursor=pointer]
+            - generic [ref=e3116]:
+              - img [ref=e3120]
+              - checkbox [ref=e3127] [cursor=pointer]
+            - generic [ref=e3150]:
+              - img [ref=e3154]
+              - checkbox [ref=e3161] [cursor=pointer]
+            - generic [ref=e3184]:
+              - img [ref=e3188]
+              - checkbox [ref=e3195] [cursor=pointer]
+            - generic [ref=e3218]:
+              - img [ref=e3222]
+              - checkbox [ref=e3229] [cursor=pointer]
+            - generic [ref=e3252]:
+              - img [ref=e3256]
+              - checkbox [ref=e3263] [cursor=pointer]
+            - generic [ref=e3286]:
+              - img [ref=e3290]
+              - checkbox [ref=e3297] [cursor=pointer]
+            - generic [ref=e3320]:
+              - img [ref=e3324]
+              - checkbox [ref=e3331] [cursor=pointer]
+            - generic [ref=e3354]:
+              - img [ref=e3358]
+              - checkbox [ref=e3365] [cursor=pointer]
+            - generic [ref=e3388]:
+              - img [ref=e3392]
+              - checkbox [ref=e3399] [cursor=pointer]
+            - generic [ref=e3422]:
+              - img [ref=e3426]
+              - checkbox [ref=e3433] [cursor=pointer]
+            - generic [ref=e3456]:
+              - img [ref=e3460]
+              - checkbox [ref=e3467] [cursor=pointer]
+            - generic [ref=e3490]:
+              - img [ref=e3494]
+              - checkbox [ref=e3501] [cursor=pointer]
+            - generic [ref=e3524]:
+              - img [ref=e3528]
+              - checkbox [ref=e3535] [cursor=pointer]
+            - generic [ref=e3558]:
+              - img [ref=e3562]
+              - checkbox [ref=e3569] [cursor=pointer]
+            - generic [ref=e3592]:
+              - img [ref=e3596]
+              - checkbox [ref=e3603] [cursor=pointer]
+            - generic [ref=e3626]:
+              - img [ref=e3630]
+              - checkbox [ref=e3637] [cursor=pointer]
+            - generic [ref=e3660]:
+              - img [ref=e3664]
+              - checkbox [ref=e3671] [cursor=pointer]
+            - generic [ref=e3694]:
+              - img [ref=e3698]
+              - checkbox [ref=e3705] [cursor=pointer]
+            - generic [ref=e3728]:
+              - img [ref=e3732]
+              - checkbox [ref=e3739] [cursor=pointer]
+            - generic [ref=e3762]:
+              - img [ref=e3766]
+              - checkbox [ref=e3773] [cursor=pointer]
+            - generic [ref=e3796]:
+              - img [ref=e3800]
+              - checkbox [ref=e3807] [cursor=pointer]
+            - generic [ref=e3830]:
+              - img [ref=e3834]
+              - checkbox [ref=e3841] [cursor=pointer]
+            - generic [ref=e3864]:
+              - img [ref=e3868]
+              - checkbox [ref=e3875] [cursor=pointer]
+            - generic [ref=e3898]:
+              - img [ref=e3902]
+              - checkbox [ref=e3909] [cursor=pointer]
+            - generic [ref=e3932]:
+              - img [ref=e3936]
+              - checkbox [ref=e3943] [cursor=pointer]
+            - generic [ref=e3966]:
+              - img [ref=e3970]
+              - checkbox [ref=e3977] [cursor=pointer]
+            - generic [ref=e4000]:
+              - img [ref=e4004]
+              - checkbox [ref=e4011] [cursor=pointer]
+            - generic [ref=e4034]:
+              - img [ref=e4038]
+              - checkbox [ref=e4045] [cursor=pointer]
+            - generic [ref=e4068]:
+              - img [ref=e4072]
+              - checkbox [ref=e4079] [cursor=pointer]
+            - generic [ref=e4102]:
+              - img [ref=e4106]
+              - checkbox [ref=e4113] [cursor=pointer]
+            - generic [ref=e4136]:
+              - img [ref=e4140]
+              - checkbox [ref=e4147] [cursor=pointer]
+            - generic [ref=e4170]:
+              - img [ref=e4174]
+              - checkbox [ref=e4181] [cursor=pointer]
+            - generic [ref=e4204]:
+              - img [ref=e4208]
+              - checkbox [ref=e4215] [cursor=pointer]
+            - generic [ref=e4238]:
+              - img [ref=e4242]
+              - checkbox [ref=e4249] [cursor=pointer]
+            - generic [ref=e4272]:
+              - img [ref=e4276]
+              - checkbox [ref=e4283] [cursor=pointer]
+            - generic [ref=e4306]:
+              - img [ref=e4310]
+              - checkbox [ref=e4317] [cursor=pointer]
+            - generic [ref=e4340]:
+              - img [ref=e4344]
+              - checkbox [ref=e4351] [cursor=pointer]
+            - generic [ref=e4374]:
+              - img [ref=e4378]
+              - checkbox [ref=e4385] [cursor=pointer]
+            - generic [ref=e4408]:
+              - img [ref=e4412]
+              - checkbox [ref=e4419] [cursor=pointer]
+            - generic [ref=e4442]:
+              - img [ref=e4446]
+              - checkbox [ref=e4453] [cursor=pointer]
+            - generic [ref=e4476]:
+              - img [ref=e4480]
+              - checkbox [ref=e4487] [cursor=pointer]
+            - generic [ref=e4510]:
+              - img [ref=e4514]
+              - checkbox [ref=e4521] [cursor=pointer]
+            - generic [ref=e4544]:
+              - img [ref=e4548]
+              - checkbox [ref=e4555] [cursor=pointer]
+            - generic [ref=e4578]:
+              - img [ref=e4582]
+              - checkbox [ref=e4589] [cursor=pointer]
+            - generic [ref=e4612]:
+              - img [ref=e4616]
+              - checkbox [ref=e4623] [cursor=pointer]
+            - generic [ref=e4646]:
+              - img [ref=e4650]
+              - checkbox [ref=e4657] [cursor=pointer]
+            - generic [ref=e4680]:
+              - img [ref=e4684]
+              - checkbox [ref=e4691] [cursor=pointer]
+            - generic [ref=e4714]:
+              - img [ref=e4718]
+              - checkbox [ref=e4725] [cursor=pointer]
+            - generic [ref=e4748]:
+              - img [ref=e4752]
+              - checkbox [ref=e4759] [cursor=pointer]
+            - generic [ref=e4782]:
+              - img [ref=e4786]
+              - checkbox [ref=e4793] [cursor=pointer]
+            - generic [ref=e4816]:
+              - img [ref=e4820]
+              - checkbox [ref=e4827] [cursor=pointer]
+      - complementary [ref=e4850]

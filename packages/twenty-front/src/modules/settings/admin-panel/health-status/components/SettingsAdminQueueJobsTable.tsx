@@ -1,3 +1,4 @@
+import { SettingsEmptyPlaceholder } from '@/settings/components/SettingsEmptyPlaceholder';
 import { SettingsAdminDeleteJobsConfirmationModal } from '@/settings/admin-panel/health-status/components/SettingsAdminDeleteJobsConfirmationModal';
 import { SettingsAdminJobDetailsExpandable } from '@/settings/admin-panel/health-status/components/SettingsAdminJobDetailsExpandable';
 import { SettingsAdminJobStateBadge } from '@/settings/admin-panel/health-status/components/SettingsAdminJobStateBadge';
@@ -18,10 +19,11 @@ import { useState } from 'react';
 import { IconRefresh, IconTrash } from 'twenty-ui/display';
 import { Button, Checkbox } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { useQuery } from '@apollo/client/react';
 import {
   JobState,
   type QueueJob,
-  useGetQueueJobsQuery,
+  GetQueueJobsDocument,
 } from '~/generated-metadata/graphql';
 import { beautifyPastDateRelativeToNow } from '~/utils/date-utils';
 
@@ -46,12 +48,6 @@ const StyledControlsContainer = styled.div`
   display: flex;
   gap: ${themeCssVariables.spacing[2]};
   justify-content: space-between;
-`;
-
-const StyledEmptyState = styled.div`
-  color: ${themeCssVariables.font.color.tertiary};
-  padding: ${themeCssVariables.spacing[8]};
-  text-align: center;
 `;
 
 const StyledPaginationContainer = styled.div`
@@ -96,7 +92,7 @@ export const SettingsAdminQueueJobsTable = ({
 
   const offset = page * LIMIT;
 
-  const { data, loading, refetch } = useGetQueueJobsQuery({
+  const { data, loading, refetch } = useQuery(GetQueueJobsDocument, {
     variables: {
       queueName,
       state: stateFilter,
@@ -260,9 +256,9 @@ export const SettingsAdminQueueJobsTable = ({
       </StyledControlsContainer>
 
       {loading && jobs.length === 0 ? (
-        <StyledEmptyState>{t`Loading jobs...`}</StyledEmptyState>
+        <SettingsEmptyPlaceholder>{t`Loading jobs...`}</SettingsEmptyPlaceholder>
       ) : jobs.length === 0 ? (
-        <StyledEmptyState>{t`No jobs found`}</StyledEmptyState>
+        <SettingsEmptyPlaceholder>{t`No jobs found`}</SettingsEmptyPlaceholder>
       ) : (
         <>
           <Table>
@@ -382,12 +378,12 @@ export const SettingsAdminQueueJobsTable = ({
       )}
 
       <SettingsAdminRetryJobsConfirmationModal
-        modalId={RETRY_MODAL_ID}
+        modalInstanceId={RETRY_MODAL_ID}
         jobCount={selectedCount > 0 ? selectedCount : failedJobs.length}
         onConfirm={confirmRetrySelected}
       />
       <SettingsAdminDeleteJobsConfirmationModal
-        modalId={DELETE_MODAL_ID}
+        modalInstanceId={DELETE_MODAL_ID}
         jobCount={selectedCount}
         onConfirm={confirmDeleteSelected}
       />

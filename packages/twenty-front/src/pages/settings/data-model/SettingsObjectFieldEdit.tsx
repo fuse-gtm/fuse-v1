@@ -12,6 +12,7 @@ import { useUpdateOneFieldMetadataItem } from '@/object-metadata/hooks/useUpdate
 import { CoreObjectNamePlural } from '@/object-metadata/types/CoreObjectNamePlural';
 import { formatFieldMetadataItemInput } from '@/object-metadata/utils/formatFieldMetadataItemInput';
 import { isLabelIdentifierField } from '@/object-metadata/utils/isLabelIdentifierField';
+import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
 import { isObjectMetadataReadOnly } from '@/object-record/read-only/utils/isObjectMetadataReadOnly';
 import { SaveAndCancelButtons } from '@/settings/components/SaveAndCancelButtons/SaveAndCancelButtons';
 import { SettingsPageContainer } from '@/settings/components/SettingsPageContainer';
@@ -28,6 +29,7 @@ import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBa
 import { navigationMemorizedUrlState } from '@/ui/navigation/states/navigationMemorizedUrlState';
 import { shouldNavigateBackToMemorizedUrlOnSaveState } from '@/ui/navigation/states/shouldNavigateBackToMemorizedUrlOnSaveState';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { AppPath, SettingsPath } from 'twenty-shared/types';
@@ -85,9 +87,12 @@ export const SettingsObjectFieldEdit = () => {
   const objectMetadataItem =
     findObjectMetadataItemByNamePlural(objectNamePlural);
 
-  const readonly = isObjectMetadataReadOnly({
-    objectMetadataItem,
-  });
+  const isDDLLocked = useAtomStateValue(isDDLLockedState);
+
+  const readonly =
+    isObjectMetadataReadOnly({
+      objectMetadataItem,
+    }) || isDDLLocked;
 
   const {
     deactivateMetadataField,
@@ -285,7 +290,6 @@ export const SettingsObjectFieldEdit = () => {
 
     const deleteResult = await deleteMetadataField({
       idToDelete: fieldMetadataItem.id,
-      objectMetadataId: objectMetadataItem.id,
     });
 
     if (deleteResult.status === 'successful') {
@@ -305,7 +309,7 @@ export const SettingsObjectFieldEdit = () => {
 
   return (
     <>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+      {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
       <FormProvider {...formConfig}>
         <SubMenuTopBarContainer
           title={fieldMetadataItem?.label}
@@ -429,7 +433,7 @@ export const SettingsObjectFieldEdit = () => {
       </FormProvider>
       {fieldMetadataItem?.isCustom && (
         <ConfirmationModal
-          modalId={DELETE_FIELD_MODAL_ID}
+          modalInstanceId={DELETE_FIELD_MODAL_ID}
           title={t`Delete ${fieldLabel} field?`}
           subtitle={t`This will permanently delete the field and all its data from ${objectLabel}. Type "yes" to confirm.`}
           confirmButtonText={t`Delete`}

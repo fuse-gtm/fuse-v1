@@ -1,4 +1,4 @@
-import { FieldMetadataType } from '@/types';
+import { FieldMetadataType } from '../../types';
 
 const NUMBER_FIELD_TYPES: FieldMetadataType[] = [
   FieldMetadataType.NUMBER,

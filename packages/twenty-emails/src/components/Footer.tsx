@@ -27,7 +27,16 @@ export const Footer = ({ i18n }: FooterProps) => {
         <Column>
           <ShadowText>
             <Link
-              href="https://docs.fusegtm.com/user-guide/introduction"
+              href="https://github.com/fuse-gtm/fuse-v1"
+              value={i18n._('Github')}
+              aria-label={i18n._("Visit Fuse's GitHub repository")}
+            />
+          </ShadowText>
+        </Column>
+        <Column>
+          <ShadowText>
+            <Link
+              href="https://fusegtm.com/docs/user-guide/introduction"
               value={i18n._('User guide')}
               aria-label={i18n._("Read Fuse's user guide")}
             />
@@ -36,7 +45,7 @@ export const Footer = ({ i18n }: FooterProps) => {
         <Column>
           <ShadowText>
             <Link
-              href="https://docs.fusegtm.com/"
+              href="https://fusegtm.com/docs/"
               value={i18n._('Developers')}
               aria-label={i18n._("Visit Fuse's developer documentation")}
             />
@@ -45,9 +54,9 @@ export const Footer = ({ i18n }: FooterProps) => {
       </Row>
       <ShadowText>
         <>
-          {i18n._('Fuse GTM, Inc.')}
+          {i18n._('Fuse GTM')}
           <br />
-          {i18n._('San Francisco')}
+          {i18n._('San Francisco / Paris')}
         </>
       </ShadowText>
     </Container>

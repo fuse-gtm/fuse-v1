@@ -2,6 +2,7 @@ import { useDeleteOneFieldMetadataItem } from '@/object-metadata/hooks/useDelete
 import { useFieldMetadataItem } from '@/object-metadata/hooks/useFieldMetadataItem';
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { isLabelIdentifierField } from '@/object-metadata/utils/isLabelIdentifierField';
+import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
 import { isObjectMetadataReadOnly } from '@/object-record/read-only/utils/isObjectMetadataReadOnly';
 import { SettingsItemTypeTag } from '@/settings/components/SettingsItemTypeTag';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
@@ -13,6 +14,7 @@ import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { useContext, useMemo } from 'react';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
 import { FieldMetadataType, SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
@@ -24,8 +26,7 @@ import {
 } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
 import { UndecoratedLink } from 'twenty-ui/navigation';
-import { ThemeContext } from 'twenty-ui/theme';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { RelationType } from '~/generated-metadata/graphql';
 import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 import { type SettingsObjectDetailTableItem } from '~/pages/settings/data-model/types/SettingsObjectDetailTableItem';
@@ -37,37 +38,31 @@ type SettingsObjectFieldItemTableRowProps = {
   mode: 'view' | 'new-field';
 };
 
-export const StyledObjectFieldTableRow = styled(TableRow)`
-  grid-template-columns: minmax(0, 1fr) 148px 148px 36px;
-`;
-
-const StyledNameTableCell = styled(TableCell)`
-  color: ${themeCssVariables.font.color.primary};
-  gap: ${themeCssVariables.spacing[2]};
-`;
+export const OBJECT_FIELD_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
+  'minmax(0, 1fr) 148px 148px 36px';
 
 const StyledNameContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   flex: 1;
-  min-width: 0;
   gap: ${themeCssVariables.spacing[1]};
+  min-width: 0;
 `;
 
 const StyledNameLabel = styled.div`
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const StyledInactiveLabel = styled.span`
   color: ${themeCssVariables.font.color.extraLight};
-  font-size: ${themeCssVariables.font.size.sm};
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   flex: 0 999 auto;
+  font-size: ${themeCssVariables.font.size.sm};
   min-width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &::before {
     content: '·';
@@ -75,13 +70,10 @@ const StyledInactiveLabel = styled.span`
   }
 `;
 
-const StyledIconTableCell = styled(TableCell)`
-  justify-content: center;
-  padding-right: ${themeCssVariables.spacing[1]};
-`;
-
-const StyledIconChevronRight = styled(IconChevronRight)`
+const StyledIconChevronRightContainer = styled.span`
+  align-items: center;
   color: ${themeCssVariables.font.color.tertiary};
+  display: flex;
 `;
 
 export const SettingsObjectFieldItemTableRow = ({
@@ -89,17 +81,20 @@ export const SettingsObjectFieldItemTableRow = ({
   mode,
   status,
 }: SettingsObjectFieldItemTableRowProps) => {
+  const { theme } = useContext(ThemeContext);
   const { t } = useLingui();
   const { fieldMetadataItem, objectMetadataItem } =
     settingsObjectDetailTableItem;
 
-  const readonly = isObjectMetadataReadOnly({
-    objectMetadataItem,
-  });
+  const isDDLLocked = useAtomStateValue(isDDLLockedState);
+
+  const readonly =
+    isObjectMetadataReadOnly({
+      objectMetadataItem,
+    }) || isDDLLocked;
 
   const navigate = useNavigateSettings();
 
-  const { theme } = useContext(ThemeContext);
   const { getIcon } = useIcons();
   const Icon = getIcon(fieldMetadataItem.icon);
 
@@ -129,7 +124,7 @@ export const SettingsObjectFieldItemTableRow = ({
     fieldName: fieldMetadataItem.name,
   });
 
-  // eslint-disable-next-line twenty/no-navigate-prefer-link
+  // oxlint-disable-next-line twenty/no-navigate-prefer-link
   const navigateToFieldEdit = () =>
     navigate(SettingsPath.ObjectFieldEdit, {
       objectNamePlural: objectMetadataItem.namePlural,
@@ -178,14 +173,20 @@ export const SettingsObjectFieldItemTableRow = ({
       : relationObjectMetadataItem?.labelPlural;
 
   return (
-    <StyledObjectFieldTableRow
+    <TableRow
+      gridTemplateColumns={OBJECT_FIELD_TABLE_ROW_GRID_TEMPLATE_COLUMNS}
       onClick={mode === 'view' ? navigateToFieldEdit : undefined}
     >
       <UndecoratedLink to={linkToNavigate}>
-        <StyledNameTableCell>
-          {!!Icon && (
+        <TableCell
+          color={themeCssVariables.font.color.primary}
+          gap={themeCssVariables.spacing[2]}
+        >
+          {isDefined(Icon) && (
             <Icon
-              style={{ minWidth: theme.icon.size.md }}
+              style={{
+                minWidth: theme.icon.size.md,
+              }}
               size={theme.icon.size.md}
               stroke={theme.icon.stroke.sm}
             />
@@ -198,7 +199,7 @@ export const SettingsObjectFieldItemTableRow = ({
               <StyledInactiveLabel>{t`Deactivated`}</StyledInactiveLabel>
             )}
           </StyledNameContainer>
-        </StyledNameTableCell>
+        </TableCell>
       </UndecoratedLink>
 
       <TableCell>
@@ -231,14 +232,19 @@ export const SettingsObjectFieldItemTableRow = ({
           }}
         />
       </TableCell>
-      <StyledIconTableCell>
+      <TableCell
+        align="center"
+        padding={`0 ${themeCssVariables.spacing[1]} 0 ${themeCssVariables.spacing[2]}`}
+      >
         {status === 'active' ? (
           mode === 'view' ? (
             <UndecoratedLink to={linkToNavigate}>
-              <StyledIconChevronRight
-                size={theme.icon.size.md}
-                stroke={theme.icon.stroke.sm}
-              />
+              <StyledIconChevronRightContainer>
+                <IconChevronRight
+                  size={theme.icon.size.md}
+                  stroke={theme.icon.stroke.sm}
+                />
+              </StyledIconChevronRightContainer>
             </UndecoratedLink>
           ) : (
             canToggleField && (
@@ -261,7 +267,6 @@ export const SettingsObjectFieldItemTableRow = ({
             onDelete={() =>
               deleteOneFieldMetadataItem({
                 idToDelete: fieldMetadataItem.id,
-                objectMetadataId: objectMetadataItem.id,
               })
             }
           />
@@ -272,7 +277,7 @@ export const SettingsObjectFieldItemTableRow = ({
             onClick={handleToggleField}
           />
         )}
-      </StyledIconTableCell>
-    </StyledObjectFieldTableRow>
+      </TableCell>
+    </TableRow>
   );
 };

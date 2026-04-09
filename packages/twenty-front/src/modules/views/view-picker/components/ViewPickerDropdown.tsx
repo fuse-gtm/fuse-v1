@@ -1,7 +1,5 @@
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import { useContext } from 'react';
-
 import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
 import { StyledDropdownButtonContainer } from '@/ui/layout/dropdown/components/StyledDropdownButtonContainer';
 import { isDropdownOpenComponentState } from '@/ui/layout/dropdown/states/isDropdownOpenComponentState';
@@ -11,7 +9,6 @@ import { useGetCurrentViewOnly } from '@/views/hooks/useGetCurrentViewOnly';
 import { ViewPickerContentCreateMode } from '@/views/view-picker/components/ViewPickerContentCreateMode';
 import { ViewPickerContentEditMode } from '@/views/view-picker/components/ViewPickerContentEditMode';
 import { ViewPickerContentEffect } from '@/views/view-picker/components/ViewPickerContentEffect';
-import { ViewPickerFavoriteFoldersDropdown } from '@/views/view-picker/components/ViewPickerFavoriteFoldersDropdown';
 import { ViewPickerListContent } from '@/views/view-picker/components/ViewPickerListContent';
 import { VIEW_PICKER_DROPDOWN_ID } from '@/views/view-picker/constants/ViewPickerDropdownId';
 import { useUpdateViewFromCurrentState } from '@/views/view-picker/hooks/useUpdateViewFromCurrentState';
@@ -23,8 +20,12 @@ import {
   OverflowingTextWithTooltip,
   useIcons,
 } from 'twenty-ui/display';
-import { ThemeContext } from 'twenty-ui/theme';
-import { MOBILE_VIEWPORT, themeCssVariables } from 'twenty-ui/theme-constants';
+import { useContext } from 'react';
+import {
+  MOBILE_VIEWPORT,
+  ThemeContext,
+  themeCssVariables,
+} from 'twenty-ui/theme-constants';
 
 const StyledIconContainer = styled.span`
   display: flex;
@@ -55,7 +56,6 @@ const StyledViewName = styled.span`
 
 export const ViewPickerDropdown = () => {
   const { theme } = useContext(ThemeContext);
-
   const { currentView } = useGetCurrentViewOnly();
 
   const { updateViewFromCurrentState } = useUpdateViewFromCurrentState();
@@ -88,7 +88,7 @@ export const ViewPickerDropdown = () => {
       clickableComponent={
         <StyledDropdownButtonContainer isUnfolded={isDropdownOpen}>
           <StyledIconContainer>
-            {currentView && CurrentViewIcon ? (
+            {isDefined(currentView) && isDefined(CurrentViewIcon) ? (
               <CurrentViewIcon size={theme.icon.size.md} />
             ) : (
               <IconList size={theme.icon.size.md} />
@@ -107,8 +107,6 @@ export const ViewPickerDropdown = () => {
         switch (viewPickerMode) {
           case 'list':
             return <ViewPickerListContent />;
-          case 'favorite-folders-picker':
-            return <ViewPickerFavoriteFoldersDropdown />;
           case 'create-empty':
           case 'create-from-current':
             return (
