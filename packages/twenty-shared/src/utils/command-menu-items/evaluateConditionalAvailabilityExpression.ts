@@ -1,4 +1,4 @@
-import type { EvaluationContext, Value } from 'expr-eval-fork';
+import type { EvaluationContext } from 'expr-eval-fork';
 import { isNonEmptyString } from '@sniptt/guards';
 
 import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
@@ -14,7 +14,7 @@ export const evaluateConditionalAvailabilityExpression = (
   try {
     const parsed = conditionalAvailabilityParser.parse(expression);
 
-    return parsed.evaluate(context as Value) === true;
+    return parsed.evaluate(context) === true;
   } catch {
     return false;
   }
