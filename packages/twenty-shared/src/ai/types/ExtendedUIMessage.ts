@@ -1,5 +1,5 @@
 import { type DataMessagePart } from '@/ai/types/DataMessagePart';
-import { type Nullable } from '@/types';
+import { type Nullable } from '@/types/index';
 import { type UIMessage } from 'ai';
 
 export type AIChatUsageMetadata = {

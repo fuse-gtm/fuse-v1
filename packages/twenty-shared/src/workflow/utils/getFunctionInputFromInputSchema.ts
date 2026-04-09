@@ -1,6 +1,6 @@
-import { type InputSchema, type FunctionInput } from '@/workflow';
-import { type InputJsonSchema } from '@/logic-function';
-import { isDefined } from '@/utils';
+import { type InputSchema, type FunctionInput } from '@/workflow/index';
+import { type InputJsonSchema } from '@/logic-function/index';
+import { isDefined } from '@/utils/validation/isDefined';
 
 export const getFunctionInputFromInputSchema = (
   inputSchema: InputSchema | InputJsonSchema[],

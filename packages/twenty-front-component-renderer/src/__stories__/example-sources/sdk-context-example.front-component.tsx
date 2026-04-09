@@ -3,7 +3,7 @@ import {
   defineFrontComponent,
   useFrontComponentExecutionContext,
   useUserId,
-} from '@/sdk';
+} from '@/sdk/index';
 
 const CARD_STYLE = {
   padding: 24,

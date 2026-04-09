@@ -1,4 +1,4 @@
-import { createValidationResult } from '@/sdk';
+import { createValidationResult } from '@/sdk/index';
 import type { DefineEntity } from '@/sdk/common/types/define-entity.type';
 import { type FrontComponentConfig } from '@/sdk/front-component-config';
 

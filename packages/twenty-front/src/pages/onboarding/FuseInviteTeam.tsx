@@ -30,8 +30,8 @@ const StyledEmailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[4]};
-  width: 100%;
   padding: ${themeCssVariables.spacing[4]} 0;
+  width: 100%;
 `;
 
 const StyledActionLinkContainer = styled.div`
@@ -126,8 +126,8 @@ export const FuseInviteTeam = () => {
       );
       const result = await sendInvitation({ emails });
 
-      if (isDefined(result.errors)) {
-        throw result.errors;
+      if (isDefined(result.error)) {
+        throw result.error;
       }
       if (emails.length > 0) {
         enqueueSuccessSnackBar({

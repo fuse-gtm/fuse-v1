@@ -1,7 +1,9 @@
 import * as RadixColors from '@radix-ui/colors';
-import { type ThemeType, THEME_LIGHT } from 'twenty-ui/theme';
+import { THEME_LIGHT } from 'twenty-ui/theme';
 
-const FUSE_SIGNAL_THEME: ThemeType = {
+type DesignOptionTheme = typeof THEME_LIGHT;
+
+const FUSE_SIGNAL_THEME: DesignOptionTheme = {
   ...THEME_LIGHT,
   accent: {
     ...THEME_LIGHT.accent,
@@ -40,7 +42,7 @@ const FUSE_SIGNAL_THEME: ThemeType = {
   },
 };
 
-const FUSE_MOMENTUM_THEME: ThemeType = {
+const FUSE_MOMENTUM_THEME: DesignOptionTheme = {
   ...THEME_LIGHT,
   accent: {
     ...THEME_LIGHT.accent,
@@ -97,7 +99,7 @@ export const DESIGN_OPTION_TOOLBAR_ITEMS = [
 
 export const getDesignOptionTheme = (
   designOptionId: string | undefined,
-): ThemeType =>
+): DesignOptionTheme =>
   DESIGN_OPTION_THEME[
     (designOptionId as DesignOptionId) ?? DEFAULT_DESIGN_OPTION_ID
   ] ?? DESIGN_OPTION_THEME[DEFAULT_DESIGN_OPTION_ID];

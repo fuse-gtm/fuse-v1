@@ -11,11 +11,9 @@ import {
 import { calendarBookingPageIdState } from '@/client-config/states/calendarBookingPageIdState';
 import { usePermissionFlagMap } from '@/settings/roles/hooks/usePermissionFlagMap';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 
 import { useCallback } from 'react';
 import {
-  FeatureFlagKey,
   OnboardingStatus,
   PermissionFlagType,
 } from '~/generated-metadata/graphql';
@@ -26,7 +24,6 @@ type GetNextOnboardingStatusArgs = {
   currentWorkspace: CurrentWorkspace | null;
   calendarBookingPageId: string | null;
   isAccountSyncEnabled: boolean;
-  isPartnerOsEnabled: boolean;
 };
 
 const getNextOnboardingStatus = ({
@@ -34,32 +31,19 @@ const getNextOnboardingStatus = ({
   currentWorkspace,
   calendarBookingPageId,
   isAccountSyncEnabled,
-  isPartnerOsEnabled,
 }: GetNextOnboardingStatusArgs) => {
   if (currentUser?.onboardingStatus === OnboardingStatus.WORKSPACE_ACTIVATION) {
     return OnboardingStatus.PROFILE_CREATION;
   }
 
   if (currentUser?.onboardingStatus === OnboardingStatus.PROFILE_CREATION) {
-    if (isPartnerOsEnabled) {
-      return OnboardingStatus.PARTNER_PROFILE;
-    }
     if (currentWorkspace?.workspaceMembersCount === 1) {
       if (isAccountSyncEnabled) {
         return OnboardingStatus.SYNC_EMAIL;
       }
       return OnboardingStatus.INVITE_TEAM;
     }
-    return OnboardingStatus.COMPLETED;
-  }
 
-  if (currentUser?.onboardingStatus === OnboardingStatus.PARTNER_PROFILE) {
-    if (currentWorkspace?.workspaceMembersCount === 1) {
-      if (isAccountSyncEnabled) {
-        return OnboardingStatus.SYNC_EMAIL;
-      }
-      return OnboardingStatus.INVITE_TEAM;
-    }
     return OnboardingStatus.COMPLETED;
   }
 
@@ -88,9 +72,6 @@ export const useSetNextOnboardingStatus = () => {
   const permissionMap = usePermissionFlagMap();
   const isAccountSyncEnabled =
     permissionMap[PermissionFlagType.CONNECTED_ACCOUNTS];
-  const isPartnerOsEnabled = useIsFeatureEnabled(
-    FeatureFlagKey.IS_PARTNER_OS_ENABLED,
-  );
 
   return useCallback(() => {
     const nextOnboardingStatus = getNextOnboardingStatus({
@@ -98,7 +79,6 @@ export const useSetNextOnboardingStatus = () => {
       currentWorkspace,
       calendarBookingPageId,
       isAccountSyncEnabled,
-      isPartnerOsEnabled,
     });
     store.set(currentUserState.atom, (current) => {
       if (isDefined(current)) {
@@ -114,7 +94,6 @@ export const useSetNextOnboardingStatus = () => {
     currentWorkspace,
     calendarBookingPageId,
     isAccountSyncEnabled,
-    isPartnerOsEnabled,
     store,
   ]);
 };

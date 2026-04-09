@@ -61,6 +61,7 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
+        '@/': path.resolve(__dirname, '../twenty-shared/src') + '/',
         '@ui/': path.resolve(__dirname, 'src') + '/',
         '@assets/': path.resolve(__dirname, 'src/assets') + '/',
         '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',

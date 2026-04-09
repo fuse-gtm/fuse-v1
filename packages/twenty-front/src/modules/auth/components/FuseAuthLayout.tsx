@@ -13,8 +13,8 @@ const StyledContainer = styled.div`
 
 const StyledLeftPanel = styled.div`
   display: flex;
-  flex-direction: column;
   flex: 1 1 50%;
+  flex-direction: column;
   min-width: 0;
   overflow-y: auto;
   padding: ${themeCssVariables.spacing[10]} ${themeCssVariables.spacing[16]};
@@ -26,11 +26,11 @@ const StyledLeftPanel = styled.div`
 `;
 
 const StyledRightPanel = styled.div`
+  background: ${themeCssVariables.background.tertiary};
+  border-left: 1px solid ${themeCssVariables.border.color.medium};
   display: flex;
   flex: 1 1 50%;
   min-width: 0;
-  background: ${themeCssVariables.background.tertiary};
-  border-left: 1px solid ${themeCssVariables.border.color.medium};
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -40,23 +40,23 @@ const StyledRightPanel = styled.div`
 
 const StyledFormContainer = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
+  margin: 0 auto;
   max-width: 420px;
   width: 100%;
-  margin: 0 auto;
-  flex: 1;
 `;
 
 const StyledHeader = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
   margin-bottom: ${themeCssVariables.spacing[10]};
 `;
 
 const StyledLogoContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: ${themeCssVariables.spacing[2]};
 `;
 
@@ -66,9 +66,9 @@ const StyledLogoImg = styled.img`
 `;
 
 const StyledTitle = styled.h1`
+  color: ${themeCssVariables.font.color.primary};
   font-size: ${themeCssVariables.font.size.xl};
   font-weight: ${themeCssVariables.font.weight.semiBold};
-  color: ${themeCssVariables.font.color.primary};
   margin: 0;
   margin-bottom: ${themeCssVariables.spacing[2]};
 `;
@@ -129,10 +129,14 @@ export const FuseAuthLayout = ({
             {subtitle && <StyledSubtitle>{subtitle}</StyledSubtitle>}
           </AnimatedEaseIn>
           <StyledContent>{children}</StyledContent>
-          {footer && <StyledFooter>{footer}</StyledFooter>}
+          {footer !== undefined && footer !== null && (
+            <StyledFooter>{footer}</StyledFooter>
+          )}
         </StyledFormContainer>
       </StyledLeftPanel>
-      {previewContent && <StyledRightPanel>{previewContent}</StyledRightPanel>}
+      {previewContent !== undefined && previewContent !== null && (
+        <StyledRightPanel>{previewContent}</StyledRightPanel>
+      )}
     </StyledContainer>
   );
 };
