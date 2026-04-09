@@ -16,6 +16,7 @@ export default defineConfig(() => {
   return {
     resolve: {
       alias: {
+        '@/': path.resolve(__dirname, '../twenty-shared/src') + '/',
         '@ui/': path.resolve(__dirname, 'src') + '/',
         '@assets/': path.resolve(__dirname, 'src/assets') + '/',
       },

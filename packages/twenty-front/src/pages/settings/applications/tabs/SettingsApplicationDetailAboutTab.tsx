@@ -1,4 +1,3 @@
-import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 import { H2Title, IconTrash } from 'twenty-ui/display';
@@ -45,9 +44,6 @@ export const SettingsApplicationDetailAboutTab = ({
   if (!isDefined(application)) {
     return null;
   }
-
-  const { id, name, description } = application;
-
   const handleUninstallApplication = async () => {
     setIsLoading(true);
     try {
