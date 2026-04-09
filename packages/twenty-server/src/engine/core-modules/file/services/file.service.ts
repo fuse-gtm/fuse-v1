@@ -8,6 +8,10 @@ import { Like, Repository } from 'typeorm';
 
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
+import {
+  FileStorageException,
+  FileStorageExceptionCode,
+} from 'src/engine/core-modules/file-storage/interfaces/file-storage-exception';
 import { FileEntity } from 'src/engine/core-modules/file/entities/file.entity';
 import { type FileResponse } from 'src/engine/core-modules/file/types/file-response.type';
 import { getContentDisposition } from 'src/engine/core-modules/file/utils/get-content-disposition.utils';
@@ -28,6 +32,12 @@ export class FileService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  private throwFileNotFound() {
+    throw new FileStorageException(
+      'File metadata not found',
+      FileStorageExceptionCode.FILE_NOT_FOUND,
+    );
+  }
   async getFileStreamByPath({
     workspaceId,
     applicationId,
@@ -39,7 +49,7 @@ export class FileService {
     filepath: string;
     fileFolder: FileFolder;
   }): Promise<{ stream: Readable; mimeType: string }> {
-    const file = await this.fileRepository.findOneOrFail({
+    const file = await this.fileRepository.findOne({
       where: {
         path: `${fileFolder}/${filepath}`,
         workspaceId,
@@ -47,12 +57,20 @@ export class FileService {
       },
     });
 
-    const application = await this.applicationRepository.findOneOrFail({
+    if (!file) {
+      this.throwFileNotFound();
+    }
+
+    const application = await this.applicationRepository.findOne({
       where: {
         id: applicationId,
         workspaceId,
       },
     });
+
+    if (!application) {
+      this.throwFileNotFound();
+    }
 
     const stream = await this.fileStorageService.readFile({
       resourcePath: filepath,
@@ -76,7 +94,7 @@ export class FileService {
     workspaceId: string;
     fileFolder: FileFolder;
   }): Promise<{ stream: Readable; mimeType: string }> {
-    const file = await this.fileRepository.findOneOrFail({
+    const file = await this.fileRepository.findOne({
       where: {
         id: fileId,
         workspaceId,
@@ -84,12 +102,20 @@ export class FileService {
       },
     });
 
-    const application = await this.applicationRepository.findOneOrFail({
+    if (!file) {
+      this.throwFileNotFound();
+    }
+
+    const application = await this.applicationRepository.findOne({
       where: {
         id: file.applicationId,
         workspaceId,
       },
     });
+
+    if (!application) {
+      this.throwFileNotFound();
+    }
 
     const stream = await this.fileStorageService.readFile({
       resourcePath: removeFileFolderFromFileEntityPath(file.path),
@@ -109,7 +135,7 @@ export class FileService {
     workspaceId: string;
     fileFolder: FileFolder;
   }): Promise<FileResponse> {
-    const file = await this.fileRepository.findOneOrFail({
+    const file = await this.fileRepository.findOne({
       where: {
         id: params.fileId,
         workspaceId: params.workspaceId,
@@ -117,12 +143,20 @@ export class FileService {
       },
     });
 
-    const application = await this.applicationRepository.findOneOrFail({
+    if (!file) {
+      this.throwFileNotFound();
+    }
+
+    const application = await this.applicationRepository.findOne({
       where: {
         id: file.applicationId,
         workspaceId: params.workspaceId,
       },
     });
+
+    if (!application) {
+      this.throwFileNotFound();
+    }
 
     const mimeType = file.mimeType ?? 'application/octet-stream';
     const resourceIdentifier = {
@@ -159,7 +193,7 @@ export class FileService {
     workspaceId: string;
     fileFolder: FileFolder;
   }): Promise<{ buffer: Buffer; mimeType: string }> {
-    const file = await this.fileRepository.findOneOrFail({
+    const file = await this.fileRepository.findOne({
       where: {
         id: fileId,
         workspaceId,
@@ -167,12 +201,20 @@ export class FileService {
       },
     });
 
-    const application = await this.applicationRepository.findOneOrFail({
+    if (!file) {
+      this.throwFileNotFound();
+    }
+
+    const application = await this.applicationRepository.findOne({
       where: {
         id: file.applicationId,
         workspaceId,
       },
     });
+
+    if (!application) {
+      this.throwFileNotFound();
+    }
 
     const stream = await this.fileStorageService.readFile({
       resourcePath: removeFileFolderFromFileEntityPath(file.path),
