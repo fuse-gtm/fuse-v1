@@ -4,7 +4,9 @@ import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
 
 type EvaluationContext = Record<string, unknown>;
 type ParserEvaluationContext = NonNullable<
-  Parameters<ReturnType<typeof conditionalAvailabilityParser.parse>['evaluate']>[0]
+  Parameters<
+    ReturnType<typeof conditionalAvailabilityParser.parse>['evaluate']
+  >[0]
 >;
 
 export const evaluateConditionalAvailabilityExpression = (
@@ -18,9 +20,7 @@ export const evaluateConditionalAvailabilityExpression = (
   try {
     const parsed = conditionalAvailabilityParser.parse(expression);
 
-    return (
-      parsed.evaluate(context as unknown as ParserEvaluationContext) === true
-    );
+    return parsed.evaluate(context as unknown as ParserEvaluationContext) === true;
   } catch {
     return false;
   }
