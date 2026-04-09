@@ -26,8 +26,8 @@ export type RegularFieldManifest<
 };
 
 export type RelationFieldManifest<
-  T extends RelationAndMorphRelationFieldMetadataType =
-    RelationAndMorphRelationFieldMetadataType,
+  T extends
+    RelationAndMorphRelationFieldMetadataType = RelationAndMorphRelationFieldMetadataType,
 > = Omit<RegularFieldManifest<T>, 'universalSettings' | 'type'> & {
   type: T;
   relationTargetFieldMetadataUniversalIdentifier: string;
