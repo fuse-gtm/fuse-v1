@@ -1,4 +1,4 @@
-import { ViewFilterOperandDeprecated } from '@/types/index';
+import { ViewFilterOperandDeprecated } from '../../types/index';
 import { z } from 'zod';
 import { ViewFilterOperand } from '../../types/ViewFilterOperand';
 

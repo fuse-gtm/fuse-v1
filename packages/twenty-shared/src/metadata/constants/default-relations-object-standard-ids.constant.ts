@@ -1,4 +1,4 @@
-import { type STANDARD_OBJECTS } from '@/metadata/constants/standard-object.constant';
+import { type STANDARD_OBJECTS } from './standard-object.constant';
 
 export const DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS = [
   'timelineActivity',

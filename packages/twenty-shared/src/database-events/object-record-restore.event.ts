@@ -1,5 +1,5 @@
-import { ObjectRecordCreateEvent } from '@/database-events/object-record-create.event';
-import { type ObjectRecordDiff } from '@/database-events/object-record-diff';
+import { ObjectRecordCreateEvent } from './object-record-create.event';
+import { type ObjectRecordDiff } from './object-record-diff';
 
 export class ObjectRecordRestoreEvent<
   T = object,

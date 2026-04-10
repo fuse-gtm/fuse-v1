@@ -1,6 +1,6 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
-import { type HTTPMethod } from '@/types/index';
-import { type InputJsonSchema } from '@/logic-function/input-json-schema.type';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
+import { type HTTPMethod } from '../types/index';
+import { type InputJsonSchema } from '../logic-function/input-json-schema.type';
 
 export type LogicFunctionManifest = SyncableEntityOptions & {
   name?: string;

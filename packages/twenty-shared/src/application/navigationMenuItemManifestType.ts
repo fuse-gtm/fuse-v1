@@ -1,5 +1,5 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
-import { type NavigationMenuItemType } from '@/types/NavigationMenuItemType';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
+import { type NavigationMenuItemType } from '../types/NavigationMenuItemType';
 
 export type NavigationMenuItemManifest = SyncableEntityOptions & {
   type: NavigationMenuItemType;

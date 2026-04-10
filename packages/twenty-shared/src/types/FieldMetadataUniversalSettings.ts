@@ -1,6 +1,6 @@
-import { type FieldMetadataType } from '@/types/FieldMetadataType';
-import { type FieldMetadataSettings } from '@/types/FieldMetadataSettings';
-import { type FormatRecordSerializedRelationProperties } from '@/types/FormatRecordSerializedRelationProperties.type';
+import { type FieldMetadataType } from './FieldMetadataType';
+import { type FieldMetadataSettings } from './FieldMetadataSettings';
+import { type FormatRecordSerializedRelationProperties } from './FormatRecordSerializedRelationProperties.type';
 
 export type FieldMetadataUniversalSettings<
   T extends FieldMetadataType = FieldMetadataType,

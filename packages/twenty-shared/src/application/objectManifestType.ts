@@ -1,5 +1,5 @@
-import { type ObjectFieldManifest } from '@/application/objectFieldManifest.type';
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
+import { type ObjectFieldManifest } from './objectFieldManifest.type';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
 
 export type ObjectManifest = SyncableEntityOptions & {
   nameSingular: string;

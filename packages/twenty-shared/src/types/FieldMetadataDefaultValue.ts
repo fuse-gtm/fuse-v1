@@ -1,6 +1,6 @@
-import { type LinkMetadata } from '@/types/composite-types/links.composite-type';
-import { type FieldMetadataType } from '@/types/FieldMetadataType';
-import { type IsExactly } from '@/types/IsExactly';
+import { type LinkMetadata } from './composite-types/links.composite-type';
+import { type FieldMetadataType } from './FieldMetadataType';
+import { type IsExactly } from './IsExactly';
 
 export const fieldMetadataDefaultValueFunctionName = {
   UUID: 'uuid',

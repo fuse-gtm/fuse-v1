@@ -1,8 +1,8 @@
-import { isDefined } from '@/utils/validation/isDefined';
+import { isDefined } from '../utils/validation/isDefined';
 import {
   DEFAULT_TOOL_INPUT_SCHEMA,
   type InputJsonSchema,
-} from '@/logic-function';
+} from './';
 
 export const getInputSchemaFromSourceCode = async (
   sourceCode: string,

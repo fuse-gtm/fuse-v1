@@ -1,5 +1,5 @@
-import { IDENTIFIER_MAX_CHAR_LENGTH } from '@/metadata/constants/identifier-max-char-length.constant';
-import { computeMetadataNameFromLabel } from '@/metadata/utils/compute-metadata-name-from-label.util';
+import { IDENTIFIER_MAX_CHAR_LENGTH } from '../constants/identifier-max-char-length.constant';
+import { computeMetadataNameFromLabel } from './compute-metadata-name-from-label.util';
 
 export const computeMetadataNamesFromLabelsOrThrow = ({
   labelSingular,

@@ -1,4 +1,4 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
 
 export type SkillManifest = SyncableEntityOptions & {
   name: string;

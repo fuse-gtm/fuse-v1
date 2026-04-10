@@ -1,10 +1,10 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
 import {
   type GridPosition,
   type PageLayoutTabLayoutMode,
   type PageLayoutWidgetConditionalDisplay,
   type PageLayoutWidgetUniversalConfiguration,
-} from '@/types/index';
+} from '../types/index';
 
 export type PageLayoutWidgetManifest = SyncableEntityOptions & {
   title: string;

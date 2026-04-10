@@ -1,7 +1,7 @@
 /* @license Enterprise */
 
-import { type RowLevelPermissionPredicateOperand } from '@/types/RowLevelPermissionPredicateOperand';
-import { type RowLevelPermissionPredicateValue } from '@/types/RowLevelPermissionPredicateValue';
+import { type RowLevelPermissionPredicateOperand } from './RowLevelPermissionPredicateOperand';
+import { type RowLevelPermissionPredicateValue } from './RowLevelPermissionPredicateValue';
 
 export type RowLevelPermissionPredicate = {
   id: string;

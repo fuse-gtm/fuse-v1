@@ -1,11 +1,11 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
 import {
   type FieldMetadataDefaultValue,
   type FieldMetadataOptions,
   type FieldMetadataType,
   type FieldMetadataUniversalSettings,
   type RelationAndMorphRelationFieldMetadataType,
-} from '@/types/index';
+} from '../types/index';
 
 export type RegularFieldManifest<
   T extends FieldMetadataType = Exclude<

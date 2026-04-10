@@ -1,5 +1,5 @@
-import { getURLSafely } from '@/utils/getURLSafely';
-import { isDefined } from '@/utils/validation';
+import { getURLSafely } from '../getURLSafely';
+import { isDefined } from '../validation';
 
 // Lowercases the URL origin (scheme + host) and removes a trailing slash.
 // URL() already lowercases the origin and preserves percent-encoded sequences

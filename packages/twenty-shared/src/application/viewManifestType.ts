@@ -1,4 +1,4 @@
-import { type SyncableEntityOptions } from '@/application/syncableEntityOptionsType';
+import { type SyncableEntityOptions } from './syncableEntityOptionsType';
 import {
   type ViewKey,
   type AggregateOperations,
@@ -7,7 +7,7 @@ import {
   type ViewOpenRecordIn,
   type ViewType,
   type ViewVisibility,
-} from '@/types/index';
+} from '../types/index';
 
 export type ViewManifestFilterValue =
   | string
