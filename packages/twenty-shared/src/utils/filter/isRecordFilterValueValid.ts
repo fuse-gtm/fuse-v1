@@ -1,5 +1,5 @@
-import { type ViewFilterOperand } from '@/types/index';
-import { isDefined } from '@/utils/validation/isDefined';
+import { type ViewFilterOperand } from '../../types/ViewFilterOperand';
+import { isDefined } from '../validation/isDefined';
 
 import { isRecordFilterOperandExpectingValue } from './isRecordFilterOperandExpectingValue';
 

@@ -1,4 +1,4 @@
-import { type RichTextFilter } from '@/types/index';
+import { type RichTextFilter } from '../../../types/RecordGqlOperationFilter';
 import escapeRegExp from 'lodash.escaperegexp';
 
 export const isMatchingRichTextFilter = ({

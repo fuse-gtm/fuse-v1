@@ -1,4 +1,4 @@
-import { ViewFilterOperand } from '@/types/index';
+import { ViewFilterOperand } from '../../types/ViewFilterOperand';
 
 export const isRecordFilterOperandExpectingValue = (
   operand: ViewFilterOperand,
