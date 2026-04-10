@@ -10,6 +10,8 @@ services:
     depends_on: !override
       redis:
         condition: service_healthy
+    dns:
+      - ${DOCKER_DNS_SERVER:-172.31.0.2}
     volumes:
       - /opt/fuse/certs/rds-combined-ca-bundle.pem:/app/certs/rds-ca.pem:ro
     environment:
@@ -22,6 +24,8 @@ services:
         condition: service_healthy
       server:
         condition: service_healthy
+    dns:
+      - ${DOCKER_DNS_SERVER:-172.31.0.2}
     volumes:
       - /opt/fuse/certs/rds-combined-ca-bundle.pem:/app/certs/rds-ca.pem:ro
     environment:

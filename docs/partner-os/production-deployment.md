@@ -57,6 +57,8 @@ export IMAGE_REPO=ghcr.io/fuse-gtm/fuse-v1
 
 docker buildx build \
   --platform linux/amd64 \
+  --target twenty \
+  --build-arg APP_VERSION=0.0.0-${IMAGE_TAG} \
   -f packages/twenty-docker/twenty/Dockerfile \
   -t ${IMAGE_REPO}:${IMAGE_TAG} \
   --push .
@@ -87,7 +89,7 @@ docker compose \
 ### 4) Verify health
 
 ```bash
-curl -fsS https://crm.your-domain.com/healthz
+curl -fsS https://crm.your-domain.com/readyz
 ```
 
 ### 5) Bootstrap Partner OS metadata for a workspace
