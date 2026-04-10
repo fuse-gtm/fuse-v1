@@ -10,8 +10,8 @@
 #     --ssh-key ~/.ssh/fuse-prod.pem
 set -euo pipefail
 
-PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/healthz}"
-LOCAL_HEALTH_URL="${LOCAL_HEALTH_URL:-http://localhost:3000/healthz}"
+PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/readyz}"
+LOCAL_HEALTH_URL="${LOCAL_HEALTH_URL:-http://localhost:3000/readyz}"
 SSH_TARGET="${SSH_TARGET:-ubuntu@52.20.136.71}"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/fuse-prod.pem}"
 CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
@@ -23,8 +23,8 @@ Usage: fuse-phase2-precheck.sh [options]
 
 Options:
   --ack-no-sev1              Confirm there are no unresolved Sev-1 incidents.
-  --public-url <url>         Public health URL (default: https://app.fusegtm.com/healthz)
-  --local-url <url>          Local health URL on app host (default: http://localhost:3000/healthz)
+  --public-url <url>         Public readiness URL (default: https://app.fusegtm.com/readyz)
+  --local-url <url>          Local readiness URL on app host (default: http://localhost:3000/readyz)
   --ssh-target <user@host>   SSH target for remote local-health check fallback.
   --ssh-key <path>           SSH private key path for remote local-health check fallback.
   --help                     Show this help text.

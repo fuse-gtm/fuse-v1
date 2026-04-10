@@ -10,7 +10,18 @@ IMAGE_REPO="${IMAGE_REPO:-fuse-v1-local}"
 IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
 WRITE_ENV_FILE="${WRITE_ENV_FILE:-}"
 SANITIZED_IMAGE_TAG="$(printf '%s' "${IMAGE_TAG}" | tr -c '[:alnum:].-' '-')"
-APP_VERSION="${APP_VERSION:-0.0.0-${SANITIZED_IMAGE_TAG}}"
+DEFAULT_APP_VERSION_BASE="$(
+  sed -n "s/.*'\\([0-9][0-9.]*\\)'.*/\\1/p" \
+    packages/twenty-server/src/engine/constants/upgrade-command-supported-versions.constant.ts \
+    | tail -n 1
+)"
+
+if [ -z "${DEFAULT_APP_VERSION_BASE}" ]; then
+  echo "Unable to determine default APP_VERSION base from supported upgrade versions." >&2
+  exit 1
+fi
+
+APP_VERSION="${APP_VERSION:-${DEFAULT_APP_VERSION_BASE}-${SANITIZED_IMAGE_TAG}}"
 
 host_arch="$(uname -m)"
 case "$host_arch" in

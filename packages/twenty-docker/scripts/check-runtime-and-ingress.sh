@@ -78,7 +78,7 @@ restart_caddy() {
 
 # --- Configuration ---
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
-LOCAL_HEALTHCHECK_URL="${LOCAL_HEALTHCHECK_URL:-http://localhost:3000/healthz}"
+LOCAL_HEALTHCHECK_URL="${LOCAL_HEALTHCHECK_URL:-http://localhost:3000/readyz}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
 PUBLIC_HEALTHCHECK_URL="${PUBLIC_HEALTHCHECK_URL:-}"
 VERIFY_PUBLIC_INGRESS="${VERIFY_PUBLIC_INGRESS:-auto}"
@@ -97,7 +97,7 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "$PUBLIC_BASE_URL" ]; then
-  PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/healthz"
+  PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/readyz"
 fi
 
 if [ "$VERIFY_PUBLIC_INGRESS" = "auto" ]; then

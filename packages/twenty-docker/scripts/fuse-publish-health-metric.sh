@@ -12,13 +12,13 @@
 #   * * * * * /opt/fuse/packages/twenty-docker/scripts/fuse-publish-health-metric.sh >> /var/log/fuse-health-metric.log 2>&1
 #
 # Environment:
-#   LOCAL_HEALTHCHECK_URL   URL to check (default: http://localhost:3000/healthz)
+#   LOCAL_HEALTHCHECK_URL   URL to check (default: http://localhost:3000/readyz)
 #   CW_NAMESPACE            CloudWatch namespace (default: Fuse/Production)
 #   CW_METRIC_NAME          Metric name (default: FuseHealthCheck)
 #   AWS_DEFAULT_REGION      Region (default: us-east-1)
 set -euo pipefail
 
-LOCAL_HEALTHCHECK_URL="${LOCAL_HEALTHCHECK_URL:-http://localhost:3000/healthz}"
+LOCAL_HEALTHCHECK_URL="${LOCAL_HEALTHCHECK_URL:-http://localhost:3000/readyz}"
 CW_NAMESPACE="${CW_NAMESPACE:-Fuse/Production}"
 CW_METRIC_NAME="${CW_METRIC_NAME:-FuseHealthCheck}"
 REGION="${AWS_DEFAULT_REGION:-us-east-1}"

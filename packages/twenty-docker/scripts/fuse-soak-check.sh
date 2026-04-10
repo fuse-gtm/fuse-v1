@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/healthz}"
+PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/readyz}"
 GOOGLE_AUTH_URL="${GOOGLE_AUTH_URL:-https://app.fusegtm.com/auth/google}"
 EXPECTED_REDIRECT="${EXPECTED_REDIRECT:-https://app.fusegtm.com/auth/google/redirect}"
 
@@ -9,7 +9,7 @@ SSH_HOST="${SSH_HOST:-ubuntu@52.20.136.71}"
 SSH_KEY_PATH="${SSH_KEY_PATH:-$HOME/.ssh/fuse-prod.pem}"
 SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -i "$SSH_KEY_PATH")
 
-REMOTE_LOCAL_HEALTH_URL="${REMOTE_LOCAL_HEALTH_URL:-http://localhost:3000/healthz}"
+REMOTE_LOCAL_HEALTH_URL="${REMOTE_LOCAL_HEALTH_URL:-http://localhost:3000/readyz}"
 REMOTE_WORKER_CONTAINER="${REMOTE_WORKER_CONTAINER:-twenty-worker-1}"
 WORKER_LOG_LINES="${WORKER_LOG_LINES:-400}"
 

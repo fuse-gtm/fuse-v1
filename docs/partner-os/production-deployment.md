@@ -58,7 +58,7 @@ export IMAGE_REPO=ghcr.io/fuse-gtm/fuse-v1
 docker buildx build \
   --platform linux/amd64 \
   --target twenty \
-  --build-arg APP_VERSION=0.0.0-${IMAGE_TAG} \
+  --build-arg APP_VERSION=1.21.0-${IMAGE_TAG} \
   -f packages/twenty-docker/twenty/Dockerfile \
   -t ${IMAGE_REPO}:${IMAGE_TAG} \
   --push .
@@ -86,7 +86,7 @@ docker compose \
   up -d
 ```
 
-### 4) Verify health
+### 4) Verify readiness
 
 ```bash
 curl -fsS https://crm.your-domain.com/readyz

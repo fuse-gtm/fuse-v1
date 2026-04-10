@@ -12,7 +12,18 @@ PLATFORM="${PLATFORM:-linux/amd64}"
 VERIFY_IMAGE_EXISTS="${VERIFY_IMAGE_EXISTS:-true}"
 WRITE_ENV_FILE="${WRITE_ENV_FILE:-}"
 SANITIZED_IMAGE_TAG="$(printf '%s' "${IMAGE_TAG}" | tr -c '[:alnum:].-' '-')"
-APP_VERSION="${APP_VERSION:-0.0.0-${SANITIZED_IMAGE_TAG}}"
+DEFAULT_APP_VERSION_BASE="$(
+  sed -n "s/.*'\\([0-9][0-9.]*\\)'.*/\\1/p" \
+    packages/twenty-server/src/engine/constants/upgrade-command-supported-versions.constant.ts \
+    | tail -n 1
+)"
+
+if [ -z "${DEFAULT_APP_VERSION_BASE}" ]; then
+  echo "Unable to determine default APP_VERSION base from supported upgrade versions." >&2
+  exit 1
+fi
+
+APP_VERSION="${APP_VERSION:-${DEFAULT_APP_VERSION_BASE}-${SANITIZED_IMAGE_TAG}}"
 
 IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
 
