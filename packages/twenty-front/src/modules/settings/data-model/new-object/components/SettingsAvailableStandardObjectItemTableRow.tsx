@@ -1,10 +1,10 @@
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { ObjectMetadataIcon } from '@/object-metadata/components/ObjectMetadataIcon';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
-import { Checkbox } from 'twenty-ui/input';
-import { useIcons } from 'twenty-ui/display';
 import { styled } from '@linaria/react';
 import { useContext } from 'react';
+import { Checkbox } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 export const AVAILABLE_STANDARD_OBJECTS_GRID_TEMPLATE_COLUMNS =
@@ -12,7 +12,7 @@ export const AVAILABLE_STANDARD_OBJECTS_GRID_TEMPLATE_COLUMNS =
 
 type SettingsAvailableStandardObjectItemTableRowProps = {
   isSelected?: boolean;
-  objectItem: ObjectMetadataItem;
+  objectItem: EnrichedObjectMetadataItem;
   onClick?: () => void;
 };
 
@@ -28,8 +28,6 @@ export const SettingsAvailableStandardObjectItemTableRow = ({
   onClick,
 }: SettingsAvailableStandardObjectItemTableRowProps) => {
   const { theme } = useContext(ThemeContext);
-  const { getIcon } = useIcons();
-  const Icon = getIcon(objectItem.icon);
 
   return (
     <TableRow
@@ -48,7 +46,10 @@ export const SettingsAvailableStandardObjectItemTableRow = ({
         color={themeCssVariables.font.color.primary}
         gap={themeCssVariables.spacing[2]}
       >
-        {!!Icon && <Icon size={theme.icon.size.md} />}
+        <ObjectMetadataIcon
+          objectMetadataItem={objectItem}
+          size={theme.icon.size.md}
+        />
         {objectItem.labelPlural}
       </TableCell>
       <TableCell>
