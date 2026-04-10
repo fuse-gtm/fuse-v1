@@ -1,8 +1,9 @@
-import { ActionMenuContext } from '@/action-menu/contexts/ActionMenuContext';
+import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { useSidePanelWorkflowNavigation } from '@/side-panel/pages/workflow/hooks/useSidePanelWorkflowNavigation';
 import { sidePanelNavigationStackState } from '@/side-panel/states/sidePanelNavigationStackState';
 import { useAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useAtomComponentState';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
+import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { useWorkflowRun } from '@/workflow/hooks/useWorkflowRun';
 import { useWorkflowRunIdOrThrow } from '@/workflow/hooks/useWorkflowRunIdOrThrow';
 import { workflowVisualizerWorkflowIdComponentState } from '@/workflow/states/workflowVisualizerWorkflowIdComponentState';
@@ -24,7 +25,6 @@ import { WORKFLOW_DIAGRAM_NODE_DEFAULT_SOURCE_HANDLE_ID } from '@/workflow/workf
 import { getNodeIterationCount } from '@/workflow/workflow-diagram/workflow-nodes/utils/getNodeIterationCount';
 import { styled } from '@linaria/react';
 import { Position } from '@xyflow/react';
-import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { useContext } from 'react';
 import { capitalize, isDefined } from 'twenty-shared/utils';
 import { StepStatus } from 'twenty-shared/workflow';
@@ -35,32 +35,32 @@ import { themeCssVariables } from 'twenty-ui/theme-constants';
 const StyledNodeLabelWithCounterPart = styled.div`
   align-items: center;
   align-self: stretch;
+  box-sizing: border-box;
+  column-gap: ${themeCssVariables.spacing[2]};
   display: flex;
   height: 14px;
   justify-content: space-between;
-  box-sizing: border-box;
-  column-gap: ${themeCssVariables.spacing[2]};
 `;
 
 const StyledStatusIconsContainer = styled.div`
   align-items: center;
+  box-sizing: border-box;
   display: flex;
   gap: ${themeCssVariables.spacing[1]};
   justify-content: flex-end;
-  box-sizing: border-box;
 `;
 
 const StyledColorIcon = styled.div<{
   color: string;
 }>`
   align-items: center;
+  background: ${({ color }) => color};
   border-radius: ${themeCssVariables.border.radius.sm};
   box-sizing: border-box;
   display: flex;
   height: 14px;
   justify-content: center;
   width: 14px;
-  background: ${({ color }) => color};
 `;
 
 const StyledIterationCounter = styled.div<{
@@ -100,7 +100,8 @@ export const WorkflowRunDiagramStepNode = ({
   const { openWorkflowRunViewStepInSidePanel } =
     useSidePanelWorkflowNavigation();
 
-  const { isInSidePanel } = useContext(ActionMenuContext);
+  const { commandMenuContextApi } = useContext(CommandMenuContext);
+  const isInSidePanel = commandMenuContextApi.isInSidePanel;
 
   const setSidePanelNavigationStack = useSetAtomState(
     sidePanelNavigationStackState,
