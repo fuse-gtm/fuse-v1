@@ -9,6 +9,8 @@ cd "$REPO_ROOT"
 IMAGE_REPO="${IMAGE_REPO:-fuse-v1-local}"
 IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
 WRITE_ENV_FILE="${WRITE_ENV_FILE:-}"
+SANITIZED_IMAGE_TAG="$(printf '%s' "${IMAGE_TAG}" | tr -c '[:alnum:].-' '-')"
+APP_VERSION="${APP_VERSION:-0.0.0-${SANITIZED_IMAGE_TAG}}"
 
 host_arch="$(uname -m)"
 case "$host_arch" in
@@ -27,9 +29,11 @@ CHECK_IMAGE_EXISTS=false \
 CHECK_BUILD_RESOURCES=false \
 bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
 
-echo "Building local image ${IMAGE_REF} (${PLATFORM})"
+echo "Building local image ${IMAGE_REF} (${PLATFORM}) with APP_VERSION=${APP_VERSION}"
 docker buildx build \
   --platform "${PLATFORM}" \
+  --target twenty \
+  --build-arg "APP_VERSION=${APP_VERSION}" \
   -f packages/twenty-docker/twenty/Dockerfile \
   -t "${IMAGE_REF}" \
   --load .
@@ -41,22 +45,31 @@ if [ -n "${WRITE_ENV_FILE}" ]; then
   fi
 
   tmp_file="$(mktemp)"
-  awk -v image_ref="$IMAGE_REF" '
-    BEGIN { updated = 0 }
+  awk -v image_ref="$IMAGE_REF" -v app_version="$APP_VERSION" '
+    BEGIN { updated_image = 0; updated_version = 0 }
     /^TWENTY_IMAGE=/ {
       print "TWENTY_IMAGE=" image_ref
-      updated = 1
+      updated_image = 1
+      next
+    }
+    /^APP_VERSION=/ {
+      print "APP_VERSION=" app_version
+      updated_version = 1
       next
     }
     { print }
     END {
-      if (updated == 0) {
+      if (updated_image == 0) {
         print "TWENTY_IMAGE=" image_ref
+      }
+      if (updated_version == 0) {
+        print "APP_VERSION=" app_version
       }
     }
   ' "$WRITE_ENV_FILE" > "$tmp_file"
   mv "$tmp_file" "$WRITE_ENV_FILE"
-  echo "Updated ${WRITE_ENV_FILE} with TWENTY_IMAGE=${IMAGE_REF}"
+  echo "Updated ${WRITE_ENV_FILE} with TWENTY_IMAGE=${IMAGE_REF} and APP_VERSION=${APP_VERSION}"
 fi
 
 echo "IMAGE_REF=${IMAGE_REF}"
+echo "APP_VERSION=${APP_VERSION}"
