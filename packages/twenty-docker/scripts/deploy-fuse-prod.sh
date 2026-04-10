@@ -42,7 +42,7 @@ run_with_timeout() {
 
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
 PLATFORM="${PLATFORM:-linux/amd64}"
-HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"
+HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/readyz}"
 MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
 CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
 PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
@@ -125,11 +125,11 @@ if [ -n "${GHCR_USERNAME:-}" ] && [ -n "${GHCR_TOKEN:-}" ]; then
 fi
 
 if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "$PUBLIC_BASE_URL" ]; then
-  PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/healthz"
+  PUBLIC_HEALTHCHECK_URL="${PUBLIC_BASE_URL%/}/readyz"
 fi
 
 if [ -z "$PUBLIC_HEALTHCHECK_URL" ] && [ -n "${SERVER_URL:-}" ]; then
-  PUBLIC_HEALTHCHECK_URL="${SERVER_URL%/}/healthz"
+  PUBLIC_HEALTHCHECK_URL="${SERVER_URL%/}/readyz"
 fi
 
 if [ -z "$VERIFY_PUBLIC_URL_RAW" ]; then
