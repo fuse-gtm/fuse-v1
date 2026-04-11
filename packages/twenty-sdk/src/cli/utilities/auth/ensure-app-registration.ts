@@ -1,6 +1,19 @@
 import { type ApiService } from '@/cli/utilities/api/api-service';
 import { type ConfigService } from '@/cli/utilities/config/config-service';
-import { hasGraphQLErrorSubCode } from '@/cli/utilities/error/parse-server-error';
+import { isDefined, isPlainObject } from 'twenty-shared/utils';
+
+const isAlreadyClaimedError = (error: unknown): boolean => {
+  if (!isPlainObject(error)) {
+    return false;
+  }
+
+  const { extensions } = error as { extensions?: { subCode?: string } };
+
+  return (
+    isDefined(extensions) &&
+    extensions.subCode === 'UNIVERSAL_IDENTIFIER_ALREADY_CLAIMED'
+  );
+};
 
 export const ensureAppRegistration = async (
   apiService: ApiService,
@@ -22,8 +35,6 @@ export const ensureAppRegistration = async (
     await configService.setConfig({
       appRegistrationId: applicationRegistration.id,
       appRegistrationClientId: applicationRegistration.oAuthClientId,
-      appAccessToken: undefined,
-      appRefreshToken: undefined,
     });
 
     return {
@@ -33,12 +44,7 @@ export const ensureAppRegistration = async (
     };
   }
 
-  const isAlreadyClaimed = hasGraphQLErrorSubCode(
-    createResult.error,
-    'UNIVERSAL_IDENTIFIER_ALREADY_CLAIMED',
-  );
-
-  if (!isAlreadyClaimed) {
+  if (!isAlreadyClaimedError(createResult.error)) {
     const errorDetail =
       createResult.error instanceof Error
         ? createResult.error.message
@@ -64,8 +70,6 @@ export const ensureAppRegistration = async (
   await configService.setConfig({
     appRegistrationId: registration.id,
     appRegistrationClientId: registration.oAuthClientId,
-    appAccessToken: undefined,
-    appRefreshToken: undefined,
   });
 
   const rotateResult =
