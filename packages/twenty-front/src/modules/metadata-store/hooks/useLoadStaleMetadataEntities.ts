@@ -187,6 +187,13 @@ export const useLoadStaleMetadataEntities = () => {
                 'navigationMenuItems',
                 result.data.navigationMenuItems,
               );
+            })
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(
+                'Failed to load navigationMenuItems, skipping',
+                error,
+              );
             }),
         );
       }

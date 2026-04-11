@@ -60,6 +60,7 @@ export class NavigationMenuItemService {
       .filter(
         (item): item is NonNullable<typeof item> =>
           isDefined(item) &&
+          isDefined(item.type) &&
           (!isDefined(item.userWorkspaceId) ||
             item.userWorkspaceId === userWorkspaceId),
       )
@@ -87,7 +88,10 @@ export class NavigationMenuItemService {
       flatEntityMaps: flatNavigationMenuItemMaps,
     });
 
-    if (!isDefined(flatNavigationMenuItem)) {
+    if (
+      !isDefined(flatNavigationMenuItem) ||
+      !isDefined(flatNavigationMenuItem.type)
+    ) {
       return null;
     }
 

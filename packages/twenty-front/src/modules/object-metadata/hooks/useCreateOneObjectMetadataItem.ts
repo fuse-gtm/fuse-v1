@@ -70,7 +70,7 @@ export const useCreateOneObjectMetadataItem = () => {
 
         applyChanges();
 
-        const [viewsResult, navItemsResult] = await Promise.all([
+        const [viewsResult, navItemsResult] = await Promise.allSettled([
           client.query({
             query: FindManyViewsDocument,
             variables: { objectMetadataId: createdObject.id },
@@ -82,30 +82,37 @@ export const useCreateOneObjectMetadataItem = () => {
           }),
         ]);
 
-        const fetchedViews = viewsResult.data?.getViews ?? [];
+        if (viewsResult.status === 'fulfilled') {
+          const fetchedViews = viewsResult.value.data?.getViews ?? [];
 
-        const {
-          flatViews,
-          flatViewFields,
-          flatViewFilters,
-          flatViewSorts,
-          flatViewGroups,
-          flatViewFilterGroups,
-          flatViewFieldGroups,
-        } = splitViewWithRelated(fetchedViews);
+          const {
+            flatViews,
+            flatViewFields,
+            flatViewFilters,
+            flatViewSorts,
+            flatViewGroups,
+            flatViewFilterGroups,
+            flatViewFieldGroups,
+          } = splitViewWithRelated(fetchedViews);
 
-        addToDraft({ key: 'views', items: flatViews });
-        addToDraft({ key: 'viewFields', items: flatViewFields });
-        addToDraft({ key: 'viewFilters', items: flatViewFilters });
-        addToDraft({ key: 'viewSorts', items: flatViewSorts });
-        addToDraft({ key: 'viewGroups', items: flatViewGroups });
-        addToDraft({ key: 'viewFilterGroups', items: flatViewFilterGroups });
-        addToDraft({ key: 'viewFieldGroups', items: flatViewFieldGroups });
+          addToDraft({ key: 'views', items: flatViews });
+          addToDraft({ key: 'viewFields', items: flatViewFields });
+          addToDraft({ key: 'viewFilters', items: flatViewFilters });
+          addToDraft({ key: 'viewSorts', items: flatViewSorts });
+          addToDraft({ key: 'viewGroups', items: flatViewGroups });
+          addToDraft({ key: 'viewFilterGroups', items: flatViewFilterGroups });
+          addToDraft({ key: 'viewFieldGroups', items: flatViewFieldGroups });
+        }
 
-        replaceDraft(
-          'navigationMenuItems',
-          navItemsResult.data?.navigationMenuItems ?? [],
-        );
+        if (
+          navItemsResult.status === 'fulfilled' &&
+          isDefined(navItemsResult.value.data?.navigationMenuItems)
+        ) {
+          replaceDraft(
+            'navigationMenuItems',
+            navItemsResult.value.data.navigationMenuItems,
+          );
+        }
 
         applyChanges();
       }
