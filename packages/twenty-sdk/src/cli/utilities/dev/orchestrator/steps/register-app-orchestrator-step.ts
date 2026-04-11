@@ -1,8 +1,5 @@
 import { type ApiService } from '@/cli/utilities/api/api-service';
-import {
-  ensureValidAppAccessTokenOrRefresh,
-  exchangeCredentialsForTokens,
-} from '@/cli/utilities/auth/resolve-app-access-token';
+import { ensureValidAppAccessTokenOrRefresh } from '@/cli/utilities/auth/resolve-app-access-token';
 import { type ConfigService } from '@/cli/utilities/config/config-service';
 import { type OrchestratorState } from '@/cli/utilities/dev/orchestrator/dev-mode-orchestrator-state';
 import { type Manifest } from 'twenty-shared/application';
@@ -58,16 +55,14 @@ export class RegisterAppOrchestratorStep {
       return;
     }
 
-    const { applicationRegistration, clientSecret } = createResult.data;
+    const { applicationRegistration, accessToken, refreshToken } =
+      createResult.data;
 
     await this.configService.setConfig({
       appRegistrationId: applicationRegistration.id,
       appRegistrationClientId: applicationRegistration.oAuthClientId,
-    });
-
-    await exchangeCredentialsForTokens(this.configService, {
-      clientId: applicationRegistration.oAuthClientId,
-      clientSecret,
+      appAccessToken: accessToken,
+      appRefreshToken: refreshToken,
     });
 
     this.state.applyStepEvents([

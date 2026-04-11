@@ -20,7 +20,8 @@ const mockApiService = {
         id: 'mock-registration-id',
         oAuthClientId: 'mock-client-id',
       },
-      clientSecret: 'mock-client-secret',
+      accessToken: 'mock-app-access-token',
+      refreshToken: 'mock-app-refresh-token',
     },
   }),
   createDevelopmentApplication: vi.fn().mockResolvedValue({
@@ -60,10 +61,6 @@ vi.mock('@/cli/utilities/auth/resolve-app-access-token', () => ({
   ensureValidAppAccessTokenOrRefresh: vi
     .fn()
     .mockResolvedValue('mock-app-access-token'),
-  exchangeCredentialsForTokens: vi.fn().mockResolvedValue({
-    accessToken: 'mock-app-access-token',
-    refreshToken: 'mock-app-refresh-token',
-  }),
 }));
 
 vi.mock('@/cli/utilities/client/client-service', () => ({
