@@ -157,6 +157,7 @@ export class BackfillMessageThreadSubjectCommand extends ActiveOrSuspendedWorksp
             },
           },
           workspaceId,
+          isSystemBuild: true,
           applicationUniversalIdentifier:
             twentyStandardFlatApplication.universalIdentifier,
         },
