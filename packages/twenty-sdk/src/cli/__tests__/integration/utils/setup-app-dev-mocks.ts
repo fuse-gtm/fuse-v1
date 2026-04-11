@@ -56,6 +56,16 @@ vi.mock('@/cli/utilities/file/file-uploader', () => ({
   },
 }));
 
+vi.mock('@/cli/utilities/auth/resolve-app-access-token', () => ({
+  ensureValidAppAccessTokenOrRefresh: vi
+    .fn()
+    .mockResolvedValue('mock-app-access-token'),
+  exchangeCredentialsForTokens: vi.fn().mockResolvedValue({
+    accessToken: 'mock-app-access-token',
+    refreshToken: 'mock-app-refresh-token',
+  }),
+}));
+
 vi.mock('@/cli/utilities/client/client-service', () => ({
   ClientService: class {
     generateCoreClient = vi.fn().mockResolvedValue(undefined);
