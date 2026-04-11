@@ -12,13 +12,13 @@ export class BackfillNavigationMenuItemType1775889550000
     // by the original add-type migration (1773681736596)
     await queryRunner.query(`
       UPDATE core."navigationMenuItem"
-      SET type = CASE
+      SET type = (CASE
         WHEN "viewId" IS NOT NULL THEN 'VIEW'
         WHEN "targetRecordId" IS NOT NULL AND "targetObjectMetadataId" IS NOT NULL THEN 'RECORD'
         WHEN "targetObjectMetadataId" IS NOT NULL THEN 'OBJECT'
         WHEN "link" IS NOT NULL THEN 'LINK'
         ELSE 'OBJECT'
-      END
+      END)::core."navigationMenuItem_type_enum"
       WHERE type IS NULL
     `);
 
@@ -37,12 +37,12 @@ export class BackfillNavigationMenuItemType1775889550000
     // (e.g. type='OBJECT' but targetObjectMetadataId IS NULL)
     await queryRunner.query(`
       DELETE FROM core."navigationMenuItem"
-      WHERE NOT (
-        ("type" = 'FOLDER')
-        OR ("type" = 'OBJECT' AND "targetObjectMetadataId" IS NOT NULL)
-        OR ("type" = 'VIEW' AND "viewId" IS NOT NULL)
-        OR ("type" = 'RECORD' AND "targetRecordId" IS NOT NULL AND "targetObjectMetadataId" IS NOT NULL)
-        OR ("type" = 'LINK' AND "link" IS NOT NULL)
+      WHERE type IS NOT NULL AND NOT (
+        ("type" = 'FOLDER'::"core"."navigationMenuItem_type_enum")
+        OR ("type" = 'OBJECT'::"core"."navigationMenuItem_type_enum" AND "targetObjectMetadataId" IS NOT NULL)
+        OR ("type" = 'VIEW'::"core"."navigationMenuItem_type_enum" AND "viewId" IS NOT NULL)
+        OR ("type" = 'RECORD'::"core"."navigationMenuItem_type_enum" AND "targetRecordId" IS NOT NULL AND "targetObjectMetadataId" IS NOT NULL)
+        OR ("type" = 'LINK'::"core"."navigationMenuItem_type_enum" AND "link" IS NOT NULL)
       )
     `);
 
