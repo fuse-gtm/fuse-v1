@@ -21,13 +21,13 @@ import { FieldsWidget } from '@/page-layout/widgets/fields/components/FieldsWidg
 import { WidgetComponentInstanceContext } from '@/page-layout/widgets/states/contexts/WidgetComponentInstanceContext';
 import { LayoutRenderingProvider } from '@/ui/layout/contexts/LayoutRenderingContext';
 import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
-import { type CoreViewWithRelations } from '@/views/types/CoreViewWithRelations';
+import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { ComponentDecorator } from 'twenty-ui/testing';
 import {
-  ViewOpenRecordIn as CoreViewOpenRecordIn,
-  ViewType as CoreViewType,
-  ViewVisibility as CoreViewVisibility,
+  ViewOpenRecordIn,
+  ViewType,
+  ViewVisibility,
   PageLayoutTabLayoutMode,
   PageLayoutType,
   WidgetConfigurationType,
@@ -36,10 +36,10 @@ import {
 import { ChipGeneratorsDecorator } from '~/testing/decorators/ChipGeneratorsDecorator';
 import { FileUploadDecorator } from '~/testing/decorators/FileUploadDecorator';
 import { getJestMetadataAndApolloMocksWrapper } from '~/testing/jest/getJestMetadataAndApolloMocksWrapper';
-import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
+import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
 import { getMockFieldMetadataItemOrThrow } from '~/testing/utils/getMockFieldMetadataItemOrThrow';
 import { getMockObjectMetadataItemOrThrow } from '~/testing/utils/getMockObjectMetadataItemOrThrow';
-import { setTestCoreViewsInMetadataStore } from '~/testing/utils/setTestCoreViewsInMetadataStore';
+import { setTestViewsInMetadataStore } from '~/testing/utils/setTestViewsInMetadataStore';
 import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 
 const companyObjectMetadataItem = getMockObjectMetadataItemOrThrow(
@@ -147,7 +147,6 @@ const createPageLayoutWithWidget = (
       position: 0,
       pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       widgets: [widget],
-      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -177,32 +176,30 @@ const createFieldsWidget = (viewId: string | null): PageLayoutWidget => ({
     configurationType: WidgetConfigurationType.FIELDS,
     viewId,
   },
-  isOverridden: false,
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-01T00:00:00Z',
   deletedAt: null,
 });
 
-const createCoreView = (
-  overrides: Partial<CoreViewWithRelations> = {},
-): CoreViewWithRelations => ({
+const createView = (
+  overrides: Partial<ViewWithRelations> = {},
+): ViewWithRelations => ({
   id: FIELDS_VIEW_ID,
   name: 'Company Fields',
   objectMetadataId: companyObjectMetadataItem.id,
-  type: CoreViewType.FIELDS_WIDGET,
+  type: ViewType.FIELDS_WIDGET,
   icon: 'IconList',
   key: null,
   shouldHideEmptyGroups: false,
   position: 0,
   isCompact: false,
-  openRecordIn: CoreViewOpenRecordIn.SIDE_PANEL,
+  openRecordIn: ViewOpenRecordIn.SIDE_PANEL,
   viewFields: [],
   viewGroups: [],
   viewFilters: [],
   viewSorts: [],
-  visibility: CoreViewVisibility.WORKSPACE,
+  visibility: ViewVisibility.WORKSPACE,
   createdByUserWorkspaceId: null,
-  __typename: 'CoreView',
   ...overrides,
 });
 
@@ -218,7 +215,6 @@ const createViewField = (
   isVisible: true,
   size: 200,
   aggregateOperation: null,
-  isOverridden: false,
   viewId: FIELDS_VIEW_ID,
   ...(viewFieldGroupId !== undefined && { viewFieldGroupId }),
 });
@@ -234,7 +230,6 @@ const createViewFieldGroup = (
   name,
   position,
   isVisible,
-  isOverridden: false,
   viewId: FIELDS_VIEW_ID,
   viewFields,
 });
@@ -284,7 +279,7 @@ export const WithViewFieldGroups: Story = {
       ),
     ];
 
-    const coreView = createCoreView({
+    const view = createView({
       viewFields: [...contactInfoFields, ...businessFields],
       viewFieldGroups: [
         createViewFieldGroup(
@@ -306,10 +301,10 @@ export const WithViewFieldGroups: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      generatedMockObjectMetadataItems,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
+    setTestViewsInMetadataStore(jotaiStore, [view]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
@@ -373,15 +368,9 @@ export const WithViewFieldGroups: Story = {
   },
 };
 
-export const WithInlineViewFields: Story = {
+export const WithDefaultGroups: Story = {
   render: () => {
-    const coreView = createCoreView({
-      viewFields: [
-        createViewField('vf-name', nameField.id, 0),
-        createViewField('vf-employees', employeesField.id, 1),
-        createViewField('vf-address', addressField.id, 2),
-      ],
-    });
+    const view = createView();
 
     const widget = createFieldsWidget(FIELDS_VIEW_ID);
 
@@ -392,10 +381,10 @@ export const WithInlineViewFields: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      generatedMockObjectMetadataItems,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
+    setTestViewsInMetadataStore(jotaiStore, [view]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
@@ -448,20 +437,18 @@ export const WithInlineViewFields: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const companyName = await canvas.findByText('Acme Corporation');
-    expect(companyName).toBeVisible();
+    const generalHeader = await canvas.findByText('General');
+    expect(generalHeader).toBeVisible();
 
-    const contactInfoHeader = canvas.queryByText('Contact Info');
-    expect(contactInfoHeader).toBeNull();
-
-    const generalHeader = canvas.queryByText('General');
-    expect(generalHeader).toBeNull();
+    const creationDateElements = await canvas.findAllByText('Creation date');
+    expect(creationDateElements.length).toBeGreaterThan(0);
+    expect(creationDateElements[0]).toBeVisible();
   },
 };
 
 export const Empty: Story = {
   render: () => {
-    const coreView = createCoreView({
+    const view = createView({
       viewFieldGroups: [
         createViewFieldGroup('group-empty', 'Empty Group', 0, [], false),
       ],
@@ -476,10 +463,10 @@ export const Empty: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      generatedMockObjectMetadataItems,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
-    setTestCoreViewsInMetadataStore(jotaiStore, [coreView]);
+    setTestViewsInMetadataStore(jotaiStore, [view]);
     jotaiStore.set(
       pageLayoutPersistedComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
