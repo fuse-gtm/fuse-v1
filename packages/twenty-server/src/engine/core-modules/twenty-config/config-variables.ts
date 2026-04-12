@@ -17,6 +17,7 @@ import { type AwsRegion } from 'src/engine/core-modules/twenty-config/interfaces
 import { NodeEnvironment } from 'src/engine/core-modules/twenty-config/interfaces/node-environment.interface';
 import { SupportDriver } from 'src/engine/core-modules/twenty-config/interfaces/support.interface';
 
+import { ApplicationLogDriver } from 'src/engine/core-modules/application-logs/interfaces/application-log-driver.enum';
 import { CaptchaDriverType } from 'src/engine/core-modules/captcha/interfaces';
 import { CodeInterpreterDriverType } from 'src/engine/core-modules/code-interpreter/code-interpreter.interface';
 import { WebSearchDriverType } from 'src/engine/core-modules/web-search/web-search.interface';
@@ -180,30 +181,8 @@ export class ConfigVariables {
     description:
       "Enable or disable requests to twenty-icons to get companies' icons",
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
-  ALLOW_REQUESTS_TO_TWENTY_ICONS = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable remote company enrichment during contact/company creation',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  COMPANY_ENRICHMENT_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Company enrichment provider. Use "none" to keep company enrichment fully local.',
-    type: ConfigVariableType.ENUM,
-    options: ['none', 'twenty'],
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  COMPANY_ENRICHMENT_PROVIDER: 'none' | 'twenty' = 'none';
+  ALLOW_REQUESTS_TO_TWENTY_ICONS = true;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.MICROSOFT_AUTH,
@@ -384,7 +363,7 @@ export class ConfigVariables {
     description: 'Name used in the From header for outgoing emails',
     type: ConfigVariableType.STRING,
   })
-  EMAIL_FROM_NAME = 'Fuse';
+  EMAIL_FROM_NAME = 'Felix from Twenty';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.EMAIL_SETTINGS,
@@ -727,7 +706,6 @@ export class ConfigVariables {
     group: ConfigVariablesGroup.ANALYTICS_CONFIG,
     description: 'Enable or disable analytics for telemetry',
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
   @IsOptional()
   ANALYTICS_ENABLED = false;
@@ -750,10 +728,9 @@ export class ConfigVariables {
     group: ConfigVariablesGroup.LOGGING,
     description: 'Enable or disable telemetry logging',
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
   @IsOptional()
-  TELEMETRY_ENABLED = false;
+  TELEMETRY_ENABLED = true;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.LOGGING,
@@ -951,11 +928,22 @@ export class ConfigVariables {
   SENTRY_ENVIRONMENT: string;
 
   @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.LOGGING,
+    description:
+      'Driver used for application logs (Disabled, Console, or ClickHouse)',
+    type: ConfigVariableType.ENUM,
+    options: Object.values(ApplicationLogDriver),
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  @CastToUpperSnakeCase()
+  APPLICATION_LOG_DRIVER: ApplicationLogDriver = ApplicationLogDriver.DISABLED;
+
+  @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SUPPORT_CHAT_CONFIG,
     description: 'Driver used for support chat integration',
     type: ConfigVariableType.ENUM,
     options: Object.values(SupportDriver),
-    isEnvOnly: true,
   })
   @IsOptional()
   @CastToUpperSnakeCase()
@@ -1394,56 +1382,6 @@ export class ConfigVariables {
   AI_MODEL_PREFERENCES: AiModelPreferences = loadDefaultModelPreferences();
 
   @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.LLM,
-    description: 'Enable or disable AI telemetry capture',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  AI_TELEMETRY_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable remote marketplace metadata fetches from GitHub',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  MARKETPLACE_REMOTE_FETCH_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable outbound admin version checks to Docker Hub',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  ADMIN_VERSION_CHECK_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable help center web search tool availability and outbound calls',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  HELP_CENTER_SEARCH_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Help center search provider. Use "none" to disable, "mintlify" for direct docs API, or "twenty" for Twenty help proxy.',
-    type: ConfigVariableType.ENUM,
-    options: ['none', 'mintlify', 'twenty'],
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  HELP_CENTER_SEARCH_PROVIDER: 'none' | 'mintlify' | 'twenty' = 'none';
-
-  @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SERVER_CONFIG,
     description: 'Enable or disable multi-workspace support',
     type: ConfigVariableType.BOOLEAN,
@@ -1720,17 +1658,6 @@ export class ConfigVariables {
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,
     description:
-      'Client-side query timeout in milliseconds for the core database connection pool. Controls how long any single query can run before the driver aborts it.',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  DATABASE_STATEMENT_TIMEOUT_MS: number = 15000;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.SERVER_CONFIG,
-    description:
       'Default npm registry URL for resolving app packages (e.g. https://registry.npmjs.org)',
     type: ConfigVariableType.STRING,
   })
@@ -1757,38 +1684,6 @@ export class ConfigVariables {
   })
   @IsOptional()
   APP_REGISTRY_TOKEN: string;
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum resident set size in megabytes before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_RSS_MB: number = 1200;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum heap usage ratio before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_HEAP_USED_RATIO: number = 0.92;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum event loop lag in milliseconds before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_EVENT_LOOP_LAG_MS: number = 500;
 }
 
 export const validate = (config: Record<string, unknown>): ConfigVariables => {
