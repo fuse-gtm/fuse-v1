@@ -117,7 +117,10 @@ export class WorkspaceIteratorService {
   }
 
   private async fetchWorkspaceIds(
-    options: Omit<WorkspaceIteratorArgs, 'callback'>,
+    options: Pick<
+      WorkspaceIteratorArgs,
+      'activationStatuses' | 'startFromWorkspaceId' | 'workspaceCountLimit'
+    >,
   ): Promise<string[]> {
     const activationStatuses =
       options.activationStatuses ?? DEFAULT_ACTIVATION_STATUSES;
