@@ -952,12 +952,6 @@ export class WorkspaceMigrationBuildOrchestratorService {
           ...aggregatedOrchestratorActionsReport.commandMenuItem.update,
           ///
 
-          // Navigation Menu Items
-          ...aggregatedOrchestratorActionsReport.navigationMenuItem.delete,
-          ...aggregatedOrchestratorActionsReport.navigationMenuItem.create,
-          ...aggregatedOrchestratorActionsReport.navigationMenuItem.update,
-          ///
-
           // Page layouts
           ...aggregatedOrchestratorActionsReport.pageLayout.delete,
           ...aggregatedOrchestratorActionsReport.pageLayout.create,
@@ -974,6 +968,12 @@ export class WorkspaceMigrationBuildOrchestratorService {
           ...aggregatedOrchestratorActionsReport.pageLayoutWidget.delete,
           ...aggregatedOrchestratorActionsReport.pageLayoutWidget.create,
           ...aggregatedOrchestratorActionsReport.pageLayoutWidget.update,
+          ///
+
+          // Navigation Menu Items
+          ...aggregatedOrchestratorActionsReport.navigationMenuItem.delete,
+          ...aggregatedOrchestratorActionsReport.navigationMenuItem.create,
+          ...aggregatedOrchestratorActionsReport.navigationMenuItem.update,
           ///
 
           // Row level permission predicate groups

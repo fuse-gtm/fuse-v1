@@ -1174,6 +1174,11 @@ export const ALL_ENTITY_PROPERTIES_CONFIGURATION_BY_METADATA_NAME = {
       toStringify: false,
       universalProperty: 'targetObjectMetadataUniversalIdentifier',
     },
+    pageLayoutId: {
+      toCompare: false,
+      toStringify: false,
+      universalProperty: 'pageLayoutUniversalIdentifier',
+    },
   },
   permissionFlag: {
     flag: {
