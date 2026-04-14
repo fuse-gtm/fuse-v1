@@ -142,6 +142,7 @@ const createPageLayoutWithWidget = (
   tabs: [
     {
       __typename: 'PageLayoutTab',
+      isActive: true,
       applicationId: '',
       id: TAB_ID_OVERVIEW,
       title: 'Overview',
@@ -252,6 +253,7 @@ export const WithNumberChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_NUMBER_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -339,6 +341,7 @@ export const WithGaugeChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_GAUGE_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -426,6 +429,7 @@ export const WithBarChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_BAR_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -524,6 +528,7 @@ export const SmallWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_SMALL,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -618,6 +623,7 @@ export const MediumWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_MEDIUM,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -716,6 +722,7 @@ export const LargeWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_LARGE,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -814,6 +821,7 @@ export const WideWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_WIDE,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -908,6 +916,7 @@ export const TallWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_TALL,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -1007,6 +1016,7 @@ export const WithManyToOneRelationFieldWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_MANY_TO_ONE_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1126,6 +1136,7 @@ export const WithOneToManyRelationFieldWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_ONE_TO_MANY_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1237,6 +1248,7 @@ export const OneToManyRelationFieldWidgetWithSeeAllButton: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_ONE_TO_MANY_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1374,6 +1386,7 @@ export const OnMobile: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: 'widget-mobile',
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -1472,6 +1485,7 @@ export const InSidePanel: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: 'widget-side-panel',
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -1630,6 +1644,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
 
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      isActive: true,
       id: WIDGET_ID_CATALOG,
       pageLayoutTabId:
         variant === 'side-column' ? 'pinned-tab' : TAB_ID_OVERVIEW,
@@ -1737,6 +1752,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
           ? [
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: 'pinned-tab',
                 title: 'Pinned Tab',
@@ -1750,6 +1766,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
               },
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: 'other-tab',
                 title: 'Other Tab',
@@ -1765,6 +1782,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
           : [
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: TAB_ID_OVERVIEW,
                 title: 'Overview',
