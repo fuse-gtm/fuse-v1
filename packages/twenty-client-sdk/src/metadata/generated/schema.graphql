@@ -790,7 +790,6 @@ type Workspace {
   isCustomDomainEnabled: Boolean!
   editableProfileFields: [String!]
   defaultRole: Role
-  version: String
   fastModel: String!
   smartModel: String!
   aiAdditionalInstructions: String
