@@ -53,7 +53,7 @@ export const PageLayoutVerticalListViewer = ({
   return (
     <StyledVerticalListContainer
       variant={variant}
-      shouldUseWhiteBackground={isMobile || isInSidePanel}
+      shouldUseWhiteBackground={!isInPinnedTab || isMobile}
     >
       {widgets.map((widget) =>
         widget.type === WidgetType.FIELDS ? (
