@@ -1,4 +1,4 @@
-import { H2Title, IconChevronRight, IconSearch } from 'twenty-ui/display';
+import { H2Title, IconChevronRight } from 'twenty-ui/display';
 import { TableHeader } from '@/ui/layout/table/components/TableHeader';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
@@ -10,20 +10,17 @@ import {
   APPLICATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS,
   SettingsApplicationTableRow,
 } from '~/pages/settings/applications/components/SettingsApplicationTableRow';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { type ApplicationWithoutRelation } from '~/pages/settings/applications/types/applicationWithoutRelation';
 import { isNewerSemver } from '~/pages/settings/applications/utils/isNewerSemver';
 import { Section } from 'twenty-ui/layout';
-import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
+import { SearchInput } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
-import { AppRegistrationSourceType } from '~/generated-metadata/graphql';
+import { ApplicationRegistrationSourceType } from '~/generated-metadata/graphql';
 
-const StyledTableContainer = styled.div`
-  margin-top: ${themeCssVariables.spacing[3]};
-`;
-
-const StyledTableHeaderRowContainer = styled.div`
-  margin-bottom: ${themeCssVariables.spacing[2]};
+const StyledTableRowsContainer = styled.div`
+  border-bottom: 1px solid ${themeCssVariables.border.color.light};
+  padding: ${themeCssVariables.spacing[2]} 0;
 `;
 
 const StyledSearchInputContainer = styled.div`
@@ -41,15 +38,13 @@ export const SettingsApplicationsTable = ({
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredApplications = useMemo(() => {
-    return applications.filter(
-      (application) =>
-        application.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (application.description ?? '')
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()),
-    );
-  }, [applications, searchTerm]);
+  const filteredApplications = applications.filter(
+    (application) =>
+      application.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (application.description ?? '')
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <Section>
@@ -58,30 +53,26 @@ export const SettingsApplicationsTable = ({
         description={t`All the applications currently installed on this workspace`}
       />
       <StyledSearchInputContainer>
-        <SettingsTextInput
-          instanceId="env-var-search"
-          LeftIcon={IconSearch}
+        <SearchInput
           placeholder={t`Search an application`}
           value={searchTerm}
           onChange={setSearchTerm}
         />
       </StyledSearchInputContainer>
-      <StyledTableContainer>
-        <Table>
-          <StyledTableHeaderRowContainer>
-            <TableRow
-              gridTemplateColumns={APPLICATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS}
-            >
-              <TableHeader> {t`Name`}</TableHeader>
-              <TableHeader> {t`Description`}</TableHeader>
-              <TableHeader> {''}</TableHeader>
-              <TableHeader />
-            </TableRow>
-          </StyledTableHeaderRowContainer>
+      <Table>
+        <TableRow
+          gridTemplateColumns={APPLICATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS}
+        >
+          <TableHeader> {t`Name`}</TableHeader>
+          <TableHeader> {t`Description`}</TableHeader>
+          <TableHeader> {''}</TableHeader>
+          <TableHeader />
+        </TableRow>
+        <StyledTableRowsContainer>
           {filteredApplications.map((application) => {
             const isNpmApp =
               application.applicationRegistration?.sourceType ===
-              AppRegistrationSourceType.NPM;
+              ApplicationRegistrationSourceType.NPM;
 
             const latestVersion =
               application.applicationRegistration?.latestAvailableVersion;
@@ -109,8 +100,8 @@ export const SettingsApplicationsTable = ({
               />
             );
           })}
-        </Table>
-      </StyledTableContainer>
+        </StyledTableRowsContainer>
+      </Table>
     </Section>
   );
 };

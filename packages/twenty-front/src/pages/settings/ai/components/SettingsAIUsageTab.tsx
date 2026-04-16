@@ -41,7 +41,9 @@ export const SettingsAIUsageTab = () => {
           }
         />
         <SettingsEnterpriseFeatureGateCard
+          title={t`Enterprise feature`}
           description={t`AI usage analytics is available with an Enterprise key.`}
+          buttonTitle={t`Activate`}
         />
       </Section>
     );
