@@ -16,18 +16,18 @@ import { GenerateApiKeyCommand } from 'src/engine/core-modules/api-key/commands/
 import { MarketplaceModule } from 'src/engine/core-modules/application/application-marketplace/marketplace.module';
 import { StaleRegistrationCleanupModule } from 'src/engine/core-modules/application/application-oauth/stale-registration-cleanup/stale-registration-cleanup.module';
 import { ApplicationUpgradeModule } from 'src/engine/core-modules/application/application-upgrade/application-upgrade.module';
+import { EnforceUsageCapCronCommand } from 'src/engine/core-modules/billing/crons/commands/enforce-usage-cap.cron.command';
 import { EnterpriseKeyValidationCronCommand } from 'src/engine/core-modules/enterprise/cron/command/enterprise-key-validation.cron.command';
-import { StaleHandoffReminderCronCommand } from 'src/modules/partner-os/crons/commands/stale-handoff-reminder.cron.command';
 import { EnterpriseModule } from 'src/engine/core-modules/enterprise/enterprise.module';
 import { EventLogCleanupModule } from 'src/engine/core-modules/event-logs/cleanup/event-log-cleanup.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
 import { FileModule } from 'src/engine/core-modules/file/file.module';
 import { PublicDomainModule } from 'src/engine/core-modules/public-domain/public-domain.module';
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';
+import { UpgradeStatusCommand } from 'src/engine/core-modules/upgrade/commands/upgrade-status.command';
 import { UpgradeModule } from 'src/engine/core-modules/upgrade/upgrade.module';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { WorkspaceModule } from 'src/engine/core-modules/workspace/workspace.module';
-import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-source.module';
 import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/field-metadata.module';
 import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadata/object-metadata.module';
 import { TrashCleanupModule } from 'src/engine/trash-cleanup/trash-cleanup.module';
@@ -37,11 +37,8 @@ import { WorkspaceCleanerModule } from 'src/engine/workspace-manager/workspace-c
 import { WorkspaceManagerModule } from 'src/engine/workspace-manager/workspace-manager.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { WorkspaceVersionModule } from 'src/engine/workspace-manager/workspace-version/workspace-version.module';
-import { WorkspaceBootstrapPartnerOsCommand } from 'src/database/commands/workspace-bootstrap-partner-os.command';
 import { CalendarEventImportManagerModule } from 'src/modules/calendar/calendar-event-import-manager/calendar-event-import-manager.module';
 import { MessagingImportManagerModule } from 'src/modules/messaging/message-import-manager/messaging-import-manager.module';
-import { PartnerOsSeedModule } from 'src/modules/partner-os/commands/partner-os-seed.module';
-import { PartnerOsModule } from 'src/modules/partner-os/partner-os.module';
 import { WorkflowRunQueueModule } from 'src/modules/workflow/workflow-runner/workflow-run-queue/workflow-run-queue.module';
 import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/automated-trigger/automated-trigger.module';
 
@@ -63,7 +60,6 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     ObjectMetadataModule,
     DevSeederModule,
     WorkspaceManagerModule,
-    DataSourceModule,
     WorkspaceCacheStorageModule,
     ApiKeyModule,
     FeatureFlagModule,
@@ -79,8 +75,6 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     StaleRegistrationCleanupModule,
     WorkspaceVersionModule,
     UpgradeModule,
-    PartnerOsModule,
-    PartnerOsSeedModule,
   ],
   providers: [
     DataSeedWorkspaceCommand,
@@ -92,8 +86,8 @@ import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/au
     ListOrphanedWorkspaceEntitiesCommand,
     EnterpriseKeyValidationCronCommand,
     GenerateApiKeyCommand,
-    WorkspaceBootstrapPartnerOsCommand,
-    StaleHandoffReminderCronCommand,
+    EnforceUsageCapCronCommand,
+    UpgradeStatusCommand,
   ],
 })
 export class DatabaseCommandModule {}
