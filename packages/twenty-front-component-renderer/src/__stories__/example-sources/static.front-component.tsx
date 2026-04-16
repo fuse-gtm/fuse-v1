@@ -1,4 +1,4 @@
-import { defineFrontComponent } from '@/sdk/index';
+import { defineFrontComponent } from 'twenty-sdk';
 
 const StaticComponent = () => (
   <div
