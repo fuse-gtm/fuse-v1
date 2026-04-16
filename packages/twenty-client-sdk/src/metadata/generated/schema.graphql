@@ -2579,6 +2579,7 @@ type CommandMenuItem {
   hotKeys: [String!]
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
+  pageLayoutId: UUID
   applicationId: UUID
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -4065,6 +4066,7 @@ input CreateCommandMenuItemInput {
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
   payload: JSON
+  pageLayoutId: UUID
 }
 
 input UpdateCommandMenuItemInput {
@@ -4078,6 +4080,7 @@ input UpdateCommandMenuItemInput {
   availabilityObjectMetadataId: UUID
   engineComponentKey: EngineComponentKey
   hotKeys: [String!]
+  pageLayoutId: UUID
 }
 
 input CreateFrontComponentInput {
