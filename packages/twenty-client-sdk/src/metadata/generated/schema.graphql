@@ -891,6 +891,7 @@ type GridPosition {
 
 type PageLayoutWidget {
   id: UUID!
+  applicationId: UUID!
   pageLayoutTabId: UUID!
   title: String!
   type: WidgetType!
