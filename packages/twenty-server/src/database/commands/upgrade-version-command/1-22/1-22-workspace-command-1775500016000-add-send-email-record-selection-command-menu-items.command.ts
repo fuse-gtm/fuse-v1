@@ -11,17 +11,19 @@ import { STANDARD_COMMAND_MENU_ITEMS } from 'src/engine/workspace-manager/twenty
 import { computeTwentyStandardApplicationAllFlatEntityMaps } from 'src/engine/workspace-manager/twenty-standard-application/utils/twenty-standard-application-all-flat-entity-maps.constant';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
-const UNIVERSAL_IDENTIFIERS_TO_FIX = new Set<string>([
-  STANDARD_COMMAND_MENU_ITEMS.mergeMultipleRecords.universalIdentifier,
-]);
+const SEND_EMAIL_RECORD_SELECTION_UNIVERSAL_IDENTIFIERS = [
+  STANDARD_COMMAND_MENU_ITEMS.composeEmailToPerson.universalIdentifier,
+  STANDARD_COMMAND_MENU_ITEMS.composeEmailToCompany.universalIdentifier,
+  STANDARD_COMMAND_MENU_ITEMS.composeEmailToOpportunity.universalIdentifier,
+];
 
-@RegisteredWorkspaceCommand('1.22.0', 1780000003000)
+@RegisteredWorkspaceCommand('1.22.0', 1775500016000)
 @Command({
-  name: 'upgrade:1-22:fix-merge-command-select-all',
+  name: 'upgrade:1-22:add-send-email-record-selection-command-menu-items',
   description:
-    'Fix merge command menu item to not appear in select-all (exclusion) mode',
+    'Add the per-object Send Email command menu items (Person, Company, Opportunity) to existing workspaces',
 })
-export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceCommandRunner {
+export class AddSendEmailRecordSelectionCommandMenuItemsCommand extends ActiveOrSuspendedWorkspaceCommandRunner {
   constructor(
     protected readonly workspaceIteratorService: WorkspaceIteratorService,
     private readonly applicationService: ApplicationService,
@@ -38,7 +40,7 @@ export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceC
     const isDryRun = options.dryRun ?? false;
 
     this.logger.log(
-      `${isDryRun ? '[DRY RUN] ' : ''}Starting merge command select-all expression fix for workspace ${workspaceId}`,
+      `${isDryRun ? '[DRY RUN] ' : ''}Checking Send Email record-selection commands for workspace ${workspaceId}`,
     );
 
     const { twentyStandardFlatApplication } =
@@ -51,6 +53,24 @@ export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceC
         'flatCommandMenuItemMaps',
       ]);
 
+    const missingUniversalIdentifiers =
+      SEND_EMAIL_RECORD_SELECTION_UNIVERSAL_IDENTIFIERS.filter(
+        (universalIdentifier) =>
+          !isDefined(
+            existingFlatCommandMenuItemMaps.byUniversalIdentifier[
+              universalIdentifier
+            ],
+          ),
+      );
+
+    if (missingUniversalIdentifiers.length === 0) {
+      this.logger.log(
+        `Send Email record-selection commands already exist for workspace ${workspaceId}, skipping`,
+      );
+
+      return;
+    }
+
     const { allFlatEntityMaps: standardAllFlatEntityMaps } =
       computeTwentyStandardApplicationAllFlatEntityMaps({
         now: new Date().toISOString(),
@@ -58,49 +78,25 @@ export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceC
         twentyStandardApplicationId: twentyStandardFlatApplication.id,
       });
 
-    const itemsToUpdate = [...UNIVERSAL_IDENTIFIERS_TO_FIX]
-      .map((universalIdentifier) => {
-        const standardItem =
+    const itemsToCreate = missingUniversalIdentifiers
+      .map(
+        (universalIdentifier) =>
           standardAllFlatEntityMaps.flatCommandMenuItemMaps
-            .byUniversalIdentifier[universalIdentifier];
-        const existingItem =
-          existingFlatCommandMenuItemMaps.byUniversalIdentifier[
-            universalIdentifier
-          ];
-
-        if (
-          !isDefined(standardItem) ||
-          !isDefined(existingItem) ||
-          existingItem.conditionalAvailabilityExpression ===
-            standardItem.conditionalAvailabilityExpression
-        ) {
-          return undefined;
-        }
-
-        return {
-          ...existingItem,
-          conditionalAvailabilityExpression:
-            standardItem.conditionalAvailabilityExpression,
-          updatedAt: new Date().toISOString(),
-        };
-      })
+            .byUniversalIdentifier[universalIdentifier],
+      )
       .filter(isDefined);
 
-    if (itemsToUpdate.length === 0) {
-      this.logger.log(
-        `Merge command menu item expression already up to date for workspace ${workspaceId}`,
+    if (itemsToCreate.length === 0) {
+      this.logger.warn(
+        `Send Email record-selection commands not found in standard application for workspace ${workspaceId}`,
       );
 
       return;
     }
 
-    this.logger.log(
-      `Found ${itemsToUpdate.length} command menu item(s) to update for workspace ${workspaceId}`,
-    );
-
     if (isDryRun) {
       this.logger.log(
-        `[DRY RUN] Would update ${itemsToUpdate.length} command menu item expression(s) for workspace ${workspaceId}`,
+        `[DRY RUN] Would create ${itemsToCreate.length} Send Email record-selection commands for workspace ${workspaceId}`,
       );
 
       return;
@@ -111,9 +107,9 @@ export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceC
         {
           allFlatEntityOperationByMetadataName: {
             commandMenuItem: {
-              flatEntityToCreate: [],
+              flatEntityToCreate: itemsToCreate,
               flatEntityToDelete: [],
-              flatEntityToUpdate: itemsToUpdate,
+              flatEntityToUpdate: [],
             },
           },
           workspaceId,
@@ -124,16 +120,16 @@ export class FixMergeCommandSelectAllCommand extends ActiveOrSuspendedWorkspaceC
 
     if (validateAndBuildResult.status === 'fail') {
       this.logger.error(
-        `Failed to fix merge command expression:\n${JSON.stringify(validateAndBuildResult, null, 2)}`,
+        `Failed to add Send Email record-selection commands:\n${JSON.stringify(validateAndBuildResult, null, 2)}`,
       );
 
       throw new Error(
-        `Failed to fix merge command menu item expression for workspace ${workspaceId}`,
+        `Failed to add Send Email record-selection commands for workspace ${workspaceId}`,
       );
     }
 
     this.logger.log(
-      `Successfully updated ${itemsToUpdate.length} command menu item expression(s) for workspace ${workspaceId}`,
+      `Successfully added ${itemsToCreate.length} Send Email record-selection commands for workspace ${workspaceId}`,
     );
   }
 }
