@@ -13,11 +13,9 @@ import {
   RESEND_EMAIL_VIEW_LAST_EVENT_FIELD_UNIVERSAL_IDENTIFIER,
   RESEND_EMAIL_VIEW_PERSON_FIELD_UNIVERSAL_IDENTIFIER,
   RESEND_EMAIL_VIEW_SUBJECT_FIELD_UNIVERSAL_IDENTIFIER,
-  RESEND_EMAIL_VIEW_TO_ADDRESSES_FIELD_UNIVERSAL_IDENTIFIER,
   RESEND_EMAIL_VIEW_UNIVERSAL_IDENTIFIER,
   SUBJECT_FIELD_UNIVERSAL_IDENTIFIER,
-  TO_ADDRESSES_FIELD_UNIVERSAL_IDENTIFIER,
-} from '@modules/resend/constants/universal-identifiers';
+} from 'src/modules/resend/constants/universal-identifiers';
 import { defineView } from 'twenty-sdk/define';
 
 export default defineView({
@@ -37,21 +35,12 @@ export default defineView({
     },
     {
       universalIdentifier:
-        RESEND_EMAIL_VIEW_TO_ADDRESSES_FIELD_UNIVERSAL_IDENTIFIER,
+        RESEND_EMAIL_VIEW_FROM_ADDRESS_FIELD_UNIVERSAL_IDENTIFIER,
       fieldMetadataUniversalIdentifier:
-        TO_ADDRESSES_FIELD_UNIVERSAL_IDENTIFIER,
+        FROM_ADDRESS_FIELD_UNIVERSAL_IDENTIFIER,
       isVisible: true,
       size: 12,
       position: 1,
-    },
-    {
-      universalIdentifier:
-        RESEND_EMAIL_VIEW_PERSON_FIELD_UNIVERSAL_IDENTIFIER,
-      fieldMetadataUniversalIdentifier:
-        PERSON_ON_RESEND_EMAIL_FIELD_UNIVERSAL_IDENTIFIER,
-      isVisible: true,
-      size: 12,
-      position: 2,
     },
     {
       universalIdentifier:
@@ -60,16 +49,7 @@ export default defineView({
         LAST_EVENT_FIELD_UNIVERSAL_IDENTIFIER,
       isVisible: true,
       size: 12,
-      position: 3,
-    },
-    {
-      universalIdentifier:
-        RESEND_EMAIL_VIEW_FROM_ADDRESS_FIELD_UNIVERSAL_IDENTIFIER,
-      fieldMetadataUniversalIdentifier:
-        FROM_ADDRESS_FIELD_UNIVERSAL_IDENTIFIER,
-      isVisible: true,
-      size: 12,
-      position: 4,
+      position: 2,
     },
     {
       universalIdentifier:
@@ -78,7 +58,16 @@ export default defineView({
         EMAIL_CREATED_AT_FIELD_UNIVERSAL_IDENTIFIER,
       isVisible: true,
       size: 12,
-      position: 5,
+      position: 3,
+    },
+    {
+      universalIdentifier:
+        RESEND_EMAIL_VIEW_PERSON_FIELD_UNIVERSAL_IDENTIFIER,
+      fieldMetadataUniversalIdentifier:
+        PERSON_ON_RESEND_EMAIL_FIELD_UNIVERSAL_IDENTIFIER,
+      isVisible: true,
+      size: 12,
+      position: 4,
     },
     {
       universalIdentifier:
@@ -87,7 +76,7 @@ export default defineView({
         CONTACT_ON_RESEND_EMAIL_FIELD_UNIVERSAL_IDENTIFIER,
       isVisible: true,
       size: 12,
-      position: 6,
+      position: 5,
     },
     {
       universalIdentifier:
@@ -96,7 +85,7 @@ export default defineView({
         BROADCAST_ON_RESEND_EMAIL_FIELD_UNIVERSAL_IDENTIFIER,
       isVisible: true,
       size: 12,
-      position: 7,
+      position: 6,
     },
   ],
 });
