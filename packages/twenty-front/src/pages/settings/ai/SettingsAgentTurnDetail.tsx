@@ -1,4 +1,4 @@
-import { AIChatAssistantMessageRenderer } from '@/ai/components/AIChatAssistantMessageRenderer';
+import { AiChatAssistantMessageRenderer } from '@/ai/components/AiChatAssistantMessageRenderer';
 import { mapDBMessagesToUIMessages } from '@/ai/utils/mapDBMessagesToUIMessages';
 import { SettingsPageContainer } from '@/settings/components/SettingsPageContainer';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
@@ -81,7 +81,7 @@ export const SettingsAgentTurnDetail = () => {
           { children: t`AI`, href: getSettingsPath(SettingsPath.AI) },
           {
             children: t`Agent`,
-            href: getSettingsPath(SettingsPath.AIAgentDetail).replace(
+            href: getSettingsPath(SettingsPath.AiAgentDetail).replace(
               ':agentId',
               agentId || '',
             ),
@@ -127,7 +127,7 @@ export const SettingsAgentTurnDetail = () => {
         { children: t`AI`, href: getSettingsPath(SettingsPath.AI) },
         {
           children: t`Agent`,
-          href: getSettingsPath(SettingsPath.AIAgentDetail).replace(
+          href: getSettingsPath(SettingsPath.AiAgentDetail).replace(
             ':agentId',
             agentId || '',
           ),
@@ -168,7 +168,7 @@ export const SettingsAgentTurnDetail = () => {
                   <StyledMessageBubble key={message.id}>
                     <StyledMessageRole>{roleLabel}</StyledMessageRole>
                     <StyledMessageContent>
-                      <AIChatAssistantMessageRenderer
+                      <AiChatAssistantMessageRenderer
                         messageParts={message.parts}
                         isLastMessageStreaming={false}
                       />

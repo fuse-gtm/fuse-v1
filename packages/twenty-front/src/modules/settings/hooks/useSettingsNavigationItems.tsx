@@ -74,10 +74,7 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
   const isAdminEnabled =
     (currentUser?.canImpersonate || currentUser?.canAccessFullAdminPanel) ??
     false;
-  const isAIEnabled = useIsFeatureEnabled(FeatureFlagKey.IS_AI_ENABLED);
-  const isApplicationEnabled = useIsFeatureEnabled(
-    FeatureFlagKey.IS_APPLICATION_ENABLED,
-  );
+  const isAiEnabled = useIsFeatureEnabled(FeatureFlagKey.IS_AI_ENABLED);
   const isSupportChatConfigured =
     supportChat?.supportDriver === 'FRONT' &&
     isNonEmptyString(supportChat.supportFrontChatId);
@@ -178,9 +175,7 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           label: t`Apps`,
           path: SettingsPath.Applications,
           Icon: IconPlug,
-          isHidden:
-            !isApplicationEnabled ||
-            !permissionMap[PermissionFlagType.WORKSPACE],
+          isHidden: !permissionMap[PermissionFlagType.APPLICATIONS],
           modifier: 'new',
         },
         {
@@ -188,7 +183,7 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           path: SettingsPath.AI,
           Icon: IconSparkles,
           isHidden:
-            !isAIEnabled || !permissionMap[PermissionFlagType.WORKSPACE],
+            !isAiEnabled || !permissionMap[PermissionFlagType.WORKSPACE],
           modifier: 'new',
         },
         {
