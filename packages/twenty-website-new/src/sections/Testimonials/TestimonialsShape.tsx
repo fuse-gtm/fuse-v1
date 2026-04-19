@@ -1,15 +1,11 @@
-const TESTIMONIALS_SHAPE_CLIP_PATH =
-  'polygon(0% 20%, 0.294% 0%, 25.318% 0%, 31.069% 100%, 69.135% 100%, 74.507% 0%, 99.706% 0%, 100% 20%, 100% 100%, 0% 100%)';
+const TESTIMONIALS_SHAPE_PATH =
+  'M0 4a4 4 0 0 1 4-4h344.32c4.197 0 8.369.66 12.361 1.958l49.5 16.084A40 40 0 0 0 422.542 20h517.7c4.293 0 8.559-.691 12.633-2.047l47.785-15.906A40 40 0 0 1 1013.29 0H1356a4 4 0 0 1 4 4v16H0z';
 
-interface TestimonialsShapeProps {
-  bodyFillColor?: string;
+type TestimonialsShapeProps = {
   fillColor: string;
-}
+};
 
-export function TestimonialsShape({
-  bodyFillColor,
-  fillColor,
-}: TestimonialsShapeProps) {
+export function TestimonialsShape({ fillColor }: TestimonialsShapeProps) {
   return (
     <div
       aria-hidden
@@ -19,21 +15,19 @@ export function TestimonialsShape({
         position: 'absolute',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: -1,
       }}
     >
-      <div
-        style={{
-          backgroundColor: fillColor,
-          clipPath: TESTIMONIALS_SHAPE_CLIP_PATH,
-          height: 20,
-          left: 0,
-          overflow: 'hidden',
-          position: 'absolute',
-          right: 0,
-          top: 0,
-        }}
-      />
+      <svg
+        width="100%"
+        height="20"
+        viewBox="0 0 1360 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        style={{ display: 'block' }}
+      >
+        <path d={TESTIMONIALS_SHAPE_PATH} fill={fillColor} />
+      </svg>
       <div
         style={{
           position: 'absolute',
@@ -41,7 +35,7 @@ export function TestimonialsShape({
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: bodyFillColor ?? fillColor,
+          backgroundColor: fillColor,
           borderBottomLeftRadius: 4,
           borderBottomRightRadius: 4,
         }}

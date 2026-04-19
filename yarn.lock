@@ -61396,6 +61396,7 @@ __metadata:
     react-markdown: "npm:^10.1.0"
     remark-gfm: "npm:^4.0.1"
     three: "npm:^0.183.2"
+    zod: "npm:^4.1.11"
   languageName: unknown
   linkType: soft
 
