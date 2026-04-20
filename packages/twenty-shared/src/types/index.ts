@@ -283,5 +283,6 @@ export { ViewFilterOperand } from './ViewFilterOperand';
 export { ViewFilterOperandDeprecated } from './ViewFilterOperandDeprecated';
 export { ViewKey } from './ViewKey';
 export { ViewOpenRecordIn } from './ViewOpenRecordIn';
+export { ViewSortDirection } from './ViewSortDirection';
 export { ViewType } from './ViewType';
 export { ViewVisibility } from './ViewVisibility';
