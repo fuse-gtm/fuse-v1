@@ -31,8 +31,6 @@ import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSe
 import { PAGE_LAYOUT_TAB_LIST_DROPPABLE_IDS } from '@/page-layout/components/PageLayoutTabListDroppableIds';
 import { PageLayoutTabListReorderableOverflowDropdown } from '@/page-layout/components/PageLayoutTabListReorderableOverflowDropdown';
 import { PageLayoutTabListVisibleTabs } from '@/page-layout/components/PageLayoutTabListVisibleTabs';
-import { STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS } from '@/page-layout/constants/StandardPageLayoutTabTitleTranslations';
-import { useIsCurrentObjectCustom } from '@/page-layout/hooks/useIsCurrentObjectCustom';
 import { useIsPageLayoutInEditMode } from '@/page-layout/hooks/useIsPageLayoutInEditMode';
 import { PageLayoutComponentInstanceContext } from '@/page-layout/states/contexts/PageLayoutComponentInstanceContext';
 import { pageLayoutTabListCurrentDragDroppableIdComponentState } from '@/page-layout/states/pageLayoutTabListCurrentDragDroppableIdComponentState';
@@ -109,9 +107,6 @@ export const PageLayoutTabList = ({
 }: PageLayoutTabListProps) => {
   const { getIcon } = useIcons();
   const { t } = useLingui();
-  const { isCustom } = useIsCurrentObjectCustom();
-
-  const shouldTranslateTabTitles = !isCustom;
 
   const isRecordPageGlobalEditionEnabled = useIsFeatureEnabled(
     FeatureFlagKey.IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED,
@@ -119,12 +114,7 @@ export const PageLayoutTabList = ({
 
   const tabsWithIcons: SingleTabProps[] = tabs.map((tab) => ({
     id: tab.id,
-    // TODO: drop once the configuration of all record page layouts has been migrated to the backend.
-    title:
-      shouldTranslateTabTitles &&
-      isDefined(STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS[tab.title])
-        ? t(STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS[tab.title])
-        : tab.title,
+    title: tab.title,
     Icon: isDefined(tab.icon) ? getIcon(tab.icon) : undefined,
   }));
 
