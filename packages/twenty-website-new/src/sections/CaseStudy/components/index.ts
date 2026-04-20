@@ -1,13 +1,15 @@
+import { Body } from './Body/Body';
+import { CaseStudySectionNav } from './CaseStudySectionNav';
 import { Hero } from './Hero/Hero';
-import { TableOfContents } from './TableOfContents/TableOfContents';
-import { Testimonial } from './Testimonial/Testimonial';
+import { Highlights } from './Highlights/Highlights';
 import { TextBlock } from './TextBlock/TextBlock';
 import { VisualBlock } from './VisualBlock/VisualBlock';
 
 export const CaseStudy = {
+  Body,
+  SectionNav: CaseStudySectionNav,
   Hero,
-  TableOfContents,
-  Testimonial,
+  Highlights,
   TextBlock,
   VisualBlock,
 };
