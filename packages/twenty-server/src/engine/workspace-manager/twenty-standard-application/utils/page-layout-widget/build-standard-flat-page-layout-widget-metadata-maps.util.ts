@@ -162,7 +162,7 @@ const buildFieldsWidgetConfiguration = ({
       },
       universalConfiguration: {
         configurationType: WidgetConfigurationType.FIELDS,
-        viewId: null,
+        viewUniversalIdentifier: null,
         newFieldDefaultVisibility: true,
       },
     };
@@ -199,7 +199,7 @@ const buildFieldsWidgetConfiguration = ({
     },
     universalConfiguration: {
       configurationType: WidgetConfigurationType.FIELDS,
-      viewId: viewUniversalIdentifier,
+      viewUniversalIdentifier,
       newFieldDefaultVisibility: true,
     },
   };
