@@ -1,8 +1,11 @@
 {
-  "name": "twenty-website-new",
+  "name": "fuse-website",
   "private": true,
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
-    "nx": "NX_DEFAULT_PROJECT=twenty-website-new node ../../node_modules/nx/bin/nx.js",
+    "nx": "NX_DEFAULT_PROJECT=fuse-website node ../../node_modules/nx/bin/nx.js",
     "dev": "npx next dev",
     "build": "npx next build",
     "start": "npx next start",

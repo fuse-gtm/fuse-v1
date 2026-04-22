@@ -2,6 +2,11 @@ import path from 'path';
 import withLinaria, { type LinariaConfig } from 'next-with-linaria';
 
 const nextConfig: LinariaConfig = {
+  // Pin workspace root to this package to stop Turbopack from latching onto
+  // an unrelated lockfile in the home directory.
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
