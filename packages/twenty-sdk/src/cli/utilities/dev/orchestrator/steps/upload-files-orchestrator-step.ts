@@ -4,6 +4,7 @@ import {
 } from '@/cli/utilities/dev/orchestrator/dev-mode-orchestrator-state';
 import { FileUploader } from '@/cli/utilities/file/file-uploader';
 import { type FileFolder } from 'twenty-shared/types';
+import { isDefined } from 'twenty-shared/utils';
 
 export type UploadFilesOrchestratorStepOutput = {
   fileUploader: FileUploader | null;
@@ -34,7 +35,7 @@ export class UploadFilesOrchestratorStep {
   }
 
   get isInitialized(): boolean {
-    return this.state.steps.uploadFiles.output.fileUploader !== null;
+    return isDefined(this.state.steps.uploadFiles.output.fileUploader);
   }
 
   initialize(input: { appPath: string; universalIdentifier: string }): void {
@@ -126,34 +127,6 @@ export class UploadFilesOrchestratorStep {
 
     step.status = 'done';
     this.notify();
-  }
-
-  private logUploadSummary(): void {
-    if (this.totalQueued === 0) {
-      this.resetCounters();
-
-      return;
-    }
-
-    if (this.failedCount > 0) {
-      this.state.addEvent({
-        message: `Uploaded ${this.uploadedCount}/${this.totalQueued} files (${this.failedCount} failed)`,
-        status: 'error',
-      });
-    }
-
-    this.state.addEvent({
-      message: `Successfully uploaded ${this.uploadedCount} file${this.uploadedCount !== 1 ? 's' : ''}`,
-      status: 'success',
-    });
-
-    this.resetCounters();
-  }
-
-  private resetCounters(): void {
-    this.uploadedCount = 0;
-    this.failedCount = 0;
-    this.totalQueued = 0;
   }
 
   private uploadPendingFiles(): void {

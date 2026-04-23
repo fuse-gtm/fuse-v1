@@ -25,7 +25,6 @@ export class LogicFunctionDriverFactory extends DriverFactoryBase<LogicFunctionD
     configGroupHashService: ConfigGroupHashService,
     private readonly logicFunctionResourceService: LogicFunctionResourceService,
     private readonly sdkClientArchiveService: SdkClientArchiveService,
-    private readonly cacheLockService: CacheLockService,
   ) {
     super(twentyConfigService, configGroupHashService);
   }

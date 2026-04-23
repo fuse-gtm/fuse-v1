@@ -75,16 +75,14 @@ export class LocalDriver implements LogicFunctionDriver {
     applicationUniversalIdentifier: string;
   }): Promise<void> {
     const depsLayerPath = this.getDepsLayerPath(flatApplication);
-    const depsNodeModulesPath = join(depsLayerPath, 'node_modules');
 
-    const nodeModulesExist = await pathExists(depsNodeModulesPath);
+    try {
+      await fs.access(depsLayerPath);
 
-    if (nodeModulesExist) {
       return;
+    } catch {
+      // Layer doesn't exist yet
     }
-
-    // Wipe any partial leftovers from a previously failed build
-    await fs.rm(depsLayerPath, { recursive: true, force: true });
 
     await this.logicFunctionResourceService.copyDependenciesInMemory({
       applicationUniversalIdentifier,
@@ -105,21 +103,26 @@ export class LocalDriver implements LogicFunctionDriver {
       workspaceId: flatApplication.workspaceId,
       applicationUniversalIdentifier,
     });
-    const sdkNodeModulesPath = join(sdkLayerPath, 'node_modules');
 
-    const nodeModulesExist = await pathExists(sdkNodeModulesPath);
+    const layerExists = await fs
+      .access(sdkLayerPath)
+      .then(() => true)
+      .catch(() => false);
 
-    if (nodeModulesExist && !flatApplication.isSdkLayerStale) {
+    if (layerExists && !flatApplication.isSdkLayerStale) {
       return;
     }
 
     await fs.rm(sdkLayerPath, { recursive: true, force: true });
 
-    const sdkPackagePath = join(sdkNodeModulesPath, 'twenty-client-sdk');
+    const sdkPackagePath = join(
+      sdkLayerPath,
+      'node_modules',
+      'twenty-client-sdk',
+    );
 
     await this.sdkClientArchiveService.downloadAndExtractToPackage({
       workspaceId: flatApplication.workspaceId,
-      applicationId: flatApplication.id,
       applicationUniversalIdentifier,
       targetPackagePath: sdkPackagePath,
     });
@@ -167,6 +170,41 @@ export class LocalDriver implements LogicFunctionDriver {
   }
 
   async delete() {}
+
+  // Symlinks everything from the deps layer except twenty-client-sdk,
+  // which comes from the SDK layer (workspace-specific generated client).
+  private async assembleNodeModules({
+    sourceTemporaryDir,
+    flatApplication,
+    applicationUniversalIdentifier,
+  }: {
+    sourceTemporaryDir: string;
+    flatApplication: FlatApplication;
+    applicationUniversalIdentifier: string;
+  }): Promise<void> {
+    const depsNodeModules = join(
+      this.getDepsLayerPath(flatApplication),
+      'node_modules',
+    );
+    const sdkNodeModules = join(
+      this.getSdkLayerPath({
+        workspaceId: flatApplication.workspaceId,
+        applicationUniversalIdentifier,
+      }),
+      'node_modules',
+    );
+    const execNodeModules = join(sourceTemporaryDir, 'node_modules');
+
+    await fs.mkdir(execNodeModules, { recursive: true });
+
+    const entries = await fs.readdir(depsNodeModules, {
+      withFileTypes: true,
+    });
+    await this.ensureSdkLayer({
+      flatApplication,
+      applicationUniversalIdentifier,
+    });
+  }
 
   // Symlinks everything from the deps layer except twenty-client-sdk,
   // which comes from the SDK layer (workspace-specific generated client).

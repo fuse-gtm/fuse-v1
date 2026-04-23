@@ -66,13 +66,13 @@ jobs:
         run: |
           CI_VERSION="0.0.0-ci.$(date +%s)"
           echo "CI_VERSION=$CI_VERSION" >> $GITHUB_ENV
-          npx nx run-many -t set-local-version -p $PUBLISHABLE_PACKAGES --releaseVersion=$CI_VERSION
+          npx nx run-many -t set-local-version -p twenty-sdk twenty-client-sdk create-twenty-app --releaseVersion=$CI_VERSION
 
       - name: Build packages
         run: |
-          for pkg in $PUBLISHABLE_PACKAGES; do
-            npx nx build $pkg
-          done
+          npx nx build twenty-sdk
+          npx nx build twenty-client-sdk
+          npx nx build create-twenty-app
 
       - name: Install and start Verdaccio
         run: |
@@ -93,7 +93,7 @@ jobs:
           yarn config set unsafeHttpWhitelist --json '["localhost"]'
           yarn config set npmAuthToken ci-auth-token
 
-          for pkg in $PUBLISHABLE_PACKAGES; do
+          for pkg in twenty-sdk twenty-client-sdk create-twenty-app; do
             cd packages/$pkg
             yarn npm publish --tag ci
             cd ../..
@@ -156,6 +156,18 @@ jobs:
         run: |
           cd /tmp/e2e-test-workspace/test-app
           npx --no-install twenty install
+
+      - name: Install scaffolded app
+        run: |
+          cd /tmp/e2e-test-workspace/test-app
+          npx --no-install twenty install
+
+      - name: Execute create-hello-world-company logic function
+        run: |
+          cd /tmp/e2e-test-workspace/test-app
+          EXEC_OUTPUT=$(npx --no-install twenty exec --functionName create-hello-world-company)
+          echo "$EXEC_OUTPUT"
+          echo "$EXEC_OUTPUT" | grep -q "Created company"
 
       - name: Run scaffolded app integration test
         run: |

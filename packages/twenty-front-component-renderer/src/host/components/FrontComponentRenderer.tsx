@@ -1,11 +1,10 @@
-import { FrontComponentErrorEffect } from '@/remote/components/FrontComponentErrorEffect';
-import { FrontComponentInitializeHostCommunicationApiEffect } from '@/remote/components/FrontComponentInitializeHostCommunicationApiEffect';
-import { FrontComponentUpdateContextEffect } from '@/remote/components/FrontComponentUpdateContextEffect';
-import { FrontComponentUpdateHostCommunicationApiEffect } from '@/remote/components/FrontComponentUpdateHostCommunicationApiEffect';
-import { type FrontComponentHostCommunicationApi } from '@/types/FrontComponentHostCommunicationApi';
-import { type SdkClientUrls } from '@/types/HostToWorkerRenderContext';
-import { type WorkerExports } from '@/types/WorkerExports';
-import { type FrontComponentExecutionContext } from 'twenty-sdk/front-component';
+import { FrontComponentErrorEffect } from '@/front-component-renderer/remote/components/FrontComponentErrorEffect';
+import { FrontComponentHostCommunicationApiEffect } from '@/front-component-renderer/remote/components/FrontComponentHostCommunicationApiEffect';
+import { FrontComponentUpdateContextEffect } from '@/front-component-renderer/remote/components/FrontComponentUpdateContextEffect';
+import { type FrontComponentHostCommunicationApi } from '@/front-component-renderer/types/FrontComponentHostCommunicationApi';
+import { type SdkClientUrls } from '@/front-component-renderer/types/HostToWorkerRenderContext';
+import { type WorkerExports } from '@/front-component-renderer/types/WorkerExports';
+import { type FrontComponentExecutionContext } from '@/sdk/front-component-api';
 import { type ThreadWebWorker } from '@quilted/threads';
 import {
   type RemoteReceiver,

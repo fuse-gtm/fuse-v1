@@ -1,7 +1,15 @@
 import { formatPath } from '@/cli/utilities/file/file-path';
 import chalk from 'chalk';
 import type { Command } from 'commander';
-import { SyncableEntity } from 'twenty-shared/application';
+import { AppBuildCommand } from './build';
+import { AppDevCommand } from './dev';
+import { AppInstallCommand } from './install';
+import { AppPublishCommand } from './publish';
+import { AppTypecheckCommand } from './typecheck';
+import { AppUninstallCommand } from './uninstall';
+import { DeployCommand } from './deploy';
+import { LogicFunctionExecuteCommand } from './exec';
+import { LogicFunctionLogsCommand } from './logs';
 import { EntityAddCommand } from './add';
 import { AppBuildCommand } from './build';
 import { CatalogSyncCommand } from './catalog-sync';
@@ -20,7 +28,6 @@ import { AppUninstallCommand } from './uninstall';
 export const registerCommands = (program: Command): void => {
   const buildCommand = new AppBuildCommand();
   const devCommand = new AppDevCommand();
-  const devOnceCommand = new AppDevOnceCommand();
   const installCommand = new AppInstallCommand();
   const publishCommand = new AppPublishCommand();
   const typecheckCommand = new AppTypecheckCommand();
