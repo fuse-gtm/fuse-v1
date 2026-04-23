@@ -23,7 +23,6 @@ import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspac
 import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorator';
 import { SettingsPermissionGuard } from 'src/engine/guards/settings-permission.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
-import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
 
 @MetadataResolver()
 @UseFilters(PreventNestToAutoLogGraphqlErrorsFilter)
