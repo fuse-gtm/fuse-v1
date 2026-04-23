@@ -98,7 +98,7 @@ _CTO adjustments (2026-04-23) applied on top of initial triage: #18430 moved fro
 | 53 | `07803f232f` | #18378 | fix: use ForbiddenException in DevelopmentGuard to prevent Sentry noise (#18378) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 54 | `d59d2efb8b` | #18383 | i18n - translations (#18383) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 55 | `f09a9cc25a` | #18384 | Replace align-center with padding (#18384) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
-| 56 | `b11f77df2a` | #18319 | [FRONT COMPONENTS] Introduce conditionalAvailabilityExpression to command menu items (#18319) | DEFER | 2D-flags-rbac | feature-flag enum location/RBAC stack (wave 2D) |  |
+| 56 | `b11f77df2a` | #18319 | [FRONT COMPONENTS] Introduce conditionalAvailabilityExpression to command menu items (#18319) | DEFER | defer | CTO 2026-04-23: reclassified from 2D (misclassified; 349-file command-menu refactor, not a flag/RBAC change). Needs dedicated sub-wave. Low urgency. |
 | 57 | `999dcd4468` | #18369 | Increase size of input in test setting logic function tab (#18369) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 58 | `be01a85d67` | #18387 | i18n - translations (#18387) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 59 | `eda905f271` | #18382 | [DevXP] Improve Linaria pre-build speed (#18382) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
@@ -383,7 +383,7 @@ _CTO adjustments (2026-04-23) applied on top of initial triage: #18430 moved fro
 | 338 | `8005b35b56` | #18605 | Fix relation connect where failing on mixed-case email and URL (#18605) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 339 | `26139ee463` | #18779 | fix: stop event propagation when removing file in AI chat preview (#18779) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 340 | `cd594ce8bd` | #18766 | Fix: Hide object from Opened section when it already has a workspace nav item (#18766) | ACCEPT | 2C-frontend |  | `34bbcb486b` |
-| 341 | `cee4cf6452` | #18784 | feat: migrate ConnectedAccount infrastructure entities to metadata schema (#18784) | DEFER | 2D-flags-rbac | feature-flag enum location/RBAC stack (wave 2D) |  |
+| 341 | `cee4cf6452` | #18784 | feat: migrate ConnectedAccount infrastructure entities to metadata schema (#18784) | DEFER | defer | CTO 2026-04-23: reclassified from 2D (149-file ConnectedAccount metadata schema migration, not a flag change). Dedicated sub-wave when scoped. |
 | 342 | `3cbd9f2b5d` | #18786 | i18n - translations (#18786) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 343 | `ffb02a6878` | #18768 | Improve workflow metrics with faillure reason (#18768) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 344 | `0a6b514898` | #18795 | fix: remove redundant cookie write that made tokenPair a session cookie (#18795) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
@@ -417,7 +417,7 @@ _CTO adjustments (2026-04-23) applied on top of initial triage: #18430 moved fro
 | 372 | `9a306ddb9a` | #18825 | feat: store SSO connections as connected accounts during sign-in (#18825) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 373 | `bdaff0b7e2` | #18811 | Fetch load more on group by (#18811) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 374 | `96c5728ed0` | #18809 | fix: prevent localStorage bloat from derived fields on mock metadata (#18809) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
-| 375 | `d5a7dec117` | #18830 | refactor: rename ObjectMetadataItem to EnrichedObjectMetadataItem and clean up metadata flows (#18830) | DEFER | 2D-flags-rbac | RBAC/permissions stack change (wave 2D) |  |
+| 375 | `d5a7dec117` | #18830 | refactor: rename ObjectMetadataItem to EnrichedObjectMetadataItem and clean up metadata flows (#18830) | DEFER | defer | CTO 2026-04-23: reclassified from 2D (440-file ObjectMetadataItem rename, not an RBAC change). Largest of the 3 massive refactors. Dedicated sub-wave when scoped. |
 | 376 | `7bde8a4dfa` | #18701 | [Chore]: Migration to dynamic view names for standard views (#18701) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 377 | `8ef32c4781` | #18641 | Add `In-Reply-To` to Email Workflow Node (#18641) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
 | 378 | `1a0588d233` | #18405 | fix: auto-retry Microsoft OAuth on AADSTS650051 race condition (#18405) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |  |
