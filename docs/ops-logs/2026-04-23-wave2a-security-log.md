@@ -117,16 +117,100 @@ CI must run on the PR before merge:
 
 ## Guardrail A — telemetry scan (post-wave-2A)
 
-TODO: scanner agent
+**Scope:** `git diff origin/main...HEAD` against `integration/upstream-wave2-security` at HEAD `d9f968dfee` (20 commits, 248 files changed).
+
+- **Egress patterns added by wave:** 210 hits — all classified OK. Breakdown:
+  - GitHub Actions references to `twentyhq/twenty/.github/actions/...` and `twentyhq/ci-privileged` (workflow files + ledger doc, ~20 hits): CI-scaffolding references to upstream reusable actions; no runtime egress. OK.
+  - README/doc references to `docs.twenty.com` and `twenty.com` in `twenty-apps/examples/*/README.md` and `twenty-for-twenty/README.md` (~15 hits): documentation links in template READMEs; not runtime code. WATCH (branding debt; see follow-ups).
+  - Resend-related `segment`/`segments` matches in `twenty-apps/internal/twenty-for-twenty/src/modules/resend/` (~150 hits): false positives — "segment" refers to the Resend contact-segment object, not Segment.com analytics. OK.
+  - Test fixtures using `thomas@mail.twenty.com` in Resend email-parser unit tests (8 hits): test data strings. OK.
+  - OAuth discovery unit-test assertions using `acme.twenty.com` / `workspace.twenty.com` as hostname fixtures in `oauth-discovery.controller.spec.ts` and `mcp-auth.guard.spec.ts` (~10 hits): test-only literals. OK.
+- **Phone-home / license-validate patterns added:** 0. No new calls to `phone-home | verifyEnterprise | validateLicense | licenseValidity` introduced by the wave. Existing `// Fuse: no outbound phone-home calls` stubs in `enterprise-key-validation.cron.job.ts` remain in place (unchanged by wave 2A — baseline still holds).
+- **New telemetry SDK deps added:** 0. `yarn.lock` diffs contain no new `posthog | segment | @clickhouse | mixpanel | amplitude` entries. The only yarn.lock change is `flatted@3.3.3 → 3.4.2` (prototype-pollution CVE fix, PR #19870).
+- **Verdict: PASS**
 
 ## Guardrail B — partner-os surface
 
-TODO: scanner agent
+- **Diff scope:** `git diff origin/main...HEAD -- packages/twenty-server/src/modules/partner-os/`
+- **Diff line count:** 0. No partner-os files touched by any wave-2A cherry-pick. Matches executor's pre-verification expectation ("Partner-os directory touches: 0").
+- **Partner-os jest execution:** Deferred to CI (sandbox constraint — no `node_modules`; `yarn install` would fail).
+- **Verdict: PASS**
 
 ## Guardrail C — feature-flag drift
 
-TODO: scanner agent
+- **Shared enum file exists:** `packages/twenty-shared/src/types/FeatureFlagKey.ts` — present. PASS.
+- **`IS_PARTNER_OS_ENABLED` present in enum:** confirmed at line 18. PASS.
+- **`FeatureFlagKey.ts` diff vs origin/main:** empty (0 lines). No wave-2A commit touched the enum.
+- **`seed-feature-flags.util.ts` diff vs origin/main:** empty (0 lines). No wave-2A commit touched the dev seeder.
+- **Prod workspace drift check:** deferred — MCP is local-only and cannot reach the prod workspace from this sandbox.
+- **Verdict: PASS**
 
 ## Deep file review
 
-TODO: deep-reviewer agent
+**Scope:** all 248 files changed on `integration/upstream-wave2-security` vs `origin/main`.
+
+**Surface breakdown:**
+- 116 files in `packages/twenty-apps/internal/twenty-for-twenty/` (Resend app — internal Twenty-team app; isolated, not bundled into Fuse runtime).
+- 21 files in `packages/twenty-apps/internal/self-hosting/` (self-hosting CRM-of-CRMs — internal Twenty-team app; isolated).
+- 12 files in `packages/twenty-apps/examples/{hello-world,postcard}/` and `packages/create-twenty-app/` (app-framework boilerplate / templates).
+- 13 files in `.github/workflows/` and `.github/actions/` (CI workflow hardening + CD centralization).
+- 14 files in `packages/twenty-sdk/src/cli/` (SDK CLI restructure — partial, because three parent commits were skipped).
+- 13 files in `packages/twenty-server/src/` (the security-critical surface — OAuth + MCP auth + connected-account permission propagation + one migration).
+- 3 operational / documentation files.
+- `yarn.lock` (root dep bump only).
+
+**Security-critical file-level review (twenty-server):**
+
+1. `packages/twenty-server/src/engine/api/mcp/guards/mcp-auth.guard.ts` — Accept. Switched from `TwentyConfigService.get('SERVER_URL')` to request-host awareness for `WWW-Authenticate`, and added `scope=` parameter per RFC 9728 / MCP spec. `JwtAuthGuard.canActivate` still gates access; no auth weakening. Tests in `__tests__/mcp-auth.guard.spec.ts` updated to match; unauth path still throws `UnauthorizedException`.
+
+2. `packages/twenty-server/src/engine/core-modules/application/application-oauth/controllers/oauth-discovery.controller.ts` — Accept. Host-aware metadata (per RFC 9728 §3.2); adds `authorization_response_iss_parameter_supported: true` (RFC 9207 mix-up attack defence). `@UseGuards(PublicEndpointGuard, NoPermissionGuard)` preserved on both endpoints. WATCH item: issuer URL derived from `request.get('host')` — must run behind proxy with `TRUST_PROXY` set, else Host header spoofing could inject attacker-controlled URLs into published metadata. Upstream PR description calls this out explicitly. Fuse ops should verify `TRUST_PROXY` is set in the deployment envs.
+
+3. `packages/twenty-server/src/engine/core-modules/application/application-oauth/application-oauth.module.ts` — Accept. Removes a duplicate `DomainServerConfigModule` import; cleanup.
+
+4. `packages/twenty-server/src/engine/core-modules/auth/services/auth.service.ts` — Accept. Adds PKCE enforcement for public OAuth clients (clients with no `oAuthClientSecretHash`). This hardens the OAuth surface; it does not remove any prior check. Matches PR #19840.
+
+5. `packages/twenty-server/src/engine/core-modules/application/application-marketplace/marketplace.resolver.ts` — Accept with WATCH. **Guard stack changed from `UseGuards(UserAuthGuard, WorkspaceAuthGuard, NoPermissionGuard)` → `UseGuards(WorkspaceAuthGuard, NoPermissionGuard)`**. This is an intentional upstream security design change (PR #19409 summary: "API key auth for marketplace: Removed `UserAuthGuard` from `MarketplaceResolver` so API key tokens can call `installMarketplaceApp`"). `WorkspaceAuthGuard` only checks `request.workspace` is set (workspace-scoping), it does NOT check `request.user`. Net effect: workspace-scoped API keys can now install marketplace apps without interactive user context. Low Fuse risk today because Fuse does not surface the marketplace UI and the marketplace catalog sync targets upstream's catalog. WATCH: if Fuse ever curates its own marketplace catalog and issues workspace API keys to third parties, revisit whether `UserAuthGuard` should be reinstated on Fuse's fork.
+
+6. `packages/twenty-server/src/modules/connected-account/services/imap-smtp-caldav-apis.service.ts` — Accept. Replaces `buildSystemAuthContext` (god-mode) with per-caller role-resolution via `getWorkspaceContext()` + `resolveRolePermissionConfig()`. Tighter security (inherits caller's permissions instead of bypassing).
+
+7. `packages/twenty-server/src/engine/core-modules/auth/services/create-connected-account.service.ts` — Accept. Same per-caller role-resolution pattern.
+
+8. `packages/twenty-server/src/modules/connected-account/jobs/delete-workspace-member-connected-accounts.job.ts` — Accept. Cleanup job explicitly sets `shouldBypassPermissionChecks: true`. Correct for background jobs running without user context.
+
+9. `packages/twenty-server/src/database/commands/upgrade-version-command/1-21/1-21-workspace-command-1775500012000-migrate-messaging-infrastructure-to-metadata.command.ts` — Accept. Same `shouldBypassPermissionChecks: true` for a migration command.
+
+**CI workflow review:**
+
+10. `.github/workflows/claude.yml` (1 line changed) — Accept. Wraps interpolated run-URL through `toJSON(format(...))` to block expression-injection via crafted repo/issue fields. Matches PR #18318. Fuse-side token-presence gate preserved per conflict resolution.
+
+11. `.github/workflows/preview-env-dispatch.yaml` (1 line added) — Accept with WATCH. Adds `actions: write` to the `permissions:` block. `pull_request_target` with elevated permissions remains a known-risk primitive; Fuse's PRs don't flow through this workflow because the dispatch target (ci-privileged repo) is not in Fuse's scope.
+
+12. `.github/workflows/ci-server.yaml` (~10 lines changed) — Accept. Migration-detection now uses `git diff --quiet` + `git checkout -- .` rollback, more robust than the prior file-name glob approach.
+
+**App surface review (isolated packages):**
+
+13. `packages/twenty-apps/internal/self-hosting/src/logic-functions/telemetryWebhook.function.ts` — Accept. INBOUND webhook receiver (POST `/webhook/telemetry`) — this app receives telemetry from downstream Twenty instances into the self-hoster's own CRM. It does NOT itself emit egress. The self-hosting app is standalone and NOT loaded by the Fuse server runtime (verified: `grep 'twenty-apps/internal' packages/twenty-server/src` returns nothing). OK.
+
+14. `packages/twenty-apps/internal/twenty-for-twenty/...` (116 files) — Accept wholesale. Isolated internal Twenty-team app for Resend integration; Fuse does not ship or load this app. Conflicts on earlier cherry-pick resolved by favoring upstream wholesale (per cherry-pick log commit #23 rationale).
+
+15. `packages/twenty-apps/internal/self-hosting/...` (21 files) — Accept wholesale. Same reasoning.
+
+**yarn.lock:**
+
+16. Root `yarn.lock` — Accept. Only change is `flatted@3.3.3 → 3.4.2` (PR #19870, prototype-pollution CVE fix). No new runtime/SDK deps introduced.
+
+**Conflict-resolution file spot-check (per 2A ops log):**
+- `oauth-discovery.controller.ts` — favor-upstream rule applied cleanly; matches upstream commit `5223c4771d` content. No Fuse-specific hooks lost.
+- `claude.yml` — Fuse's `Check ci-privileged token` guard preserved alongside upstream's `toJSON()` hardening. Clean merge.
+- `post-ci-comments.yaml` — zero diff vs main (upstream diff was redundant once Fuse's token-presence gate is preserved).
+- `preview-env-dispatch.yaml` — correct merge: kept Fuse's `contents: write` + token-gate, adopted upstream's `actions: write`.
+
+**Blockers:** 0.
+**Watch items:** 3.
+1. `oauth-discovery.controller.ts` requires `TRUST_PROXY` in Fuse deployment envs; else spoofable issuer URLs.
+2. `marketplace.resolver.ts` now grants workspace-scoped API keys access to `installMarketplaceApp`. Revisit if Fuse ever exposes marketplace to external operators.
+3. Doc/README references to `twenty.com` in new app templates — branding debt, not runtime risk (tracked via existing branding follow-ups).
+
+**Top nits:** `default-role.ts` label cosmetic change in unloaded self-hosting app; duplicate module import cleanup in `application-oauth.module.ts` (already accepted above).
+
+- **Verdict: PASS**
