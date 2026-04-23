@@ -189,24 +189,9 @@ export const WorkspaceSectionContainer = ({
               folderChildrenById={folderChildrenById}
               onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
             />
-          }
-        >
-          <LazyWorkspaceSectionListDndKit
-            filteredItems={filteredItems}
-            getEditModeProps={getEditModeProps}
-            folderChildrenById={folderChildrenById}
-            selectedNavigationMenuItemId={selectedNavigationMenuItemId}
-            onNavigationMenuItemClick={onNavigationMenuItemClick}
-            onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
-          />
-        </Suspense>
-      ) : (
-        <WorkspaceSectionListReadOnly
-          filteredItems={filteredItems}
-          folderChildrenById={folderChildrenById}
-          onActiveObjectMetadataItemClick={onActiveObjectMetadataItemClick}
-        />
-      )}
-    </NavigationMenuItemSection>
+          )}
+        </AnimatedExpandableContainer>
+      </StyledWorkspaceSectionContentGapOffset>
+    </NavigationDrawerSection>
   );
 };

@@ -98,16 +98,8 @@ export const NavigationMenuItemFolderSubItem = ({
     : undefined;
   const isIndexView = view?.key === ViewKey.INDEX;
 
-  const objectMetadataItem =
-    navigationMenuItem.type === NavigationMenuItemType.OBJECT ||
-    navigationMenuItem.type === NavigationMenuItemType.VIEW ||
-    navigationMenuItem.type === NavigationMenuItemType.RECORD
-      ? getObjectMetadataForNavigationMenuItem(
-          navigationMenuItem,
-          objectMetadataItems,
-          views,
-        )
-      : null;
+  // (duplicate `const objectMetadataItem` removed — declared once at top of
+  // function body. This was a conflict-marker cherry-pick leftover.)
 
   const isEditable =
     isDefined(onNavigationMenuItemClick) &&
