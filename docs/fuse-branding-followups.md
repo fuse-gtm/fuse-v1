@@ -22,6 +22,16 @@ Scope: remaining branding debt after `rebrand: replace all Twenty branding with 
 - [x] `packages/twenty-front/src/modules/activities/timeline-activities/utils/getTimelineActivityAuthorFullName.ts` — `Fuse` fallback ✅ (2026-03-05)
 - [x] `packages/twenty-front/public/manifest.json` — `name`/`short_name` → Fuse ✅ (2026-03-05)
 
+### Surfaced by wave 2C verifier (2026-04-23) — new branded-text debt
+
+- [ ] `packages/twenty-front/src/pages/settings/applications/utils/getCustomApplicationDescription.ts` — user-visible markdown description references `twenty.com/developers/extend/apps/...` doc links and `create-twenty-app` CLI. Rewrite to Fuse docs (`docs.fusegtm.com`) + Fuse CLI name (or drop the create-CLI line if Fuse doesn't publish one).
+- [ ] `packages/twenty-front/src/pages/settings/applications/utils/getStandardApplicationDescription.ts` — same shape as above; same rewrite.
+- [ ] `packages/twenty-server/src/engine/workspace-manager/dev-seeder/core/utils/get-page-layout-widget-data-seeds.util.ts:620` — dev-seeder widget URL embeds `star-history.com/?repos=twentyhq%2Ftwenty`. Low priority (dev seeder, not runtime for prod workspaces). Rewrite to `repos=fuse-gtm%2Ffuse-v1` or drop the widget from the seed.
+
+### Wave 2C auth-cookie note (not branding, but tracked here until the ops-log index lands)
+
+- Upstream #19867 (Billing - fixes, cherry-picked in wave 2C) modified `useAuth.ts` to mirror `tokenPair` into a `secure`+`sameSite:lax` cookie on same origin. Fuse-controlled frontend host, not a security regression. No action required — flagged by verifier for deploy-runbook awareness.
+
 ## Licensing — Organization Self-Hosted (activated 2026-03-05)
 
 - [x] `ENTERPRISE_KEY` set in `packages/twenty-docker/.env` → activates on next deploy ✅
