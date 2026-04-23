@@ -242,6 +242,7 @@ const halftoneFragmentShader = /* glsl */ `
 `;
 
 const OverlayRoot = styled.div`
+  contain: layout paint;
   inset: 0;
   pointer-events: none;
   position: absolute;

@@ -18,6 +18,7 @@ export const HOME_STEPPER_LOTTIE_SRC =
 
 const LottieSlot = styled.div`
   box-sizing: border-box;
+  contain: layout paint;
   height: 100%;
   padding: ${theme.spacing(4)};
   padding-left: ${theme.spacing(8)};
