@@ -16,6 +16,7 @@ const FrameRoot = styled.div`
   position: relative;
   width: 100%;
   aspect-ratio: 672 / 705;
+  contain: layout paint;
 `;
 
 const PatternBackdrop = styled.div`

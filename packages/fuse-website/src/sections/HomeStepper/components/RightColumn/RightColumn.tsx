@@ -13,8 +13,9 @@ const StyledRightColumn = styled.div`
   @media (min-width: ${theme.breakpoints.md}px) {
     align-items: center;
     align-self: start;
+    contain: layout paint;
     display: flex;
-    height: calc(100vh - 4.5rem);
+    height: calc(100svh - 4.5rem);
     justify-content: center;
     position: sticky;
     top: 4.5rem;

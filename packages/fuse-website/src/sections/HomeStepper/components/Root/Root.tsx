@@ -7,6 +7,7 @@ import type { ReactNode, RefObject } from 'react';
 
 const StyledSection = styled.section`
   background-color: ${theme.colors.primary.text[5]};
+  contain: layout paint;
   width: 100%;
 `;
 

@@ -13,6 +13,7 @@ const LeftColumnRoot = styled.div`
   min-width: 0;
 
   @media (min-width: ${theme.breakpoints.md}px) {
+    contain: layout;
     display: grid;
     margin-left: calc(-1 * ${theme.spacing(4)});
   }
@@ -26,9 +27,10 @@ const StickyPanel = styled.div`
   @media (min-width: ${theme.breakpoints.md}px) {
     align-items: center;
     align-self: start;
+    contain: layout paint;
     gap: ${theme.spacing(20)};
     grid-area: 1 / 1;
-    height: 100vh;
+    height: 100svh;
     overflow: hidden;
     position: sticky;
     top: 0;
@@ -45,7 +47,7 @@ const SpacerStack = styled.div`
 `;
 
 const StepSpacer = styled.div`
-  min-height: 100vh;
+  min-height: 100svh;
 `;
 
 const StepsContainer = styled.div`
@@ -54,6 +56,8 @@ const StepsContainer = styled.div`
   min-width: 0;
 
   @media (min-width: ${theme.breakpoints.md}px) {
+    min-height: 60svh;
+
     & > * {
       grid-area: 1 / 1;
     }
@@ -62,10 +66,11 @@ const StepsContainer = styled.div`
 
 const StepBlock = styled.div`
   align-content: center;
+  contain: layout style;
   display: grid;
   grid-template-columns: 1fr;
   max-width: 454px;
-  min-height: 80vh;
+  min-height: 80svh;
   min-width: 0;
   opacity: 0.3;
   row-gap: ${theme.spacing(4)};

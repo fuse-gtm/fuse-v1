@@ -15,17 +15,19 @@ const RailContainer = styled.div`
 
 const StickyViewportCenter = styled.div`
   align-items: center;
+  contain: layout paint;
   display: flex;
   flex-shrink: 0;
-  height: 100vh;
+  height: 100svh;
   justify-content: flex-start;
-  max-height: 100vh;
+  max-height: 100svh;
   position: sticky;
   top: 0;
 `;
 
 const Rail = styled.div`
   align-items: flex-start;
+  contain: layout;
   display: flex;
   flex-direction: column;
   gap: ${theme.spacing(2)};
