@@ -296,33 +296,6 @@ type ApplicationVariable {
   isSecret: Boolean!
 }
 
-type AuthToken {
-  token: String!
-  expiresAt: DateTime!
-}
-
-type ApplicationTokenPair {
-  applicationAccessToken: AuthToken!
-  applicationRefreshToken: AuthToken!
-}
-
-type FrontComponent {
-  id: UUID!
-  name: String!
-  description: String
-  sourceComponentPath: String!
-  builtComponentPath: String!
-  componentName: String!
-  builtComponentChecksum: String!
-  universalIdentifier: UUID
-  applicationId: UUID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  isHeadless: Boolean!
-  usesSdkClient: Boolean!
-  applicationTokenPair: ApplicationTokenPair
-}
-
 type LogicFunction {
   id: UUID!
   name: String!
@@ -592,7 +565,6 @@ type Application {
   settingsCustomTabFrontComponentId: UUID
   defaultLogicFunctionRole: Role
   agents: [Agent!]!
-  frontComponents: [FrontComponent!]!
   logicFunctions: [LogicFunction!]!
   objects: [Object!]!
   applicationVariables: [ApplicationVariable!]!
@@ -611,7 +583,6 @@ type ViewField {
   workspaceId: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  isActive: Boolean!
   deletedAt: DateTime
   isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
@@ -720,7 +691,6 @@ type ViewFieldGroup {
   workspaceId: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  isActive: Boolean!
   deletedAt: DateTime
   viewFields: [ViewField!]!
   isOverridden: Boolean! @deprecated(reason: "isOverridden is deprecated")
@@ -763,7 +733,6 @@ enum ViewType {
   KANBAN
   CALENDAR
   FIELDS_WIDGET
-  TABLE_WIDGET
 }
 
 enum ViewKey {
@@ -821,6 +790,7 @@ type Workspace {
   isCustomDomainEnabled: Boolean!
   editableProfileFields: [String!]
   defaultRole: Role
+  version: String
   fastModel: String!
   smartModel: String!
   aiAdditionalInstructions: String
@@ -830,7 +800,6 @@ type Workspace {
   workspaceCustomApplication: Application
   featureFlags: [FeatureFlag!]
   billingSubscriptions: [BillingSubscription!]!
-  installedApplications: [Application!]!
   currentBillingSubscription: BillingSubscription
   billingEntitlements: [BillingEntitlement!]!
   hasValidEnterpriseKey: Boolean!
@@ -919,7 +888,6 @@ type GridPosition {
 
 type PageLayoutWidget {
   id: UUID!
-  applicationId: UUID!
   pageLayoutTabId: UUID!
   title: String!
   type: WidgetType!
@@ -931,7 +899,6 @@ type PageLayoutWidget {
   conditionalAvailabilityExpression: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  isActive: Boolean!
   deletedAt: DateTime
   isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
@@ -1267,7 +1234,6 @@ type PageLayoutTab {
   layoutMode: PageLayoutTabLayoutMode
   createdAt: DateTime!
   updatedAt: DateTime!
-  isActive: Boolean!
   deletedAt: DateTime
   isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
@@ -1288,43 +1254,11 @@ enum PageLayoutType {
   RECORD_INDEX
   RECORD_PAGE
   DASHBOARD
-  STANDALONE_PAGE
 }
 
 type Analytics {
   """Boolean that confirms query was dispatched"""
   success: Boolean!
-}
-
-type ApprovedAccessDomain {
-  id: UUID!
-  domain: String!
-  isValidated: Boolean!
-  createdAt: DateTime!
-}
-
-type FileWithSignedUrl {
-  id: UUID!
-  path: String!
-  size: Float!
-  createdAt: DateTime!
-  url: String!
-}
-
-type EnterpriseLicenseInfoDTO {
-  isValid: Boolean!
-  licensee: String
-  expiresAt: DateTime
-  subscriptionId: String
-}
-
-type EnterpriseSubscriptionStatusDTO {
-  status: String!
-  licensee: String
-  expiresAt: DateTime
-  cancelAt: DateTime
-  currentPeriodEnd: DateTime
-  isCancellationScheduled: Boolean!
 }
 
 type BillingSubscriptionSchedulePhaseItem {
@@ -1480,9 +1414,40 @@ type BillingUpdate {
   billingSubscriptions: [BillingSubscription!]!
 }
 
+type EnterpriseLicenseInfoDTO {
+  isValid: Boolean!
+  licensee: String
+  expiresAt: DateTime
+  subscriptionId: String
+}
+
+type EnterpriseSubscriptionStatusDTO {
+  status: String!
+  licensee: String
+  expiresAt: DateTime
+  cancelAt: DateTime
+  currentPeriodEnd: DateTime
+  isCancellationScheduled: Boolean!
+}
+
 type OnboardingStepSuccess {
   """Boolean that confirms query was dispatched"""
   success: Boolean!
+}
+
+type ApprovedAccessDomain {
+  id: UUID!
+  domain: String!
+  isValidated: Boolean!
+  createdAt: DateTime!
+}
+
+type FileWithSignedUrl {
+  id: UUID!
+  path: String!
+  size: Float!
+  createdAt: DateTime!
+  url: String!
 }
 
 type WorkspaceInvitation {
@@ -1517,7 +1482,6 @@ type NavigationMenuItem {
   icon: String
   color: String
   folderId: UUID
-  pageLayoutId: UUID
   position: Float!
   applicationId: UUID
   createdAt: DateTime!
@@ -1531,7 +1495,6 @@ enum NavigationMenuItemType {
   LINK
   OBJECT
   RECORD
-  PAGE_LAYOUT
 }
 
 type ObjectRecordEventProperties {
@@ -1618,13 +1581,13 @@ type FeatureFlag {
 enum FeatureFlagKey {
   IS_UNIQUE_INDEXES_ENABLED
   IS_JSON_FILTER_ENABLED
-  IS_AI_ENABLED
   IS_COMMAND_MENU_ITEM_ENABLED
   IS_MARKETPLACE_SETTING_TAB_VISIBLE
   IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED
   IS_PUBLIC_DOMAIN_ENABLED
   IS_EMAILING_DOMAIN_ENABLED
   IS_JUNCTION_RELATIONS_ENABLED
+  IS_DRAFT_EMAIL_ENABLED
   IS_CONNECTED_ACCOUNT_MIGRATED
   IS_RICH_TEXT_V1_MIGRATED
   IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED
@@ -1634,6 +1597,84 @@ enum FeatureFlagKey {
 type WorkspaceUrls {
   customUrl: String
   subdomainUrl: String!
+}
+
+type UserInfo {
+  id: UUID!
+  email: String!
+  firstName: String
+  lastName: String
+  createdAt: DateTime!
+}
+
+type WorkspaceInfo {
+  id: UUID!
+  name: String!
+  allowImpersonation: Boolean!
+  logo: String
+  totalUsers: Float!
+  activationStatus: WorkspaceActivationStatus!
+  createdAt: DateTime!
+  workspaceUrls: WorkspaceUrls!
+  users: [UserInfo!]!
+  featureFlags: [FeatureFlag!]!
+}
+
+type UserLookup {
+  user: UserInfo!
+  workspaces: [WorkspaceInfo!]!
+}
+
+type AdminPanelRecentUser {
+  id: UUID!
+  email: String!
+  firstName: String
+  lastName: String
+  createdAt: DateTime!
+  workspaceName: String
+  workspaceId: UUID
+}
+
+type AdminPanelTopWorkspace {
+  id: UUID!
+  name: String!
+  totalUsers: Int!
+  subdomain: String!
+}
+
+type AdminWorkspaceChatThread {
+  id: UUID!
+  title: String
+  totalInputTokens: Int!
+  totalOutputTokens: Int!
+  conversationSize: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AdminChatMessagePart {
+  type: String!
+  textContent: String
+  toolName: String
+}
+
+type AdminChatMessage {
+  id: UUID!
+  role: AgentMessageRole!
+  parts: [AdminChatMessagePart!]!
+  createdAt: DateTime!
+}
+
+"""Role of a message in a chat thread"""
+enum AgentMessageRole {
+  SYSTEM
+  USER
+  ASSISTANT
+}
+
+type AdminChatThreadMessages {
+  thread: AdminWorkspaceChatThread!
+  messages: [AdminChatMessage!]!
 }
 
 type BillingTrialPeriod {
@@ -1683,18 +1724,12 @@ type PublicWorkspaceData {
   workspaceUrls: WorkspaceUrls!
 }
 
-type PublicWorkspaceDataSummary {
-  id: UUID!
-  logo: String
-  displayName: String
-}
-
 type NativeModelCapabilities {
   webSearch: Boolean
   twitterSearch: Boolean
 }
 
-type ClientAiModelConfig {
+type ClientAIModelConfig {
   modelId: String!
   label: String!
   modelFamily: ModelFamily
@@ -1718,6 +1753,32 @@ enum ModelFamily {
   GEMINI
   MISTRAL
   GROK
+}
+
+type AdminAIModelConfig {
+  modelId: String!
+  label: String!
+  modelFamily: ModelFamily
+  modelFamilyLabel: String
+  sdkPackage: String
+  isAvailable: Boolean!
+  isAdminEnabled: Boolean!
+  isDeprecated: Boolean
+  isRecommended: Boolean
+  contextWindowTokens: Float
+  maxOutputTokens: Float
+  inputCostPerMillionTokens: Float
+  outputCostPerMillionTokens: Float
+  providerName: String
+  providerLabel: String
+  name: String
+  dataResidency: String
+}
+
+type AdminAIModels {
+  models: [AdminAIModelConfig!]!
+  defaultSmartModelId: String
+  defaultFastModelId: String
 }
 
 type Billing {
@@ -1777,7 +1838,7 @@ type ClientConfig {
   appVersion: String
   authProviders: AuthProviders!
   billing: Billing!
-  aiModels: [ClientAiModelConfig!]!
+  aiModels: [ClientAIModelConfig!]!
   signInPrefilled: Boolean!
   isMultiWorkspaceEnabled: Boolean!
   isEmailVerificationRequired: Boolean!
@@ -1809,6 +1870,228 @@ type UsageBreakdownItem {
   key: String!
   label: String
   creditsUsed: Float!
+}
+
+type ConfigVariable {
+  name: String!
+  description: String!
+  value: JSON
+  isSensitive: Boolean!
+  source: ConfigSource!
+  isEnvOnly: Boolean!
+  type: ConfigVariableType!
+  options: JSON
+}
+
+enum ConfigSource {
+  ENVIRONMENT
+  DATABASE
+  DEFAULT
+}
+
+enum ConfigVariableType {
+  BOOLEAN
+  NUMBER
+  ARRAY
+  STRING
+  ENUM
+  JSON
+}
+
+type ConfigVariablesGroupData {
+  variables: [ConfigVariable!]!
+  name: ConfigVariablesGroup!
+  description: String!
+  isHiddenOnLoad: Boolean!
+}
+
+enum ConfigVariablesGroup {
+  SERVER_CONFIG
+  RATE_LIMITING
+  STORAGE_CONFIG
+  GOOGLE_AUTH
+  MICROSOFT_AUTH
+  EMAIL_SETTINGS
+  LOGGING
+  ADVANCED_SETTINGS
+  BILLING_CONFIG
+  CAPTCHA_CONFIG
+  CLOUDFLARE_CONFIG
+  LLM
+  LOGIC_FUNCTION_CONFIG
+  CODE_INTERPRETER_CONFIG
+  SSL
+  SUPPORT_CHAT_CONFIG
+  ANALYTICS_CONFIG
+  TOKENS_DURATION
+  AWS_SES_SETTINGS
+}
+
+type ConfigVariables {
+  groups: [ConfigVariablesGroupData!]!
+}
+
+type JobOperationResult {
+  jobId: String!
+  success: Boolean!
+  error: String
+}
+
+type DeleteJobsResponse {
+  deletedCount: Int!
+  results: [JobOperationResult!]!
+}
+
+type QueueJob {
+  id: String!
+  name: String!
+  data: JSON
+  state: JobState!
+  timestamp: Float
+  failedReason: String
+  processedOn: Float
+  finishedOn: Float
+  attemptsMade: Float!
+  returnValue: JSON
+  logs: [String!]
+  stackTrace: [String!]
+}
+
+"""Job state in the queue"""
+enum JobState {
+  COMPLETED
+  FAILED
+  ACTIVE
+  WAITING
+  DELAYED
+  PRIORITIZED
+  WAITING_CHILDREN
+}
+
+type QueueRetentionConfig {
+  completedMaxAge: Float!
+  completedMaxCount: Float!
+  failedMaxAge: Float!
+  failedMaxCount: Float!
+}
+
+type QueueJobsResponse {
+  jobs: [QueueJob!]!
+  count: Float!
+  totalCount: Float!
+  hasMore: Boolean!
+  retentionConfig: QueueRetentionConfig!
+}
+
+type RetryJobsResponse {
+  retriedCount: Int!
+  results: [JobOperationResult!]!
+}
+
+type SystemHealthService {
+  id: HealthIndicatorId!
+  label: String!
+  status: AdminPanelHealthServiceStatus!
+}
+
+enum HealthIndicatorId {
+  database
+  redis
+  worker
+  connectedAccount
+  app
+}
+
+enum AdminPanelHealthServiceStatus {
+  OPERATIONAL
+  OUTAGE
+}
+
+type SystemHealth {
+  services: [SystemHealthService!]!
+}
+
+type VersionInfo {
+  currentVersion: String
+  latestVersion: String!
+}
+
+type AdminPanelWorkerQueueHealth {
+  id: String!
+  queueName: String!
+  status: AdminPanelHealthServiceStatus!
+}
+
+type AdminPanelHealthServiceData {
+  id: HealthIndicatorId!
+  label: String!
+  description: String!
+  status: AdminPanelHealthServiceStatus!
+  errorMessage: String
+  details: String
+  queues: [AdminPanelWorkerQueueHealth!]
+}
+
+type MaintenanceMode {
+  startAt: DateTime!
+  endAt: DateTime!
+  link: String
+}
+
+type ModelsDevModelSuggestion {
+  modelId: String!
+  name: String!
+  inputCostPerMillionTokens: Float!
+  outputCostPerMillionTokens: Float!
+  cachedInputCostPerMillionTokens: Float
+  cacheCreationCostPerMillionTokens: Float
+  contextWindowTokens: Float!
+  maxOutputTokens: Float!
+  modalities: [String!]!
+  supportsReasoning: Boolean!
+}
+
+type ModelsDevProviderSuggestion {
+  id: String!
+  modelCount: Float!
+  npm: String!
+}
+
+type QueueMetricsDataPoint {
+  x: Float!
+  y: Float!
+}
+
+type QueueMetricsSeries {
+  id: String!
+  data: [QueueMetricsDataPoint!]!
+}
+
+type WorkerQueueMetrics {
+  failed: Float!
+  completed: Float!
+  waiting: Float!
+  active: Float!
+  delayed: Float!
+  failureRate: Float!
+  failedData: [Float!]
+  completedData: [Float!]
+}
+
+type QueueMetricsData {
+  queueName: String!
+  workers: Float!
+  timeRange: QueueMetricsTimeRange!
+  details: WorkerQueueMetrics
+  data: [QueueMetricsSeries!]!
+}
+
+enum QueueMetricsTimeRange {
+  SevenDays
+  OneDay
+  TwelveHours
+  FourHours
+  OneHour
 }
 
 type VersionDistributionEntry {
@@ -1909,18 +2192,30 @@ type DeletedWorkspaceMember {
   userWorkspaceId: UUID
 }
 
-type Relation {
-  type: RelationType!
-  sourceObjectMetadata: Object!
-  targetObjectMetadata: Object!
-  sourceFieldMetadata: Field!
-  targetFieldMetadata: Field!
+type BillingEntitlement {
+  key: BillingEntitlementKey!
+  value: Boolean!
 }
 
-"""Relation type"""
-enum RelationType {
-  ONE_TO_MANY
-  MANY_TO_ONE
+enum BillingEntitlementKey {
+  SSO
+  CUSTOM_DOMAIN
+  RLS
+  AUDIT_LOGS
+}
+
+type DomainRecord {
+  validationType: String!
+  type: String!
+  status: String!
+  key: String!
+  value: String!
+}
+
+type DomainValidRecords {
+  id: UUID!
+  domain: String!
+  records: [DomainRecord!]!
 }
 
 type IndexEdge {
@@ -2022,6 +2317,25 @@ type ObjectFieldsConnection {
   edges: [FieldEdge!]!
 }
 
+type UpsertRowLevelPermissionPredicatesResult {
+  predicates: [RowLevelPermissionPredicate!]!
+  predicateGroups: [RowLevelPermissionPredicateGroup!]!
+}
+
+type Relation {
+  type: RelationType!
+  sourceObjectMetadata: Object!
+  targetObjectMetadata: Object!
+  sourceFieldMetadata: Field!
+  targetFieldMetadata: Field!
+}
+
+"""Relation type"""
+enum RelationType {
+  ONE_TO_MANY
+  MANY_TO_ONE
+}
+
 type FieldConnection {
   """Paging information"""
   pageInfo: PageInfo!
@@ -2030,35 +2344,31 @@ type FieldConnection {
   edges: [FieldEdge!]!
 }
 
-type BillingEntitlement {
-  key: BillingEntitlementKey!
-  value: Boolean!
+type AuthToken {
+  token: String!
+  expiresAt: DateTime!
 }
 
-enum BillingEntitlementKey {
-  SSO
-  CUSTOM_DOMAIN
-  RLS
-  AUDIT_LOGS
+type ApplicationTokenPair {
+  applicationAccessToken: AuthToken!
+  applicationRefreshToken: AuthToken!
 }
 
-type DomainRecord {
-  validationType: String!
-  type: String!
-  status: String!
-  key: String!
-  value: String!
-}
-
-type DomainValidRecords {
+type FrontComponent {
   id: UUID!
-  domain: String!
-  records: [DomainRecord!]!
-}
-
-type UpsertRowLevelPermissionPredicatesResult {
-  predicates: [RowLevelPermissionPredicate!]!
-  predicateGroups: [RowLevelPermissionPredicateGroup!]!
+  name: String!
+  description: String
+  sourceComponentPath: String!
+  builtComponentPath: String!
+  componentName: String!
+  builtComponentChecksum: String!
+  universalIdentifier: UUID
+  applicationId: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isHeadless: Boolean!
+  usesSdkClient: Boolean!
+  applicationTokenPair: ApplicationTokenPair
 }
 
 type LogicFunctionLogs {
@@ -2269,7 +2579,6 @@ type Location {
 }
 
 type PlaceDetailsResult {
-  street: String
   state: String
   postcode: String
   city: String
@@ -2327,7 +2636,6 @@ type CommandMenuItem {
   hotKeys: [String!]
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
-  pageLayoutId: UUID
   applicationId: UUID
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -2404,7 +2712,6 @@ enum EngineComponentKey {
 
 enum CommandMenuItemAvailabilityType {
   GLOBAL
-  GLOBAL_OBJECT_CONTEXT
   RECORD_SELECTION
   FALLBACK
 }
@@ -2633,14 +2940,14 @@ type AgentMessage {
   createdAt: DateTime!
 }
 
-type AiSystemPromptSection {
+type AISystemPromptSection {
   title: String!
   content: String!
   estimatedTokenCount: Int!
 }
 
-type AiSystemPromptPreview {
-  sections: [AiSystemPromptSection!]!
+type AISystemPromptPreview {
+  sections: [AISystemPromptSection!]!
   estimatedTokenCount: Int!
 }
 
@@ -2995,7 +3302,7 @@ type Query {
   chatThread(id: UUID!): AgentChatThread!
   chatMessages(threadId: UUID!): [AgentMessage!]!
   chatStreamCatchupChunks(threadId: UUID!): ChatStreamCatchupChunks!
-  getAiSystemPromptPreview: AiSystemPromptPreview!
+  getAISystemPromptPreview: AISystemPromptPreview!
   skills: [Skill!]!
   skill(id: UUID!): Skill
   chatThreads(
@@ -3027,11 +3334,30 @@ type Query {
   currentUser: User!
   currentWorkspace: Workspace!
   getPublicWorkspaceDataByDomain(origin: String): PublicWorkspaceData!
-  getPublicWorkspaceDataById(id: UUID!): PublicWorkspaceDataSummary!
   getSSOIdentityProviders: [FindAvailableSSOIDP!]!
   getConnectedImapSmtpCaldavAccount(id: UUID!): ConnectedImapSmtpCaldavAccount!
   getAutoCompleteAddress(address: String!, token: String!, country: String, isFieldCity: Boolean): [AutocompleteResult!]!
   getAddressDetails(placeId: String!, token: String!): PlaceDetailsResult!
+  userLookupAdminPanel(userIdentifier: String!): UserLookup!
+  adminPanelRecentUsers(searchTerm: String = ""): [AdminPanelRecentUser!]!
+  adminPanelTopWorkspaces(searchTerm: String = ""): [AdminPanelTopWorkspace!]!
+  getConfigVariablesGrouped: ConfigVariables!
+  getSystemHealthStatus: SystemHealth!
+  getIndicatorHealthStatus(indicatorId: HealthIndicatorId!): AdminPanelHealthServiceData!
+  getQueueMetrics(queueName: String!, timeRange: QueueMetricsTimeRange = OneHour): QueueMetricsData!
+  versionInfo: VersionInfo!
+  getAdminAiModels: AdminAIModels!
+  getDatabaseConfigVariable(key: String!): ConfigVariable!
+  getQueueJobs(queueName: String!, state: JobState!, limit: Int = 50, offset: Int = 0): QueueJobsResponse!
+  findAllApplicationRegistrations: [ApplicationRegistration!]!
+  getAiProviders: JSON!
+  getModelsDevProviders: [ModelsDevProviderSuggestion!]!
+  getModelsDevSuggestions(providerType: String!): [ModelsDevModelSuggestion!]!
+  getAdminAiUsageByWorkspace(periodStart: DateTime, periodEnd: DateTime): [UsageBreakdownItem!]!
+  getMaintenanceMode: MaintenanceMode
+  workspaceLookupAdminPanel(workspaceId: UUID!): UserLookup!
+  getAdminWorkspaceChatThreads(workspaceId: UUID!): [AdminWorkspaceChatThread!]!
+  getAdminChatThreadMessages(threadId: UUID!): AdminChatThreadMessages!
   getUsageAnalytics(input: UsageAnalyticsInput): UsageAnalytics!
   getPostgresCredentials: PostgresCredentials
   findManyPublicDomains: [PublicDomain!]!
@@ -3174,7 +3500,7 @@ type Mutation {
   deleteManyNavigationMenuItems(ids: [UUID!]!): [NavigationMenuItem!]!
   deleteNavigationMenuItem(id: UUID!): NavigationMenuItem!
   uploadEmailAttachmentFile(file: Upload!): FileWithSignedUrl!
-  uploadAiChatFile(file: Upload!): FileWithSignedUrl!
+  uploadAIChatFile(file: Upload!): FileWithSignedUrl!
   uploadWorkflowFile(file: Upload!): FileWithSignedUrl!
   uploadWorkspaceLogo(file: Upload!): FileWithSignedUrl!
   uploadWorkspaceMemberProfilePicture(file: Upload!): FileWithSignedUrl!
@@ -3238,7 +3564,6 @@ type Mutation {
   updatePageLayout(id: String!, input: UpdatePageLayoutInput!): PageLayout!
   destroyPageLayout(id: String!): Boolean!
   updatePageLayoutWithTabsAndWidgets(id: String!, input: UpdatePageLayoutWithTabsInput!): PageLayout!
-  resetPageLayoutToDefault(id: String!): PageLayout!
   resetPageLayoutWidgetToDefault(id: String!): PageLayoutWidget!
   resetPageLayoutTabToDefault(id: String!): PageLayoutTab!
   createPageLayoutWidget(input: CreatePageLayoutWidgetInput!): PageLayoutWidget!
@@ -3346,6 +3671,23 @@ type Mutation {
   startChannelSync(connectedAccountId: UUID!): ChannelSyncSuccess!
   saveImapSmtpCaldavAccount(accountOwnerId: UUID!, handle: String!, connectionParameters: EmailAccountConnectionParameters!, id: UUID): ImapSmtpCaldavConnectionSuccess!
   updateLabPublicFeatureFlag(input: UpdateLabPublicFeatureFlagInput!): FeatureFlag!
+  updateWorkspaceFeatureFlag(workspaceId: UUID!, featureFlag: String!, value: Boolean!): Boolean!
+  setAdminAiModelEnabled(modelId: String!, enabled: Boolean!): Boolean!
+  setAdminAiModelsEnabled(modelIds: [String!]!, enabled: Boolean!): Boolean!
+  setAdminAiModelRecommended(modelId: String!, recommended: Boolean!): Boolean!
+  setAdminAiModelsRecommended(modelIds: [String!]!, recommended: Boolean!): Boolean!
+  setAdminDefaultAiModel(role: AiModelRole!, modelId: String!): Boolean!
+  createDatabaseConfigVariable(key: String!, value: JSON!): Boolean!
+  updateDatabaseConfigVariable(key: String!, value: JSON!): Boolean!
+  deleteDatabaseConfigVariable(key: String!): Boolean!
+  retryJobs(queueName: String!, jobIds: [String!]!): RetryJobsResponse!
+  deleteJobs(queueName: String!, jobIds: [String!]!): DeleteJobsResponse!
+  addAiProvider(providerName: String!, providerConfig: JSON!): Boolean!
+  removeAiProvider(providerName: String!): Boolean!
+  addModelToProvider(providerName: String!, modelConfig: JSON!): Boolean!
+  removeModelFromProvider(providerName: String!, modelName: String!): Boolean!
+  setMaintenanceMode(startAt: DateTime!, endAt: DateTime!, link: String): Boolean!
+  clearMaintenanceMode: Boolean!
   enablePostgresProxy: PostgresCredentials!
   disablePostgresProxy: PostgresCredentials!
   createPublicDomain(domain: String!): PublicDomain!
@@ -3392,7 +3734,6 @@ input CreateNavigationMenuItemInput {
   icon: String
   color: String
   folderId: UUID
-  pageLayoutId: UUID
   position: Float
 }
 
@@ -3411,7 +3752,6 @@ input UpdateNavigationMenuItemInput {
   link: String
   icon: String
   color: String
-  pageLayoutId: UUID
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -3822,7 +4162,6 @@ input CreateCommandMenuItemInput {
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
   payload: JSON
-  pageLayoutId: UUID
 }
 
 input UpdateCommandMenuItemInput {
@@ -3836,7 +4175,6 @@ input UpdateCommandMenuItemInput {
   availabilityObjectMetadataId: UUID
   engineComponentKey: EngineComponentKey
   hotKeys: [String!]
-  pageLayoutId: UUID
 }
 
 input CreateFrontComponentInput {
@@ -4247,7 +4585,6 @@ input UpdateApplicationRegistrationVariableInput {
 
 input UpdateApplicationRegistrationVariablePayload {
   value: String
-  resetValue: Boolean
   description: String
 }
 
@@ -4344,6 +4681,11 @@ input ConnectionParameters {
 input UpdateLabPublicFeatureFlagInput {
   publicFeatureFlag: String!
   value: Boolean!
+}
+
+enum AiModelRole {
+  FAST
+  SMART
 }
 
 input CreateOneAppTokenInput {
