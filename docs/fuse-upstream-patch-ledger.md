@@ -12,12 +12,14 @@ Default verdict: ACCEPT (see `docs/superpowers/plans/2026-04-23-upstream-sync-wa
 |---|---|
 | 2A-security | 23 |
 | 2B-backend | 231 |
-| 2C-frontend | 125 |
-| 2D-flags-rbac (conditional — defer by default) | 18 |
+| 2C-frontend | 126 |
+| 2D-flags-rbac (conditional — defer by default) | 16 |
 | i18n-bulk | 94 |
-| reject | 4 |
-| defer (already landed + feature-flag moves + one low-confidence) | 727 |
+| reject | 6 |
+| defer (already landed + feature-flag moves) | 726 |
 | **Total** | **1,222** |
+
+_CTO adjustments (2026-04-23) applied on top of initial triage: #18430 moved from 2D → 2C, #18951 defer → reject, #19657 2D → reject._
 
 **Verdict key:** ACCEPT = take in the listed wave. DEFER = skip this sync (either already landed via prior cherry-pick, or requires a separate rebase block). REJECT = sovereignty violation; never cherry-pick.
 
@@ -34,6 +36,8 @@ Default verdict: ACCEPT (see `docs/superpowers/plans/2026-04-23-upstream-sync-wa
 | `36fbfca069` | #19486 | Add application-logs module with driver pattern for logic function log persistence | New ClickHouse driver for application logs — adds Twenty-controlled telemetry path |
 | `455022f652` | #19586 | Add ClickHouse-backed metered credit cap enforcement | ClickHouse-backed subscription billing polling — Twenty endpoint surveillance vector |
 | `2fccd194f3` | #19560 | [Billing for self host] End dummy enterprise key validity | Re-enables enterprise key validity gating — directly reverses `377664545c` sovereignty stub |
+| `03c94727be` | #18951 | fix: wrap standard object/field metadata labels in msg for i18n extraction | Touches ClickHouse usage-event integration test — CTO 2026-04-23: don't import |
+| `cdc7339da1` | #19657 | Fix testimonials background, faq clickability and some case-studies page edits | Website-only (twenty-website/*), zero runtime impact — CTO 2026-04-23: drop |
 
 ## Full triage table
 
@@ -134,7 +138,7 @@ Default verdict: ACCEPT (see `docs/superpowers/plans/2026-04-23-upstream-sync-wa
 | 93 | `fc2b1de860` | #18395 | fix: composite field sub-menu not showing in advanced filter (#18395) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 94 | `4965790ecc` | #18428 | Backfill record page layouts for custom objects (#18428) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 95 | `e5e3132ddd` | #18422 | Add ESLint rules to disallow jotaiStore and direct atomFamily usage in selectors (#18422) | ACCEPT | 2C-frontend |  |
-| 96 | `c53a13417e` | #18430 | Remove all styled(Component) patterns in favor of parent wrappers and props (#18430) | DEFER | 2D-flags-rbac | RBAC/permissions stack change (wave 2D) |
+| 96 | `c53a13417e` | #18430 | Remove all styled(Component) patterns in favor of parent wrappers and props (#18430) | ACCEPT | 2C-frontend | reclassified from 2D (regex false positive — pure styling refactor on role-admin screens, not a RBAC change) |
 | 97 | `1affa1e004` | #18437 | chore(front): remove vite-plugin-checker background TS/ESLint checks (#18437) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 98 | `13e569eaac` | #18436 | Removed z-index dynamic logic for table (#18436) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 99 | `1ec7244d1b` | #18440 | i18n - docs translations (#18440) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
@@ -502,7 +506,7 @@ Default verdict: ACCEPT (see `docs/superpowers/plans/2026-04-23-upstream-sync-wa
 | 461 | `523289efad` | #18947 | Do not rollback on cache invalidation failure in workspace migration runner (#18947) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 462 | `e1374e34a7` | #18948 | Fix object permission override (#18948) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 463 | `bf22373315` | #18954 | Fix: use user role for OAuth tokens bearing user context (#18954) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
-| 464 | `03c94727be` | #18951 | fix: wrap standard object/field metadata labels in msg for i18n extraction (#18951) | DEFER | defer | incidentally touches ClickHouse usage-event integration test — low-confidence, needs human review before cherry-pick |
+| 464 | `03c94727be` | #18951 | fix: wrap standard object/field metadata labels in msg for i18n extraction (#18951) | REJECT | reject | CTO decision 2026-04-23: do not import — touches a ClickHouse usage-event integration test that would re-seed the ClickHouse path Fuse disabled in `377664545c` |
 | 465 | `ba0108944f` | #18955 | i18n - translations (#18955) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 466 | `f7ef41959b` | #18956 | i18n - translations (#18956) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
 | 467 | `e25ea6069d` | #18958 | i18n - translations (#18958) | DEFER | defer | already landed in fuse main (wave 1 / prior cherry-pick) |
@@ -1008,7 +1012,7 @@ Default verdict: ACCEPT (see `docs/superpowers/plans/2026-04-23-upstream-sync-wa
 | 967 | `fa354b4c1c` | #19660 | Remove orphaned workspaceId column from BillingSubscriptionItemEntity (#19660) | ACCEPT | 2B-backend |  |
 | 968 | `455022f652` | #19586 | Add ClickHouse-backed metered credit cap enforcement (#19586) | REJECT | reject | telemetry SDK (reject rule: surveillance dependency) |
 | 969 | `69d228d8a1` | #19662 | Deprecate IS_RECORD_TABLE_WIDGET_ENABLED feature flag (#19662) | DEFER | 2D-flags-rbac | feature-flag enum location/RBAC stack (wave 2D) |
-| 970 | `cdc7339da1` | #19657 | Fix testimonials background, faq clickability and some case-studies page edits. (#19657) | DEFER | 2D-flags-rbac | RBAC/permissions stack change (wave 2D) |
+| 970 | `cdc7339da1` | #19657 | Fix testimonials background, faq clickability and some case-studies page edits. (#19657) | REJECT | reject | CTO decision 2026-04-23: website-only commit (twenty-website/*), zero runtime impact, regex false-positive pulled it into 2D — drop |
 | 971 | `d88fb2bd65` | #19561 | Clean event creation exception (#19561) | ACCEPT | 2C-frontend |  |
 | 972 | `e041125426` | #19439 | fix: return 404 for deleted workspace webhook race (#19439) | ACCEPT | 2B-backend |  |
 | 973 | `87f8e5ca19` | #19663 | few website updates (#19663) | ACCEPT | 2B-backend | other-only paths (no server/front files) — default 2B |
