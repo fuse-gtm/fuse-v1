@@ -94,3 +94,31 @@ Reviewer: feature-dev:code-reviewer subagent
 **Webhook endpoint security:**
 - Verify `EXA_WEBHOOK_SECRET` is set in production environment before any wave merge that touches webhook infra.
 - If `exa-webhook.controller.ts` is touched, confirm `verifySignature` still requires HMAC check when secret is set.
+
+---
+
+## Decisions (2026-04-23, after CTO review)
+
+### Concern #1 — `enterprise-plan.service.ts` live outbound methods: **ACCEPTED AS-IS (Option A)**
+
+Updated context: prod is running a **real signed Twenty enterprise key**, not the dummy `fuse-org-license-2026` earlier memory suggested. With a valid JWT, `cachedKeyPayload` is populated → all three methods pass their guards → they DO call `https://twenty.com/api/enterprise/{status,portal,checkout}`. This is intentional: these three methods drive the billing admin UX (subscription status display, Stripe portal deep-link, upgrade checkout) tied to the paid enterprise subscription. Twenty already holds the key identity, so the outbound is not new information leakage. Admin-panel-only; no user-facing path.
+
+Action: none. Do not hard-stub. Do not alter config default. Wave agents: if upstream cherry-picks ever add new outbound fetches to `enterprise-plan.service.ts`, still flag for review; additions require explicit decision.
+
+Future consideration (not this sprint): Option B (add 5s `AbortController` timeouts to the three fetches) remains available if twenty.com uptime becomes a visible admin-panel issue.
+
+### Concern #2 — `partner-customer-map-handoff.listener.ts` raw SQL without schema prefix: **DEAD CODE (NO ACTION)**
+
+Verified: `GlobalWorkspaceDataSource.query()` at `global-workspace-datasource.ts:233` throws `PermissionsException` unless `options.shouldBypassPermissionChecks: true` is passed. The listener calls without that option → every invocation throws → caught by its try/catch → silently logs. Handoff SQL never actually executes. Data isolation concern is moot. The listener itself is dead code, which is a separate behavioural gap worth tracking but not a wave-2 blocker.
+
+Action: none. Listener-dead-code concern added to partner-os follow-up backlog.
+
+### Concern #3 — `IS_PARTNER_OS_ENABLED` not in seed file: **OPT-IN BY DESIGN (NO ACTION)**
+
+Verified: `onboarding.service.ts:91` handles the flag-absent case cleanly — if the flag is off, the `ONBOARDING_PARTNER_PROFILE_PENDING` user var is silently cleared and the onboarding flow moves past the partner-profile step. New workspaces simply don't see partner-os UI until the flag is explicitly activated (e.g., by running the SPEC-002 backfill for the specific workspace). Existing prod workspace `06e070b2-80eb-4097-8813-8d2ebe632108` already has the flag set.
+
+Action: none. SPEC-002 remains the correct activation pattern when onboarding a new workspace intentionally to partner-os.
+
+### Net effect on wave 2
+
+All three "pre-existing concerns" resolved as no-action-needed. Guardrail protection rules in the Wave 2 Protective Guidance section (above) still apply as-written — wave executors should still diff the partner-os surface, grep-verify enterprise stubs stay intact, and protect branded copy on conflict. The concerns section above is retained as historical context, not an open task list.
