@@ -9,6 +9,8 @@ interface XIconProps {
 export function XIcon({ size, fillColor }: XIconProps) {
   return (
     <svg
+      aria-hidden="true"
+      focusable="false"
       width={size}
       height={size}
       viewBox="0 0 12 11.8"

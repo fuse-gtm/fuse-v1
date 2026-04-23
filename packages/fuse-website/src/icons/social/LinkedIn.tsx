@@ -9,6 +9,8 @@ interface LinkedInIconProps {
 export function LinkedInIcon({ size, fillColor }: LinkedInIconProps) {
   return (
     <svg
+      aria-hidden="true"
+      focusable="false"
       width={size}
       height={size}
       viewBox="0 0 11 12"

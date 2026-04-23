@@ -38,7 +38,10 @@ const bodyClassName = css`
   }
 
   &[data-size='sm'] {
-    color: var(--body-sm-color, ${theme.colors.primary.text[60]});
+    // text[60] (#1C1C1C99) failed WCAG AA contrast on white at sm sizes (~4.3:1).
+    // text[80] lands at ~8.9:1. Section-specific lighter tones can still opt in
+    // via --body-sm-color where the design needs secondary emphasis.
+    color: var(--body-sm-color, ${theme.colors.primary.text[80]});
     font-size: ${theme.font.size(4)};
     line-height: 1.55;
   }

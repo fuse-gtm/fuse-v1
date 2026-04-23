@@ -73,6 +73,16 @@ const TrafficLightDot = styled.button<{
     transform 0.12s ease;
   width: ${TRAFFIC_LIGHT_DOT_SIZE}px;
 
+  // Expand the hit area to ~30x30 (WCAG 2.5.8 minimum is 24x24) without
+  // changing the visual 12px dot. The pseudo-element is transparent and
+  // absolutely positioned so adjacent dots can still be tapped independently
+  // when the 8px gap between them is accounted for.
+  &::before {
+    content: '';
+    inset: -9px;
+    position: absolute;
+  }
+
   &::after {
     border-radius: 999px;
     box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);

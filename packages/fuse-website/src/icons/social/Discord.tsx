@@ -9,6 +9,8 @@ interface DiscordIconProps {
 export function DiscordIcon({ size, fillColor }: DiscordIconProps) {
   return (
     <svg
+      aria-hidden="true"
+      focusable="false"
       width={size}
       height={size}
       viewBox="0 0 12.4 9.5"

@@ -9,6 +9,8 @@ interface GitHubIconProps {
 export function GitHubIcon({ size, fillColor }: GitHubIconProps) {
   return (
     <svg
+      aria-hidden="true"
+      focusable="false"
       width={size}
       height={size}
       viewBox="0 0 14 14"
