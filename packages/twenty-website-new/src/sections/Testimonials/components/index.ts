@@ -1,13 +1,17 @@
 import { Carousel } from './Carousel/Carousel';
-import { HomeVisual } from './HomeVisual/HomeVisual';
-import { PartnerVisual } from './PartnerVisual/PartnerVisual';
+import {
+  MountedTestimonialsHomeVisual,
+  MountedTestimonialsPartnerVisual,
+} from './MountedTestimonialsVisuals';
+import { PartnerCarousel } from './PartnerCarousel/PartnerCarousel';
 import { Root } from './Root/Root';
 import { Separator } from './Separator/Separator';
 
 export const Testimonials = {
   Carousel,
-  HomeVisual,
-  PartnerVisual,
+  HomeVisual: MountedTestimonialsHomeVisual,
+  PartnerCarousel,
+  PartnerVisual: MountedTestimonialsPartnerVisual,
   Root,
   Separator,
 };

@@ -17,6 +17,7 @@ import { type AwsRegion } from 'src/engine/core-modules/twenty-config/interfaces
 import { NodeEnvironment } from 'src/engine/core-modules/twenty-config/interfaces/node-environment.interface';
 import { SupportDriver } from 'src/engine/core-modules/twenty-config/interfaces/support.interface';
 
+import { ApplicationLogDriver } from 'src/engine/core-modules/application-logs/interfaces/application-log-driver.enum';
 import { CaptchaDriverType } from 'src/engine/core-modules/captcha/interfaces';
 import { CodeInterpreterDriverType } from 'src/engine/core-modules/code-interpreter/code-interpreter.interface';
 import { WebSearchDriverType } from 'src/engine/core-modules/web-search/web-search.interface';
@@ -180,30 +181,8 @@ export class ConfigVariables {
     description:
       "Enable or disable requests to twenty-icons to get companies' icons",
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
-  ALLOW_REQUESTS_TO_TWENTY_ICONS = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable remote company enrichment during contact/company creation',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  COMPANY_ENRICHMENT_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Company enrichment provider. Use "none" to keep company enrichment fully local.',
-    type: ConfigVariableType.ENUM,
-    options: ['none', 'twenty'],
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  COMPANY_ENRICHMENT_PROVIDER: 'none' | 'twenty' = 'none';
+  ALLOW_REQUESTS_TO_TWENTY_ICONS = true;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.MICROSOFT_AUTH,
@@ -251,14 +230,16 @@ export class ConfigVariables {
   @ValidateIf((env) => env.AUTH_MICROSOFT_ENABLED)
   AUTH_MICROSOFT_APIS_CALLBACK_URL: string;
 
+  /**
+   * @deprecated Use is now GA - record page layouts are always seeded
+   */
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,
-    description:
-      'Enable or disable the seeding of standard record page layouts',
+    description: 'Deprecated - record page layouts are now always seeded (GA)',
     type: ConfigVariableType.BOOLEAN,
   })
   @IsOptional()
-  SHOULD_SEED_STANDARD_RECORD_PAGE_LAYOUTS = false;
+  SHOULD_SEED_STANDARD_RECORD_PAGE_LAYOUTS = true;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.MICROSOFT_AUTH,
@@ -266,6 +247,16 @@ export class ConfigVariables {
     type: ConfigVariableType.BOOLEAN,
   })
   MESSAGING_PROVIDER_MICROSOFT_ENABLED = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.ADVANCED_SETTINGS,
+    description:
+      'Number of messages fetched per batch during message import, adjust incase of rate limiting caused by Gmail, Outlook or IMAP',
+    type: ConfigVariableType.NUMBER,
+  })
+  @CastToPositiveNumber()
+  @IsOptional()
+  MESSAGING_MESSAGES_GET_BATCH_SIZE = 400;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.MICROSOFT_AUTH,
@@ -374,7 +365,7 @@ export class ConfigVariables {
     description: 'Name used in the From header for outgoing emails',
     type: ConfigVariableType.STRING,
   })
-  EMAIL_FROM_NAME = 'Fuse';
+  EMAIL_FROM_NAME = 'Felix from Twenty';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.EMAIL_SETTINGS,
@@ -705,19 +696,9 @@ export class ConfigVariables {
   EXA_API_KEY?: string;
 
   @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.LLM,
-    description:
-      'When true, use native provider search (Anthropic/OpenAI) when available. When false, always prefer the configured driver (e.g. Exa).',
-    type: ConfigVariableType.BOOLEAN,
-  })
-  @IsOptional()
-  WEB_SEARCH_PREFER_NATIVE = false;
-
-  @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ANALYTICS_CONFIG,
     description: 'Enable or disable analytics for telemetry',
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
   @IsOptional()
   ANALYTICS_ENABLED = false;
@@ -740,10 +721,9 @@ export class ConfigVariables {
     group: ConfigVariablesGroup.LOGGING,
     description: 'Enable or disable telemetry logging',
     type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
   })
   @IsOptional()
-  TELEMETRY_ENABLED = false;
+  TELEMETRY_ENABLED = true;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.LOGGING,
@@ -941,11 +921,22 @@ export class ConfigVariables {
   SENTRY_ENVIRONMENT: string;
 
   @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.LOGGING,
+    description:
+      'Driver used for application logs (Disabled, Console, or ClickHouse)',
+    type: ConfigVariableType.ENUM,
+    options: Object.values(ApplicationLogDriver),
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  @CastToUpperSnakeCase()
+  APPLICATION_LOG_DRIVER: ApplicationLogDriver = ApplicationLogDriver.DISABLED;
+
+  @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SUPPORT_CHAT_CONFIG,
     description: 'Driver used for support chat integration',
     type: ConfigVariableType.ENUM,
     options: Object.values(SupportDriver),
-    isEnvOnly: true,
   })
   @IsOptional()
   @CastToUpperSnakeCase()
@@ -1116,6 +1107,23 @@ export class ConfigVariables {
   @IsUrl({ require_tld: false, require_protocol: true })
   @IsOptional()
   SERVER_URL = 'http://localhost:3000';
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Express "trust proxy" setting. Controls whether X-Forwarded-* ' +
+      'headers are honored — required for request.protocol to return ' +
+      '"https" when TLS is terminated upstream (reverse proxy, ingress, ' +
+      'Cloudflare, etc.). Default trusts loopback + RFC1918/ULA peers, ' +
+      'which is correct when NestJS runs behind a reverse proxy (our ' +
+      'recommended self-host setup). Set to "false" when NestJS is ' +
+      'exposed directly to the internet. Accepts any value Express ' +
+      'supports — see https://expressjs.com/en/guide/behind-proxies.html.',
+    type: ConfigVariableType.STRING,
+    isEnvOnly: true,
+  })
+  @IsOptional()
+  TRUST_PROXY: string = 'loopback, linklocal, uniquelocal';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SERVER_CONFIG,
@@ -1382,56 +1390,6 @@ export class ConfigVariables {
   })
   @IsOptional()
   AI_MODEL_PREFERENCES: AiModelPreferences = loadDefaultModelPreferences();
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.LLM,
-    description: 'Enable or disable AI telemetry capture',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  AI_TELEMETRY_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable remote marketplace metadata fetches from GitHub',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  MARKETPLACE_REMOTE_FETCH_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable outbound admin version checks to Docker Hub',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  ADMIN_VERSION_CHECK_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Enable or disable help center web search tool availability and outbound calls',
-    type: ConfigVariableType.BOOLEAN,
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  HELP_CENTER_SEARCH_ENABLED = false;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Help center search provider. Use "none" to disable, "mintlify" for direct docs API, or "twenty" for Twenty help proxy.',
-    type: ConfigVariableType.ENUM,
-    options: ['none', 'mintlify', 'twenty'],
-    isEnvOnly: true,
-  })
-  @IsOptional()
-  HELP_CENTER_SEARCH_PROVIDER: 'none' | 'mintlify' | 'twenty' = 'none';
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.SERVER_CONFIG,
@@ -1736,38 +1694,6 @@ export class ConfigVariables {
   })
   @IsOptional()
   APP_REGISTRY_TOKEN: string;
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum resident set size in megabytes before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_RSS_MB: number = 1200;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum heap usage ratio before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_HEAP_USED_RATIO: number = 0.92;
-
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.OTHER,
-    description:
-      'Maximum event loop lag in milliseconds before readiness fails closed',
-    type: ConfigVariableType.NUMBER,
-    isEnvOnly: true,
-  })
-  @CastToPositiveNumber()
-  @IsOptional()
-  READINESS_MAX_EVENT_LOOP_LAG_MS: number = 500;
 }
 
 export const validate = (config: Record<string, unknown>): ConfigVariables => {

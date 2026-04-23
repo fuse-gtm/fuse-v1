@@ -2,6 +2,8 @@ import { type Manifest } from 'twenty-shared/application';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
+import { generateIndexForFlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/generate-index-for-flat-field-metadata.util';
+
 import { fromCommandMenuItemManifestToUniversalFlatCommandMenuItem } from 'src/engine/core-modules/application/application-manifest/converters/from-command-menu-item-manifest-to-universal-flat-command-menu-item.util';
 import { fromFieldManifestToUniversalFlatFieldMetadata } from 'src/engine/core-modules/application/application-manifest/converters/from-field-manifest-to-universal-flat-field-metadata.util';
 import { fromFrontComponentManifestToUniversalFlatFrontComponent } from 'src/engine/core-modules/application/application-manifest/converters/from-front-component-manifest-to-universal-flat-front-component.util';
@@ -20,6 +22,7 @@ import { fromViewFilterGroupManifestToUniversalFlatViewFilterGroup } from 'src/e
 import { fromViewFilterManifestToUniversalFlatViewFilter } from 'src/engine/core-modules/application/application-manifest/converters/from-view-filter-manifest-to-universal-flat-view-filter.util';
 import { fromViewGroupManifestToUniversalFlatViewGroup } from 'src/engine/core-modules/application/application-manifest/converters/from-view-group-manifest-to-universal-flat-view-group.util';
 import { fromViewManifestToUniversalFlatView } from 'src/engine/core-modules/application/application-manifest/converters/from-view-manifest-to-universal-flat-view.util';
+import { fromViewSortManifestToUniversalFlatViewSort } from 'src/engine/core-modules/application/application-manifest/converters/from-view-sort-manifest-to-universal-flat-view-sort.util';
 import { type FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
 import { fromAgentManifestToUniversalFlatAgent } from 'src/engine/core-modules/application/utils/from-agent-manifest-to-universal-flat-agent.util';
 import { createEmptyAllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/constant/create-empty-all-flat-entity-maps.constant';
@@ -41,12 +44,14 @@ export const computeApplicationManifestAllUniversalFlatEntityMaps = ({
     ownerFlatApplication;
 
   for (const objectManifest of manifest.objects) {
+    const flatObjectMetadata = fromObjectManifestToUniversalFlatObjectMetadata({
+      objectManifest,
+      applicationUniversalIdentifier,
+      now,
+    });
+
     addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
-      universalFlatEntity: fromObjectManifestToUniversalFlatObjectMetadata({
-        objectManifest,
-        applicationUniversalIdentifier,
-        now,
-      }),
+      universalFlatEntity: flatObjectMetadata,
       universalFlatEntityMapsToMutate:
         allUniversalFlatEntityMaps.flatObjectMetadataMaps,
     });
@@ -68,28 +73,61 @@ export const computeApplicationManifestAllUniversalFlatEntityMaps = ({
               objectUniversalIdentifier: objectManifest.universalIdentifier,
             };
 
+      const flatFieldMetadata = fromFieldManifestToUniversalFlatFieldMetadata({
+        fieldManifest: enrichedFieldManifest,
+        applicationUniversalIdentifier,
+        now,
+      });
+
       addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
-        universalFlatEntity: fromFieldManifestToUniversalFlatFieldMetadata({
-          fieldManifest: enrichedFieldManifest,
-          applicationUniversalIdentifier,
-          now,
-        }),
+        universalFlatEntity: flatFieldMetadata,
         universalFlatEntityMapsToMutate:
           allUniversalFlatEntityMaps.flatFieldMetadataMaps,
       });
+
+      if (flatFieldMetadata.isUnique) {
+        addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
+          universalFlatEntity: generateIndexForFlatFieldMetadata({
+            flatFieldMetadata,
+            flatObjectMetadata,
+          }),
+          universalFlatEntityMapsToMutate:
+            allUniversalFlatEntityMaps.flatIndexMaps,
+        });
+      }
     }
   }
 
   for (const fieldManifest of manifest.fields) {
+    const flatFieldMetadata = fromFieldManifestToUniversalFlatFieldMetadata({
+      fieldManifest: fieldManifest,
+      applicationUniversalIdentifier,
+      now,
+    });
+
     addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
-      universalFlatEntity: fromFieldManifestToUniversalFlatFieldMetadata({
-        fieldManifest: fieldManifest,
-        applicationUniversalIdentifier,
-        now,
-      }),
+      universalFlatEntity: flatFieldMetadata,
       universalFlatEntityMapsToMutate:
         allUniversalFlatEntityMaps.flatFieldMetadataMaps,
     });
+
+    if (flatFieldMetadata.isUnique) {
+      const flatObjectMetadata =
+        allUniversalFlatEntityMaps.flatObjectMetadataMaps.byUniversalIdentifier[
+          flatFieldMetadata.objectMetadataUniversalIdentifier
+        ];
+
+      if (isDefined(flatObjectMetadata)) {
+        addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
+          universalFlatEntity: generateIndexForFlatFieldMetadata({
+            flatFieldMetadata,
+            flatObjectMetadata,
+          }),
+          universalFlatEntityMapsToMutate:
+            allUniversalFlatEntityMaps.flatIndexMaps,
+        });
+      }
+    }
   }
 
   for (const logicFunctionManifest of manifest.logicFunctions) {
@@ -242,6 +280,19 @@ export const computeApplicationManifestAllUniversalFlatEntityMaps = ({
         }),
         universalFlatEntityMapsToMutate:
           allUniversalFlatEntityMaps.flatViewGroupMaps,
+      });
+    }
+
+    for (const viewSortManifest of viewManifest.sorts ?? []) {
+      addUniversalFlatEntityToUniversalFlatEntityMapsThroughMutationOrThrow({
+        universalFlatEntity: fromViewSortManifestToUniversalFlatViewSort({
+          viewSortManifest,
+          viewUniversalIdentifier: viewManifest.universalIdentifier,
+          applicationUniversalIdentifier,
+          now,
+        }),
+        universalFlatEntityMapsToMutate:
+          allUniversalFlatEntityMaps.flatViewSortMaps,
       });
     }
   }

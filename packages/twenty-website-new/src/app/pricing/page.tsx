@@ -1,4 +1,9 @@
 import { FAQ_DATA, MENU_DATA } from '@/app/_constants';
+import { TalkToUsButton } from '@/app/components/ContactCalModal';
+import {
+  BecomePartnerButton,
+  PartnerApplicationModalRoot,
+} from '@/app/partners/components/PartnerApplication';
 import {
   ENGAGEMENT_BAND_DATA,
   HERO_DATA,
@@ -14,15 +19,29 @@ import { Faq } from '@/sections/Faq/components';
 import { Hero } from '@/sections/Hero/components';
 import { Menu } from '@/sections/Menu/components';
 import { Plans } from '@/sections/Plans/components';
+import { PricingStateProvider } from '@/sections/Plans/context/PricingStateContext';
 import { PlanTable } from '@/sections/PlanTable/components';
 import { Salesforce } from '@/sections/Salesforce/components';
 import { theme } from '@/theme';
+import { styled } from '@linaria/react';
 import type { Metadata } from 'next';
 
+const PricingPlansContainer = styled.div`
+  display: grid;
+  margin: 0 auto;
+  row-gap: ${theme.spacing(8)};
+  width: 100%;
+`;
+
+const PricingBannerContainer = styled.div`
+  margin: 0 auto;
+  width: 100%;
+`;
+
 export const metadata: Metadata = {
-  title: 'Pricing — Twenty',
+  title: 'Pricing | Twenty',
   description:
-    'Plans that scale with your team. Compare tiers and see how Twenty stacks up for your open source CRM.',
+    'Plans that scale with your team. Compare tiers of the #1 open source CRM.',
 };
 
 export default async function PricingPage() {
@@ -30,9 +49,9 @@ export default async function PricingPage() {
   const menuSocialLinks = mergeSocialLinkLabels(MENU_DATA.socialLinks, stats);
 
   return (
-    <>
+    <PartnerApplicationModalRoot>
       <Menu.Root
-        backgroundColor={theme.colors.secondary.background[5]}
+        backgroundColor="#F3F3F3"
         scheme="primary"
         navItems={MENU_DATA.navItems}
         socialLinks={menuSocialLinks}
@@ -45,39 +64,52 @@ export default async function PricingPage() {
 
       <Hero.Root backgroundColor={theme.colors.secondary.background[5]}>
         <Hero.Heading page={Pages.Pricing} segments={HERO_DATA.heading} />
-        <Hero.Body page={Pages.Pricing} body={HERO_DATA.body} />
+        <Hero.Body
+          body={HERO_DATA.body}
+          page={Pages.Pricing}
+          preserveLineBreaks
+        />
       </Hero.Root>
 
-      <Plans.Root backgroundColor={theme.colors.secondary.background[5]}>
-        <Plans.Content />
-      </Plans.Root>
+      <PricingStateProvider>
+        <Plans.Root backgroundColor={theme.colors.secondary.background[5]}>
+          <PricingPlansContainer>
+            <Plans.Content />
+          </PricingPlansContainer>
+        </Plans.Root>
 
-      <EngagementBand.Root
-        backgroundColor={theme.colors.secondary.background[5]}
-      >
-        <EngagementBand.Strip
-          fillColor={theme.colors.primary.background[100]}
-          variant="primary"
+        <EngagementBand.Root
+          backgroundColor={theme.colors.secondary.background[5]}
         >
-          <EngagementBand.Copy>
-            <EngagementBand.Heading segments={ENGAGEMENT_BAND_DATA.heading} />
-            <EngagementBand.Body body={ENGAGEMENT_BAND_DATA.body} />
-          </EngagementBand.Copy>
-          <EngagementBand.Actions>
-            <LinkButton
-              color="secondary"
-              href="https://app.twenty.com/welcome"
-              label="Read our case studies"
-              type="anchor"
-              variant="contained"
-            />
-          </EngagementBand.Actions>
-        </EngagementBand.Strip>
-      </EngagementBand.Root>
+          <PricingBannerContainer>
+            <EngagementBand.Strip
+              desktopCopyMaxWidth="60%"
+              fillColor={theme.colors.primary.background[100]}
+              variant="primary"
+            >
+              <EngagementBand.Copy>
+                <EngagementBand.Heading
+                  segments={ENGAGEMENT_BAND_DATA.heading}
+                />
+                <EngagementBand.Body body={ENGAGEMENT_BAND_DATA.body} />
+              </EngagementBand.Copy>
+              <EngagementBand.Actions>
+                <BecomePartnerButton
+                  color="secondary"
+                  label="Find a partner"
+                  variant="outlined"
+                />
+              </EngagementBand.Actions>
+            </EngagementBand.Strip>
+          </PricingBannerContainer>
+        </EngagementBand.Root>
 
-      <PlanTable.Root backgroundColor={theme.colors.secondary.background[100]}>
-        <PlanTable.Content data={PLAN_TABLE_DATA} />
-      </PlanTable.Root>
+        <PlanTable.Root
+          backgroundColor={theme.colors.secondary.background[100]}
+        >
+          <PlanTable.Content data={PLAN_TABLE_DATA} />
+        </PlanTable.Root>
+      </PricingStateProvider>
 
       <Salesforce.Flow
         backgroundColor={theme.colors.secondary.background[5]}
@@ -98,17 +130,15 @@ export default async function PricingPage() {
               type="anchor"
               variant="contained"
             />
-            <LinkButton
+            <TalkToUsButton
               color="primary"
-              href="https://twenty.com/contact"
               label="Talk to us"
-              type="anchor"
               variant="outlined"
             />
           </Faq.Cta>
         </Faq.Intro>
         <Faq.Items questions={FAQ_DATA.questions} />
       </Faq.Root>
-    </>
+    </PartnerApplicationModalRoot>
   );
 }

@@ -1,7 +1,4 @@
-import {
-  CalendarStartDay,
-  DOCUMENTATION_BASE_URL,
-} from 'twenty-shared/constants';
+import { CalendarStartDay } from 'twenty-shared/constants';
 import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 import {
   AggregateOperations,
@@ -191,7 +188,7 @@ const createWelcomeRichText = ({
             },
             {
               type: 'link',
-              href: `${DOCUMENTATION_BASE_URL}/user-guide/introduction`,
+              href: 'https://docs.twenty.com/getting-started/introduction',
               content: [
                 {
                   type: 'text',
@@ -245,6 +242,7 @@ const createWelcomeRichText = ({
       universalConfiguration: configuration,
       objectMetadataId: null,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -309,6 +307,7 @@ const createDealsByCompany = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -386,6 +385,7 @@ const createPipelineValueByStage = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -452,6 +452,7 @@ const createRevenueTimeline = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -533,6 +534,7 @@ const createOpportunitiesByOwner = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -568,6 +570,7 @@ const createStockMarketIframe = ({
       universalConfiguration: configuration,
       objectMetadataId: null,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -636,6 +639,7 @@ const createDealsCreatedThisMonth = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };
@@ -704,6 +708,7 @@ const createDealValueCreatedThisMonth = ({
       },
       objectMetadataId: opportunityObjectId,
       conditionalDisplay: null,
+      conditionalAvailabilityExpression: null,
     },
   });
 };

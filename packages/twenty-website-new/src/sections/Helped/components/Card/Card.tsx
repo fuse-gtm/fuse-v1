@@ -1,10 +1,10 @@
 import { Body, Heading, LinkButton } from '@/design-system/components';
 import { CLIENT_ICONS } from '@/icons';
+import { IllustrationMount } from '@/illustrations';
 import { HelpedCardShape } from '@/sections/Helped/HelpedCardShape';
 import type { HeadingCardType } from '@/sections/Helped/types/HeadingCard';
 import { theme } from '@/theme';
 import { styled } from '@linaria/react';
-import { HelpedCardVisual } from './HelpedCardVisual';
 
 const CardRoot = styled.article`
   display: grid;
@@ -61,6 +61,7 @@ const CardTitleWrap = styled.div`
 
 const CardBodyWrap = styled.div`
   color: ${theme.colors.secondary.text[80]};
+  --body-sm-color: currentColor;
 `;
 
 const CtaRow = styled.div`
@@ -78,7 +79,7 @@ type CardProps = {
 
 export function Card({ card }: CardProps) {
   const IconComponent = CLIENT_ICONS[card.icon];
-  const logoWidth = card.icon === 'evergreen' ? 96 : 104;
+  const logoWidth = 104;
 
   return (
     <CardRoot>
@@ -93,11 +94,7 @@ export function Card({ card }: CardProps) {
       </LogoRow>
       <Rule aria-hidden="true" />
       <VisualShell>
-        <HelpedCardVisual
-          src={card.illustration.src}
-          stripeColor={card.illustration.color}
-          title={card.illustration.title || 'Case illustration'}
-        />
+        <IllustrationMount illustration={card.illustration} />
       </VisualShell>
       <Rule aria-hidden="true" />
       <CopyBlock>
@@ -111,9 +108,9 @@ export function Card({ card }: CardProps) {
       <CtaRow>
         <LinkButton
           color="primary"
-          href="https://twenty.com"
+          href={card.href}
           label="Read the case"
-          type="anchor"
+          type="link"
           variant="outlined"
         />
       </CtaRow>

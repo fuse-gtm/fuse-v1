@@ -1,27 +1,17 @@
 import type { PlanTableDataType } from '@/sections/PlanTable/types';
 
-const EMAIL_OUTREACH_TASK = {
-  label: 'Tasks',
-  options: ['email outreach'],
-  value: 'email outreach',
-} as const;
-
 export const PLAN_TABLE_DATA: PlanTableDataType = {
-  featureColumnLabel: 'Feature',
+  featureColumnLabel: 'Name',
   rows: [
     {
       featureLabel: 'Price',
+      selfHostTiers: {
+        organization: { kind: 'text', text: '$19' },
+        pro: { kind: 'text', text: '$0' },
+      },
       tiers: {
         organization: { kind: 'text', text: '$19' },
         pro: { kind: 'text', text: '$9' },
-      },
-      type: 'row',
-    },
-    {
-      featureLabel: 'Self Hosting discount',
-      tiers: {
-        organization: { kind: 'text', text: 'Free for up to 20 seats' },
-        pro: { kind: 'text', text: 'Free for up to 20 seats' },
       },
       type: 'row',
     },
@@ -30,6 +20,74 @@ export const PLAN_TABLE_DATA: PlanTableDataType = {
       tiers: {
         organization: { kind: 'text', text: 'Unlimited' },
         pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      title: 'Workspace',
+      type: 'category',
+    },
+    {
+      featureLabel: 'Custom objects',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Custom fields',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Custom views',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'View types',
+      tiers: {
+        organization: { kind: 'text', text: 'Table, Kanban, Calendar' },
+        pro: { kind: 'text', text: 'Table, Kanban, Calendar' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Custom layout',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Records',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'CSV import & export',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Languages',
+      tiers: {
+        organization: { kind: 'text', text: '30+' },
+        pro: { kind: 'text', text: '30+' },
       },
       type: 'row',
     },
@@ -46,7 +104,35 @@ export const PLAN_TABLE_DATA: PlanTableDataType = {
       type: 'row',
     },
     {
-      title: 'Automations',
+      title: 'Emails & Calendar',
+      type: 'category',
+    },
+    {
+      featureLabel: 'Internet accounts per user',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Folder/Label import',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Email sharing',
+      tiers: {
+        organization: { kind: 'text', text: 'Fully customizable' },
+        pro: { kind: 'text', text: 'Fully customizable' },
+      },
+      type: 'row',
+    },
+    {
+      title: 'AI & Automations',
       type: 'category',
     },
     {
@@ -58,7 +144,7 @@ export const PLAN_TABLE_DATA: PlanTableDataType = {
       type: 'row',
     },
     {
-      featureLabel: 'AI Agent',
+      featureLabel: 'AI agents',
       tiers: {
         organization: { kind: 'yes', label: 'Yes' },
         pro: { kind: 'yes', label: 'Yes' },
@@ -66,96 +152,260 @@ export const PLAN_TABLE_DATA: PlanTableDataType = {
       type: 'row',
     },
     {
-      featureLabel: 'Automation credits',
+      featureLabel: 'Custom AI models',
       tiers: {
-        organization: { kind: 'text', text: '1,000' },
-        pro: { kind: 'text', text: '1,000' },
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
       },
       type: 'row',
     },
     {
-      featureLabel: 'Extra credits',
-      tiers: {
-        organization: { kind: 'dash' },
-        pro: {
-          kind: 'text',
-          text: '1,000 for $10  -  5,000 for $48',
-        },
-      },
-      type: 'row',
-    },
-    {
-      calculator: {
-        priceLine: {
-          amount: '700€',
-          label: 'Price',
-          periodSuffix: '/month',
-        },
-        sections: [
-          {
-            id: 'intelligence-ai',
-            modelField: {
-              label: 'Model',
-              options: ['GPT 5'],
-              value: 'GPT 5',
-            },
-            requestField: { label: 'Requests', value: 100 },
-            tasksField: {
-              label: EMAIL_OUTREACH_TASK.label,
-              options: [...EMAIL_OUTREACH_TASK.options],
-              value: EMAIL_OUTREACH_TASK.value,
-            },
-            title: 'Intelligence AI',
-          },
-          {
-            id: 'compute',
-            requestField: { label: 'Requests', value: 100 },
-            tasksField: {
-              label: EMAIL_OUTREACH_TASK.label,
-              options: [...EMAIL_OUTREACH_TASK.options],
-              value: EMAIL_OUTREACH_TASK.value,
-            },
-            title: 'Compute',
-          },
-          {
-            id: 'storage',
-            requestField: { label: 'Requests', value: 100 },
-            tasksField: {
-              label: EMAIL_OUTREACH_TASK.label,
-              options: [...EMAIL_OUTREACH_TASK.options],
-              value: EMAIL_OUTREACH_TASK.value,
-            },
-            title: 'Storage',
-          },
-        ],
-        visual: {
-          body: {
-            text: 'Estimate your costs effortlessly with our price calculator customize your workspace in just a few clicks!',
-          },
-          heading: [
-            { fontFamily: 'serif', text: 'Get a glimpse of ' },
-            { fontFamily: 'sans', text: "what it'll cost" },
-          ],
-        },
-      },
-      type: 'calculator',
-    },
-    {
-      title: 'Workspace',
+      title: 'Security',
       type: 'category',
     },
     {
-      featureLabel: 'Custom objects',
+      featureLabel: 'Two-factor authentication',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'User roles',
       tiers: {
         organization: { kind: 'text', text: 'Unlimited' },
         pro: { kind: 'text', text: 'Unlimited' },
       },
       type: 'row',
     },
+    {
+      featureLabel: 'Read/Edit/Delete permissions',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Field-level permissions',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Row-level permissions',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'SSO',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Advanced Encryption',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Audit logs',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Environments',
+      tiers: {
+        organization: { kind: 'text', text: 'Local, Production' },
+        pro: { kind: 'text', text: 'Local, Production' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Impersonate users',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      title: 'Support',
+      type: 'category',
+    },
+    {
+      featureLabel: 'Community',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Help center',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Email and Chat',
+      selfHostTiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Priority support',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Onboarding Packs',
+      selfHostTiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Implementation partners',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      title: 'Customization',
+      type: 'category',
+    },
+    {
+      featureLabel: 'Custom apps',
+      tiers: {
+        organization: { kind: 'text', text: 'Unlimited' },
+        pro: { kind: 'text', text: 'Unlimited' },
+      },
+      type: 'row',
+    },
+    {
+      appliesTo: 'cloud',
+      featureLabel: 'Subdomain (yourco.twenty.com)',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      appliesTo: 'cloud',
+      featureLabel: 'Custom domain (crm.yourco.com)',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      title: 'Developers',
+      type: 'category',
+    },
+    {
+      featureLabel: 'REST & GraphQL API',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Webhooks',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'MCP server',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      featureLabel: 'Install shared tarball app',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
+    {
+      appliesTo: 'cloud',
+      featureLabel: 'API calls',
+      tiers: {
+        organization: { kind: 'text', text: '200 per minute' },
+        pro: { kind: 'text', text: '100 per minute' },
+      },
+      type: 'row',
+    },
+    {
+      appliesTo: 'selfHost',
+      title: 'Self-hosting',
+      type: 'category',
+    },
+    {
+      appliesTo: 'selfHost',
+      featureLabel: 'Source code access',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'yes', label: 'Yes' },
+      },
+      type: 'row',
+    },
+    {
+      appliesTo: 'selfHost',
+      featureLabel: 'Commercial license (no AGPL obligations)',
+      tiers: {
+        organization: { kind: 'yes', label: 'Yes' },
+        pro: { kind: 'dash' },
+      },
+      type: 'row',
+    },
   ],
+  initialVisibleRowCount: 15,
   seeMoreFeaturesCta: {
-    href: '/pricing',
-    label: 'See more features',
+    collapseLabel: 'Show less',
+    expandLabel: 'See more features',
   },
   tierColumns: [
     { id: 'pro', label: 'Pro' },

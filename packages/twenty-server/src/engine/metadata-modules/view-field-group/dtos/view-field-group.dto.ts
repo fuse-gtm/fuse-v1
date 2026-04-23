@@ -26,6 +26,9 @@ export class ViewFieldGroupDTO {
   @Field(() => UUIDScalarType, { nullable: false })
   workspaceId: string;
 
+  @HideField()
+  applicationId: string;
+
   @Field()
   createdAt: Date;
 
@@ -38,7 +41,10 @@ export class ViewFieldGroupDTO {
   @Field(() => [ViewFieldDTO])
   viewFields?: ViewFieldDTO[];
 
-  @Field(() => Boolean, { nullable: false })
+  @Field(() => Boolean, {
+    nullable: false,
+    deprecationReason: 'isOverridden is deprecated',
+  })
   isOverridden: boolean;
 
   @HideField()

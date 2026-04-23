@@ -44,6 +44,8 @@ export type {
   PageLayoutTabManifest,
   PageLayoutManifest,
 } from './pageLayoutManifestType';
+export type { PostInstallLogicFunctionApplicationManifest } from './postInstallLogicFunctionApplicationType';
+export type { PreInstallLogicFunctionApplicationManifest } from './preInstallLogicFunctionApplicationType';
 export type {
   ObjectPermissionManifest,
   FieldPermissionManifest,
@@ -59,5 +61,6 @@ export type {
   ViewFilterGroupManifest,
   ViewGroupManifest,
   ViewFieldGroupManifest,
+  ViewSortManifest,
   ViewManifest,
 } from './viewManifestType';

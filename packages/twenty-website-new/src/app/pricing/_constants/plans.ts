@@ -4,47 +4,48 @@ const ORGANIZATION_HEADING = {
   text: 'Organization',
 };
 
-const PRO_ILLUSTRATION = {
-  src: '/illustrations/pricing/Price/pro.glb',
-  title: 'Pro plan illustration',
-};
-
-const ORGANIZATION_ILLUSTRATION = {
-  src: '/illustrations/pricing/Price/organization.glb',
-  title: 'Organization plan illustration',
-};
-
-const PRO_FEATURES_TITLE = { text: 'Key Features' };
-const ORGANIZATION_FEATURES_TITLE = { text: 'everything in pro +' };
-
-const PRO_BULLETS_DEFAULT = [
-  { text: 'Full customisation' },
+const PRO_BULLETS_MONTHLY = [
+  { text: 'Full customization' },
+  { text: 'Create custom apps' },
   { text: 'AI Agents with custom skills' },
-  { text: '1K automation credits' },
+  { text: 'Up to 5M automation credits/month' },
   { text: 'Standard support' },
-  { text: 'Add-on AI (1-month trial)' },
 ];
 
-const PRO_BULLETS_SELF_HOST_MONTHLY = [
-  { text: 'Full customisation' },
+const PRO_BULLETS_YEARLY = [
+  { text: 'Full customization' },
+  { text: 'Create custom apps' },
   { text: 'AI Agents with custom skills' },
+  { text: 'Up to 50M automation credits/year' },
   { text: 'Standard support' },
-  { text: 'Add-on AI (1-month trial)' },
 ];
 
-const PRO_BULLETS_SELF_HOST_YEARLY = [
-  { text: 'Full customisation' },
-  { text: 'AI Agents with custom skills' },
-  { text: 'Standard support' },
-  { text: 'Add-on AI (1-month trial)' },
+const PRO_BULLETS_SELF_HOST = [
+  { text: 'Full customization' },
+  { text: 'Create custom apps' },
+  { text: 'Community support' },
 ];
 
-const ORGANIZATION_BULLETS = [
+const ORGANIZATION_BULLETS_MONTHLY = [
+  { text: 'Everything in Pro' },
   { text: 'Roles & Permissions' },
   { text: 'SAML/OIDC SSO' },
-  { text: '2K automation credits' },
   { text: 'Priority support' },
-  { text: 'Add-on AI full time' },
+];
+
+const ORGANIZATION_BULLETS_YEARLY = [
+  { text: 'Everything in Pro' },
+  { text: 'Roles & Permissions' },
+  { text: 'SAML/OIDC SSO' },
+  { text: 'Priority support' },
+];
+
+const ORGANIZATION_BULLETS_SELF_HOST = [
+  { text: 'Everything in Pro' },
+  { text: 'Roles & Permissions' },
+  { text: 'SAML/OIDC SSO' },
+  { text: 'Twenty team support' },
+  { text: 'No open-source distribution requirement' },
 ];
 
 import type { PlansDataType } from '@/sections/Plans/types';
@@ -54,78 +55,83 @@ export const PLANS_DATA = {
     cells: {
       cloud: {
         monthly: {
-          featureBullets: ORGANIZATION_BULLETS,
+          featureBullets: ORGANIZATION_BULLETS_MONTHLY,
           price: {
-            body: { text: '/month, paid monthly' },
-            heading: { fontFamily: 'sans', text: '$25 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$25' },
           },
         },
         yearly: {
-          featureBullets: ORGANIZATION_BULLETS,
+          featureBullets: ORGANIZATION_BULLETS_YEARLY,
           price: {
-            body: { text: '/month, paid yearly' },
-            heading: { fontFamily: 'sans', text: '$19 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$19' },
           },
         },
       },
       selfHost: {
         monthly: {
-          featureBullets: ORGANIZATION_BULLETS,
+          featureBullets: ORGANIZATION_BULLETS_SELF_HOST,
           price: {
-            body: { text: '/month, paid monthly' },
-            heading: { fontFamily: 'sans', text: '$25 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$25' },
           },
         },
         yearly: {
-          featureBullets: ORGANIZATION_BULLETS,
+          featureBullets: ORGANIZATION_BULLETS_SELF_HOST,
           price: {
-            body: { text: '/month, paid yearly' },
-            heading: { fontFamily: 'sans', text: '$19 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$19' },
           },
         },
       },
     },
-    featuresTitle: ORGANIZATION_FEATURES_TITLE,
     heading: ORGANIZATION_HEADING,
-    illustration: ORGANIZATION_ILLUSTRATION,
+    icon: {
+      alt: 'Organization plan icon',
+      src: '/images/pricing/plans/organization-icon.png',
+    },
   },
   pro: {
     cells: {
       cloud: {
         monthly: {
-          featureBullets: PRO_BULLETS_DEFAULT,
+          featureBullets: PRO_BULLETS_MONTHLY,
           price: {
-            body: { text: '/month, paid monthly' },
-            heading: { fontFamily: 'sans', text: '$12 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$12' },
           },
         },
         yearly: {
-          featureBullets: PRO_BULLETS_DEFAULT,
+          featureBullets: PRO_BULLETS_YEARLY,
           price: {
-            body: { text: '/month, paid yearly' },
-            heading: { fontFamily: 'sans', text: '$9 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$9' },
           },
         },
       },
       selfHost: {
         monthly: {
-          featureBullets: PRO_BULLETS_SELF_HOST_MONTHLY,
+          featureBullets: PRO_BULLETS_SELF_HOST,
           price: {
-            body: { text: '/month, paid monthly' },
-            heading: { fontFamily: 'sans', text: '$0 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$0' },
           },
         },
         yearly: {
-          featureBullets: PRO_BULLETS_SELF_HOST_YEARLY,
+          featureBullets: PRO_BULLETS_SELF_HOST,
           price: {
-            body: { text: '/month, paid yearly' },
-            heading: { fontFamily: 'sans', text: '$0 USD' },
+            body: { text: '/user/month' },
+            heading: { fontFamily: 'sans', text: '$0' },
           },
         },
       },
     },
-    featuresTitle: PRO_FEATURES_TITLE,
     heading: PRO_HEADING,
-    illustration: PRO_ILLUSTRATION,
+    icon: {
+      alt: 'Pro plan icon',
+      src: '/images/pricing/plans/pro-icon.png',
+      width: 60,
+    },
   },
 } satisfies PlansDataType;

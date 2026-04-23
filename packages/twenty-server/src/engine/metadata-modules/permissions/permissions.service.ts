@@ -12,6 +12,7 @@ import {
   ApplicationException,
   ApplicationExceptionCode,
 } from 'src/engine/core-modules/application/application.exception';
+import { isApiKeyAuthContext } from 'src/engine/core-modules/auth/guards/is-api-key-auth-context.guard';
 import { TOOL_PERMISSION_FLAGS } from 'src/engine/metadata-modules/permissions/constants/tool-permission-flags';
 import {
   PermissionsException,
@@ -148,28 +149,10 @@ export class PermissionsService {
         workspaceId,
       );
 
-      let role = await this.roleRepository.findOne({
+      const role = await this.roleRepository.findOne({
         where: { id: roleId, workspaceId },
         relations: ['permissionFlags'],
       });
-
-      // Role from cache may be stale — recompute and retry once
-      if (!isDefined(role)) {
-        await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
-          'apiKeyRoleMap',
-        ]);
-
-        const refreshedRoleId =
-          await this.apiKeyRoleService.getRoleIdForApiKeyId(
-            apiKeyId,
-            workspaceId,
-          );
-
-        role = await this.roleRepository.findOne({
-          where: { id: refreshedRoleId, workspaceId },
-          relations: ['permissionFlags'],
-        });
-      }
 
       if (!isDefined(role)) {
         throw new PermissionsException(

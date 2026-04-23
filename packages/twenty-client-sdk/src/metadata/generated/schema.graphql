@@ -584,7 +584,7 @@ type ViewField {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  isOverridden: Boolean!
+  isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
 
 enum AggregateOperations {
@@ -693,7 +693,7 @@ type ViewFieldGroup {
   updatedAt: DateTime!
   deletedAt: DateTime
   viewFields: [ViewField!]!
-  isOverridden: Boolean!
+  isOverridden: Boolean! @deprecated(reason: "isOverridden is deprecated")
 }
 
 type View {
@@ -790,7 +790,6 @@ type Workspace {
   isCustomDomainEnabled: Boolean!
   editableProfileFields: [String!]
   defaultRole: Role
-  version: String
   fastModel: String!
   smartModel: String!
   aiAdditionalInstructions: String
@@ -899,7 +898,7 @@ type PageLayoutWidget {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  isOverridden: Boolean!
+  isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
 
 enum WidgetType {
@@ -1233,7 +1232,7 @@ type PageLayoutTab {
   createdAt: DateTime!
   updatedAt: DateTime!
   deletedAt: DateTime
-  isOverridden: Boolean!
+  isOverridden: Boolean @deprecated(reason: "isOverridden is deprecated")
 }
 
 type PageLayout {
@@ -1257,6 +1256,37 @@ enum PageLayoutType {
 type Analytics {
   """Boolean that confirms query was dispatched"""
   success: Boolean!
+}
+
+type ApprovedAccessDomain {
+  id: UUID!
+  domain: String!
+  isValidated: Boolean!
+  createdAt: DateTime!
+}
+
+type FileWithSignedUrl {
+  id: UUID!
+  path: String!
+  size: Float!
+  createdAt: DateTime!
+  url: String!
+}
+
+type EnterpriseLicenseInfoDTO {
+  isValid: Boolean!
+  licensee: String
+  expiresAt: DateTime
+  subscriptionId: String
+}
+
+type EnterpriseSubscriptionStatusDTO {
+  status: String!
+  licensee: String
+  expiresAt: DateTime
+  cancelAt: DateTime
+  currentPeriodEnd: DateTime
+  isCancellationScheduled: Boolean!
 }
 
 type BillingSubscriptionSchedulePhaseItem {
@@ -1412,40 +1442,9 @@ type BillingUpdate {
   billingSubscriptions: [BillingSubscription!]!
 }
 
-type EnterpriseLicenseInfoDTO {
-  isValid: Boolean!
-  licensee: String
-  expiresAt: DateTime
-  subscriptionId: String
-}
-
-type EnterpriseSubscriptionStatusDTO {
-  status: String!
-  licensee: String
-  expiresAt: DateTime
-  cancelAt: DateTime
-  currentPeriodEnd: DateTime
-  isCancellationScheduled: Boolean!
-}
-
 type OnboardingStepSuccess {
   """Boolean that confirms query was dispatched"""
   success: Boolean!
-}
-
-type ApprovedAccessDomain {
-  id: UUID!
-  domain: String!
-  isValidated: Boolean!
-  createdAt: DateTime!
-}
-
-type FileWithSignedUrl {
-  id: UUID!
-  path: String!
-  size: Float!
-  createdAt: DateTime!
-  url: String!
 }
 
 type WorkspaceInvitation {
@@ -2135,30 +2134,18 @@ type DeletedWorkspaceMember {
   userWorkspaceId: UUID
 }
 
-type BillingEntitlement {
-  key: BillingEntitlementKey!
-  value: Boolean!
+type Relation {
+  type: RelationType!
+  sourceObjectMetadata: Object!
+  targetObjectMetadata: Object!
+  sourceFieldMetadata: Field!
+  targetFieldMetadata: Field!
 }
 
-enum BillingEntitlementKey {
-  SSO
-  CUSTOM_DOMAIN
-  RLS
-  AUDIT_LOGS
-}
-
-type DomainRecord {
-  validationType: String!
-  type: String!
-  status: String!
-  key: String!
-  value: String!
-}
-
-type DomainValidRecords {
-  id: UUID!
-  domain: String!
-  records: [DomainRecord!]!
+"""Relation type"""
+enum RelationType {
+  ONE_TO_MANY
+  MANY_TO_ONE
 }
 
 type IndexEdge {
@@ -2260,31 +2247,43 @@ type ObjectFieldsConnection {
   edges: [FieldEdge!]!
 }
 
-type UpsertRowLevelPermissionPredicatesResult {
-  predicates: [RowLevelPermissionPredicate!]!
-  predicateGroups: [RowLevelPermissionPredicateGroup!]!
-}
-
-type Relation {
-  type: RelationType!
-  sourceObjectMetadata: Object!
-  targetObjectMetadata: Object!
-  sourceFieldMetadata: Field!
-  targetFieldMetadata: Field!
-}
-
-"""Relation type"""
-enum RelationType {
-  ONE_TO_MANY
-  MANY_TO_ONE
-}
-
 type FieldConnection {
   """Paging information"""
   pageInfo: PageInfo!
 
   """Array of edges."""
   edges: [FieldEdge!]!
+}
+
+type BillingEntitlement {
+  key: BillingEntitlementKey!
+  value: Boolean!
+}
+
+enum BillingEntitlementKey {
+  SSO
+  CUSTOM_DOMAIN
+  RLS
+  AUDIT_LOGS
+}
+
+type DomainRecord {
+  validationType: String!
+  type: String!
+  status: String!
+  key: String!
+  value: String!
+}
+
+type DomainValidRecords {
+  id: UUID!
+  domain: String!
+  records: [DomainRecord!]!
+}
+
+type UpsertRowLevelPermissionPredicatesResult {
+  predicates: [RowLevelPermissionPredicate!]!
+  predicateGroups: [RowLevelPermissionPredicateGroup!]!
 }
 
 type AuthToken {
@@ -2522,6 +2521,7 @@ type Location {
 }
 
 type PlaceDetailsResult {
+  street: String
   state: String
   postcode: String
   city: String
@@ -2575,10 +2575,11 @@ type CommandMenuItem {
   position: Float!
   isPinned: Boolean!
   availabilityType: CommandMenuItemAvailabilityType!
-  payload: JSON
+  payload: CommandMenuItemPayload
   hotKeys: [String!]
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
+  pageLayoutId: UUID
   applicationId: UUID
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -2657,6 +2658,16 @@ enum CommandMenuItemAvailabilityType {
   GLOBAL
   RECORD_SELECTION
   FALLBACK
+}
+
+union CommandMenuItemPayload = PathCommandMenuItemPayload | ObjectMetadataCommandMenuItemPayload
+
+type PathCommandMenuItemPayload {
+  path: String!
+}
+
+type ObjectMetadataCommandMenuItemPayload {
+  objectMetadataItemId: UUID!
 }
 
 type ToolIndexEntry {
@@ -3460,7 +3471,9 @@ type Mutation {
   updatePageLayout(id: String!, input: UpdatePageLayoutInput!): PageLayout!
   destroyPageLayout(id: String!): Boolean!
   updatePageLayoutWithTabsAndWidgets(id: String!, input: UpdatePageLayoutWithTabsInput!): PageLayout!
+  resetPageLayoutToDefault(id: String!): PageLayout!
   resetPageLayoutWidgetToDefault(id: String!): PageLayoutWidget!
+  resetPageLayoutTabToDefault(id: String!): PageLayoutTab!
   createPageLayoutWidget(input: CreatePageLayoutWidgetInput!): PageLayoutWidget!
   updatePageLayoutWidget(id: String!, input: UpdatePageLayoutWidgetInput!): PageLayoutWidget!
   destroyPageLayoutWidget(id: String!): Boolean!
@@ -3508,7 +3521,7 @@ type Mutation {
   updateWebhook(input: UpdateWebhookInput!): Webhook!
   deleteWebhook(id: UUID!): Webhook!
   createChatThread: AgentChatThread!
-  sendChatMessage(threadId: UUID!, text: String!, messageId: UUID!, browsingContext: JSON, modelId: String): SendChatMessageResult!
+  sendChatMessage(threadId: UUID!, text: String!, messageId: UUID!, browsingContext: JSON, modelId: String, fileIds: [UUID!]): SendChatMessageResult!
   stopAgentChatStream(threadId: UUID!): Boolean!
   deleteQueuedChatMessage(messageId: UUID!): Boolean!
   createSkill(input: CreateSkillInput!): Skill!
@@ -3985,6 +3998,7 @@ input CreatePageLayoutWidgetInput {
 }
 
 input UpdatePageLayoutWidgetInput {
+  pageLayoutTabId: UUID
   title: String
   type: WidgetType
   objectMetadataId: UUID
@@ -4052,6 +4066,7 @@ input CreateCommandMenuItemInput {
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
   payload: JSON
+  pageLayoutId: UUID
 }
 
 input UpdateCommandMenuItemInput {
@@ -4065,6 +4080,7 @@ input UpdateCommandMenuItemInput {
   availabilityObjectMetadataId: UUID
   engineComponentKey: EngineComponentKey
   hotKeys: [String!]
+  pageLayoutId: UUID
 }
 
 input CreateFrontComponentInput {
