@@ -23,13 +23,13 @@ const StyledMainContainer = styled.div`
   border-top: none;
   display: flex;
   flex-direction: column;
-  gap: ${themeCssVariables.spacing[4]};
+  overflow: auto;
 
   justify-content: center;
-  overflow: auto;
-  padding-left: ${themeCssVariables.spacing[6]};
-  padding-right: ${themeCssVariables.spacing[6]};
   padding-top: ${themeCssVariables.spacing[6]};
+  padding-right: ${themeCssVariables.spacing[6]};
+  padding-left: ${themeCssVariables.spacing[6]};
+  gap: ${themeCssVariables.spacing[4]};
 
   @media (max-width: ${MOBILE_VIEWPORT}px) {
     border-top: 1px solid ${themeCssVariables.border.color.medium};
@@ -51,7 +51,8 @@ export const TimelineCard = () => {
   const { timelineActivities, loading, fetchMoreRecords } =
     useTimelineActivities(targetRecord);
 
-  const isTimelineActivitiesEmpty = timelineActivities.length === 0;
+  const isTimelineActivitiesEmpty =
+    !timelineActivities || timelineActivities.length === 0;
 
   if (loading === true) {
     return <SkeletonLoader withSubSections />;
@@ -60,7 +61,7 @@ export const TimelineCard = () => {
   if (isTimelineActivitiesEmpty) {
     const placeholderContent = (
       <AnimatedPlaceholderEmptyContainer
-        // oxlint-disable-next-line react/jsx-props-no-spreading
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...EMPTY_PLACEHOLDER_TRANSITION_PROPS}
       >
         <AnimatedPlaceholder type="emptyTimeline" />

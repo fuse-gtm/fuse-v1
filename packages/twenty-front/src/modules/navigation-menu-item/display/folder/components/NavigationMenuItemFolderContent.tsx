@@ -6,7 +6,7 @@ import { NavigationMenuItemDroppableIds } from '@/navigation-menu-item/common/co
 import { NavigationMenuItemBackButton } from '@/navigation-menu-item/edit/components/NavigationMenuItemBackButton';
 import { NavigationMenuItemIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemIcon';
 import { NavigationMenuItemSortableItem } from '@/navigation-menu-item/display/dnd/components/NavigationMenuItemSortableItem';
-import { useDeleteManyNavigationMenuItems } from '@/navigation-menu-item/common/hooks/useDeleteManyNavigationMenuItems';
+import { useDeleteNavigationMenuItem } from '@/navigation-menu-item/common/hooks/useDeleteNavigationMenuItem';
 import { getNavigationMenuItemComputedLink } from '@/navigation-menu-item/display/utils/getNavigationMenuItemComputedLink';
 import { getNavigationMenuItemLabel } from '@/navigation-menu-item/display/utils/getNavigationMenuItemLabel';
 import { getNavigationMenuItemObjectNameSingular } from '@/navigation-menu-item/display/object/utils/getNavigationMenuItemObjectNameSingular';
@@ -29,7 +29,7 @@ export const NavigationMenuItemFolderContent = ({
 }: NavigationMenuItemFolderContentProps) => {
   const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
   const views = useAtomStateValue(viewsSelector);
-  const { deleteManyNavigationMenuItems } = useDeleteManyNavigationMenuItems();
+  const { deleteNavigationMenuItem } = useDeleteNavigationMenuItem();
 
   const folderDroppableId = `${NavigationMenuItemDroppableIds.FAVORITE_FOLDER_PREFIX}${folderId}`;
 
@@ -76,7 +76,7 @@ export const NavigationMenuItemFolderContent = ({
                   Icon={IconHeartOff}
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteManyNavigationMenuItems([navigationMenuItem.id]);
+                    deleteNavigationMenuItem(navigationMenuItem.id);
                   }}
                   accent="tertiary"
                 />

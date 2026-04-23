@@ -14,8 +14,8 @@ import {
   type LogicFunctionTranspileResult,
 } from 'src/engine/core-modules/logic-function/logic-function-drivers/interfaces/logic-function-driver.interface';
 
-import type { FlatApplicationVariable } from 'src/engine/core-modules/application/application-variable/types/flat-application-variable.type';
 import { FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
+import type { FlatApplicationVariable } from 'src/engine/core-modules/application/application-variable/types/flat-application-variable.type';
 import { AuditService } from 'src/engine/core-modules/audit/services/audit.service';
 import { LOGIC_FUNCTION_EXECUTED_EVENT } from 'src/engine/core-modules/audit/utils/events/workspace-event/logic-function/logic-function-executed';
 import { ApplicationTokenService } from 'src/engine/core-modules/auth/token/services/application-token.service';
@@ -242,6 +242,8 @@ export class LogicFunctionExecutorService {
     // imported — parent commit #19486 rejected per sovereignty charter.
     // Log entries are not persisted; subscription channel still fires for
     // live tailing. See docs/ops-logs/2026-04-23-wave2a-watch-items.md.
+    // Re-stripped after upstream #19867 (Billing - fixes, cherry-picked in
+    // wave 2C) reintroduced the same ApplicationLogsService import/usage.
 
     await this.subscriptionService.publish({
       channel: SubscriptionChannel.LOGIC_FUNCTION_LOGS_CHANNEL,
@@ -278,7 +280,7 @@ export class LogicFunctionExecutorService {
         {
           resourceType: UsageResourceType.LOGIC_FUNCTION,
           operationType: UsageOperationType.CODE_EXECUTION,
-          creditsUsedMicro: 100,
+          creditsUsedMicro: 1,
           quantity: 1,
           unit: UsageUnit.INVOCATION,
           resourceId: flatLogicFunction.id,

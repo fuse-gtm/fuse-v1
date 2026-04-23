@@ -1,13 +1,13 @@
 import { isDefined } from 'twenty-shared/utils';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
-import { filterAndSortNavigationMenuItems } from '@/navigation-menu-item/common/utils/filterAndSortNavigationMenuItems';
-import { isNavigationMenuItemFolder } from '@/navigation-menu-item/common/utils/isNavigationMenuItemFolder';
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { filterAndSortNavigationMenuItems } from '@/navigation-menu-item/utils/filterAndSortNavigationMenuItems';
+import { isNavigationMenuItemFolder } from '@/navigation-menu-item/utils/isNavigationMenuItemFolder';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
-import { useNavigationMenuItemsData } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemsData';
+import { useNavigationMenuItemsData } from './useNavigationMenuItemsData';
 
 type NavigationMenuItemFolder = {
   id: string;
@@ -24,7 +24,7 @@ type NavigationMenuItemFolderEntry = Pick<
 
 export const useNavigationMenuItemsByFolder = () => {
   const views = useAtomStateValue(viewsSelector);
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsState);
 
   const { navigationMenuItems, workspaceNavigationMenuItems } =
     useNavigationMenuItemsData();

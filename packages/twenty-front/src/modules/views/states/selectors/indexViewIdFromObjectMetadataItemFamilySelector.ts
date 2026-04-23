@@ -1,21 +1,23 @@
-import { createAtomFamilySelector } from '@/ui/utilities/state/jotai/utils/createAtomFamilySelector';
-import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
 import { ViewKey } from '@/views/types/ViewKey';
+import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
+import { createAtomFamilySelector } from '@/ui/utilities/state/jotai/utils/createAtomFamilySelector';
 
-export const indexViewIdFromObjectMetadataItemFamilySelector =
+export const coreIndexViewIdFromObjectMetadataItemFamilySelector =
   createAtomFamilySelector<
     string | undefined,
     { objectMetadataItemId: string }
   >({
-    key: 'indexViewIdFromObjectMetadataItemFamilySelector',
+    key: 'coreIndexViewIdFromObjectMetadataItemFamilySelector',
     get:
       ({ objectMetadataItemId }) =>
       ({ get }) => {
-        const views = get(viewsSelector);
+        const coreViews = get(coreViewsSelector);
+        const views = coreViews.map(convertCoreViewToView);
         return views?.find(
           (view) =>
             view.objectMetadataId === objectMetadataItemId &&
-            view.key === ViewKey.INDEX,
+            view.key === ViewKey.Index,
         )?.id;
       },
   });

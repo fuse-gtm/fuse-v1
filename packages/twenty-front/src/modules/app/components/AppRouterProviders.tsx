@@ -6,8 +6,8 @@ import { IsMinimalMetadataReadyEffect } from '@/metadata-store/effect-components
 
 import { GotoHotkeysEffectsProvider } from '@/app/effect-components/GotoHotkeysEffectsProvider';
 import { PageChangeEffect } from '@/app/effect-components/PageChangeEffect';
-import { SignOutOnOtherTabSignOutEffect } from '@/auth/effect-components/SignOutOnOtherTabSignOutEffect';
 import { AuthProvider } from '@/auth/components/AuthProvider';
+import { SignOutOnOtherTabSignOutEffect } from '@/auth/effect-components/SignOutOnOtherTabSignOutEffect';
 import { CaptchaProvider } from '@/captcha/components/CaptchaProvider';
 import { ClientConfigProvider } from '@/client-config/components/ClientConfigProvider';
 import { ClientConfigProviderEffect } from '@/client-config/components/ClientConfigProviderEffect';
@@ -19,7 +19,8 @@ import { UserMetadataProviderInitialEffect } from '@/metadata-store/effect-compo
 import { ApolloCoreProvider } from '@/object-metadata/components/ApolloCoreProvider';
 import { PreComputedChipGeneratorsProvider } from '@/object-metadata/components/PreComputedChipGeneratorsProvider';
 
-import { CommandRunner } from '@/command-menu-item/engine-command/components/CommandRunner';
+import { HeadlessEngineCommandMountRoot } from '@/command-menu-item/engine-command/components/HeadlessEngineCommandMountRoot';
+import { HeadlessFrontComponentMountRoot } from '@/front-components/components/HeadlessFrontComponentMountRoot';
 import { SSEProvider } from '@/sse-db-event/components/SSEProvider';
 import { SupportChatEffect } from '@/support/components/SupportChatEffect';
 import { DialogManager } from '@/ui/feedback/dialog-manager/components/DialogManager';
@@ -70,7 +71,8 @@ export const AppRouterProviders = () => {
                                 <Outlet />
                                 <GlobalFilePreviewModal />
                                 <CommandMenuConfirmationModalManager />
-                                <CommandRunner />
+                                <HeadlessFrontComponentMountRoot />
+                                <HeadlessEngineCommandMountRoot />
                               </StrictMode>
                             </DialogManager>
                           </DialogComponentInstanceContext.Provider>

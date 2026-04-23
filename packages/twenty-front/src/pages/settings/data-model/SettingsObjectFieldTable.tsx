@@ -1,4 +1,4 @@
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { isHiddenSystemField } from '@/object-metadata/utils/isHiddenSystemField';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import {
@@ -65,7 +65,7 @@ const SETTINGS_OBJECT_FIELD_TABLE_METADATA: TableMetadata<SettingsObjectDetailTa
   };
 
 export type SettingsObjectFieldTableProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
   mode: 'view' | 'new-field';
   excludeRelations?: boolean;
 };

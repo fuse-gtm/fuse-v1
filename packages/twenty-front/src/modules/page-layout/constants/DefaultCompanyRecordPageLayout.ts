@@ -21,6 +21,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-fields',
+      isActive: true,
       title: 'Home',
       icon: 'IconHome',
       position: 100,
@@ -32,7 +33,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-fields',
+          isActive: true,
           pageLayoutTabId: 'company-tab-fields',
           title: 'Fields',
           type: WidgetType.FIELDS,
@@ -59,6 +62,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-timeline',
+      isActive: true,
       title: 'Timeline',
       icon: 'IconTimelineEvent',
       position: 200,
@@ -70,7 +74,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-timeline',
+          isActive: true,
           pageLayoutTabId: 'company-tab-timeline',
           title: 'Timeline',
           type: WidgetType.TIMELINE,
@@ -97,6 +103,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-tasks',
+      isActive: true,
       title: 'Tasks',
       icon: 'IconCheckbox',
       position: 300,
@@ -108,7 +115,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-tasks',
+          isActive: true,
           pageLayoutTabId: 'company-tab-tasks',
           title: 'Tasks',
           type: WidgetType.TASKS,
@@ -135,6 +144,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-notes',
+      isActive: true,
       title: 'Notes',
       icon: 'IconNotes',
       position: 400,
@@ -146,7 +156,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-notes',
+          isActive: true,
           pageLayoutTabId: 'company-tab-notes',
           title: 'Notes',
           type: WidgetType.NOTES,
@@ -173,6 +185,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-files',
+      isActive: true,
       title: 'Files',
       icon: 'IconPaperclip',
       position: 500,
@@ -184,7 +197,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-files',
+          isActive: true,
           pageLayoutTabId: 'company-tab-files',
           title: 'Files',
           type: WidgetType.FILES,
@@ -211,6 +226,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-emails',
+      isActive: true,
       title: 'Emails',
       icon: 'IconMail',
       position: 600,
@@ -222,7 +238,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-emails',
+          isActive: true,
           pageLayoutTabId: 'company-tab-emails',
           title: 'Emails',
           type: WidgetType.EMAILS,
@@ -249,6 +267,7 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'company-tab-calendar',
+      isActive: true,
       title: 'Calendar',
       icon: 'IconCalendarEvent',
       position: 700,
@@ -260,7 +279,9 @@ export const DEFAULT_COMPANY_RECORD_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'company-widget-calendar',
+          isActive: true,
           pageLayoutTabId: 'company-tab-calendar',
           title: 'Calendar',
           type: WidgetType.CALENDAR,

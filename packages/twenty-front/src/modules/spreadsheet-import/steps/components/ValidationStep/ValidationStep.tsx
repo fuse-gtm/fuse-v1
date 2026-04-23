@@ -12,9 +12,7 @@ import { type SpreadsheetColumns } from '@/spreadsheet-import/types/SpreadsheetC
 import { SpreadsheetColumnType } from '@/spreadsheet-import/types/SpreadsheetColumnType';
 import { addErrorsAndRunHooks } from '@/spreadsheet-import/utils/dataMutations';
 import { useDialogManager } from '@/ui/feedback/dialog-manager/hooks/useDialogManager';
-import { ModalContent } from 'twenty-ui/layout';
 import { styled } from '@linaria/react';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   type Dispatch,
@@ -23,6 +21,8 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { ModalContent } from 'twenty-ui/layout';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 // @ts-expect-error Todo: remove usage of react-data-grid`
 import { type RowsChangeData } from 'react-data-grid';
 import { isDefined } from 'twenty-shared/utils';
@@ -40,24 +40,24 @@ const StyledContentWrapper = styled.div`
 
 const StyledToolbar = styled.div`
   align-items: center;
-  background-color: ${themeCssVariables.background.secondary};
-  border: 1px solid ${themeCssVariables.border.color.medium};
   border-radius: ${themeCssVariables.border.radius.md};
+  border: 1px solid ${themeCssVariables.border.color.medium};
+  background-color: ${themeCssVariables.background.secondary};
   bottom: ${themeCssVariables.spacing[3]};
-  box-shadow: ${themeCssVariables.boxShadow.strong};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   left: 50%;
-  padding: ${themeCssVariables.spacing[3]};
   position: absolute;
   transform: translateX(-50%);
   width: 400px;
+  padding: ${themeCssVariables.spacing[3]};
   z-index: 1;
+  box-shadow: ${themeCssVariables.boxShadow.strong};
 `;
 
 const StyledButtonContainer = styled.div`
-  button {
+  > button {
     height: 24px;
   }
 `;
@@ -80,6 +80,7 @@ const StyledScrollContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   height: 0px;
+  overflow: auto;
   width: 100%;
 `;
 
@@ -127,7 +128,7 @@ export const ValidationStep = ({
   >(
     useMemo(
       () => addErrorsAndRunHooks(initialData, fields, rowHook, tableHook),
-      // oxlint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       [],
     ),
   );
@@ -206,11 +207,9 @@ export const ValidationStep = ({
     if (filterByErrors) {
       return data.filter((value) => {
         if (isDefined(value?.__errors)) {
-          return (
-            (Object.values(value.__errors)?.filter(
-              (err) => err.level === 'error',
-            ).length ?? 0) > 0
-          );
+          return Object.values(value.__errors)?.filter(
+            (err) => err.level === 'error',
+          ).length;
         }
         return false;
       });

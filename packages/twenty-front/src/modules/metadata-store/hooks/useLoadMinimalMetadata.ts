@@ -1,6 +1,5 @@
 import { FIND_MINIMAL_METADATA } from '@/metadata-store/graphql/queries/findMinimalMetadata';
 import {
-  ALL_METADATA_ENTITY_KEYS,
   metadataStoreState,
   type MetadataEntityKey,
 } from '@/metadata-store/states/metadataStoreState';
@@ -32,8 +31,6 @@ export const useLoadMinimalMetadata = () => {
 
     const staleEntityKeys: MetadataEntityKey[] = [];
 
-    const entityKeysWithServerHash = new Set<MetadataEntityKey>();
-
     if (isDefined(collectionHashes)) {
       for (const { collectionName, hash } of collectionHashes) {
         const entityKey = mapAllMetadataNameToEntityKey(collectionName);
@@ -41,8 +38,6 @@ export const useLoadMinimalMetadata = () => {
         if (!isDefined(entityKey)) {
           continue;
         }
-
-        entityKeysWithServerHash.add(entityKey);
 
         const entry = store.get(metadataStoreState.atomFamily(entityKey));
 
@@ -54,15 +49,6 @@ export const useLoadMinimalMetadata = () => {
           ...prev,
           draftCollectionHash: hash,
         }));
-      }
-    }
-
-    for (const entityKey of ALL_METADATA_ENTITY_KEYS) {
-      if (
-        !entityKeysWithServerHash.has(entityKey) &&
-        !staleEntityKeys.includes(entityKey)
-      ) {
-        staleEntityKeys.push(entityKey);
       }
     }
 

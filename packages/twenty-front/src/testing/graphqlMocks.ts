@@ -10,27 +10,24 @@ import { mockedClientConfig } from '~/testing/mock-data/config';
 import { mockedNoteRecords } from '~/testing/mock-data/generated/data/notes/mock-notes-data';
 import { mockedPersonRecords } from '~/testing/mock-data/generated/data/people/mock-people-data';
 import { mockedWorkspaceMemberRecords } from '~/testing/mock-data/generated/data/workspaceMembers/mock-workspaceMembers-data';
-import { mockedViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
+import { mockedCoreViews } from '~/testing/mock-data/generated/metadata/views/mock-views-data';
 import { mockedPublicWorkspaceDataBySubdomain } from '~/testing/mock-data/publicWorkspaceDataBySubdomain';
 import { mockedUserData } from '~/testing/mock-data/users';
 
 import { GET_PUBLIC_WORKSPACE_DATA_BY_DOMAIN } from '@/auth/graphql/queries/getPublicWorkspaceDataByDomain';
-import { LIST_PLANS } from '@/settings/billing/graphql/queries/listPlans';
+import { LIST_PLANS } from '@/billing/graphql/queries/listPlans';
 import { GET_ROLES } from '@/settings/roles/graphql/queries/getRolesQuery';
+import { isDefined } from 'twenty-shared/utils';
 import { mockBillingPlans } from '~/testing/mock-data/billing-plans';
 import { mockedCompanyRecords } from '~/testing/mock-data/generated/data/companies/mock-companies-data';
 import { mockedTaskRecords } from '~/testing/mock-data/generated/data/tasks/mock-tasks-data';
 import { mockedStandardObjectMetadataQueryResult } from '~/testing/mock-data/generated/metadata/objects/mock-objects-metadata';
 import { mockedRoles } from '~/testing/mock-data/generated/metadata/roles/mock-roles-data';
-import { mockedBackendCommandMenuItems } from '~/testing/mock-data/command-menu-items';
 
 import { type Task } from '@/activities/types/Task';
 import { FIND_MINIMAL_METADATA } from '@/metadata-store/graphql/queries/findMinimalMetadata';
-import {
-  getConnectionTypename,
-  getEdgeTypename,
-  isDefined,
-} from 'twenty-shared/utils';
+import { getConnectionTypename } from '@/object-record/cache/utils/getConnectionTypename';
+import { getEdgeTypename } from '@/object-record/cache/utils/getEdgeTypename';
 import { getEmptyPageInfo } from '@/object-record/cache/utils/getEmptyPageInfo';
 import { getRecordFromRecordNode } from '@/object-record/cache/utils/getRecordFromRecordNode';
 import { mockedApiKeys } from '~/testing/mock-data/generated/metadata/api-keys/mock-api-keys-data';
@@ -183,15 +180,24 @@ export const graphqlMocks = {
         data: { minimalMetadata: mockedMinimalMetadata },
       });
     }),
-    metadataGraphql.query('FindAllViews', () => {
+    metadataGraphql.query('FindAllCoreViews', () => {
       return HttpResponse.json({
-        data: { getViews: mockedViews },
+        data: { getCoreViews: mockedCoreViews },
       });
     }),
-    metadataGraphql.query('FindFieldsWidgetViews', () => {
+    metadataGraphql.query('FindFieldsWidgetCoreViews', () => {
       return HttpResponse.json({
         data: {
-          getViews: mockedViews.filter((view) => view.type === 'FIELDS_WIDGET'),
+          getCoreViews: mockedCoreViews.filter(
+            (view) => view.type === 'FIELDS_WIDGET',
+          ),
+        },
+      });
+    }),
+    metadataGraphql.query('FindTableWidgetViews', () => {
+      return HttpResponse.json({
+        data: {
+          getViews: mockedViews.filter((view) => view.type === 'TABLE_WIDGET'),
         },
       });
     }),
@@ -208,11 +214,6 @@ export const graphqlMocks = {
     metadataGraphql.query('FindManyNavigationMenuItems', () => {
       return HttpResponse.json({
         data: { navigationMenuItems: mockedNavigationMenuItems },
-      });
-    }),
-    metadataGraphql.query('FindManyCommandMenuItems', () => {
-      return HttpResponse.json({
-        data: { commandMenuItems: mockedBackendCommandMenuItems },
       });
     }),
     graphql.query('SearchPeople', () => {
@@ -329,7 +330,7 @@ export const graphqlMocks = {
       const objectMetadataId = variables.filter?.objectMetadataId?.eq;
       const viewType = variables.filter?.type?.eq;
 
-      const filtered = mockedViews.filter(
+      const filtered = mockedCoreViews.filter(
         (view) =>
           (isDefined(objectMetadataId)
             ? view?.objectMetadataId === objectMetadataId
@@ -375,7 +376,7 @@ export const graphqlMocks = {
     graphql.query('FindManyViewFields', ({ variables }) => {
       const viewId = variables.filter.view.eq;
 
-      const matchingView = mockedViews.find((view) => view.id === viewId);
+      const matchingView = mockedCoreViews.find((view) => view.id === viewId);
       const viewFields = matchingView?.viewFields ?? [];
 
       return HttpResponse.json({

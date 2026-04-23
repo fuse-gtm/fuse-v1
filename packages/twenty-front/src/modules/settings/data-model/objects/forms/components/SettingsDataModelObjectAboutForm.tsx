@@ -1,4 +1,3 @@
-import { parseThemeColor } from '@/navigation-menu-item/common/utils/parseThemeColor';
 import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { AdvancedSettingsWrapper } from '@/settings/components/AdvancedSettingsWrapper';
 import { SettingsOptionCardContentToggle } from '@/settings/components/SettingsOptions/SettingsOptionCardContentToggle';
@@ -20,10 +19,11 @@ import {
   IconLink,
   IconRefresh,
   TooltipDelay,
+  InlineBanner,
 } from 'twenty-ui/display';
-import { Button } from 'twenty-ui/input';
 import { Card } from 'twenty-ui/layout';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { parseThemeColor } from 'twenty-ui/utilities';
 import { type StringKeyOf } from 'type-fest';
 import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 import { computeMetadataNamesFromLabels } from '~/pages/settings/data-model/utils/computeMetadataNamesFromLabels';
@@ -73,41 +73,7 @@ const StyledLabel = styled.span`
   margin-bottom: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledConflictBanner = styled.div`
-  align-items: center;
-  background-color: ${themeCssVariables.accent.secondary};
-  border-radius: ${themeCssVariables.border.radius.md};
-  box-sizing: border-box;
-  display: flex;
-  gap: ${themeCssVariables.spacing[2]};
-  margin-bottom: ${themeCssVariables.spacing[2]};
-  padding: ${themeCssVariables.spacing[2]};
-`;
-
-const StyledBannerContent = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  gap: ${themeCssVariables.spacing[2]};
-`;
-
-const StyledBannerText = styled.span`
-  color: ${themeCssVariables.color.blue};
-  flex: 1;
-`;
-
-const StyledConflictButtonContainer = styled.div`
-  > button {
-    border-color: ${themeCssVariables.color.blue};
-    color: ${themeCssVariables.color.blue};
-    &:hover {
-      background: ${themeCssVariables.accent.secondary};
-    }
-    &:focus-visible {
-      box-shadow: 0 0 0 3px ${themeCssVariables.accent.tertiary};
-    }
-  }
-`;
+const infoCircleElementId = 'info-circle-id';
 
 export const SettingsDataModelObjectAboutForm = ({
   disableEdition = false,
@@ -291,31 +257,18 @@ export const SettingsDataModelObjectAboutForm = ({
         <StyledAdvancedSettingsContainer>
           <StyledAdvancedSettingsSectionInputWrapper>
             {isDefined(conflictingObjectMetadataItem) && (
-              <StyledConflictBanner>
-                <StyledBannerContent>
-                  <IconInfoCircle
-                    color={theme.color.blue}
-                    size={theme.icon.size.md}
-                  />
-                  <StyledBannerText>
-                    {t`An object with this name already exists`}
-                  </StyledBannerText>
-                </StyledBannerContent>
-                <StyledConflictButtonContainer>
-                  <Button
-                    size="small"
-                    variant="secondary"
-                    accent="blue"
-                    title={t`Open`}
-                    onClick={() =>
-                      navigateSettings(SettingsPath.ObjectDetail, {
-                        objectNamePlural:
-                          conflictingObjectMetadataItem.namePlural,
-                      })
-                    }
-                  />
-                </StyledConflictButtonContainer>
-              </StyledConflictBanner>
+              <InlineBanner
+                color={'blue'}
+                message={t`An object with this name already exists`}
+                button={{
+                  title: t`Open`,
+                  onClick: () =>
+                    navigateSettings(SettingsPath.ObjectDetail, {
+                      objectNamePlural:
+                        conflictingObjectMetadataItem.namePlural,
+                    }),
+                }}
+              />
             )}
             {[
               {
@@ -360,37 +313,43 @@ export const SettingsDataModelObjectAboutForm = ({
                         field: { onChange, value },
                         formState: { errors },
                       }) => (
-                        <SettingsTextInput
-                          instanceId={`${objectMetadataItem?.id}-${fieldName}`}
-                          label={label}
-                          placeholder={placeholder}
-                          value={value}
-                          onChange={onChange}
-                          disabled={disableEdition}
-                          fullWidth
-                          maxLength={OBJECT_NAME_MAXIMUM_LENGTH}
-                          onBlur={() => onNewDirtyField?.()}
-                          error={errors[fieldName]?.message}
-                          // TODO we should discuss on how to notify user about form validation schema issue, from now just displaying red borders
-                          noErrorHelper={true}
-                          RightIcon={() =>
-                            tooltip && (
-                              <AppTooltip
-                                content={tooltip}
-                                offset={5}
-                                noArrow
-                                place="bottom"
-                                delay={TooltipDelay.shortDelay}
-                              >
-                                <IconInfoCircle
-                                  size={theme.icon.size.md}
-                                  color={theme.font.color.tertiary}
-                                  style={{ outline: 'none' }}
-                                />
-                              </AppTooltip>
-                            )
-                          }
-                        />
+                        <>
+                          <SettingsTextInput
+                            instanceId={`${objectMetadataItem?.id}-${fieldName}`}
+                            label={label}
+                            placeholder={placeholder}
+                            value={value}
+                            onChange={onChange}
+                            disabled={disableEdition}
+                            fullWidth
+                            maxLength={OBJECT_NAME_MAXIMUM_LENGTH}
+                            onBlur={() => onNewDirtyField?.()}
+                            error={errors[fieldName]?.message}
+                            // TODO we should discuss on how to notify user about form validation schema issue, from now just displaying red borders
+                            noErrorHelper={true}
+                            RightIcon={() =>
+                              tooltip && (
+                                <>
+                                  <IconInfoCircle
+                                    id={infoCircleElementId + fieldName}
+                                    size={theme.icon.size.md}
+                                    color={theme.font.color.tertiary}
+                                    style={{ outline: 'none' }}
+                                  />
+                                  <AppTooltip
+                                    anchorSelect={`#${infoCircleElementId}${fieldName}`}
+                                    content={tooltip}
+                                    offset={5}
+                                    noArrow
+                                    place="bottom"
+                                    positionStrategy="fixed"
+                                    delay={TooltipDelay.shortDelay}
+                                  />
+                                </>
+                              )
+                            }
+                          />
+                        </>
                       )}
                     />
                   </StyledInputContainer>

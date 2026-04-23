@@ -43,12 +43,10 @@ export const useUpdateOneFieldMetadataItem = () => {
       | 'description'
       | 'icon'
       | 'isActive'
-      | 'isUnique'
       | 'label'
       | 'name'
       | 'defaultValue'
       | 'options'
-      | 'settings'
       | 'isLabelSyncedWithName'
     >;
   }): Promise<

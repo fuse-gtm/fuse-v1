@@ -13,7 +13,7 @@ export const TableSubRow = ({
   ...props
 }: React.ComponentProps<typeof TableRow> & { children?: ReactNode }) => (
   <StyledTableSubRowContainer>
-    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
     <TableRow {...props}>{children}</TableRow>
   </StyledTableSubRowContainer>
 );

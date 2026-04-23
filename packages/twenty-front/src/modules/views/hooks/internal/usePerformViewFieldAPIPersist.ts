@@ -8,38 +8,44 @@ import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { useMutation } from '@apollo/client/react';
 import {
-  type CreateManyViewFieldsMutationVariables,
-  type DeleteViewFieldMutationVariables,
-  type DestroyViewFieldMutationVariables,
-  type UpdateViewFieldMutationVariables,
-  CreateManyViewFieldsDocument,
-  DeleteViewFieldDocument,
-  DestroyViewFieldDocument,
-  UpdateViewFieldDocument,
+  type CreateManyCoreViewFieldsMutationVariables,
+  type DeleteCoreViewFieldMutationVariables,
+  type DestroyCoreViewFieldMutationVariables,
+  type UpdateCoreViewFieldMutationVariables,
+  CreateManyCoreViewFieldsDocument,
+  DeleteCoreViewFieldDocument,
+  DestroyCoreViewFieldDocument,
+  UpdateCoreViewFieldDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewFieldAPIPersist = () => {
-  const [createManyViewFieldsMutation] = useMutation(
-    CreateManyViewFieldsDocument,
+  const [createManyCoreViewFieldsMutation] = useMutation(
+    CreateManyCoreViewFieldsDocument,
   );
-  const [updateViewFieldMutation] = useMutation(UpdateViewFieldDocument);
-  const [deleteViewFieldMutation] = useMutation(DeleteViewFieldDocument);
-  const [destroyViewFieldMutation] = useMutation(DestroyViewFieldDocument);
+  const [updateCoreViewFieldMutation] = useMutation(
+    UpdateCoreViewFieldDocument,
+  );
+  const [deleteCoreViewFieldMutation] = useMutation(
+    DeleteCoreViewFieldDocument,
+  );
+  const [destroyCoreViewFieldMutation] = useMutation(
+    DestroyCoreViewFieldDocument,
+  );
 
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
 
   const performViewFieldAPICreate = useCallback(
     async (
-      createViewFieldInputs: CreateManyViewFieldsMutationVariables,
+      createCoreViewFieldInputs: CreateManyCoreViewFieldsMutationVariables,
     ): Promise<
       MetadataRequestResult<Awaited<
-        ReturnType<typeof createManyViewFieldsMutation>
+        ReturnType<typeof createManyCoreViewFieldsMutation>
       > | null>
     > => {
       if (
-        !Array.isArray(createViewFieldInputs.inputs) ||
-        createViewFieldInputs.inputs.length === 0
+        !Array.isArray(createCoreViewFieldInputs.inputs) ||
+        createCoreViewFieldInputs.inputs.length === 0
       ) {
         return {
           status: 'successful',
@@ -48,8 +54,8 @@ export const usePerformViewFieldAPIPersist = () => {
       }
 
       try {
-        const result = await createManyViewFieldsMutation({
-          variables: createViewFieldInputs,
+        const result = await createManyCoreViewFieldsMutation({
+          variables: createCoreViewFieldInputs,
         });
 
         return {
@@ -72,18 +78,22 @@ export const usePerformViewFieldAPIPersist = () => {
         };
       }
     },
-    [createManyViewFieldsMutation, handleMetadataError, enqueueErrorSnackBar],
+    [
+      createManyCoreViewFieldsMutation,
+      handleMetadataError,
+      enqueueErrorSnackBar,
+    ],
   );
 
   const performViewFieldAPIUpdate = useCallback(
     async (
-      createViewFieldInputs: UpdateViewFieldMutationVariables[],
+      createCoreViewFieldInputs: UpdateCoreViewFieldMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof updateViewFieldMutation>>[]
+        Awaited<ReturnType<typeof updateCoreViewFieldMutation>>[]
       >
     > => {
-      if (createViewFieldInputs.length === 0) {
+      if (createCoreViewFieldInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -92,8 +102,8 @@ export const usePerformViewFieldAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          createViewFieldInputs.map((variables) =>
-            updateViewFieldMutation({
+          createCoreViewFieldInputs.map((variables) =>
+            updateCoreViewFieldMutation({
               variables,
             }),
           ),
@@ -119,18 +129,18 @@ export const usePerformViewFieldAPIPersist = () => {
         };
       }
     },
-    [updateViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
+    [updateCoreViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewFieldAPIDelete = useCallback(
     async (
-      deleteViewFieldInputs: DeleteViewFieldMutationVariables[],
+      deleteCoreViewFieldInputs: DeleteCoreViewFieldMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof deleteViewFieldMutation>>[]
+        Awaited<ReturnType<typeof deleteCoreViewFieldMutation>>[]
       >
     > => {
-      if (deleteViewFieldInputs.length === 0) {
+      if (deleteCoreViewFieldInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -139,8 +149,8 @@ export const usePerformViewFieldAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          deleteViewFieldInputs.map((variables) =>
-            deleteViewFieldMutation({
+          deleteCoreViewFieldInputs.map((variables) =>
+            deleteCoreViewFieldMutation({
               variables,
             }),
           ),
@@ -166,18 +176,18 @@ export const usePerformViewFieldAPIPersist = () => {
         };
       }
     },
-    [deleteViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
+    [deleteCoreViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewFieldAPIDestroy = useCallback(
     async (
-      destroyViewFieldInputs: DestroyViewFieldMutationVariables[],
+      destroyCoreViewFieldInputs: DestroyCoreViewFieldMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof destroyViewFieldMutation>>[]
+        Awaited<ReturnType<typeof destroyCoreViewFieldMutation>>[]
       >
     > => {
-      if (destroyViewFieldInputs.length === 0) {
+      if (destroyCoreViewFieldInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -186,8 +196,8 @@ export const usePerformViewFieldAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          destroyViewFieldInputs.map((variables) =>
-            destroyViewFieldMutation({
+          destroyCoreViewFieldInputs.map((variables) =>
+            destroyCoreViewFieldMutation({
               variables,
             }),
           ),
@@ -213,7 +223,7 @@ export const usePerformViewFieldAPIPersist = () => {
         };
       }
     },
-    [destroyViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
+    [destroyCoreViewFieldMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   return {

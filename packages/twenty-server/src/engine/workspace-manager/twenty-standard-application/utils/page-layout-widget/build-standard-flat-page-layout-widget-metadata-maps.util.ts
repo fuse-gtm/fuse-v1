@@ -72,8 +72,6 @@ const RECORD_PAGE_FIELDS_VIEW_NAME_BY_OBJECT: Partial<
   calendarEventParticipant: 'calendarEventParticipantRecordPageFields',
   company: 'companyRecordPageFields',
   connectedAccount: 'connectedAccountRecordPageFields',
-  favorite: 'favoriteRecordPageFields',
-  favoriteFolder: 'favoriteFolderRecordPageFields',
   messageChannel: 'messageChannelRecordPageFields',
   messageChannelMessageAssociation:
     'messageChannelMessageAssociationRecordPageFields',
@@ -319,6 +317,8 @@ const computeRecordPageWidgets = ({
               universalConfiguration,
               objectMetadataId,
               conditionalDisplay: widget.conditionalDisplay ?? null,
+              conditionalAvailabilityExpression:
+                widget.conditionalAvailabilityExpression ?? null,
             },
           }),
         );

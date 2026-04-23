@@ -1,6 +1,6 @@
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
 import { SettingsObjectFieldDataType } from '@/settings/data-model/object-details/components/SettingsObjectFieldDataType';
 import { type SettingsFieldType } from '@/settings/data-model/types/SettingsFieldType';
@@ -24,16 +24,16 @@ export const FIELD_PERMISSION_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
   '180px minmax(0, 1fr) 60px 60px';
 
 const StyledNameLabel = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  user-select: none;
 `;
 
 type SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRowProps = {
   fieldMetadataItem: FieldMetadataItem;
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
   fieldPermissions: FieldPermission[];
   roleId: string;
   isLabelIdentifier: boolean;
@@ -157,7 +157,7 @@ export const SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRow =
           color={themeCssVariables.font.color.primary}
           gap={themeCssVariables.spacing[2]}
         >
-          {isDefined(Icon) && (
+          {!!Icon && (
             <Icon
               style={{
                 minWidth: theme.icon.size.md,

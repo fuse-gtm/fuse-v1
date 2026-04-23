@@ -7,8 +7,8 @@ import { RECORD_BOARD_COLUMN_PADDING_AND_BORDER_WIDTH } from '@/object-record/re
 
 import { RECORD_BOARD_COLUMN_WIDTH } from '@/object-record/record-board/constants/RecordBoardColumnWidth';
 import { RECORD_BOARD_QUERY_PAGE_SIZE } from '@/object-record/record-board/constants/RecordBoardQueryPageSize';
+import { recordBoardIsFetchingMoreComponentState } from '@/object-record/record-board/states/recordBoardIsFetchingMoreComponentState';
 import { recordBoardShouldFetchMoreComponentState } from '@/object-record/record-board/states/recordBoardShouldFetchMoreComponentState';
-import { isDraggingRecordComponentState } from '@/object-record/record-drag/states/isDraggingRecordComponentState';
 import { visibleRecordFieldsComponentSelector } from '@/object-record/record-field/states/visibleRecordFieldsComponentSelector';
 import { visibleRecordGroupIdsComponentFamilySelector } from '@/object-record/record-group/states/selectors/visibleRecordGroupIdsComponentFamilySelector';
 import { recordIndexRecordGroupsAreInInitialLoadingComponentState } from '@/object-record/record-index/states/recordIndexRecordGroupsAreInInitialLoadingComponentState';
@@ -38,12 +38,12 @@ export const RecordBoardFetchMoreInViewTriggerComponent = () => {
   const [recordBoardShouldFetchMore, setRecordBoardShouldFetchMore] =
     useAtomComponentState(recordBoardShouldFetchMoreComponentState);
 
-  const isDraggingRecord = useAtomComponentStateValue(
-    isDraggingRecordComponentState,
-  );
-
   const recordIndexRecordGroupsAreInInitialLoading = useAtomComponentStateValue(
     recordIndexRecordGroupsAreInInitialLoadingComponentState,
+  );
+
+  const recordBoardIsFetchingMore = useAtomComponentStateValue(
+    recordBoardIsFetchingMoreComponentState,
   );
 
   const visibleRecordFields = useAtomComponentSelectorValue(
@@ -76,21 +76,22 @@ export const RecordBoardFetchMoreInViewTriggerComponent = () => {
     1;
 
   useEffect(() => {
-    if (recordIndexRecordGroupsAreInInitialLoading || isDraggingRecord) {
-      return;
-    }
+    if (
+      !recordIndexRecordGroupsAreInInitialLoading &&
+      !recordBoardIsFetchingMore
+    ) {
+      const newShouldFetchMore = inView;
 
-    const newShouldFetchMore = inView;
-
-    if (recordBoardShouldFetchMore !== newShouldFetchMore) {
-      setRecordBoardShouldFetchMore(newShouldFetchMore);
+      if (recordBoardShouldFetchMore !== newShouldFetchMore) {
+        setRecordBoardShouldFetchMore(newShouldFetchMore);
+      }
     }
   }, [
     recordBoardShouldFetchMore,
     setRecordBoardShouldFetchMore,
     inView,
     recordIndexRecordGroupsAreInInitialLoading,
-    isDraggingRecord,
+    recordBoardIsFetchingMore,
   ]);
 
   return (

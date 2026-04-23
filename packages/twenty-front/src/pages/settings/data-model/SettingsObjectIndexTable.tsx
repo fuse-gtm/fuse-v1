@@ -1,4 +1,4 @@
-import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { settingsObjectIndexesFamilyState } from '@/settings/data-model/object-details/states/settingsObjectIndexesFamilyState';
 import { SortableTableHeader } from '@/ui/layout/table/components/SortableTableHeader';
 import { Table } from '@/ui/layout/table/components/Table';
@@ -28,7 +28,7 @@ const StyledSearchInputContainer = styled.div`
 `;
 
 export type SettingsObjectIndexTableProps = {
-  objectMetadataItem: EnrichedObjectMetadataItem;
+  objectMetadataItem: ObjectMetadataItem;
 };
 
 export const SettingsObjectIndexTable = ({

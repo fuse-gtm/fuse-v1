@@ -14,9 +14,9 @@ import {
   ViewVisibility,
 } from '~/generated-metadata/graphql';
 import { mockedUserData } from '~/testing/mock-data/users';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
 import { getMockObjectMetadataItemOrThrow } from '~/testing/utils/getMockObjectMetadataItemOrThrow';
-import { setTestViewsInMetadataStore } from '~/testing/utils/setTestViewsInMetadataStore';
+import { setTestCoreViewsInMetadataStore } from '~/testing/utils/setTestCoreViewsInMetadataStore';
 import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 
 const Wrapper = ({ children }: { children: ReactNode }) =>
@@ -31,7 +31,7 @@ const renderHooks = ({
 }) => {
   setTestObjectMetadataItemsInMetadataStore(
     jotaiStore,
-    getTestEnrichedObjectMetadataItemsMock(),
+    generatedMockObjectMetadataItems,
   );
 
   const { result } = renderHook(
@@ -43,7 +43,7 @@ const renderHooks = ({
 
       useEffect(() => {
         if (withExistingView) {
-          setTestViewsInMetadataStore(jotaiStore, [
+          setTestCoreViewsInMetadataStore(jotaiStore, [
             {
               id: 'viewId',
               name: 'Test View',
@@ -68,7 +68,7 @@ const renderHooks = ({
             },
           ]);
         } else {
-          setTestViewsInMetadataStore(jotaiStore, []);
+          setTestCoreViewsInMetadataStore(jotaiStore, []);
         }
 
         if (withCurrentUser) {

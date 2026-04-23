@@ -8,34 +8,36 @@ import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { useMutation } from '@apollo/client/react';
 import {
-  type CreateViewSortMutationVariables,
-  type DeleteViewSortMutationVariables,
-  type DestroyViewSortMutationVariables,
-  type UpdateViewSortMutationVariables,
-  CreateViewSortDocument,
-  DeleteViewSortDocument,
-  DestroyViewSortDocument,
-  UpdateViewSortDocument,
+  type CreateCoreViewSortMutationVariables,
+  type DeleteCoreViewSortMutationVariables,
+  type DestroyCoreViewSortMutationVariables,
+  type UpdateCoreViewSortMutationVariables,
+  CreateCoreViewSortDocument,
+  DeleteCoreViewSortDocument,
+  DestroyCoreViewSortDocument,
+  UpdateCoreViewSortDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewSortAPIPersist = () => {
-  const [createViewSortMutation] = useMutation(CreateViewSortDocument);
-  const [updateViewSortMutation] = useMutation(UpdateViewSortDocument);
-  const [deleteViewSortMutation] = useMutation(DeleteViewSortDocument);
-  const [destroyViewSortMutation] = useMutation(DestroyViewSortDocument);
+  const [createCoreViewSortMutation] = useMutation(CreateCoreViewSortDocument);
+  const [updateCoreViewSortMutation] = useMutation(UpdateCoreViewSortDocument);
+  const [deleteCoreViewSortMutation] = useMutation(DeleteCoreViewSortDocument);
+  const [destroyCoreViewSortMutation] = useMutation(
+    DestroyCoreViewSortDocument,
+  );
 
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
 
   const performViewSortAPICreate = useCallback(
     async (
-      createViewSortInputs: CreateViewSortMutationVariables[],
+      createCoreViewSortInputs: CreateCoreViewSortMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof createViewSortMutation>>[]
+        Awaited<ReturnType<typeof createCoreViewSortMutation>>[]
       >
     > => {
-      if (createViewSortInputs.length === 0) {
+      if (createCoreViewSortInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -44,8 +46,8 @@ export const usePerformViewSortAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          createViewSortInputs.map((variables) =>
-            createViewSortMutation({
+          createCoreViewSortInputs.map((variables) =>
+            createCoreViewSortMutation({
               variables,
             }),
           ),
@@ -70,18 +72,18 @@ export const usePerformViewSortAPIPersist = () => {
         };
       }
     },
-    [createViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
+    [createCoreViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewSortAPIUpdate = useCallback(
     async (
-      updateViewSortInputs: UpdateViewSortMutationVariables[],
+      updateCoreViewSortInputs: UpdateCoreViewSortMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof updateViewSortMutation>>[]
+        Awaited<ReturnType<typeof updateCoreViewSortMutation>>[]
       >
     > => {
-      if (updateViewSortInputs.length === 0) {
+      if (updateCoreViewSortInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -90,8 +92,8 @@ export const usePerformViewSortAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          updateViewSortInputs.map((variables) =>
-            updateViewSortMutation({
+          updateCoreViewSortInputs.map((variables) =>
+            updateCoreViewSortMutation({
               variables,
             }),
           ),
@@ -117,18 +119,18 @@ export const usePerformViewSortAPIPersist = () => {
         };
       }
     },
-    [updateViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
+    [updateCoreViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewSortAPIDelete = useCallback(
     async (
-      deleteViewSortInputs: DeleteViewSortMutationVariables[],
+      deleteCoreViewSortInputs: DeleteCoreViewSortMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof deleteViewSortMutation>>[]
+        Awaited<ReturnType<typeof deleteCoreViewSortMutation>>[]
       >
     > => {
-      if (deleteViewSortInputs.length === 0) {
+      if (deleteCoreViewSortInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -137,8 +139,8 @@ export const usePerformViewSortAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          deleteViewSortInputs.map((variables) =>
-            deleteViewSortMutation({
+          deleteCoreViewSortInputs.map((variables) =>
+            deleteCoreViewSortMutation({
               variables,
             }),
           ),
@@ -164,18 +166,18 @@ export const usePerformViewSortAPIPersist = () => {
         };
       }
     },
-    [deleteViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
+    [deleteCoreViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewSortAPIDestroy = useCallback(
     async (
-      destroyViewSortInputs: DestroyViewSortMutationVariables[],
+      destroyCoreViewSortInputs: DestroyCoreViewSortMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof destroyViewSortMutation>>[]
+        Awaited<ReturnType<typeof destroyCoreViewSortMutation>>[]
       >
     > => {
-      if (destroyViewSortInputs.length === 0) {
+      if (destroyCoreViewSortInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -184,8 +186,8 @@ export const usePerformViewSortAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          destroyViewSortInputs.map((variables) =>
-            destroyViewSortMutation({
+          destroyCoreViewSortInputs.map((variables) =>
+            destroyCoreViewSortMutation({
               variables,
             }),
           ),
@@ -211,7 +213,7 @@ export const usePerformViewSortAPIPersist = () => {
         };
       }
     },
-    [destroyViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
+    [destroyCoreViewSortMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   return {

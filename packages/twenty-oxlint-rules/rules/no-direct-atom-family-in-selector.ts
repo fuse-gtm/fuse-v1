@@ -1,4 +1,8 @@
-import { defineRule } from '@oxlint/plugins';
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 import { isNodeInsideAncestor } from '../utils/isNodeInsideAncestor';
 
@@ -9,7 +13,8 @@ const SELECTOR_FACTORY_NAMES = [
   'createAtomComponentFamilySelector',
 ];
 
-export const rule = defineRule({
+export const rule = ESLintUtils.RuleCreator(() => __filename)({
+  name: RULE_NAME,
   meta: {
     type: 'problem',
     docs: {
@@ -22,50 +27,52 @@ export const rule = defineRule({
     },
     schema: [],
   },
+  defaultOptions: [],
   create: (context) => {
-    const selectorGetNodes: any[] = [];
+    const selectorGetNodes: TSESTree.Node[] = [];
 
     return {
-      CallExpression: (node: any) => {
+      CallExpression: (node) => {
         if (
-          node.callee.type === 'Identifier' &&
-          SELECTOR_FACTORY_NAMES.includes(node.callee.name)
+          node.callee.type !== AST_NODE_TYPES.Identifier ||
+          !SELECTOR_FACTORY_NAMES.includes(node.callee.name)
         ) {
-          const configArg = node.arguments[0];
-
-          if (!configArg || configArg.type !== 'ObjectExpression') {
-            return;
-          }
-
-          const getProperty = configArg.properties.find(
-            (prop: any) =>
-              prop.type === 'Property' &&
-              prop.key.type === 'Identifier' &&
-              prop.key.name === 'get',
-          );
-
-          if (getProperty) {
-            selectorGetNodes.push(getProperty.value);
-          }
           return;
         }
 
+        const configArg = node.arguments[0];
+
         if (
-          node.callee.type === 'MemberExpression' &&
-          node.callee.property?.type === 'Identifier' &&
-          /^(atomFamily|selectorFamily)$/.test(node.callee.property.name)
+          !configArg ||
+          configArg.type !== AST_NODE_TYPES.ObjectExpression
         ) {
+          return;
+        }
+
+        const getProperty = configArg.properties.find(
+          (prop): prop is TSESTree.Property =>
+            prop.type === AST_NODE_TYPES.Property &&
+            prop.key.type === AST_NODE_TYPES.Identifier &&
+            prop.key.name === 'get',
+        );
+
+        if (getProperty) {
+          selectorGetNodes.push(getProperty.value);
+        }
+      },
+
+      'CallExpression > MemberExpression[property.name=/^(atomFamily|selectorFamily)$/]':
+        (node: TSESTree.MemberExpression) => {
           for (const getNode of selectorGetNodes) {
-            if (isNodeInsideAncestor(node.callee, getNode)) {
+            if (isNodeInsideAncestor(node, getNode)) {
               context.report({
-                node: node.callee,
+                node,
                 messageId: 'noDirectAtomFamilyInSelector',
               });
               break;
             }
           }
-        }
-      },
+        },
     };
   },
 });

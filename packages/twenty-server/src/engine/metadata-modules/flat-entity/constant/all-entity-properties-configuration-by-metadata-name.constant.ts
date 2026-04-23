@@ -929,6 +929,12 @@ export const ALL_ENTITY_PROPERTIES_CONFIGURATION_BY_METADATA_NAME = {
       universalProperty: undefined,
       isOverridable: true,
     },
+    conditionalAvailabilityExpression: {
+      toCompare: true,
+      toStringify: false,
+      universalProperty: undefined,
+      isOverridable: true,
+    },
     isActive: {
       toCompare: true,
       toStringify: false,
@@ -1167,6 +1173,11 @@ export const ALL_ENTITY_PROPERTIES_CONFIGURATION_BY_METADATA_NAME = {
       toCompare: false,
       toStringify: false,
       universalProperty: 'targetObjectMetadataUniversalIdentifier',
+    },
+    pageLayoutId: {
+      toCompare: false,
+      toStringify: false,
+      universalProperty: 'pageLayoutUniversalIdentifier',
     },
   },
   permissionFlag: {

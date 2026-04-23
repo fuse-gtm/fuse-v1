@@ -7,14 +7,14 @@ import { expect, within } from 'storybook/test';
 import { CatalogDecorator, type CatalogStory } from 'twenty-ui/testing';
 
 import { currentUserWorkspaceState } from '@/auth/states/currentUserWorkspaceState';
-import { isMinimalMetadataReadyState } from '@/metadata-store/states/isMinimalMetadataReadyState';
 import { ApolloCoreClientContext } from '@/object-metadata/contexts/ApolloCoreClientContext';
+import { isMinimalMetadataReadyState } from '@/metadata-store/states/isMinimalMetadataReadyState';
+import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
+import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { type ObjectRecord } from '@/object-record/types/ObjectRecord';
 import { PageLayoutContentProvider } from '@/page-layout/contexts/PageLayoutContentContext';
-import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
-import { CoreObjectNameSingular } from 'twenty-shared/types';
-import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 
 import { pageLayoutPersistedComponentState } from '@/page-layout/states/pageLayoutPersistedComponentState';
 import { WidgetRenderer } from '@/page-layout/widgets/components/WidgetRenderer';
@@ -24,7 +24,7 @@ import {
   PAGE_LAYOUT_TEST_INSTANCE_ID,
   PageLayoutTestWrapper,
 } from '@/page-layout/hooks/__tests__/PageLayoutTestWrapper';
-import { isDashboardInEditModeComponentState } from '@/page-layout/states/isDashboardInEditModeComponentState';
+import { isPageLayoutInEditModeComponentState } from '@/page-layout/states/isPageLayoutInEditModeComponentState';
 import { pageLayoutDraftComponentState } from '@/page-layout/states/pageLayoutDraftComponentState';
 import { pageLayoutDraggingWidgetIdComponentState } from '@/page-layout/states/pageLayoutDraggingWidgetIdComponentState';
 import { pageLayoutEditingWidgetIdComponentState } from '@/page-layout/states/pageLayoutEditingWidgetIdComponentState';
@@ -35,19 +35,18 @@ import { widgetCardHoveredComponentFamilyState } from '@/page-layout/widgets/sta
 import { type WidgetCardVariant } from '@/page-layout/widgets/types/WidgetCardVariant';
 import { LayoutRenderingProvider } from '@/ui/layout/contexts/LayoutRenderingContext';
 import {
+  GraphOrderBy,
+  WidgetType,
   AggregateOperations,
   AxisNameDisplay,
   BarChartLayout,
-  FieldDisplayMode,
-  GraphOrderBy,
   PageLayoutTabLayoutMode,
   PageLayoutType,
   WidgetConfigurationType,
-  WidgetType,
 } from '~/generated-metadata/graphql';
 import { ChipGeneratorsDecorator } from '~/testing/decorators/ChipGeneratorsDecorator';
 import { getJestMetadataAndApolloMocksWrapper } from '~/testing/jest/getJestMetadataAndApolloMocksWrapper';
-import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
+import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
 import { getMockFieldMetadataItemOrThrow } from '~/testing/utils/getMockFieldMetadataItemOrThrow';
 import { getMockObjectMetadataItemOrThrow } from '~/testing/utils/getMockObjectMetadataItemOrThrow';
 
@@ -143,12 +142,14 @@ const createPageLayoutWithWidget = (
   tabs: [
     {
       __typename: 'PageLayoutTab',
+      isActive: true,
       applicationId: '',
       id: TAB_ID_OVERVIEW,
       title: 'Overview',
       position: 0,
       pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       widgets: [widget],
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -252,6 +253,8 @@ export const WithNumberChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_NUMBER_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -271,6 +274,7 @@ export const WithNumberChart: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -278,7 +282,7 @@ export const WithNumberChart: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -338,6 +342,8 @@ export const WithGaugeChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_GAUGE_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -357,6 +363,7 @@ export const WithGaugeChart: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: false,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -364,7 +371,7 @@ export const WithGaugeChart: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -424,6 +431,8 @@ export const WithBarChart: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_BAR_CHART,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -447,6 +456,7 @@ export const WithBarChart: Story = {
         axisNameDisplay: AxisNameDisplay.BOTH,
         displayDataLabel: false,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -454,7 +464,7 @@ export const WithBarChart: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -521,6 +531,8 @@ export const SmallWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_SMALL,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -540,6 +552,7 @@ export const SmallWidget: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -547,7 +560,7 @@ export const SmallWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -614,6 +627,8 @@ export const MediumWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_MEDIUM,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -637,6 +652,7 @@ export const MediumWidget: Story = {
         axisNameDisplay: AxisNameDisplay.BOTH,
         displayDataLabel: false,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -644,7 +660,7 @@ export const MediumWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -711,6 +727,8 @@ export const LargeWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_LARGE,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -734,6 +752,7 @@ export const LargeWidget: Story = {
         axisNameDisplay: AxisNameDisplay.BOTH,
         displayDataLabel: false,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -741,7 +760,7 @@ export const LargeWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -808,6 +827,8 @@ export const WideWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_WIDE,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -827,6 +848,7 @@ export const WideWidget: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -834,7 +856,7 @@ export const WideWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -901,6 +923,8 @@ export const TallWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_TALL,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -924,6 +948,7 @@ export const TallWidget: Story = {
         axisNameDisplay: AxisNameDisplay.BOTH,
         displayDataLabel: false,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -931,7 +956,7 @@ export const TallWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(widget);
@@ -999,6 +1024,8 @@ export const WithManyToOneRelationFieldWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_MANY_TO_ONE_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1015,8 +1042,9 @@ export const WithManyToOneRelationFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: accountOwnerField.id,
-        fieldDisplayMode: FieldDisplayMode.FIELD,
+        layout: 'FIELD',
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1024,7 +1052,7 @@ export const WithManyToOneRelationFieldWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
@@ -1044,7 +1072,7 @@ export const WithManyToOneRelationFieldWidget: Story = {
       pageLayoutData,
     );
     jotaiStore.set(
-      isDashboardInEditModeComponentState.atomFamily({
+      isPageLayoutInEditModeComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       }),
       false,
@@ -1117,6 +1145,8 @@ export const WithOneToManyRelationFieldWidget: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_ONE_TO_MANY_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1133,8 +1163,9 @@ export const WithOneToManyRelationFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyPeopleField.id,
-        fieldDisplayMode: FieldDisplayMode.FIELD,
+        layout: 'FIELD',
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1142,7 +1173,7 @@ export const WithOneToManyRelationFieldWidget: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
@@ -1162,7 +1193,7 @@ export const WithOneToManyRelationFieldWidget: Story = {
       pageLayoutData,
     );
     jotaiStore.set(
-      isDashboardInEditModeComponentState.atomFamily({
+      isPageLayoutInEditModeComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       }),
       false,
@@ -1227,6 +1258,8 @@ export const OneToManyRelationFieldWidgetWithSeeAllButton: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_ONE_TO_MANY_RELATION,
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.FIELD,
@@ -1243,8 +1276,9 @@ export const OneToManyRelationFieldWidgetWithSeeAllButton: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyPeopleField.id,
-        fieldDisplayMode: FieldDisplayMode.FIELD,
+        layout: 'FIELD',
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1252,7 +1286,7 @@ export const OneToManyRelationFieldWidgetWithSeeAllButton: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
@@ -1272,7 +1306,7 @@ export const OneToManyRelationFieldWidgetWithSeeAllButton: Story = {
       pageLayoutData,
     );
     jotaiStore.set(
-      isDashboardInEditModeComponentState.atomFamily({
+      isPageLayoutInEditModeComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       }),
       false,
@@ -1363,6 +1397,8 @@ export const OnMobile: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: 'widget-mobile',
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -1382,6 +1418,7 @@ export const OnMobile: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1389,7 +1426,7 @@ export const OnMobile: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
@@ -1460,6 +1497,8 @@ export const InSidePanel: Story = {
   render: () => {
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: 'widget-side-panel',
       pageLayoutTabId: TAB_ID_OVERVIEW,
       type: WidgetType.GRAPH,
@@ -1479,6 +1518,7 @@ export const InSidePanel: Story = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1486,7 +1526,7 @@ export const InSidePanel: Story = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
@@ -1617,6 +1657,8 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
 
     const widget: PageLayoutWidget = {
       __typename: 'PageLayoutWidget',
+      applicationId: '',
+      isActive: true,
       id: WIDGET_ID_CATALOG,
       pageLayoutTabId:
         variant === 'side-column' ? 'pinned-tab' : TAB_ID_OVERVIEW,
@@ -1637,6 +1679,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
         aggregateFieldMetadataId: idField.id,
         displayDataLabel: true,
       },
+      isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       deletedAt: null,
@@ -1644,7 +1687,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
 
     setTestObjectMetadataItemsInMetadataStore(
       jotaiStore,
-      getTestEnrichedObjectMetadataItemsMock(),
+      generatedMockObjectMetadataItems,
     );
     jotaiStore.set(isMinimalMetadataReadyState.atom, true);
 
@@ -1723,24 +1766,28 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
           ? [
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: 'pinned-tab',
                 title: 'Pinned Tab',
                 position: 0,
                 pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
                 widgets: [widget],
+                isOverridden: false,
                 createdAt: '2024-01-01T00:00:00Z',
                 updatedAt: '2024-01-01T00:00:00Z',
                 deletedAt: null,
               },
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: 'other-tab',
                 title: 'Other Tab',
                 position: 1,
                 pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
                 widgets: [],
+                isOverridden: false,
                 createdAt: '2024-01-01T00:00:00Z',
                 updatedAt: '2024-01-01T00:00:00Z',
                 deletedAt: null,
@@ -1749,12 +1796,14 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
           : [
               {
                 __typename: 'PageLayoutTab',
+                isActive: true,
                 applicationId: '',
                 id: TAB_ID_OVERVIEW,
                 title: 'Overview',
                 position: 0,
                 pageLayoutId: PAGE_LAYOUT_TEST_INSTANCE_ID,
                 widgets: [widget],
+                isOverridden: false,
                 createdAt: '2024-01-01T00:00:00Z',
                 updatedAt: '2024-01-01T00:00:00Z',
                 deletedAt: null,
@@ -1778,7 +1827,7 @@ export const Catalog: CatalogStory<Story, typeof WidgetRenderer> = {
       pageLayoutData,
     );
     jotaiStore.set(
-      isDashboardInEditModeComponentState.atomFamily({
+      isPageLayoutInEditModeComponentState.atomFamily({
         instanceId: PAGE_LAYOUT_TEST_INSTANCE_ID,
       }),
       isInEditMode,

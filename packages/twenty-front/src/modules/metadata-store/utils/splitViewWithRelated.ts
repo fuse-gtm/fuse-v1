@@ -5,8 +5,7 @@ import { type FlatViewFilter } from '@/metadata-store/types/FlatViewFilter';
 import { type FlatViewFilterGroup } from '@/metadata-store/types/FlatViewFilterGroup';
 import { type FlatViewGroup } from '@/metadata-store/types/FlatViewGroup';
 import { type FlatViewSort } from '@/metadata-store/types/FlatViewSort';
-import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
-import { convertViewFilterValueToString } from 'twenty-shared/utils';
+import { type CoreViewWithRelations } from '@/views/types/CoreViewWithRelations';
 
 type SplitResult = {
   flatViews: FlatView[];
@@ -19,7 +18,7 @@ type SplitResult = {
 };
 
 export const splitViewWithRelated = (
-  viewsWithRelated: ViewWithRelations[],
+  viewsWithRelated: CoreViewWithRelations[],
 ): SplitResult => {
   const flatViews: FlatView[] = [];
   const flatViewFields: FlatViewField[] = [];
@@ -52,7 +51,6 @@ export const splitViewWithRelated = (
     for (const viewFilter of viewFilters) {
       flatViewFilters.push({
         ...viewFilter,
-        value: convertViewFilterValueToString(viewFilter.value),
         viewId: viewWithRelated.id,
       });
     }
@@ -79,7 +77,9 @@ export const splitViewWithRelated = (
       const { viewFields: _viewFields, ...viewFieldGroupProperties } =
         viewFieldGroup;
 
-      flatViewFieldGroups.push(viewFieldGroupProperties);
+      flatViewFieldGroups.push({
+        ...viewFieldGroupProperties,
+      });
     }
   }
 

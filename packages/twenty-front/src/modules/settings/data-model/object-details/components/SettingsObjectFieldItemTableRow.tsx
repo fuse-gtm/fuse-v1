@@ -2,7 +2,6 @@ import { useDeleteOneFieldMetadataItem } from '@/object-metadata/hooks/useDelete
 import { useFieldMetadataItem } from '@/object-metadata/hooks/useFieldMetadataItem';
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { isLabelIdentifierField } from '@/object-metadata/utils/isLabelIdentifierField';
-import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
 import { isObjectMetadataReadOnly } from '@/object-record/read-only/utils/isObjectMetadataReadOnly';
 import { SettingsItemTypeTag } from '@/settings/components/SettingsItemTypeTag';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
@@ -14,7 +13,6 @@ import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { useContext, useMemo } from 'react';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
 import { FieldMetadataType, SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
@@ -42,27 +40,27 @@ export const OBJECT_FIELD_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
   'minmax(0, 1fr) 148px 148px 36px';
 
 const StyledNameContainer = styled.div`
-  align-items: center;
   display: flex;
+  align-items: center;
   flex: 1;
-  gap: ${themeCssVariables.spacing[1]};
   min-width: 0;
+  gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledNameLabel = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const StyledInactiveLabel = styled.span`
   color: ${themeCssVariables.font.color.extraLight};
-  flex: 0 999 auto;
   font-size: ${themeCssVariables.font.size.sm};
-  min-width: 48px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 0 999 auto;
+  min-width: 48px;
 
   &::before {
     content: '·';
@@ -86,12 +84,9 @@ export const SettingsObjectFieldItemTableRow = ({
   const { fieldMetadataItem, objectMetadataItem } =
     settingsObjectDetailTableItem;
 
-  const isDDLLocked = useAtomStateValue(isDDLLockedState);
-
-  const readonly =
-    isObjectMetadataReadOnly({
-      objectMetadataItem,
-    }) || isDDLLocked;
+  const readonly = isObjectMetadataReadOnly({
+    objectMetadataItem,
+  });
 
   const navigate = useNavigateSettings();
 
@@ -124,7 +119,7 @@ export const SettingsObjectFieldItemTableRow = ({
     fieldName: fieldMetadataItem.name,
   });
 
-  // oxlint-disable-next-line twenty/no-navigate-prefer-link
+  // eslint-disable-next-line twenty/no-navigate-prefer-link
   const navigateToFieldEdit = () =>
     navigate(SettingsPath.ObjectFieldEdit, {
       objectNamePlural: objectMetadataItem.namePlural,
@@ -182,7 +177,7 @@ export const SettingsObjectFieldItemTableRow = ({
           color={themeCssVariables.font.color.primary}
           gap={themeCssVariables.spacing[2]}
         >
-          {isDefined(Icon) && (
+          {!!Icon && (
             <Icon
               style={{
                 minWidth: theme.icon.size.md,

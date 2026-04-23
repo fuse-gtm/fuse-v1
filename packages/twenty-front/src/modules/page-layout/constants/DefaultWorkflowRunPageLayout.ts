@@ -27,6 +27,7 @@ export const DEFAULT_WORKFLOW_RUN_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'workflow-run-tab-fields',
+      isActive: true,
       title: 'Home',
       position: 100,
       layoutMode: PageLayoutTabLayoutMode.VERTICAL_LIST,
@@ -38,7 +39,9 @@ export const DEFAULT_WORKFLOW_RUN_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'workflow-run-widget-fields',
+          isActive: true,
           pageLayoutTabId: 'workflow-run-tab-fields',
           title: 'Fields',
           type: WidgetType.FIELDS,
@@ -66,6 +69,7 @@ export const DEFAULT_WORKFLOW_RUN_PAGE_LAYOUT: PageLayout = {
       __typename: 'PageLayoutTab',
       applicationId: '',
       id: 'workflow-run-tab-flow',
+      isActive: true,
       title: 'Flow',
       position: 200,
       layoutMode: PageLayoutTabLayoutMode.CANVAS,
@@ -77,7 +81,9 @@ export const DEFAULT_WORKFLOW_RUN_PAGE_LAYOUT: PageLayout = {
       widgets: [
         {
           __typename: 'PageLayoutWidget',
+          applicationId: '',
           id: 'workflow-run-widget-flow',
+          isActive: true,
           pageLayoutTabId: 'workflow-run-tab-flow',
           title: 'Flow',
           type: WidgetType.WORKFLOW_RUN,

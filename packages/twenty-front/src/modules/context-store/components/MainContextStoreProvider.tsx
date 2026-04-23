@@ -2,11 +2,11 @@ import { MainContextStoreProviderEffect } from '@/context-store/components/MainC
 import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
 import { useIsSettingsPage } from '@/navigation/hooks/useIsSettingsPage';
 import { useLastVisitedView } from '@/navigation/hooks/useLastVisitedView';
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
 import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilyStateValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { AppPath } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
@@ -47,6 +47,7 @@ export const MainContextStoreProvider = () => {
     AppPath.RecordIndexPage,
   );
   const isRecordShowPage = isMatchingLocation(location, AppPath.RecordShowPage);
+  const isStandalonePage = isMatchingLocation(location, AppPath.PageLayoutPage);
   const isSettingsPage = useIsSettingsPage();
   const showAuthModal = useShowAuthModal();
 
@@ -60,9 +61,9 @@ export const MainContextStoreProvider = () => {
   const [searchParams] = useSearchParams();
   const viewIdQueryParamRaw = searchParams.get('viewId');
 
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsState);
   const metadataStore = useAtomFamilyStateValue(metadataStoreState, 'views');
-  const views = useAtomStateValue(viewsSelector);
+  const coreViews = useAtomStateValue(coreViewsSelector);
 
   const objectMetadataItem = objectMetadataItems.find(
     (objectMetadataItem) =>
@@ -72,7 +73,7 @@ export const MainContextStoreProvider = () => {
 
   const { getLastVisitedViewIdFromObjectNamePlural } = useLastVisitedView();
 
-  const viewIdQueryParamView = views.find(
+  const viewIdQueryParamView = coreViews.find(
     (view) => view.id === viewIdQueryParamRaw,
   );
 
@@ -86,7 +87,7 @@ export const MainContextStoreProvider = () => {
     objectMetadataItem?.namePlural ?? '',
   );
 
-  const lastVisitedView = views.find(
+  const lastVisitedView = coreViews.find(
     (view) => view.id === lastVisitedViewIdRaw,
   );
 
@@ -96,13 +97,13 @@ export const MainContextStoreProvider = () => {
       ? lastVisitedViewIdRaw
       : undefined;
 
-  const indexViewId = views.find(
+  const indexViewId = coreViews.find(
     (view) =>
       view.objectMetadataId === objectMetadataItem?.id &&
       view.key === ViewKey.INDEX,
   )?.id;
 
-  const firstAvailableViewId = views.find(
+  const firstAvailableViewId = coreViews.find(
     (view) =>
       view.objectMetadataId === objectMetadataItem?.id &&
       view.type !== ViewType.FIELDS_WIDGET,
@@ -118,6 +119,7 @@ export const MainContextStoreProvider = () => {
   const shouldComputeContextStore =
     (isRecordIndexPage ||
       isRecordShowPage ||
+      isStandalonePage ||
       isSettingsPage ||
       showAuthModal) &&
     metadataStore.status === 'up-to-date';
@@ -132,6 +134,7 @@ export const MainContextStoreProvider = () => {
       objectMetadataItem={objectMetadataItem}
       isRecordIndexPage={isRecordIndexPage}
       isRecordShowPage={isRecordShowPage}
+      isStandalonePage={isStandalonePage}
       isSettingsPage={isSettingsPage}
     />
   );

@@ -8,6 +8,8 @@ import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { CodeExecutionDisplay } from '@/ai/components/CodeExecutionDisplay';
 import { ShimmeringText } from '@/ai/components/ShimmeringText';
+import { ToolOutputMessageSchema } from '@/ai/schemas/toolOutputMessageSchema';
+import { ToolOutputResultSchema } from '@/ai/schemas/toolOutputResultSchema';
 import {
   getToolDisplayMessage,
   resolveToolInput,
@@ -150,38 +152,37 @@ export const ToolStepRenderer = ({
   const isExpandable = isDefined(output) || hasError;
   const ToolIcon = getToolIcon(toolName);
 
-  const outputObj =
-    typeof output === 'object' && output !== null
-      ? (output as Record<string, unknown>)
-      : null;
-  const toolMessage =
-    typeof outputObj?.message === 'string' ? outputObj.message : null;
-  const toolError =
-    typeof outputObj?.error === 'string' ? outputObj.error : null;
+  const outputResult = ToolOutputResultSchema.safeParse(output);
+  const unwrappedOutput =
+    rawToolName === 'execute_tool' && outputResult.success
+      ? outputResult.data.result
+      : output;
 
   if (toolName === 'code_interpreter') {
     const codeInput = toolInput as { code?: string } | undefined;
-    const codeOutput = outputObj as {
-      stdout?: string;
-      stderr?: string;
-      exitCode?: number;
-      files?: Array<{
-        fileId: string;
-        filename: string;
-        url: string;
-        mimeType?: string;
-      }>;
+    const codeOutput = unwrappedOutput as {
+      result?: {
+        stdout?: string;
+        stderr?: string;
+        exitCode?: number;
+        files?: Array<{
+          fileId: string;
+          filename: string;
+          url: string;
+          mimeType?: string;
+        }>;
+      };
     } | null;
 
-    const isRunning = !outputObj && !hasError && isStreaming;
+    const isRunning = !unwrappedOutput && !hasError && isStreaming;
 
     return (
       <CodeExecutionDisplay
         code={codeInput?.code ?? ''}
-        stdout={codeOutput?.stdout ?? ''}
-        stderr={codeOutput?.stderr || errorText || ''}
-        exitCode={codeOutput?.exitCode}
-        files={codeOutput?.files}
+        stdout={codeOutput?.result?.stdout ?? ''}
+        stderr={codeOutput?.result?.stderr || errorText || ''}
+        exitCode={codeOutput?.result?.exitCode}
+        files={codeOutput?.result?.files}
         isRunning={isRunning}
       />
     );
@@ -215,15 +216,22 @@ export const ToolStepRenderer = ({
     );
   }
 
+  const unwrappedResult = ToolOutputResultSchema.safeParse(unwrappedOutput);
+  const unwrappedMessage = ToolOutputMessageSchema.safeParse(unwrappedOutput);
+
   const displayMessage = hasError
     ? t`Tool execution failed`
     : rawToolName === 'learn_tools' ||
         rawToolName === 'execute_tool' ||
         rawToolName === 'load_skills'
       ? getToolDisplayMessage(input, rawToolName, true)
-      : (toolMessage ?? getToolDisplayMessage(input, rawToolName, true));
+      : unwrappedMessage.success
+        ? unwrappedMessage.data.message
+        : getToolDisplayMessage(input, rawToolName, true);
 
-  const result = toolError ? { error: toolError } : outputObj;
+  const result = unwrappedResult.success
+    ? unwrappedResult.data.result
+    : unwrappedOutput;
 
   return (
     <StyledContainer>

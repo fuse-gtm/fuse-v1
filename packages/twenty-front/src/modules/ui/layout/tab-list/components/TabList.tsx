@@ -173,7 +173,6 @@ export const TabList = ({
                     disabled={tab.disabled ?? loading}
                     pill={tab.pill}
                     to={behaveAsLinks ? `#${tab.id}` : undefined}
-                    tooltipContent={tab.tooltipContent}
                     onClick={
                       behaveAsLinks
                         ? () => onChangeTab?.(tab.id)

@@ -8,34 +8,42 @@ import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { useMutation } from '@apollo/client/react';
 import {
-  type CreateViewFilterMutationVariables,
-  type DeleteViewFilterMutationVariables,
-  type DestroyViewFilterMutationVariables,
-  type UpdateViewFilterMutationVariables,
-  CreateViewFilterDocument,
-  DeleteViewFilterDocument,
-  DestroyViewFilterDocument,
-  UpdateViewFilterDocument,
+  type CreateCoreViewFilterMutationVariables,
+  type DeleteCoreViewFilterMutationVariables,
+  type DestroyCoreViewFilterMutationVariables,
+  type UpdateCoreViewFilterMutationVariables,
+  CreateCoreViewFilterDocument,
+  DeleteCoreViewFilterDocument,
+  DestroyCoreViewFilterDocument,
+  UpdateCoreViewFilterDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewFilterAPIPersist = () => {
-  const [createViewFilterMutation] = useMutation(CreateViewFilterDocument);
-  const [updateViewFilterMutation] = useMutation(UpdateViewFilterDocument);
-  const [deleteViewFilterMutation] = useMutation(DeleteViewFilterDocument);
-  const [destroyViewFilterMutation] = useMutation(DestroyViewFilterDocument);
+  const [createCoreViewFilterMutation] = useMutation(
+    CreateCoreViewFilterDocument,
+  );
+  const [updateCoreViewFilterMutation] = useMutation(
+    UpdateCoreViewFilterDocument,
+  );
+  const [deleteCoreViewFilterMutation] = useMutation(
+    DeleteCoreViewFilterDocument,
+  );
+  const [destroyCoreViewFilterMutation] = useMutation(
+    DestroyCoreViewFilterDocument,
+  );
 
   const { handleMetadataError } = useMetadataErrorHandler();
   const { enqueueErrorSnackBar } = useSnackBar();
 
   const performViewFilterAPICreate = useCallback(
     async (
-      createViewFilterInputs: CreateViewFilterMutationVariables[],
+      createCoreViewFilterInputs: CreateCoreViewFilterMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof createViewFilterMutation>>[]
+        Awaited<ReturnType<typeof createCoreViewFilterMutation>>[]
       >
     > => {
-      if (createViewFilterInputs.length === 0) {
+      if (createCoreViewFilterInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -44,8 +52,8 @@ export const usePerformViewFilterAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          createViewFilterInputs.map((variables) =>
-            createViewFilterMutation({
+          createCoreViewFilterInputs.map((variables) =>
+            createCoreViewFilterMutation({
               variables,
             }),
           ),
@@ -71,18 +79,18 @@ export const usePerformViewFilterAPIPersist = () => {
         };
       }
     },
-    [createViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
+    [createCoreViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewFilterAPIUpdate = useCallback(
     async (
-      updateViewFilterInputs: UpdateViewFilterMutationVariables[],
+      updateCoreViewFilterInputs: UpdateCoreViewFilterMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof updateViewFilterMutation>>[]
+        Awaited<ReturnType<typeof updateCoreViewFilterMutation>>[]
       >
     > => {
-      if (updateViewFilterInputs.length === 0) {
+      if (updateCoreViewFilterInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -91,8 +99,8 @@ export const usePerformViewFilterAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          updateViewFilterInputs.map((variables) =>
-            updateViewFilterMutation({
+          updateCoreViewFilterInputs.map((variables) =>
+            updateCoreViewFilterMutation({
               variables,
             }),
           ),
@@ -118,18 +126,18 @@ export const usePerformViewFilterAPIPersist = () => {
         };
       }
     },
-    [updateViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
+    [updateCoreViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewFilterAPIDelete = useCallback(
     async (
-      deleteViewFilterInputs: DeleteViewFilterMutationVariables[],
+      deleteCoreViewFilterInputs: DeleteCoreViewFilterMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof deleteViewFilterMutation>>[]
+        Awaited<ReturnType<typeof deleteCoreViewFilterMutation>>[]
       >
     > => {
-      if (deleteViewFilterInputs.length === 0) {
+      if (deleteCoreViewFilterInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -138,8 +146,8 @@ export const usePerformViewFilterAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          deleteViewFilterInputs.map((variables) =>
-            deleteViewFilterMutation({
+          deleteCoreViewFilterInputs.map((variables) =>
+            deleteCoreViewFilterMutation({
               variables,
             }),
           ),
@@ -165,18 +173,18 @@ export const usePerformViewFilterAPIPersist = () => {
         };
       }
     },
-    [deleteViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
+    [deleteCoreViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   const performViewFilterAPIDestroy = useCallback(
     async (
-      destroyViewFilterInputs: DestroyViewFilterMutationVariables[],
+      destroyCoreViewFilterInputs: DestroyCoreViewFilterMutationVariables[],
     ): Promise<
       MetadataRequestResult<
-        Awaited<ReturnType<typeof destroyViewFilterMutation>>[]
+        Awaited<ReturnType<typeof destroyCoreViewFilterMutation>>[]
       >
     > => {
-      if (destroyViewFilterInputs.length === 0) {
+      if (destroyCoreViewFilterInputs.length === 0) {
         return {
           status: 'successful',
           response: [],
@@ -185,8 +193,8 @@ export const usePerformViewFilterAPIPersist = () => {
 
       try {
         const results = await Promise.all(
-          destroyViewFilterInputs.map((variables) =>
-            destroyViewFilterMutation({
+          destroyCoreViewFilterInputs.map((variables) =>
+            destroyCoreViewFilterMutation({
               variables,
             }),
           ),
@@ -212,7 +220,7 @@ export const usePerformViewFilterAPIPersist = () => {
         };
       }
     },
-    [destroyViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
+    [destroyCoreViewFilterMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   return {

@@ -17,7 +17,7 @@ Scope: remaining branding debt after `rebrand: replace all Twenty branding with 
 - [x] `packages/twenty-front/src/pages/auth/SignInUp.tsx` — `Welcome to Fuse` ✅ (2026-03-05)
 - [x] `packages/twenty-front/src/pages/not-found/NotFound.tsx` — `Page Not Found | Fuse` ✅ (2026-03-05)
 - [x] `packages/twenty-front/src/pages/onboarding/SyncEmails.tsx` — `with Fuse` ✅ (2026-03-05)
-- [x] `packages/twenty-front/src/pages/settings/ai/SettingsAIPrompts.tsx` — `managed by Fuse` ✅ (2026-03-05)
+- [x] `packages/twenty-front/src/pages/settings/ai/SettingsAiPrompts.tsx` — `managed by Fuse` ✅ (2026-03-05; renamed from `SettingsAIPrompts.tsx` by upstream #19837 "AI → Ai PascalCase refactor" in wave 2C, 2026-04-23 — file contains no branded strings requiring defense, retained on list for traceability)
 - [x] `packages/twenty-front/src/modules/auth/sign-in-up/components/FooterNote.tsx` — `By using Fuse` ✅ (2026-03-05)
 - [x] `packages/twenty-front/src/modules/activities/timeline-activities/utils/getTimelineActivityAuthorFullName.ts` — `Fuse` fallback ✅ (2026-03-05)
 - [x] `packages/twenty-front/public/manifest.json` — `name`/`short_name` → Fuse ✅ (2026-03-05)

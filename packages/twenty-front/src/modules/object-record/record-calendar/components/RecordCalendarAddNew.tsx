@@ -15,9 +15,9 @@ import { Button } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledButtonContainer = styled.div`
-  height: auto;
-  min-width: unset;
   padding: ${themeCssVariables.spacing['0.5']};
+  min-width: unset;
+  height: auto;
 `;
 
 type RecordCalendarAddNewProps = {
@@ -62,7 +62,6 @@ export const RecordCalendarAddNew = ({
   if (
     hasAnySoftDeleteFilterOnView === true ||
     hasObjectUpdatePermissions === false ||
-    objectMetadataItem.isSystem === true ||
     calendarFieldMetadataItem === undefined ||
     isCalendarFieldReadOnly === true
   ) {

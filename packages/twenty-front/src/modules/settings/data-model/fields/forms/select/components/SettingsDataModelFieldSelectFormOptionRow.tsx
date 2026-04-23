@@ -76,13 +76,13 @@ const StyledRow = styled.div`
 `;
 
 const StyledColorSampleContainer = styled.span`
-  align-items: center;
   cursor: pointer;
-  display: flex;
-  margin-bottom: ${themeCssVariables.spacing[1]};
-  margin-left: 14px;
-  margin-right: 14px;
   margin-top: ${themeCssVariables.spacing[1]};
+  margin-bottom: ${themeCssVariables.spacing[1]};
+  margin-right: 14px;
+  margin-left: 14px;
+  display: flex;
+  align-items: center;
 `;
 
 const StyledOptionInputContainer = styled.div`
@@ -95,15 +95,15 @@ const StyledOptionInputContainer = styled.div`
 `;
 
 const StyledIconGripVerticalContainer = styled.span`
-  align-items: center;
-  display: flex;
   margin-right: 3px;
+  display: flex;
+  align-items: center;
 `;
 
 const StyledLightIconButtonContainer = styled.span`
-  align-items: center;
-  display: flex;
   margin-left: ${themeCssVariables.spacing[2]};
+  display: flex;
+  align-items: center;
 `;
 
 export const SettingsDataModelFieldSelectFormOptionRow = ({

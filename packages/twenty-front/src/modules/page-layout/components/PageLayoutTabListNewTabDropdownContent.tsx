@@ -1,4 +1,6 @@
+import { STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS } from '@/page-layout/constants/StandardPageLayoutTabTitleTranslations';
 import { useCurrentPageLayoutOrThrow } from '@/page-layout/hooks/useCurrentPageLayoutOrThrow';
+import { useIsCurrentObjectCustom } from '@/page-layout/hooks/useIsCurrentObjectCustom';
 import { useUpdatePageLayoutTab } from '@/page-layout/hooks/useUpdatePageLayoutTab';
 import { pageLayoutTabSettingsOpenTabIdComponentState } from '@/page-layout/states/pageLayoutTabSettingsOpenTabIdComponentState';
 import { isReactivatableTab } from '@/page-layout/utils/isReactivatableTab';
@@ -31,6 +33,9 @@ export const PageLayoutTabListNewTabDropdownContent = ({
   const { t } = useLingui();
   const { getIcon } = useIcons();
   const { closeDropdown } = useCloseDropdown();
+  const { isCustom } = useIsCurrentObjectCustom();
+
+  const shouldTranslateTabTitles = !isCustom;
 
   const { currentPageLayout } = useCurrentPageLayoutOrThrow();
   const { updatePageLayoutTab } = useUpdatePageLayoutTab();
@@ -72,6 +77,16 @@ export const PageLayoutTabListNewTabDropdownContent = ({
     ],
   );
 
+  const getTabTitle = (title: string) => {
+    if (
+      shouldTranslateTabTitles &&
+      isDefined(STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS[title])
+    ) {
+      return t(STANDARD_PAGE_LAYOUT_TAB_TITLE_TRANSLATIONS[title]);
+    }
+    return title;
+  };
+
   return (
     <DropdownContent>
       <DropdownMenuHeader>{t`New tab`}</DropdownMenuHeader>
@@ -91,7 +106,7 @@ export const PageLayoutTabListNewTabDropdownContent = ({
               <MenuItem
                 key={tab.id}
                 LeftIcon={isDefined(tab.icon) ? getIcon(tab.icon) : undefined}
-                text={tab.title}
+                text={getTabTitle(tab.title)}
                 onClick={() => handleReactivateTab(tab.id)}
               />
             ))}
