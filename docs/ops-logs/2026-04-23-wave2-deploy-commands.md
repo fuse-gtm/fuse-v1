@@ -2,7 +2,12 @@
 
 **Goal:** one founder, one terminal, one deploy. Copy blocks top-to-bottom.
 
-**Assumes:** Fuse prod EC2 is `52.20.136.71`, workspace ID `06e070b2-80eb-4097-8813-8d2ebe632108`, you can SSH as `ec2-user`, GHCR token in your local env as `GHCR_TOKEN`, Docker + buildx installed locally.
+**Assumes:** Fuse prod EC2 is `52.20.136.71`, workspace ID `06e070b2-80eb-4097-8813-8d2ebe632108`, you can SSH as `ubuntu`, GHCR token in your local env as `GHCR_TOKEN`, Docker + buildx installed locally.
+
+**Prod paths (verified on host 2026-04-23 during ALLOW_REQUESTS_TO_TWENTY_ICONS flip attempt):**
+- SSH user: `ubuntu@52.20.136.71`. Earlier drafts of this runbook used `ec2-user` — that's wrong.
+- Compose project dir: `/opt/fuse/packages/twenty-docker/`. `~/fuse-v1/packages/twenty-docker/` also exists on the host but has no `.env` and is NOT the active compose root — ignore it.
+- `.env` file: `/opt/fuse/packages/twenty-docker/.env`.
 
 **Reference docs (already on main):**
 - `docs/ops-logs/2026-04-23-wave2-deploy-readiness.md` — full pre-flight, rollback, validation
@@ -71,10 +76,13 @@ docker buildx build \
 Single SSH session doing the whole deploy:
 
 ```bash
-ssh ec2-user@52.20.136.71 << 'REMOTE'
+ssh ubuntu@52.20.136.71 << 'REMOTE'
 set -euo pipefail
 
-cd ~/fuse-v1/packages/twenty-docker  # adjust path if your repo clone is elsewhere
+cd /opt/fuse/packages/twenty-docker
+
+# Snapshot .env before editing
+cp .env .env.bak.wave2-$(date -u +%Y%m%dT%H%M%SZ)
 
 # Pre-deploy: ensure TRUST_PROXY=1 is set (wave 2A requirement)
 if ! grep -q "^TRUST_PROXY=" .env; then
@@ -84,10 +92,22 @@ else
   echo "TRUST_PROXY already present: $(grep ^TRUST_PROXY .env)"
 fi
 
+# Pre-deploy: flip ALLOW_REQUESTS_TO_TWENTY_ICONS to true (favicons).
+# Compose template defaults to false if unset, so we must add explicitly.
+# This value gets picked up by the container-recreate below, NOT by `docker compose restart`.
+if ! grep -q "^ALLOW_REQUESTS_TO_TWENTY_ICONS=" .env; then
+  echo "ALLOW_REQUESTS_TO_TWENTY_ICONS=true" >> .env
+  echo "Added ALLOW_REQUESTS_TO_TWENTY_ICONS=true to .env"
+else
+  sed -i.inplace 's|^ALLOW_REQUESTS_TO_TWENTY_ICONS=.*|ALLOW_REQUESTS_TO_TWENTY_ICONS=true|' .env
+  echo "Updated ALLOW_REQUESTS_TO_TWENTY_ICONS=true"
+fi
+
 # Pull latest image
 docker compose pull
 
-# Roll
+# Roll (this RECREATES the container — required for new .env values to take effect,
+# `docker compose restart` alone would NOT pick up TRUST_PROXY or ALLOW_REQUESTS_TO_TWENTY_ICONS)
 docker compose up -d
 
 # Wait for health
@@ -130,9 +150,10 @@ echo "  - admin → settings → enterprise page doesn't hang (TRUST_PROXY effec
 ## Phase 3 — 60-minute soak
 
 Leave prod alone for 60 minutes. Check for:
-- 5xx errors in logs: `ssh ec2-user@52.20.136.71 docker compose logs --since=60m twenty-server | grep -E '5[0-9]{2}'`
-- Unexpected twenty.com egress: `ssh ec2-user@52.20.136.71 docker compose logs --since=60m twenty-server | grep "twenty.com" | grep -vE "enterprise/(status|portal|checkout)"` — any match = NEW phone-home introduced (shouldn't happen, but verify)
-- Memory stable: `ssh ec2-user@52.20.136.71 docker stats --no-stream twenty-server` — RSS should stay under 70% of t3.small's 2GB.
+- 5xx errors in logs: `ssh ubuntu@52.20.136.71 "cd /opt/fuse/packages/twenty-docker && docker compose logs --since=60m twenty-server" | grep -E '5[0-9]{2}'`
+- Unexpected twenty.com egress: `ssh ubuntu@52.20.136.71 "cd /opt/fuse/packages/twenty-docker && docker compose logs --since=60m twenty-server" | grep "twenty.com" | grep -vE "enterprise/(status|portal|checkout)"` — any match = NEW phone-home introduced (shouldn't happen, but verify)
+- Twenty-icons requests are now expected (`ALLOW_REQUESTS_TO_TWENTY_ICONS=true`). These fire browser-side from `twenty-icons.com/<domain>` when link favicons render — they don't show in server logs. Confirm by opening devtools on any Company record with a website URL; `twenty-icons.com` should return 200 with image content-type.
+- Memory stable: `ssh ubuntu@52.20.136.71 docker stats --no-stream twenty-server` — RSS should stay under 70% of t3.small's 2GB.
 
 ## Phase 4 — Apollo activation (optional, when ready)
 
@@ -147,8 +168,10 @@ Follow `docs/superpowers/plans/2026-04-24-apollo-activation.md` end-to-end. High
 ## Rollback (if Phase 2 or 3 surfaces breakage)
 
 ```bash
-ssh ec2-user@52.20.136.71 << 'REMOTE'
-cd ~/fuse-v1/packages/twenty-docker
+ssh ubuntu@52.20.136.71 << 'REMOTE'
+cd /opt/fuse/packages/twenty-docker
+# Restore .env if pre-deploy edits (TRUST_PROXY, ALLOW_REQUESTS_TO_TWENTY_ICONS) are suspect:
+#   cp .env.bak.wave2-<timestamp> .env
 # Find previous image tag from compose history or local cache
 docker compose down
 # Edit .env to point TWENTY_IMAGE at prev tag

@@ -1,8 +1,4 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from '@typescript-eslint/utils';
+import { defineRule } from '@oxlint/plugins';
 
 import { isNodeInsideAncestor } from '../utils/isNodeInsideAncestor';
 
@@ -13,8 +9,7 @@ const SELECTOR_FACTORY_NAMES = [
   'createAtomComponentFamilySelector',
 ];
 
-export const rule = ESLintUtils.RuleCreator(() => __filename)({
-  name: RULE_NAME,
+export const rule = defineRule({
   meta: {
     type: 'problem',
     docs: {
@@ -27,14 +22,13 @@ export const rule = ESLintUtils.RuleCreator(() => __filename)({
     },
     schema: [],
   },
-  defaultOptions: [],
   create: (context) => {
-    const selectorGetNodes: TSESTree.Node[] = [];
+    const selectorGetNodes: any[] = [];
 
     return {
-      CallExpression: (node) => {
+      CallExpression: (node: any) => {
         if (
-          node.callee.type !== AST_NODE_TYPES.Identifier ||
+          node.callee.type !== 'Identifier' ||
           !SELECTOR_FACTORY_NAMES.includes(node.callee.name)
         ) {
           return;
@@ -42,17 +36,14 @@ export const rule = ESLintUtils.RuleCreator(() => __filename)({
 
         const configArg = node.arguments[0];
 
-        if (
-          !configArg ||
-          configArg.type !== AST_NODE_TYPES.ObjectExpression
-        ) {
+        if (!configArg || configArg.type !== 'ObjectExpression') {
           return;
         }
 
         const getProperty = configArg.properties.find(
-          (prop): prop is TSESTree.Property =>
-            prop.type === AST_NODE_TYPES.Property &&
-            prop.key.type === AST_NODE_TYPES.Identifier &&
+          (prop: any) =>
+            prop.type === 'Property' &&
+            prop.key.type === 'Identifier' &&
             prop.key.name === 'get',
         );
 
@@ -60,26 +51,19 @@ export const rule = ESLintUtils.RuleCreator(() => __filename)({
           selectorGetNodes.push(getProperty.value);
         }
       },
-
-      'MemberExpression > Identifier[name="jotaiStore"]': (
-        node: TSESTree.Identifier,
-      ) => {
-        const memberExpr = node.parent;
-
+      MemberExpression: (node: any) => {
         if (
-          !memberExpr ||
-          memberExpr.type !== AST_NODE_TYPES.MemberExpression
+          node.object?.type === 'Identifier' &&
+          node.object.name === 'jotaiStore'
         ) {
-          return;
-        }
-
-        for (const getNode of selectorGetNodes) {
-          if (isNodeInsideAncestor(node, getNode)) {
-            context.report({
-              node: memberExpr,
-              messageId: 'noJotaiStoreInSelector',
-            });
-            break;
+          for (const getNode of selectorGetNodes) {
+            if (isNodeInsideAncestor(node, getNode)) {
+              context.report({
+                node,
+                messageId: 'noJotaiStoreInSelector',
+              });
+              break;
+            }
           }
         }
       },

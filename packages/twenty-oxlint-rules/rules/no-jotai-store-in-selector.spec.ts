@@ -1,10 +1,8 @@
-import { TSESLint } from '@typescript-eslint/utils';
+import { RuleTester } from 'oxlint/plugins-dev';
 
 import { rule, RULE_NAME } from './no-jotai-store-in-selector';
 
-const ruleTester = new TSESLint.RuleTester({
-  parser: require.resolve('@typescript-eslint/parser'),
-});
+const ruleTester = new RuleTester();
 
 ruleTester.run(RULE_NAME, rule, {
   valid: [
