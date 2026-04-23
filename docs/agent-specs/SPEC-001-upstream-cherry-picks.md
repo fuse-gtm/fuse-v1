@@ -179,10 +179,23 @@ still be running on. **Do not take until a full rebase to 1.19+.**
 
 Noise. No runtime impact. Skip all.
 
-### Website/SDK changes
+### Website changes
 
-`d246b16063` (new website), `37908114fc` (SDK extraction), `731e297147`
-(SDK CLI OAuth) — none affect our runtime.
+`d246b16063` (new website) — Fuse marketing lives on Vercel in a separate repo. Skip all `packages/twenty-website*/` cherry-picks.
+
+### SDK changes — **POLICY UPDATED (2026-04-23, founder direction)**
+
+Previously deferred. Policy now: **take SDK refactors in dedicated sub-waves when the next sync runs.** Reasoning (solo-founder cadence): sync cycles are infrequent, so when one runs, pack in SDK refactors even if they're large-conflict. Fuse app scaffolding (`create-twenty-app` CLI + `@twenty/sdk` API surface) depends on current upstream SDK structure.
+
+Wave 2.5 took `4ea2e32366` + `c26c0b9d71` + `baf2fc4cc9` as a block with `--strategy-option=theirs` aggressive conflict resolution + protected-path fallback. Future SDK-refactor batches follow the same pattern.
+
+### Admin panel — **POLICY (2026-04-23)**
+
+**Fuse admin panel is intentionally deleted for single-user workspace scope.** Any upstream commit that re-introduces admin-panel routes, components, or settings screens for multi-user workspace management gets skipped automatically — no per-wave debate.
+
+Example: `75848ff8ea` (70-file admin-panel migration, skipped in wave 2A). Policy now codified; triage agents reject similar commits by default.
+
+Revisit this policy only if Fuse onboards multi-user workspaces. Trigger for revisit: paying customer asks for per-seat role management at the workspace level.
 
 ### RBAC/Permissions (15+ commits) — **RESOLVED in wave 2D (2026-04-23)**
 
