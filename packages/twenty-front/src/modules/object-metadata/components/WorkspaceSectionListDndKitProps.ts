@@ -4,7 +4,7 @@ import type { NavigationMenuItem } from '~/generated-metadata/graphql';
 
 import type { EditModeProps } from '@/object-metadata/components/EditModeProps';
 
-export type NavigationMenuItemSectionListDndKitProps = {
+export type WorkspaceSectionListDndKitProps = {
   filteredItems: NavigationMenuItem[];
   getEditModeProps: (item: NavigationMenuItem) => EditModeProps;
   folderChildrenById: Map<string, NavigationMenuItem[]>;

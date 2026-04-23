@@ -33,7 +33,7 @@ type NavigationMenuItemFolderSubItemProps = {
   selectedNavigationMenuItemId?: string | null;
 };
 
-export const NavigationMenuItemFolderSubItem = ({
+export const WorkspaceNavigationMenuItemFolderSubItem = ({
   navigationMenuItem,
   index,
   arrayLength,

@@ -4,7 +4,7 @@ import type { NavigationMenuItem } from '~/generated-metadata/graphql';
 
 import type { EditModeProps } from '@/object-metadata/components/EditModeProps';
 
-export type NavigationMenuItemSectionContentProps = {
+export type WorkspaceSectionItemContentProps = {
   item: NavigationMenuItem;
   isEditInPlace?: boolean;
   editModeProps?: EditModeProps;
