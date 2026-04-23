@@ -144,3 +144,81 @@ Required CI checks on the PR:
 - Orchestrator to dispatch guardrail rescanners (telemetry A, partner-os surface B, feature-flag drift C) and deep file reviewer post-push.
 - If `graphql:generate` produces diff in CI, re-run locally on a proper dev env and commit the output as a follow-up.
 - If deep reviewer surfaces a regression, address before merge approval.
+
+---
+
+## Wave 2C post-execution verification — 2026-04-23
+
+Verifier re-ran the guardrail suite against HEAD `51d308e099` (includes orchestrator P1 re-strip + branding-followups rename update) vs base `74ca02cd52` (`origin/main` post-2B).
+
+### Guardrail A — telemetry / egress: PASS (with 1 WATCH nit)
+
+- Egress-pattern grep over full `origin/main...HEAD` diff surfaced 12 lines. Triage:
+  - Lines 57, 59, 99 — self-match from the ops log prose.
+  - Lines 10953, 142443 — `'import/no-useless-path-segments'` rule (pattern `\.track\(` false-positive on `segments`).
+  - Lines 75068, 75107 — doc-link strings `https://twenty.com/developers/extend/apps/...` in NEW files `packages/twenty-front/src/pages/settings/applications/utils/getCustomApplicationDescription.ts` and `getStandardApplicationDescription.ts`. Upstream-doc links, not egress — **flag as branding debt, not Guardrail A block**. Add to `docs/fuse-branding-followups.md` as follow-up item.
+  - Line 123670 — `subdomain: 'acme.twenty.com'` is a context (unchanged) line in a test mock.
+  - Line 124562, 144541 — `@clickhouse/client` dep already present on `origin/main`; context line adjacent to a neighboring `@blocknote` bump. Not a new dep.
+  - Line 125352 — **removal** of `subdomainUrl: 'https://twenty.twenty.com'` test mock.
+  - Line 133215 — dev-seeder widget URL `https://www.star-history.com/?repos=twentyhq%2Ftwenty` in `get-page-layout-widget-data-seeds.util.ts`. Runs only when seeding demo workspaces — **not production telemetry**. Flag as WATCH (branding leak in sample data).
+- Phone-home pattern grep (`phone-home|verifyEnterprise|validateLicense|licenseValidity`) returned 0 lines.
+- Dep grep (`posthog|segment|@clickhouse|mixpanel|amplitude`) returned 0 new SDKs; `@clickhouse/client` unchanged on both sides.
+
+Verdict: **PASS**. Two branding nits logged as follow-ups (2 new `twenty.com/developers` doc links in app-template description utils; 1 dev-seeder `twentyhq/twenty` star-history widget URL). No live telemetry or phone-home introduced.
+
+### Guardrail B — partner-os surface: PASS
+
+`git diff origin/main...HEAD -- packages/twenty-server/src/modules/partner-os/` → 0 lines. Partner-OS module untouched.
+
+### Guardrail C — feature-flag drift: PASS
+
+- `packages/twenty-shared/src/types/FeatureFlagKey.ts` exists on branch.
+- `IS_PARTNER_OS_ENABLED = 'IS_PARTNER_OS_ENABLED'` present at line 18.
+- Diff against `origin/main` for `FeatureFlagKey.ts`: 0 lines.
+- Diff against `origin/main` for `seed-feature-flags.util.ts`: 0 lines.
+
+### Deep file review: PASS
+
+- Total touched files: 1,448 (per `/tmp/2c-touched-files.txt`).
+- Top subsystems: `twenty-front/src` 1,075 · `twenty-server/src` 254 · `twenty-shared/src` 31 · `twenty-ui/src` 28 · `twenty-docs/l` 14 · `twenty-server/test` 9.
+- Front top modules: `page-layout` 139 · `settings` 119 · `navigation-menu-item` 101 · `command-menu-item` 96 · `ai` 94 · `pages/settings` 86 · `side-panel` 78 · `object-record` 63.
+- Server top modules: `engine/metadata-modules` 77 · `engine/core-modules` 69 · `engine/workspace-manager` 65.
+- High-value area deep reads:
+  - **P1 fix target** `packages/twenty-server/src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.service.ts` — verified: only the sovereignty comment at line 246 references `ApplicationLogsService`. No import, no call-site. Orchestrator pre-fix `51d308e099` holds.
+  - `packages/twenty-front/src/modules/auth/` (6 files): new `useImpersonationSession.ts` uses `sessionStorage` to park the admin token pair and restore it after impersonation — no weakening, no exfiltration. `useAuth.ts` now mirrors `tokenPair` into a cookie via `cookieStorage.setItem` (cookie is `secure`+`sameSite: lax`, current-origin only — not phone-home). `AuthService.ts` gates Apollo logger behind `IS_DEBUG_MODE`. Error-handling refactored from `CombinedGraphQLErrors.is(...)` to a new `isGraphqlErrorOfType(...)` util — mechanical. All accept.
+  - `packages/twenty-front/src/pages/settings/` (86 files): inspected `SettingsAdminUserDetail.tsx` new version — imports from Fuse's Linaria + `twenty-shared` + `twenty-ui` paths; no upstream brand strings; uses Fuse-owned `DOCUMENTATION_BASE_URL = 'https://docs.fusegtm.com'` where applicable.
+  - `packages/twenty-front/src/modules/settings/billing/` (3 files): new "How credits work" button routes through `getDocumentationUrl(...)` which reads from `DOCUMENTATION_BASE_URL = 'https://docs.fusegtm.com'` — Fuse-controlled, not twenty.com.
+  - `packages/twenty-ui/` (28 files): only additive change to `theme/index.ts` (new `DEFAULT_THEME_COLOR_FALLBACK` export); no removals of `themeCssVariables` / `ThemeType`. New `TintedIconTile` component correctly imports from `@ui/theme-constants`.
+  - Graph/chart components: all still import from `twenty-ui/theme-constants`, not the old `twenty-ui/theme` path.
+  - GraphQL schema: `schema.graphql` net –236 lines (133+, 369−). Removed types are upstream cleanup (`AdminAIModels`, `ConfigVariables*`, `QueueJob*`, `SystemHealthService`, `HealthIndicatorId`). Added types include AI → Ai rename counterparts (`ClientAiModelConfig`, `AiSystemPromptSection`, `AiSystemPromptPreview`). Aligned with server-side changes.
+- Spot-check on top 5 flagged commits: all internal refactors (metadata store uniformization, SSE unification, `styled(Component)` removal, ESLint rules, AI→Ai rename) with no telemetry/auth/privacy implications.
+
+Verdict: **PASS**. No blockers. Three nits (see "Top concerns" below) recorded as branding follow-ups.
+
+### L5 — Linaria-migration preservation: PASS
+
+- `grep -rln "@emotion/react\|@emotion/styled" packages/twenty-front/src packages/twenty-ui/src` → 0 matches. Emotion imports absolute count post-wave = 0 (matches 2C executor's reported pre=0 post=0 delta=0).
+- `twenty-ui/src/theme/index.ts` diff: only additive (new `DEFAULT_THEME_COLOR_FALLBACK` export). No `themeCssVariables` / `ThemeType` export or import regressions.
+- `twenty-ui/src/theme-constants/index.ts`: 0 lines changed.
+
+### Branding regression recheck: PASS
+
+All 7 branded files present and clean on post-rename paths:
+
+- `packages/twenty-front/src/pages/auth/SignInUp.tsx` — CLEAN
+- `packages/twenty-front/src/modules/auth/sign-in-up/components/FooterNote.tsx` — CLEAN
+- `packages/twenty-front/src/pages/not-found/NotFound.tsx` — CLEAN
+- `packages/twenty-front/src/pages/onboarding/SyncEmails.tsx` — CLEAN
+- `packages/twenty-front/src/pages/settings/ai/SettingsAiPrompts.tsx` — CLEAN (renamed by #19837)
+- `packages/twenty-front/src/modules/activities/timeline-activities/utils/getTimelineActivityAuthorFullName.ts` — CLEAN
+- `packages/twenty-front/public/manifest.json` — CLEAN
+
+### Top concerns (all nits, none blocking)
+
+1. **`twenty.com/developers` doc links in app-template description utils** — new files `packages/twenty-front/src/pages/settings/applications/utils/getCustomApplicationDescription.ts` and `getStandardApplicationDescription.ts` contain "See the [Getting Started guide](https://twenty.com/developers/extend/apps/getting-started) for the full walkthrough, and [Building Apps](https://twenty.com/developers/extend/apps/building)" markdown strings. User-visible doc links pointing upstream. Recommend adding to `docs/fuse-branding-followups.md` for rebranding pass.
+2. **Dev-seeder star-history widget URL** — `packages/twenty-server/src/engine/workspace-manager/dev-seeder/core/utils/get-page-layout-widget-data-seeds.util.ts` line 620 embeds `https://www.star-history.com/?repos=twentyhq%2Ftwenty` in a demo page-layout seed. Only surfaces in demo workspaces, not runtime telemetry. Flag for future branding pass.
+3. **`create-twenty-app` references in doc strings** — same two util files include `npx create-twenty-app@latest my-twenty-app` and `cd my-twenty-app && yarn twenty dev`. Not runtime behavior; user-visible description strings. Branding follow-up, not Guardrail A issue.
+
+### Final verdict
+
+All six checks: **PASS**. Ready for CI + merge review. Three branding nits catalogued for the next branding-followups pass; none block wave 2C.
