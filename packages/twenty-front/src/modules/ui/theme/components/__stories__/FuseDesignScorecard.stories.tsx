@@ -1,8 +1,7 @@
-import { useTheme } from '@emotion/react';
 import { type Meta, type StoryObj } from '@storybook/react-vite';
 import { type ChangeEvent, useMemo, useState } from 'react';
 import { ComponentDecorator } from 'twenty-ui/testing';
-import { type ThemeType } from 'twenty-ui/theme';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const DESIGN_OPTIONS = [
   { id: 'twenty-default', label: 'Twenty Default' },
@@ -89,7 +88,6 @@ const getWeightedPercent = (weightedScore: number) =>
 const formatPercent = (value: number) => `${value.toFixed(1)}%`;
 
 const FuseDesignScorecard = () => {
-  const theme = useTheme() as ThemeType;
   const [scenario, setScenario] = useState(
     'Primary user: RevOps lead at a 20-200 person SaaS team evaluating a CRM migration.',
   );
@@ -157,14 +155,14 @@ const FuseDesignScorecard = () => {
         maxWidth: '1120px',
         margin: '0 auto',
         padding: '24px',
-        color: theme.font.color.primary,
-        fontFamily: theme.font.family,
+        color: themeCssVariables.font.color.primary,
+        fontFamily: themeCssVariables.font.family,
       }}
     >
-      <h1 style={{ margin: 0, fontSize: theme.font.size.xl, fontWeight: 600 }}>
+      <h1 style={{ margin: 0, fontSize: themeCssVariables.font.size.xl, fontWeight: 600 }}>
         Fuse Design Scorecard
       </h1>
-      <p style={{ marginTop: '8px', color: theme.font.color.secondary }}>
+      <p style={{ marginTop: '8px', color: themeCssVariables.font.color.secondary }}>
         Score each direction from 1 to 5 on criteria that predict adoption. This
         is not a taste contest. It is a decision about who gets value fastest.
       </p>
@@ -175,7 +173,7 @@ const FuseDesignScorecard = () => {
           display: 'block',
           marginTop: '16px',
           marginBottom: '8px',
-          fontWeight: theme.font.weight.medium,
+          fontWeight: themeCssVariables.font.weight.medium,
         }}
       >
         Scenario (be specific about the user and job-to-be-done)
@@ -188,11 +186,11 @@ const FuseDesignScorecard = () => {
         style={{
           width: '100%',
           resize: 'vertical',
-          borderRadius: theme.border.radius.sm,
-          border: `1px solid ${theme.border.color.medium}`,
+          borderRadius: themeCssVariables.border.radius.sm,
+          border: `1px solid ${themeCssVariables.border.color.medium}`,
           padding: '10px 12px',
-          backgroundColor: theme.background.primary,
-          color: theme.font.color.primary,
+          backgroundColor: themeCssVariables.background.primary,
+          color: themeCssVariables.font.color.primary,
         }}
       />
 
@@ -202,7 +200,7 @@ const FuseDesignScorecard = () => {
             width: '100%',
             borderCollapse: 'collapse',
             minWidth: '940px',
-            backgroundColor: theme.background.primary,
+            backgroundColor: themeCssVariables.background.primary,
           }}
         >
           <thead>
@@ -211,7 +209,7 @@ const FuseDesignScorecard = () => {
                 style={{
                   textAlign: 'left',
                   padding: '10px',
-                  borderBottom: `1px solid ${theme.border.color.medium}`,
+                  borderBottom: `1px solid ${themeCssVariables.border.color.medium}`,
                 }}
               >
                 Criterion
@@ -220,7 +218,7 @@ const FuseDesignScorecard = () => {
                 style={{
                   textAlign: 'left',
                   padding: '10px',
-                  borderBottom: `1px solid ${theme.border.color.medium}`,
+                  borderBottom: `1px solid ${themeCssVariables.border.color.medium}`,
                 }}
               >
                 Weight
@@ -231,7 +229,7 @@ const FuseDesignScorecard = () => {
                   style={{
                     textAlign: 'left',
                     padding: '10px',
-                    borderBottom: `1px solid ${theme.border.color.medium}`,
+                    borderBottom: `1px solid ${themeCssVariables.border.color.medium}`,
                   }}
                 >
                   {option.label}
@@ -246,17 +244,17 @@ const FuseDesignScorecard = () => {
                   style={{
                     verticalAlign: 'top',
                     padding: '10px',
-                    borderBottom: `1px solid ${theme.border.color.light}`,
+                    borderBottom: `1px solid ${themeCssVariables.border.color.light}`,
                   }}
                 >
-                  <div style={{ fontWeight: theme.font.weight.medium }}>
+                  <div style={{ fontWeight: themeCssVariables.font.weight.medium }}>
                     {criterion.label}
                   </div>
                   <div
                     style={{
                       marginTop: '4px',
-                      color: theme.font.color.secondary,
-                      fontSize: theme.font.size.sm,
+                      color: themeCssVariables.font.color.secondary,
+                      fontSize: themeCssVariables.font.size.sm,
                     }}
                   >
                     {criterion.prompt}
@@ -266,8 +264,8 @@ const FuseDesignScorecard = () => {
                   style={{
                     verticalAlign: 'top',
                     padding: '10px',
-                    borderBottom: `1px solid ${theme.border.color.light}`,
-                    fontWeight: theme.font.weight.medium,
+                    borderBottom: `1px solid ${themeCssVariables.border.color.light}`,
+                    fontWeight: themeCssVariables.font.weight.medium,
                   }}
                 >
                   {criterion.weight}
@@ -281,9 +279,9 @@ const FuseDesignScorecard = () => {
                       style={{
                         verticalAlign: 'top',
                         padding: '10px',
-                        borderBottom: `1px solid ${theme.border.color.light}`,
+                        borderBottom: `1px solid ${themeCssVariables.border.color.light}`,
                         backgroundColor: isLeading
-                          ? theme.background.transparent.blue
+                          ? themeCssVariables.background.transparent.blue
                           : 'transparent',
                       }}
                     >
@@ -297,12 +295,12 @@ const FuseDesignScorecard = () => {
                         }
                         style={{
                           width: '68px',
-                          borderRadius: theme.border.radius.sm,
-                          border: `1px solid ${theme.border.color.medium}`,
+                          borderRadius: themeCssVariables.border.radius.sm,
+                          border: `1px solid ${themeCssVariables.border.color.medium}`,
                           padding: '8px',
-                          fontSize: theme.font.size.sm,
-                          color: theme.font.color.primary,
-                          backgroundColor: theme.background.secondary,
+                          fontSize: themeCssVariables.font.size.sm,
+                          color: themeCssVariables.font.color.primary,
+                          backgroundColor: themeCssVariables.background.secondary,
                         }}
                       />
                     </td>
@@ -314,7 +312,7 @@ const FuseDesignScorecard = () => {
               <td
                 style={{
                   padding: '10px',
-                  fontWeight: theme.font.weight.semiBold,
+                  fontWeight: themeCssVariables.font.weight.semiBold,
                 }}
               >
                 Weighted score
@@ -328,9 +326,9 @@ const FuseDesignScorecard = () => {
                     key={`${option.id}-weighted-score`}
                     style={{
                       padding: '10px',
-                      fontWeight: theme.font.weight.semiBold,
+                      fontWeight: themeCssVariables.font.weight.semiBold,
                       backgroundColor: isLeading
-                        ? theme.background.transparent.blue
+                        ? themeCssVariables.background.transparent.blue
                         : 'transparent',
                     }}
                   >
@@ -347,31 +345,31 @@ const FuseDesignScorecard = () => {
         style={{
           marginTop: '20px',
           padding: '14px 16px',
-          borderRadius: theme.border.radius.md,
-          border: `1px solid ${theme.border.color.medium}`,
-          backgroundColor: theme.background.secondary,
+          borderRadius: themeCssVariables.border.radius.md,
+          border: `1px solid ${themeCssVariables.border.color.medium}`,
+          backgroundColor: themeCssVariables.background.secondary,
         }}
       >
-        <div style={{ fontWeight: theme.font.weight.semiBold }}>
+        <div style={{ fontWeight: themeCssVariables.font.weight.semiBold }}>
           Decision signal
         </div>
-        <p style={{ margin: '8px 0 0', color: theme.font.color.secondary }}>
+        <p style={{ margin: '8px 0 0', color: themeCssVariables.font.color.secondary }}>
           {hasTie
             ? 'No winner yet. Run 3 customer sessions and score again.'
             : `Leader: ${leader.label} (${formatPercent(weightedPercentByOption[leader.id])}).`}
         </p>
         {!hasTie && leaderHasBlockingCriterion ? (
-          <p style={{ margin: '6px 0 0', color: theme.font.color.danger }}>
+          <p style={{ margin: '6px 0 0', color: themeCssVariables.font.color.danger }}>
             Blocked: at least one criterion is below 3. Fix that before choosing
             this direction.
           </p>
         ) : null}
         {!hasTie && !leaderHasBlockingCriterion && leaderIsStrongFit ? (
-          <p style={{ margin: '6px 0 0', color: theme.font.color.secondary }}>
+          <p style={{ margin: '6px 0 0', color: themeCssVariables.font.color.secondary }}>
             Ready to ship as default if this holds in live user sessions.
           </p>
         ) : null}
-        <p style={{ margin: '10px 0 0', color: theme.font.color.secondary }}>
+        <p style={{ margin: '10px 0 0', color: themeCssVariables.font.color.secondary }}>
           Current scenario: {scenario}
         </p>
       </div>
