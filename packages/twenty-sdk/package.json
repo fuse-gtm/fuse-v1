@@ -89,7 +89,6 @@
     "rollup-plugin-dts": "^6.4.1",
     "ts-morph": "^25.0.0",
     "tsx": "^4.7.0",
-    "twenty-client-sdk": "workspace:*",
     "twenty-shared": "workspace:*",
     "twenty-ui": "workspace:*",
     "vite-plugin-dts": "^4.5.4",

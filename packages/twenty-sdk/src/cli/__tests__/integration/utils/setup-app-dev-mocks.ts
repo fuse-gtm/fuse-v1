@@ -20,8 +20,7 @@ const mockApiService = {
         id: 'mock-registration-id',
         oAuthClientId: 'mock-client-id',
       },
-      accessToken: 'mock-app-access-token',
-      refreshToken: 'mock-app-refresh-token',
+      clientSecret: 'mock-client-secret',
     },
   }),
   createDevelopmentApplication: vi.fn().mockResolvedValue({
