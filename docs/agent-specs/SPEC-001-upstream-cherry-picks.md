@@ -4,10 +4,19 @@
 
 Fuse is forked from Twenty CRM v1.18.1 (branch `feat/partner-os-schema-spine`).
 
-**Wave 1 complete (2026-03-20, merged as `4583bd0af7`).** Blocks 1–3 below have
-shipped. The current backlog against `upstream/main` tip `80e8f6d516` is
-**1,222 commits**, triaged in `docs/fuse-upstream-patch-ledger.md` per the wave
-2 plan at `docs/superpowers/plans/2026-04-23-upstream-sync-wave-2.md`.
+**Wave 1 complete (2026-03-20, merged as `4583bd0af7`).** Blocks 1–3 below have shipped.
+
+**Wave 2 complete (2026-04-23).** Four sub-waves merged to main:
+- 2A security (PR #15) — 18 of 23 security cherry-picks
+- 2B backend (PR #17) — 227 of 231 + orchestrator P1 surgical fix for application-logs orphan
+- 2C frontend (PR #20) — 125 of 126 + P1 re-fix for ApplicationLogsService recurrence from #19867
+- 2D flags/RBAC (PR #22) — 11 of 16; 4 feature flags removed (`IS_DRAFT_EMAIL_ENABLED`, `IS_USAGE_ANALYTICS_ENABLED`, `IS_RECORD_TABLE_WIDGET_ENABLED`, `IS_AI_ENABLED`); `IS_PARTNER_OS_ENABLED` preserved
+
+Totals: 381 of 396 cherry-picks applied (96.2%). Skip categories: "already landed" wave-1 duplicates (726), empty-after-conflict-resolve (5), massive upstream refactors deferred to future waves (7), partner-os dependency preservation (1), SDK-refactor-batch misclassified as security (4 from 2A). i18n-bulk (94 commits) skipped entirely per founder decision. Support PRs: #16 planning, #19 R1 Linaria fix, #21 2C watch items, #23 Apollo activation runbook.
+
+See `docs/fuse-upstream-patch-ledger.md` for the closed-out ledger with new-SHA-on-main mappings, and `docs/ops-logs/2026-04-23-wave2-closeout.md` for the full-repo state report.
+
+**Next wave base:** post-wave-2 main (whatever `origin/main` tip is at triage time for the next sync).
 
 Root package version is `0.2.1` on both sides — no major version bump yet.
 
@@ -175,11 +184,82 @@ Noise. No runtime impact. Skip all.
 `d246b16063` (new website), `37908114fc` (SDK extraction), `731e297147`
 (SDK CLI OAuth) — none affect our runtime.
 
-### RBAC/Permissions (15+ commits)
+### RBAC/Permissions (15+ commits) — **RESOLVED in wave 2D (2026-04-23)**
 
-Entire permissions stack that didn't exist in v1.18.1. It's a "rebase block"
-— take all or none. Not needed for MVP (single-user workspaces). Revisit
-post-launch when multi-user workspaces are a requirement.
+The multi-user RBAC stack that didn't exist in v1.18.1 was merged as wave 2D
+(PR #22) because the founder wants Apollo enrichment (SPEC-005), and the flag
++ permissions guards are its structural prerequisite. `IS_PARTNER_OS_ENABLED`
+survived the enum cleanup. Three "massive refactor" 2D commits remain deferred
+for a future wave focused specifically on them:
+- `b11f77df2a` (#18319) — 349-file command-menu refactor
+- `cee4cf6452` — 149-file ConnectedAccount metadata-schema migration
+- `d5a7dec117` — 440-file ObjectMetadataItem rename
+
+These are misclassifications (regex pulled them into 2D-flags-rbac via
+incidental enum touches) rather than sovereignty rejects.
+
+---
+
+## Recurring Triage Footguns (learned during wave 2)
+
+Future triage agents: when scanning a new backlog, watch for these patterns.
+
+### ClickHouse / ApplicationLogs descendant chain
+
+**Parent commit `36fbfca069` (#19486)** adds `application-logs` module with a
+ClickHouse driver. It is on the permanent reject list (telemetry, infra surface
+Fuse doesn't run). However, **follow-up commits that rename files, add billing
+integration, or touch related config will keep re-importing `ApplicationLogsService`**
+without realizing the parent is missing. Two separate examples hit wave 2:
+
+- Wave 2B: commit `0ff04f6f4f` (#19600 config rename) + `3c57bc5ad5` (#19886
+  billing integration) reintroduced the imports. Orchestrator applied a
+  surgical fix: deleted the orphan `application-logs.module.ts` +
+  `application-logs.module-factory.ts` + `interfaces/application-logs-module-options.type.ts`,
+  kept `interfaces/application-log-driver.enum.ts` (used by
+  `config-variables.ts`), stripped `ApplicationLogsService` imports +
+  constructor injection + `writeLogs()` call from
+  `logic-function-executor.service.ts`.
+- Wave 2C: commit `af45adb5dc` (#19867 "Billing - fixes") re-added the same
+  imports. Orchestrator re-applied the same strip pattern.
+
+**Triage rule for future waves:** any commit touching `application-logs/`,
+importing `ApplicationLogsService`, or mentioning `APPLICATION_LOG_DRIVER` in
+its diff must be pre-reviewed against the rejected-parent list. Either flag as
+conditional-on-follow-up-strip in the ledger verdict, or REJECT outright.
+Watch for these symptom files reappearing:
+
+- `packages/twenty-server/src/engine/core-modules/application-logs/application-logs.service.ts` — should NOT exist
+- `packages/twenty-server/src/engine/core-modules/application-logs/application-logs.module.ts` — should NOT exist
+- `packages/twenty-server/src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.service.ts` — should have the sovereignty comment, no `ApplicationLogsService` imports
+
+Keep on-disk the sole intentional file `application-logs/interfaces/application-log-driver.enum.ts` (consumed by `twenty-config`).
+
+### SDK refactor batches masquerading as security
+
+Wave 2A skipped 4 commits that were regex-classified as `2A-security` because
+they touched `.github/workflows/` or OAuth-adjacent files, but were actually
+pieces of an upstream SDK refactor that requires many interdependent files to
+land together. Future triage: a commit classified as security whose diff
+includes file moves/deletions across `twenty-sdk/`, `twenty-client-sdk/`,
+`upgrade-version-command/`, or `twenty-apps/` is almost always mis-classified.
+Re-route to `2B-backend` or `defer` for a dedicated SDK-refactor wave.
+
+### Admin-panel-deletion sovereignty direction
+
+Fuse has deliberately deleted parts of the upstream admin panel (single-user
+workspace scope). Wave 2A skipped `75848ff8ea` (70-file admin-panel migration)
+because auto-resurrecting would undo Fuse deletions. Future triage: any commit
+touching `packages/twenty-front/src/pages/settings/*` that includes UI for
+multi-user workspace management, billing portal deep links, or enterprise
+admin features needs explicit founder decision — keep-deleted / surgical-pick
+/ reverse-direction. Don't auto-accept.
+
+### GraphQL codegen freshness
+
+Both 2B (227 cherry-picks) and 2C (125 cherry-picks) touched resolver/DTO files.
+CI must run `npx nx run twenty-front:graphql:generate` and confirm zero diff on
+every wave PR going forward; add it to the required-check list.
 
 ---
 

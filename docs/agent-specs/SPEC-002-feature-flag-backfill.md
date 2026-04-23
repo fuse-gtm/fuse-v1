@@ -1,5 +1,16 @@
 # SPEC-002: Feature Flag Backfill
 
+> **⚠️ Post-wave-2 drift (2026-04-23):** this spec was written before wave 2D.
+> Wave 2D removed 4 flags from the enum: `IS_DRAFT_EMAIL_ENABLED`,
+> `IS_USAGE_ANALYTICS_ENABLED`, `IS_RECORD_TABLE_WIDGET_ENABLED`,
+> `IS_AI_ENABLED`. The table + SQL below still list the old flag set.
+> Any remaining workspace rows for those 4 removed flags are **orphan rows**
+> tolerated by TypeORM's unknown-enum-value behavior; cleanup is optional but
+> desirable before next schema migration.
+> Before running any backfill, reconcile the table rows below against the
+> current `packages/twenty-shared/src/types/FeatureFlagKey.ts` enum.
+> Full reconciliation task tracked in `docs/ops-logs/2026-04-23-wave2-followup-index.md`.
+
 ## Context
 
 Feature flags in Twenty are per-workspace rows in the `core."featureFlag"` table.
