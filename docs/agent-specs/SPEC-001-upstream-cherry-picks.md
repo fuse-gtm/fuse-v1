@@ -3,13 +3,23 @@
 ## Context
 
 Fuse is forked from Twenty CRM v1.18.1 (branch `feat/partner-os-schema-spine`).
-Upstream (`twentyhq/twenty:main`) is now 588 commits ahead. Root package version
-is `0.2.1` on both sides — no major version bump yet.
+
+**Wave 1 complete (2026-03-20, merged as `4583bd0af7`).** Blocks 1–3 below have
+shipped. The current backlog against `upstream/main` tip `80e8f6d516` is
+**1,222 commits**, triaged in `docs/fuse-upstream-patch-ledger.md` per the wave
+2 plan at `docs/superpowers/plans/2026-04-23-upstream-sync-wave-2.md`.
+
+Root package version is `0.2.1` on both sides — no major version bump yet.
 
 This spec defines which upstream commits to cherry-pick, in what order, and which
 to explicitly skip. The goal is to take security fixes and the Linaria migration
 without pulling in billing surveillance, feature flag removals, or half-baked
 subsystems.
+
+**For the current active backlog, see `docs/fuse-upstream-patch-ledger.md`.**
+The sections below (Blocks 1–3) are the historical wave 1 plan, kept as reference.
+The "DO NOT CHERRY-PICK" section below remains the living sovereignty charter
+and governs all future waves.
 
 ## Fork Isolation Rule
 
@@ -23,7 +33,7 @@ security patches. Feature additions to Twenty core require explicit approval.
 
 ---
 
-## Block 1: Security Fixes (P0)
+## Block 1: Security Fixes (P0) — **COMPLETE (wave 1, 2026-03-20)**
 
 Execute these first. They are small, targeted, and independently cherry-pickable.
 Order does not matter within this block.
@@ -55,7 +65,7 @@ CI YAML. None overlap with partner-os code.
 
 ---
 
-## Block 2: Linaria Migration (P1)
+## Block 2: Linaria Migration (P1) — **COMPLETE (wave 1, 2026-03-20)**
 
 This is the critical path for FUSE-206. It unblocks the theme pass (FUSE-502)
 and the `WelcomeProTrialModal` component (which already uses `@linaria/react`
@@ -117,7 +127,7 @@ npx nx lint:diff-with-main twenty-front
 
 ---
 
-## Block 3: Performance Fixes (P2)
+## Block 3: Performance Fixes (P2) — **COMPLETE (wave 1, 2026-03-20)**
 
 Backend-only, low conflict risk. High value on a t3.small instance.
 
