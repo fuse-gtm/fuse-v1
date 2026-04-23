@@ -48,3 +48,6 @@ export const StyledIconChevronDown = ({
     <IconChevronDown {...props} />
   </StyledIconChevronDownContainer>
 );
+
+import { styled } from '@linaria/react';
+export const StyledLabelWrapper = styled.div``;

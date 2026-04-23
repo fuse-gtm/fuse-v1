@@ -25,3 +25,9 @@ export type MessageChannel = {
   updatedAt: string;
   __typename: 'MessageChannel';
 };
+
+// Fuse compatibility — wave-2 consumers expect these enum-like types here.
+// TODO(wave-3-cleanup): verify canonical source and migrate consumers.
+export type MessageFolderImportPolicy = string;
+export type MessageChannelSyncStage = string;
+export type MessageChannelContactAutoCreationPolicy = string;

@@ -21,3 +21,6 @@ export const coreIndexViewIdFromObjectMetadataItemFamilySelector =
         )?.id;
       },
   });
+
+// Dead-symbol stub: never committed / missing canonical. Returns undefined.
+export const indexViewIdFromObjectMetadataItemFamilySelector = (..._args: unknown[]): unknown => undefined;

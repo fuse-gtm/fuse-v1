@@ -20,3 +20,5 @@ export type CalendarChannel = {
   updatedAt: string;
   __typename: 'CalendarChannel';
 };
+
+export type CalendarChannelSyncStage = string;

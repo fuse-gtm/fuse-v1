@@ -30,3 +30,6 @@ export const StyledActionTableCell = (
     {...props}
   />
 );
+
+import { styled as __fuseStyled } from '@linaria/react';
+export const StyledStickyFirstCell = __fuseStyled.td``;

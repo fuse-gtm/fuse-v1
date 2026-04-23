@@ -13,3 +13,5 @@ export type RecordGroupDefinition = {
   position: number;
   isVisible: boolean;
 };
+
+export type RecordGroupDefinitionType = "MANUAL" | "FIELD_VALUE";

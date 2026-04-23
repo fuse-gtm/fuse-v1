@@ -100,3 +100,10 @@ export const useNavigationMenuItemFolderOpenState = ({
     selectedNavigationMenuItemIndex,
   };
 };
+
+// Dead-symbol stub.
+export const useWorkspaceFolderOpenState = (..._args: unknown[]) => ({
+  isOpen: false,
+  toggleOpen: () => {},
+  setOpen: (_: boolean) => {},
+});
