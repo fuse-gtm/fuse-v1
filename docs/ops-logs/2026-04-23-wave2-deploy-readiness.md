@@ -62,13 +62,22 @@
 
   Look for `front-task (typecheck)` and `server-task (typecheck)` success on the latest main commit. If still failing, investigate before deploy.
 
-- [ ] **Cleanup stale feature-flag rows** (optional, non-blocking). Orphan rows for the 4 removed flags are tolerated by TypeORM but worth cleaning:
+- [ ] **Cleanup stale feature-flag rows** (CTO 2026-04-23: run as part of deploy — not standalone). Orphan rows for the 4 removed flags are tolerated by TypeORM but worth cleaning. Run via the read-only Postgres MCP (writes blocked there; use SSH psql instead) OR SSH and run against the core DB:
 
   ```sql
+  -- Verify counts before delete
+  SELECT "key", COUNT(*) FROM core."featureFlag"
+  WHERE "key" IN ('IS_DRAFT_EMAIL_ENABLED', 'IS_USAGE_ANALYTICS_ENABLED',
+                  'IS_RECORD_TABLE_WIDGET_ENABLED', 'IS_AI_ENABLED')
+  GROUP BY "key";
+
+  -- Delete
   DELETE FROM core."featureFlag"
   WHERE "key" IN ('IS_DRAFT_EMAIL_ENABLED', 'IS_USAGE_ANALYTICS_ENABLED',
                   'IS_RECORD_TABLE_WIDGET_ENABLED', 'IS_AI_ENABLED');
   ```
+
+  Expected: 4 × N workspaces rows deleted. Zero risk; the code paths that referenced these flags were removed in wave 2D.
 
 ## Migrations to run on deploy
 
