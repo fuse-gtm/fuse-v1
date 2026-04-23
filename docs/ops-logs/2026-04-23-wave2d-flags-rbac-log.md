@@ -182,34 +182,128 @@ CI must re-run `npx nx run twenty-front:graphql:generate` and `twenty-front:grap
 - Migration dry-run: `npx nx database:reset twenty-server && npx nx run twenty-server:database:migrate:prod` — cherry-pick `07745947ee` touched migration files; verify ordering against shipped partner-os migrations.
 - `npx nx run twenty-front:graphql:generate` — zero-diff check.
 
-## Guardrail A — telemetry scan
+## Guardrail A — telemetry / egress scan — PASS
 
-**TODO: verifier agent.** Grep `git diff origin/main...HEAD` for `twenty\.com`, `ENTERPRISE_VALIDITY_TOKEN`, `twentyhq`, `clickhouse`, `posthog`, `segment`, `\.track\(`, `analytics\.`. Confirm CLEAN or list matches.
+Scanned `git diff origin/main...HEAD` (18,335 lines, 134 files) for `twenty\.com`, `ENTERPRISE_VALIDITY_TOKEN`, `twentyhq`, `clickhouse`, `posthog`, `segment`, `mixpanel`, `amplitude`, `\.track\(`, `analytics\.(track|identify|page)`, `phone-home`, `verifyEnterprise`, `validateLicense`, `licenseValidity`. Also scanned `package.json` + `yarn.lock` for analytics-library deps.
 
-## Guardrail B — partner-os surface diff
+**ADDED egress patterns:** none (0 telemetry imports, 0 new phone-home endpoints, 0 new analytics-SDK deps).
 
-**TODO: verifier agent.** Expected: `git diff origin/main...HEAD -- packages/twenty-server/src/modules/partner-os/` returns 0 lines. The `f6423f5925` skip protects partner-os from the DataSourceModule cascade; no other applied commit touches partner-os.
+**REMOVED egress patterns (net cleanup):**
 
-## Guardrail C — feature-flag seed drift
+- `-https://twenty.com/images/lab/is-ai-enabled.png` — `IS_AI_ENABLED` lab image removed.
+- `-https://github.com/twentyhq/core-team-issues/issues/{2223,2224,2225}` — doc-comment references removed from permission flag entities.
 
-**TODO: verifier agent.** Verify:
+**ClickHouse guardrail replacement — verified OK.** The `IS_USAGE_ANALYTICS_ENABLED` removal flipped three ClickHouse query-gating sites from flag-gated to `isClickHouseConfigured`-gated (`client-config.service.ts:257` → `!!this.twentyConfigService.get('CLICKHOUSE_URL')`). Fuse's default Postgres-only install has `CLICKHOUSE_URL` unset → `isClickHouseConfigured=false` → all analytics queries short-circuit. This is the correct replacement semantic and does **not** create unconditional ClickHouse write paths.
 
-- `packages/twenty-shared/src/types/FeatureFlagKey.ts` exists (enum still lives in twenty-shared).
-- `IS_PARTNER_OS_ENABLED` present (grep confirmed PRESENT in this log — reconfirm).
-- Prod workspace `06e070b2-80eb-4097-8813-8d2ebe632108` drift vs seed file: any NEW enum entries not present in `core."featureFlag"` rows require post-merge SPEC-002 backfill.
+**Verdict: PASS — CLEAN.**
 
-## Deep file review
+## Guardrail B — partner-os surface diff — PASS
 
-**TODO: verifier agent.** Touched file list enumeration, per-file read + `get-code-context-exa` against upstream PRs, blocker/nit/accept classification. Priority files:
+`git diff origin/main...HEAD -- packages/twenty-server/src/modules/partner-os/` returns **0 lines**. The `f6423f5925` skip successfully protected partner-os from the DataSourceModule cascade. No other applied commit touches partner-os paths.
 
-- `packages/twenty-server/src/engine/metadata-modules/role/services/workspace-roles-permissions-cache.service.ts` (07745947ee cartesian-product fix — changes query shape, deep-verify no auth bypass)
-- `packages/twenty-server/src/engine/workspace-manager/workspace-migration/workspace-migration-builder/validators/utils/validate-role-belongs-to-caller-application.util.ts` (bb464b2ffb new guard — confirm not weakening existing `validate-*` utils)
-- `packages/twenty-server/src/engine/core-modules/user/utils/assert-workspace-member-update-non-custom-fields.util.ts` (bc28e1557c new — confirm permission check semantics match the old inline branch)
-- `packages/twenty-server/src/engine/metadata-modules/permissions/**` (wave 2D scope — any change here must be inspected for auth-guard weakening)
+**Verdict: PASS — 0 lines.**
+
+## Guardrail C — feature-flag intentional drift — PASS
+
+Unlike prior waves, feature-flag drift in 2D is EXPECTED (the wave is the flag changes). Verifier checks are:
+
+1. **`IS_PARTNER_OS_ENABLED` present on final HEAD:** confirmed — `packages/twenty-shared/src/types/FeatureFlagKey.ts:16`.
+2. **Flag diff matches executor report:** confirmed — 4 removed, 0 added:
+   - `IS_AI_ENABLED` (removed via 30b8663a74)
+   - `IS_DRAFT_EMAIL_ENABLED` (removed via 4f82c9a2d1)
+   - `IS_USAGE_ANALYTICS_ENABLED` (removed via 10125c5e52)
+   - `IS_RECORD_TABLE_WIDGET_ENABLED` (removed via 7e9947f8ec)
+3. **Seed file parses cleanly:** re-read `seed-feature-flags.util.ts` — 60 lines, balanced braces, no trailing commas, no dangling references. Remaining seed entries: `IS_UNIQUE_INDEXES_ENABLED`, `IS_PUBLIC_DOMAIN_ENABLED`, `IS_EMAILING_DOMAIN_ENABLED`, `IS_JUNCTION_RELATIONS_ENABLED`, `IS_MARKETPLACE_SETTING_TAB_VISIBLE`, `IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED`, `IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED`.
+
+**Verdict: PASS.**
+
+## Removed-flag reference scan — PASS (with one WATCH nit)
+
+Scanned all `.ts`/`.tsx` under `packages/` for remaining references to the 4 removed flags.
+
+```
+=== IS_DRAFT_EMAIL_ENABLED ===
+packages/twenty-front/src/generated-metadata/graphql.ts:1708   # stale generated file
+=== IS_USAGE_ANALYTICS_ENABLED ===
+(none)
+=== IS_RECORD_TABLE_WIDGET_ENABLED ===
+(none)
+=== IS_AI_ENABLED ===
+(none)
+```
+
+**Partner-OS + onboarding hot-check:** `packages/twenty-server/src/modules/partner-os/` and `packages/twenty-server/src/engine/core-modules/onboarding/` contain **zero** references to any of the 4 removed flags. Fuse-authored code is clean.
+
+**One WATCH nit (not a BLOCK):** `packages/twenty-front/src/generated-metadata/graphql.ts:1708` still lists `IS_DRAFT_EMAIL_ENABLED`. This file is auto-generated by `npx nx run twenty-front:graphql:generate --configuration=metadata`. The file is already flagged in the GraphQL codegen touches section above for a re-generate in CI. Expected to regenerate to zero-diff once CI runs codegen. No typecheck impact since this is the generated enum definition itself (not a reference from real code).
+
+**Verdict: PASS — no Fuse-authored file requires an orchestrator surgical fix.**
+
+## Deep file review — PASS
+
+**Subsystem breakdown (134 files touched):**
+
+| Subsystem | Files |
+|---|---|
+| `twenty-server/src/engine/**` (incl. role/, permission-flag/, object-permission/, field-permission/, application-manifest/) | 50 |
+| `twenty-front/src/modules/**` (AI, settings/roles, record-read-only) | 39 |
+| `twenty-server/src/modules/**` (workflow, workspace-member) | 11 |
+| `twenty-server/test/integration/**` (permissions + workspace-members integration specs) | 10 |
+| `twenty-sdk/src/cli/**` + `twenty-client-sdk/src/metadata/**` | 9 |
+| `twenty-front/src/pages/**` | 4 |
+| `twenty-shared/src/{types,application}/**` | 3 |
+| `twenty-apps/examples/postcard/**` | 2 |
+| `twenty-front/src/generated-metadata/**` (auto-gen) | 1 |
+| `twenty-server/src/database/**` (permission-flag entity only, no new migration files) | 1 |
+| `.github/workflows/ci-zapier.yaml` | 1 |
+| `docs/ops-logs/**` (this log) | 1 |
+
+**Priority deep-reads:**
+
+1. **`07745947ee` — rolesPermissions cache cartesian-product fix.** Replaces a single 5-way LEFT JOIN (TypeORM eager relations on `role.objectPermissions`/`permissionFlags`/`fieldPermissions`/`rowLevelPermissionPredicates`/`rowLevelPermissionPredicateGroups`) with six parallel `Repository.find({ where: { workspaceId } })` queries + client-side `regroupEntitiesByRelatedEntityId` by `roleId`. The per-role permission-construction loop is semantically unchanged; every object/field-level `canRead`/`canUpdate`/`canSoftDelete`/`canDestroy` still comes from the same role-scoped collection. The new RLP-predicate `find` calls explicitly pass `deletedAt: IsNull()`, which is belt-and-suspenders against the existing `@DeleteDateColumn` default filter — **no behavior change**. Permission-flag-table `roleId` index added (new migration via a sibling workspace migration). **No auth bypass, no orphan role/resource pairs now allowed.** PASS.
+
+2. **`921a0f01c8` — cross-app role retarget guard.** New `validateRoleBelongsToCallerApplication` is invoked from all three `flat-{object,field,permission-flag}-permission-validator.service.ts` update paths **before** the `isEditable` check. Wrapped with `buildOptions` parameter so the guard can be suppressed in trusted internal paths but is on by default for user-triggered migrations. Integration test `failing-sync-application-cross-app-permission-retarget-on-update.integration-spec.ts` (+216 LOC) covers the attack path. Error code `ROLE_BELONGS_TO_ANOTHER_APPLICATION` is properly wired through `permissions.exception.ts` and the GraphQL exception handler. **Guard correctly attached, test coverage present.** PASS.
+
+3. **`30b8663a74` — IS_AI_ENABLED removal (31 files).** AI features now unconditional. Removed per-method `@RequireFeatureFlag(IS_AI_ENABLED)` from `agent.resolver.ts` (5 methods), `agent-chat.resolver.ts` (8 methods), `agent-chat-subscription.resolver.ts` (1 method), `role.resolver.ts` (2 methods: `assignRoleToAgent`, `removeRoleFromAgent`), and `workflow-version-step.resolver.ts` (inline feature-flag check on `WorkflowActionType.AI_AGENT` step creation). Class-level `@UseGuards(WorkspaceAuthGuard, SettingsPermissionGuard(AI))` retained everywhere. Fuse has no custom AI-gating logic — `grep -r "isAiEnabled\|IS_AI_ENABLED"` against `partner-os/` and `twenty-front/` returns empty. No leftover `if (isAiEnabled)` branches. **Safe.** PASS.
+
+4. **`bc28e1557c` — updateWorkspaceMemberSettings introduction.** New mutation `UserResolver.updateWorkspaceMemberSettings` at `user.resolver.ts:443-445`. Wired with `@UseGuards(WorkspaceAuthGuard, CustomPermissionGuard)`. Self-update vs other-user check at lines 453-475. Fuse onboarding hook `onboardingService.completeOnboardingProfileStepIfNameProvided(...)` is **called at line 525** of the new resolver — executor preservation confirmed. Hook is ALSO still called from `workspace-member-update-one.pre-query.hook.ts:48` for the legacy `updateOne` path. Dual-path invocation means Fuse's "set your name → complete onboarding step" flow works via both old and new mutations. The `assertWorkspaceMemberUpdateUsesNonCustomFieldsOnly` util rejects custom fields on this settings-only endpoint, but partner-os does NOT extend `WorkspaceMemberWorkspaceEntity`, so there is no Fuse-specific custom field to block. **Onboarding flow intact.** PASS.
+
+5. **Migration files.** No new `packages/twenty-server/src/database/typeorm/core/migrations/common/*.ts` files added in this wave — the executor's surgical deletion of `1-22-instance-command-fast-1775749486425-auto-generated.ts` is confirmed via `ls`. The only entity-file change is `permission-flag.entity.ts` (roleId index addition). No migrations drop partner-os tables. The rolesPermissions cache fix relies on a sibling workspace migration applied through the workspace-migration builder (not a core migration file) — no reversibility concerns at the core migration layer.
+
+**Verdict: PASS.**
+
+## V5 — RBAC guard integrity — PASS
+
+Controllers/resolvers touched: 7 files.
+
+```
+packages/twenty-server/src/engine/core-modules/approved-access-domain/approved-access-domain.resolver.ts   # import reorder only
+packages/twenty-server/src/engine/core-modules/usage/usage.resolver.ts                                    # added import, no guard change
+packages/twenty-server/src/engine/core-modules/workflow/resolvers/workflow-version-step.resolver.ts       # removed inline isAiEnabled check, guards intact
+packages/twenty-server/src/engine/metadata-modules/ai/ai-agent/agent.resolver.ts                          # FeatureFlagGuard removed, WorkspaceAuthGuard+SettingsPermissionGuard retained
+packages/twenty-server/src/engine/metadata-modules/ai/ai-chat/resolvers/agent-chat-subscription.resolver.ts  # @RequireFeatureFlag removed, SettingsPermissionGuard retained
+packages/twenty-server/src/engine/metadata-modules/ai/ai-chat/resolvers/agent-chat.resolver.ts            # FeatureFlagGuard removed, WorkspaceAuthGuard+SettingsPermissionGuard retained
+packages/twenty-server/src/engine/metadata-modules/role/role.resolver.ts                                   # class-level WorkspaceAuthGuard+SettingsPermissionGuard(ROLES) retained
+```
+
+**Guard removals catalogued:**
+
+| File | Removed | Retained | Assessment |
+|---|---|---|---|
+| `agent.resolver.ts` | `FeatureFlagGuard`, per-method `@RequireFeatureFlag(IS_AI_ENABLED)` (×5) | `WorkspaceAuthGuard`, `SettingsPermissionGuard(PermissionFlagType.AI)`, per-method `SettingsPermissionGuard(AI_SETTINGS)` for mutations | Expected — flag removal. No auth/permission weakening. |
+| `agent-chat.resolver.ts` | `FeatureFlagGuard`, per-method `@RequireFeatureFlag(IS_AI_ENABLED)` (×8) | `WorkspaceAuthGuard`, `SettingsPermissionGuard(PermissionFlagType.AI)` | Expected — flag removal. No auth/permission weakening. |
+| `agent-chat-subscription.resolver.ts` | `@RequireFeatureFlag(IS_AI_ENABLED)` on `onAgentChatEvent` | Class `@UseGuards(WorkspaceAuthGuard, UserAuthGuard)` + method `@UseGuards(SettingsPermissionGuard(AI))` | Expected. |
+| `role.resolver.ts` | `@RequireFeatureFlag(IS_AI_ENABLED)` on `assignRoleToAgent`, `removeRoleFromAgent` | Class `@UseGuards(WorkspaceAuthGuard, SettingsPermissionGuard(ROLES))` | Expected. |
+| `workflow-version-step.resolver.ts` | Inline `featureFlagService.isFeatureEnabled(IS_AI_ENABLED)` check on `AI_AGENT` step creation | Class-level guards unchanged | Expected. |
+| `approved-access-domain.resolver.ts` | none | all | Import reshuffle only. |
+| `usage.resolver.ts` | none | all | Import addition only. |
+
+**Hot-check for critical guards** (`WorkspaceAuthGuard`, `UserAuthGuard`, `AdminPanelGuard`, `NoPermissionGuard`): **zero removals** across the full diff.
+
+**Verdict: PASS — no auth/permission guard was weakened. All removals are legitimate feature-flag cleanup; core auth and RBAC guards retained everywhere.**
 
 ## L5 post-merge SPEC-002 backfill
 
-**TODO: verifier agent.** If any flag is newly-seeded on post-wave main but absent on prod workspace `06e070b2-80eb-4097-8813-8d2ebe632108`, queue SPEC-002 backfill. (This wave REMOVES flags; backfill is about ADDs. The expected state is that prod workspace has the removed flags still present as stale rows — these can be cleaned up in a follow-up DELETE, not a blocker.)
+This wave REMOVES flags; SPEC-002 backfill is about ADDs, so no backfill is queued for the removals. Expected state is that prod workspace `06e070b2-80eb-4097-8813-8d2ebe632108` still has stale rows for `IS_AI_ENABLED`/`IS_DRAFT_EMAIL_ENABLED`/`IS_USAGE_ANALYTICS_ENABLED`/`IS_RECORD_TABLE_WIDGET_ENABLED` in `core."featureFlag"`. These rows become orphans after the enum removal. A follow-up cleanup DELETE is desirable but **not a merge blocker** — TypeORM will ignore unknown enum values at read time and return them as-is, and no code path references the removed enum members post-merge.
 
 ## Known concerns for verifier
 
