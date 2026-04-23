@@ -209,7 +209,8 @@ git commit -m "docs(ops): wave 2b backend cherry-pick log"
 
 ```bash
 git push -u origin integration/upstream-wave2-backend
-gh pr create --base main --head integration/upstream-wave2-backend \
+# Pass --repo explicitly; gh infers twentyhq/twenty from the upstream remote otherwise.
+gh pr create --repo fuse-gtm/fuse-v1 --base main --head integration/upstream-wave2-backend \
   --title "Upstream wave 2B — backend bugfixes + perf" \
   --body "$(cat <<'PRBODY'
 ## Summary
