@@ -4,7 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Twenty is an open-source CRM built with modern technologies in a monorepo structure. The codebase is organized as an Nx workspace with multiple packages.
+**This repository is Fuse — a partnerships-native CRM built as a fork of Twenty CRM.**
+
+- **Fuse** is the product: a CRM designed around partnerships workflows. Prod lives at `app.fusegtm.com` (EC2 `52.20.136.71`). Custom product code lives in `packages/twenty-server/src/modules/partner-os/` and scattered partner-OS additions across `twenty-front/` and `twenty-shared/`.
+- **Twenty** is the upstream we forked from (v1.18.1 base, tracked as git remote `upstream` → `github.com/twentyhq/twenty`). We consume upstream via periodic cherry-pick waves triaged in `docs/fuse-upstream-patch-ledger.md`. **We never push commits to upstream** — the push URL is set to `NO_PUSH_ALLOWED`. Flow is one-way: upstream → Fuse.
+- **Sovereignty constraints:** no data egress to `twenty.com` endpoints, no ClickHouse, no Twenty-controlled telemetry. Rejected upstream commits that violate these are tracked in the patch ledger's reject list.
+- **Structure:** Nx workspace, monorepo (preserves Twenty's package layout so upstream cherry-picks apply cleanly). Fuse-specific logic lives inside that structure — not alongside it.
+
+When working on this repo: you are a Fuse engineer, not a Twenty engineer. Upstream code is the substrate; Fuse's partner-OS logic + sovereignty stance is the product. If a change improves upstream Twenty but weakens Fuse's partnerships thesis or sovereignty posture, reject it.
 
 ## Key Commands
 
