@@ -2,7 +2,13 @@ services:
   server:
     image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
     platform: ${TWENTY_IMAGE_PLATFORM:-linux/amd64}
+    environment:
+      PG_SSL_ALLOW_SELF_SIGNED: "true"
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      ALLOW_REQUESTS_TO_TWENTY_ICONS: ${ALLOW_REQUESTS_TO_TWENTY_ICONS:-false}
 
   worker:
     image: ${TWENTY_IMAGE:?Set TWENTY_IMAGE to your custom Fuse image}
     platform: ${TWENTY_IMAGE_PLATFORM:-linux/amd64}
+    environment:
+      PG_SSL_ALLOW_SELF_SIGNED: "true"
