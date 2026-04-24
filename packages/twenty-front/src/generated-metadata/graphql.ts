@@ -8513,4 +8513,16 @@ export type UploadEmailAttachmentFileMutation = Record<string, unknown>;
 export type UploadEmailAttachmentFileMutationVariables = Record<string, unknown>;
 export type UserLookupAdminPanelQuery = Record<string, unknown>;
 export type WorkspaceLookupAdminPanelQuery = Record<string, unknown>;
-export type useGetWorkspaceInvitationsQuery = Record<string, unknown>;
+export const useGetWorkspaceInvitationsQuery = (_options?: {
+  onError?: (error: unknown) => void;
+  onCompleted?: (data: GetWorkspaceInvitationsQuery) => void;
+  variables?: GetWorkspaceInvitationsQueryVariables;
+  skip?: boolean;
+}) => ({
+  data: undefined as GetWorkspaceInvitationsQuery | undefined,
+  loading: false,
+  error: undefined,
+  refetch: async () => ({
+    data: undefined as GetWorkspaceInvitationsQuery | undefined,
+  }),
+});
