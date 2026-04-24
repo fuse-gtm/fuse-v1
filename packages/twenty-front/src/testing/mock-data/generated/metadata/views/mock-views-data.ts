@@ -4012,3 +4012,5 @@ export const mockedViews: ViewWithRelations[] =
     ]
   }
 ];
+
+export const mockedCoreViews: unknown[] = [];

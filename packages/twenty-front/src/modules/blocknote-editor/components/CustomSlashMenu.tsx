@@ -95,3 +95,5 @@ export const CustomSlashMenu = ({
     </StyledContainer>
   );
 };
+
+export type SuggestionItem = Record<string, unknown>;

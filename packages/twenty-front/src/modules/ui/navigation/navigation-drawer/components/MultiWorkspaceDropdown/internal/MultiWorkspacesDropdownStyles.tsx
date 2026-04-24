@@ -48,3 +48,5 @@ export const StyledIconChevronDown = ({
     <IconChevronDown {...props} />
   </StyledIconChevronDownContainer>
 );
+
+export const StyledLabelWrapper = styled.div``;
