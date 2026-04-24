@@ -8454,7 +8454,11 @@ export const GetWorkspaceFromInviteHashDocument = {"kind":"Document","definition
 
 import { gql as __fuseStubGql } from '@apollo/client';
 
-export type AgentMessageRole = Record<string, unknown>;
+export enum AgentMessageRole {
+  SYSTEM = 'system',
+  USER = 'user',
+  ASSISTANT = 'assistant',
+}
 export type ClientConfigMaintenanceMode = Record<string, unknown>;
 export type CommandMenuItemPayload = Record<string, unknown>;
 export type CoreView = Record<string, unknown>;
