@@ -49,5 +49,4 @@ export const StyledIconChevronDown = ({
   </StyledIconChevronDownContainer>
 );
 
-import { styled } from '@linaria/react';
 export const StyledLabelWrapper = styled.div``;
