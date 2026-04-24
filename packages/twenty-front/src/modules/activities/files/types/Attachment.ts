@@ -34,5 +34,3 @@ export type Attachment = {
   createdAt: string;
   __typename: string;
 };
-
-export type AttachmentFileCategory = string;

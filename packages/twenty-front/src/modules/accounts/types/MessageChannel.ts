@@ -1,8 +1,8 @@
 import {
-  type MessageChannelContactAutoCreationPolicy,
-  type MessageChannelSyncStage,
+  MessageChannelContactAutoCreationPolicy,
+  MessageChannelSyncStage,
   type MessageChannelSyncStatus,
-  type MessageFolderImportPolicy,
+  MessageFolderImportPolicy,
 } from 'twenty-shared/types';
 import { type MessageChannelVisibility } from '~/generated/graphql';
 
@@ -26,8 +26,8 @@ export type MessageChannel = {
   __typename: 'MessageChannel';
 };
 
-// Fuse compatibility — wave-2 consumers expect these enum-like types here.
-// TODO(wave-3-cleanup): verify canonical source and migrate consumers.
-export type MessageFolderImportPolicy = string;
-export type MessageChannelSyncStage = string;
-export type MessageChannelContactAutoCreationPolicy = string;
+export {
+  MessageChannelContactAutoCreationPolicy,
+  MessageChannelSyncStage,
+  MessageFolderImportPolicy,
+};
