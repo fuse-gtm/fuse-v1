@@ -178,6 +178,50 @@ services:
       timeout: 5s
       retries: 10
 
+  # Fuse sovereignty: self-hosted favicon service.
+  # Replaces the runtime dependency on https://twenty-icons.com so company
+  # domain names never leak out of the Fuse perimeter.
+  # Upstream source: https://github.com/twentyhq/favicon (AGPLv3-era OSS).
+  # Image is built from a pinned commit via remote build context — there
+  # is no published image on Docker Hub or GHCR as of 2026-04-23.
+  # Caddy on the host terminates TLS for https://icons.fusegtm.com and
+  # reverse-proxies to this service; see
+  # docs/ops-logs/2026-04-23-self-host-favicon.md.
+  twenty-icons:
+    build:
+      # Remote build context: upstream favicon repo, pinned to a commit.
+      # Bump the ref deliberately and re-review any diff before updating.
+      context: https://github.com/twentyhq/favicon.git#fac390abfb324bcdcc2afa4ea9b1261ca358a628
+      dockerfile: deploy/prod/Dockerfile
+    mem_limit: 512m
+    # Intentionally NOT binding to the host — Caddy is the only public
+    # ingress. Mirrors how `server` in this file is reverse-proxied by
+    # Caddy on the EC2 host on port 3000 (host binding is only kept for
+    # legacy direct-dev access; the icons service has no such legacy).
+    expose:
+      - "3000"
+    volumes:
+      - twenty-icons-cache:/app/.local-storage
+    environment:
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: .local-storage
+      NODE_ENV: production
+    healthcheck:
+      # node is guaranteed in the image (see upstream Dockerfile); wget/curl
+      # may not be present on alpine. /health returns 200 when the NestJS
+      # server is ready.
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: always
+
 volumes:
   db-data:
   server-local-data:
+  twenty-icons-cache:
