@@ -4,8 +4,8 @@ set -euo pipefail
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
 EXTRA_COMPOSE_FILE="${EXTRA_COMPOSE_FILE:-packages/twenty-docker/docker-compose.aws.yml}"
 VERIFY_PUBLIC_URL="${VERIFY_PUBLIC_URL:-true}"
-LOCAL_HEALTH_URL="${LOCAL_HEALTH_URL:-http://localhost:3000/healthz}"
-PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/healthz}"
+LOCAL_HEALTH_URL="${LOCAL_HEALTH_URL:-http://localhost:3000/readyz}"
+PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-https://app.fusegtm.com/readyz}"
 CURL_MAX_TIME_SECONDS="${CURL_MAX_TIME_SECONDS:-10}"
 LOG_FILE="${LOG_FILE:-}"
 
@@ -23,8 +23,8 @@ Optional env:
   ENV_FILE=packages/twenty-docker/.env
   EXTRA_COMPOSE_FILE=packages/twenty-docker/docker-compose.aws.yml
   VERIFY_PUBLIC_URL=true
-  LOCAL_HEALTH_URL=http://localhost:3000/healthz
-  PUBLIC_HEALTH_URL=https://app.fusegtm.com/healthz
+  LOCAL_HEALTH_URL=http://localhost:3000/readyz
+  PUBLIC_HEALTH_URL=https://app.fusegtm.com/readyz
   LOG_FILE=docs/ops-logs/fuse-deploy-rollback-<timestamp>.md
 
 This script:

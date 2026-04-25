@@ -219,7 +219,7 @@ Health metric publisher (cron, every 1 min):
 * * * * * /opt/fuse/packages/twenty-docker/scripts/fuse-publish-health-metric.sh >> /var/log/fuse-health-metric.log 2>&1
 ```
 
-External synthetic checks (outside EC2) for `/healthz` and `/`:
+External synthetic checks (outside EC2) for `/readyz` and `/`:
 
 ```bash
 APP_HOST=app.fusegtm.com \
@@ -246,16 +246,16 @@ Start with infrastructure reachability first: check EC2 `StatusCheckFailed` alar
 
 ## Local troubleshooting
 
-Check app health:
+Check app readiness:
 
 ```bash
-curl -fsS http://localhost:3000/healthz
+curl -fsS http://localhost:3000/readyz
 ```
 
-Check public health:
+Check public readiness:
 
 ```bash
-curl -fsS https://app.fusegtm.com/healthz
+curl -fsS https://app.fusegtm.com/readyz
 ```
 
 If local is healthy but public fails, check Caddy: `sudo systemctl status caddy`.

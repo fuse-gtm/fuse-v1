@@ -7,7 +7,7 @@ SCRIPT_DIR="${SELF_DIR}"
 cd "$REPO_ROOT"
 
 ENV_FILE="${ENV_FILE:-packages/twenty-docker/.env}"
-HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/healthz}"
+HEALTH_URL="${HEALTHCHECK_URL:-http://localhost:3000/readyz}"
 MAX_WAIT_SECONDS="${MAX_WAIT_SECONDS:-180}"
 
 if [ ! -f "$ENV_FILE" ]; then
