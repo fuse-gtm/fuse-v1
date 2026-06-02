@@ -66,9 +66,9 @@ const StyledMain = styled.main`
 `;
 
 export const metadata: Metadata = {
-  title: 'Twenty | #1 open source CRM',
+  title: 'Fuse | AI for partner-led growth',
   description:
-    'The #1 open source CRM for modern teams. Modular, scalable, and built to fit your business.',
+    'Discover, score, and engage high-quality partners faster with AI built for partner-led growth.',
 };
 
 export default function RootLayout({

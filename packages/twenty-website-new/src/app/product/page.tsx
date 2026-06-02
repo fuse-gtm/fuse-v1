@@ -1,152 +1,90 @@
-import { FAQ_DATA, MENU_DATA, TRUSTED_BY_DATA } from '@/app/_constants';
-import { TalkToUsButton } from '@/app/components/ContactCalModal';
-import {
-  FEATURE_DATA,
-  HERO_DATA,
-  SIGNOFF_DATA,
-  STEPPER_DATA,
-  THREE_CARDS_ILLUSTRATION_DATA,
-} from '@/app/product/_constants';
-import { Body, Eyebrow, Heading, LinkButton } from '@/design-system/components';
-import { Pages } from '@/enums/pages';
-import { fetchCommunityStats } from '@/lib/community/fetch-community-stats';
-import { mergeSocialLinkLabels } from '@/lib/community/merge-social-link-labels';
-import { Faq } from '@/sections/Faq/components';
-import { Feature } from '@/sections/Feature/components';
-import { Hero } from '@/sections/Hero/components';
-import { Menu } from '@/sections/Menu/components';
-import { ProductStepper } from '@/sections/ProductStepper/components';
-import { Signoff } from '@/sections/Signoff/components';
-import { ThreeCards } from '@/sections/ThreeCards/components';
-import { TrustedBy } from '@/sections/TrustedBy/components';
+import { FusePageShell } from '@/app/_components/FusePageShell';
 import { theme } from '@/theme';
+import { styled } from '@linaria/react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Product | Twenty',
+  title: 'Product | Fuse',
   description:
-    'Track relationships, manage pipelines, and take action quickly with a CRM that feels intuitive from day one.',
+    'Discover, score, and engage high-quality partners with Fuse.',
 };
 
-export default async function ProductPage() {
-  const stats = await fetchCommunityStats();
-  const menuSocialLinks = mergeSocialLinkLabels(MENU_DATA.socialLinks, stats);
+const ProductGrid = styled.div`
+  display: grid;
+  gap: ${theme.spacing(4)};
 
+  @media (min-width: ${theme.breakpoints.lg}px) {
+    grid-template-columns: 0.9fr 1.15fr 0.95fr;
+  }
+`;
+
+const ProductPanel = styled.article`
+  background: ${theme.colors.primary.background[100]};
+  border: 1px solid ${theme.colors.primary.border[10]};
+  border-radius: ${theme.radius(4)};
+  display: grid;
+  gap: ${theme.spacing(4)};
+  min-height: 320px;
+  padding: ${theme.spacing(6)};
+
+  &:nth-child(2) {
+    background: ${theme.colors.secondary.background[100]};
+    color: ${theme.colors.secondary.text[100]};
+  }
+`;
+
+const Kicker = styled.span`
+  color: ${theme.colors.highlight[100]};
+  font-family: ${theme.font.family.mono};
+  font-size: ${theme.font.size(3)};
+  font-weight: ${theme.font.weight.medium};
+  text-transform: uppercase;
+`;
+
+const Title = styled.h2`
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: ${theme.font.weight.light};
+  line-height: 1;
+`;
+
+const Copy = styled.p`
+  color: inherit;
+  font-size: ${theme.font.size(4)};
+  line-height: 1.55;
+  opacity: 0.78;
+`;
+
+const productSteps = [
+  {
+    title: 'Discover',
+    copy: 'Start from a company, person, category, or partner thesis. Fuse builds a ranked universe from real ecosystem evidence.',
+  },
+  {
+    title: 'Score',
+    copy: 'See fit drivers, timing, account overlap, and why each partner deserves attention before outreach starts.',
+  },
+  {
+    title: 'Engage',
+    copy: 'Turn the score into the next useful action: a message, intro path, co-sell play, or enablement step.',
+  },
+];
+
+export default function ProductPage() {
   return (
-    <>
-      <Menu.Root
-        backgroundColor={theme.colors.primary.background[100]}
-        scheme="primary"
-        navItems={MENU_DATA.navItems}
-        socialLinks={menuSocialLinks}
-      >
-        <Menu.Logo scheme="primary" />
-        <Menu.Nav scheme="primary" navItems={MENU_DATA.navItems} />
-        <Menu.Social scheme="primary" socialLinks={menuSocialLinks} />
-        <Menu.Cta scheme="primary" />
-      </Menu.Root>
-
-      <Hero.Root backgroundColor={theme.colors.primary.background[100]}>
-        <Hero.Heading page={Pages.Product} segments={HERO_DATA.heading} />
-        <Hero.Body body={HERO_DATA.body} page={Pages.Product} />
-        <Hero.Cta>
-          <LinkButton
-            color="secondary"
-            href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
-            label="Get started"
-            type="anchor"
-            variant="contained"
-          />
-        </Hero.Cta>
-        <Hero.ProductVisual />
-      </Hero.Root>
-
-      <TrustedBy.Root>
-        <TrustedBy.Separator separator={TRUSTED_BY_DATA.separator} />
-        <TrustedBy.Logos logos={TRUSTED_BY_DATA.logos} />
-        <TrustedBy.ClientCount label={TRUSTED_BY_DATA.clientCountLabel.text} />
-      </TrustedBy.Root>
-
-      <Feature.Root backgroundColor={theme.colors.primary.background[100]}>
-        <Feature.Intro align="center" page={Pages.Product}>
-          <Eyebrow
-            colorScheme="primary"
-            heading={FEATURE_DATA.eyebrow.heading}
-          />
-          <Heading segments={FEATURE_DATA.heading} size="lg" weight="light" />
-        </Feature.Intro>
-        <Feature.Tiles mask={FEATURE_DATA.mask} tiles={FEATURE_DATA.tiles} />
-      </Feature.Root>
-
-      <ThreeCards.Root backgroundColor={theme.colors.primary.background[100]}>
-        <ThreeCards.Intro page={Pages.Product} align="left">
-          <Eyebrow
-            colorScheme="primary"
-            heading={THREE_CARDS_ILLUSTRATION_DATA.eyebrow.heading}
-          />
-          <Heading
-            segments={THREE_CARDS_ILLUSTRATION_DATA.heading}
-            size="lg"
-            weight="light"
-          />
-          <Body body={THREE_CARDS_ILLUSTRATION_DATA.body} size="sm" />
-        </ThreeCards.Intro>
-        <ThreeCards.IllustrationCards
-          illustrationCards={THREE_CARDS_ILLUSTRATION_DATA.illustrationCards}
-        />
-      </ThreeCards.Root>
-
-      <ProductStepper.Flow
-        body={STEPPER_DATA.body}
-        eyebrow={STEPPER_DATA.eyebrow}
-        heading={STEPPER_DATA.heading}
-        steps={STEPPER_DATA.steps}
-      />
-
-      <Signoff.Root
-        backgroundColor={theme.colors.secondary.background[5]}
-        color={theme.colors.primary.text[100]}
-        page={Pages.Partners}
-      >
-        <Signoff.Heading page={Pages.Partners} segments={SIGNOFF_DATA.heading} />
-        <Signoff.Body body={SIGNOFF_DATA.body} page={Pages.Partners} />
-        <Signoff.Cta>
-          <LinkButton
-            color="secondary"
-            href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
-            label="Get started"
-            type="anchor"
-            variant="contained"
-          />
-          <TalkToUsButton
-            color="secondary"
-            label="Talk to us"
-            variant="outlined"
-          />
-        </Signoff.Cta>
-      </Signoff.Root>
-
-      <Faq.Root illustration={FAQ_DATA.illustration}>
-        <Faq.Intro>
-          <Eyebrow colorScheme="secondary" heading={FAQ_DATA.eyebrow.heading} />
-          <Faq.Heading segments={FAQ_DATA.heading} />
-          <Faq.Cta>
-            <LinkButton
-              color="primary"
-              href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
-              label="Get started"
-              type="anchor"
-              variant="contained"
-            />
-            <TalkToUsButton
-              color="primary"
-              label="Talk to us"
-              variant="outlined"
-            />
-          </Faq.Cta>
-        </Faq.Intro>
-        <Faq.Items questions={FAQ_DATA.questions} />
-      </Faq.Root>
-    </>
+    <FusePageShell
+      eyebrow="Product"
+      title="Discover, score, engage."
+      body="Fuse turns partner research into a repeatable operating loop. It is not another passive database; it is the system that helps decide who is worth engaging and why."
+    >
+      <ProductGrid>
+        {productSteps.map((step, index) => (
+          <ProductPanel key={step.title}>
+            <Kicker>0{index + 1}</Kicker>
+            <Title>{step.title}</Title>
+            <Copy>{step.copy}</Copy>
+          </ProductPanel>
+        ))}
+      </ProductGrid>
+    </FusePageShell>
   );
 }

@@ -1,118 +1,77 @@
-import { getLatestReleasePreview } from '@/lib/releases/get-latest-release-preview';
 import type {
   MenuDataType,
-  MenuNavChildPreview,
   MenuNavItemType,
   MenuSocialLinkType,
 } from '@/sections/Menu/types';
 
-const FALLBACK_RELEASES_PREVIEW: MenuNavChildPreview = {
-  image: '/images/releases/1.23/1.23.0-easier-layouts.webp',
-  imageAlt: 'Twenty latest release',
-  imageScale: 1.04,
-  title: 'See the latest release',
-  description:
-    'Track every release with changelogs, highlights and demos of the newest features.',
-};
-
 function buildNavItems(): MenuNavItemType[] {
-  const releasesPreview =
-    getLatestReleasePreview() ?? FALLBACK_RELEASES_PREVIEW;
-
   return [
-    { label: 'Why', href: '/why-twenty' },
+    { label: 'Product', href: '/product' },
+    { label: 'The Future', href: '/the-future' },
     {
-      label: 'Resources',
+      label: 'Partner Types',
       children: [
         {
-          label: 'User Guide',
-          description: 'Learn how to use Twenty',
-          href: 'https://docs.twenty.com/user-guide/introduction',
-          external: true,
-          icon: 'book',
-          preview: {
-            image: '/images/product/feature/contacts.webp',
-            imageAlt: 'Twenty companies list',
-            title: 'Master every corner of Twenty',
-            description:
-              'Step-by-step guides and playbooks to help your team get the most out of their workspace.',
-          },
-        },
-        {
-          label: 'Developers',
-          description: 'Create apps on Twenty',
-          href: 'https://docs.twenty.com/developers/introduction',
-          external: true,
+          label: 'Technology partners',
+          description: 'Recruit, engage, enable, and win with channel teams',
+          href: '/resources/technology-partners',
           icon: 'code',
           preview: {
-            image: '/images/shared/menu/developers-preview.png',
-            imageAlt: 'Blue developer illustration with branching arrows',
-            imagePosition: 'center',
-            imageScale: 1.6,
-            title: 'Build on an open platform',
+            image: '/images/product/feature/contacts.webp',
+            imageAlt: 'Partner discovery workspace',
+            title: 'Find the accounts worth building with',
             description:
-              'APIs, SDKs and webhooks to extend Twenty and ship apps on top of your CRM data.',
+              'Score fit by ecosystem overlap, audience, motion, and proof before you ask for time.',
           },
         },
         {
-          label: 'Partners',
-          description: 'Find a Twenty partner',
-          href: '/partners',
+          label: 'Marketplace partners',
+          description: 'Prioritize the partners that expand distribution',
+          href: '/resources/marketplace-partners',
+          icon: 'tag',
+          preview: {
+            image: '/images/product/feature/views.webp',
+            imageAlt: 'Partner scoring table',
+            title: 'Turn partner lists into a ranked system',
+            description:
+              'Fuse keeps the context, fit drivers, and next actions in one operating loop.',
+          },
+        },
+        {
+          label: 'Agency partners',
+          description: 'Map services, customers, and co-sell paths',
+          href: '/resources/agency-partners',
           icon: 'users',
           preview: {
             image: '/images/partner/hero/hero.webp',
-            imageAlt: 'Twenty partner ecosystem',
+            imageAlt: 'Partner ecosystem workspace',
             imagePosition: 'center',
-            title: 'Team up with a Twenty expert',
+            title: 'See why a partner should care',
             description:
-              'Meet the certified agencies and consultants implementing Twenty for teams worldwide.',
+              'Move from a name in a database to the reason they are worth engaging.',
           },
         },
         {
-          label: 'Releases',
-          description: "Discover what's new",
-          href: '/releases',
+          label: 'Creator partners',
+          description: 'Find people with the right audience and timing',
+          href: '/resources/creator-partners',
           icon: 'tag',
-          preview: releasesPreview,
+          preview: {
+            image: '/images/home/feature-cards/rag.webp',
+            imageAlt: 'Partner evidence trail',
+            title: 'Use evidence, not vanity metrics',
+            description:
+              'Fuse helps teams explain why each creator or affiliate belongs in the pipeline.',
+          },
         },
       ],
     },
-    { label: 'Customers', href: '/customers' },
+    { label: 'Resources', href: '/resources' },
     { label: 'Pricing', href: '/pricing' },
   ];
 }
 
-const SOCIAL_LINKS: MenuSocialLinkType[] = [
-  {
-    ariaLabel: 'GitHub (opens in new tab)',
-    href: 'https://github.com/twentyhq/twenty',
-    icon: 'github',
-    showInDesktop: true,
-    showInDrawer: true,
-  },
-  {
-    ariaLabel: 'Discord (opens in new tab)',
-    className: 'discord-link',
-    href: 'https://discord.gg/cx5n4Jzs57',
-    icon: 'discord',
-    showInDesktop: true,
-    showInDrawer: true,
-  },
-  {
-    ariaLabel: 'LinkedIn (opens in new tab)',
-    href: 'https://www.linkedin.com/company/twenty',
-    icon: 'linkedin',
-    showInDesktop: false,
-    showInDrawer: true,
-  },
-  {
-    ariaLabel: 'X (opens in new tab)',
-    href: 'https://x.com/twentycrm',
-    icon: 'x',
-    showInDesktop: false,
-    showInDrawer: true,
-  },
-];
+const SOCIAL_LINKS: MenuSocialLinkType[] = [];
 
 export const MENU_DATA: MenuDataType = {
   get navItems() {
