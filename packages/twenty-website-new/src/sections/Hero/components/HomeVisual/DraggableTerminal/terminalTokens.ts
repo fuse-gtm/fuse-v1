@@ -17,7 +17,7 @@ export const TERMINAL_TOKENS = {
     chipBackground: '#eef4f1',
     chipBorder: '#d3dfd9',
     chipHoverBackground: '#e3ede7',
-    mythosHoverBackground: 'rgba(0, 0, 0, 0.04)',
+    demoHoverBackground: 'rgba(0, 0, 0, 0.04)',
   },
   text: {
     primary: 'rgba(9, 9, 11, 0.92)',

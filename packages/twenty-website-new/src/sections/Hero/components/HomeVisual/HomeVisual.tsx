@@ -2453,6 +2453,13 @@ export function HomeVisual({ visual }: { visual: HeroVisualType }) {
     );
   };
 
+  const handleSearchModeChange = useCallback(
+    (mode: 'company' | 'partner') => {
+      setActiveLabel(mode === 'company' ? 'Company Search' : 'Partner Search');
+    },
+    [],
+  );
+
   const handleToggleFolder = (folderId: string) => {
     setOpenFolderIds((current) =>
       current.includes(folderId)
@@ -2691,6 +2698,7 @@ export function HomeVisual({ visual }: { visual: HeroVisualType }) {
             onObjectCreated={handleObjectCreated}
             onChatReset={handleChatReset}
             onJumpToConversationEnd={handleJumpToConversationEnd}
+            onSearchModeChange={handleSearchModeChange}
           />
         </WindowOrderProvider>
       </ShellScene>

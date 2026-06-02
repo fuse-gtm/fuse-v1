@@ -46,7 +46,7 @@ const resources = [
   {
     href: '/resources/technology-partners',
     title: 'Technology partners',
-    copy: 'Recruit, engage, enable, and win with channel and integration partners.',
+    copy: 'Recruit, engage, enable, and win with technology and channel partners.',
   },
   {
     href: '/resources/marketplace-partners',
@@ -56,7 +56,7 @@ const resources = [
   {
     href: '/resources/agency-partners',
     title: 'Agency partners',
-    copy: 'Map services, customers, and co-sell paths before outreach starts.',
+    copy: 'Map services, accounts, and co-sell paths before outreach starts.',
   },
   {
     href: '/resources/creator-partners',

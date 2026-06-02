@@ -1,6 +1,6 @@
 'use client';
 
-import { IconFolder, IconGitBranch } from '@tabler/icons-react';
+import { IconBuildingSkyscraper, IconUser } from '@tabler/icons-react';
 import { styled } from '@linaria/react';
 import { useEffect, useState } from 'react';
 import { TERMINAL_TOKENS } from './terminalTokens';
@@ -138,7 +138,7 @@ const PromptFooter = styled.div`
 `;
 
 // flex: 1 1 auto + min-width: 0 lets this row shrink with the first chip
-// (folder path) rather than push Mythos/Send to the next line.
+// rather than push Demo/Send to the next line.
 const ChipRow = styled.div`
   align-items: center;
   display: flex;
@@ -157,7 +157,7 @@ const ActionRow = styled.div`
   margin-left: auto;
 `;
 
-const MythosButton = styled.button`
+const DemoButton = styled.button`
   align-items: center;
   background: transparent;
   border: none;
@@ -178,7 +178,7 @@ const MythosButton = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: ${TERMINAL_TOKENS.surface.mythosHoverBackground};
+    background: ${TERMINAL_TOKENS.surface.demoHoverBackground};
     color: ${TERMINAL_TOKENS.text.mutedHover};
   }
 `;
@@ -186,6 +186,8 @@ const MythosButton = styled.button`
 type TerminalPromptBoxProps = {
   promptText: string;
   promptIsPlaceholder?: boolean;
+  searchMode?: 'company' | 'partner';
+  onSearchModeChange?: (mode: 'company' | 'partner') => void;
   onSend?: () => void;
   sendDisabled?: boolean;
   isChatFinished?: boolean;
@@ -195,6 +197,8 @@ type TerminalPromptBoxProps = {
 export const TerminalPromptBox = ({
   promptText,
   promptIsPlaceholder,
+  searchMode = 'company',
+  onSearchModeChange,
   onSend,
   sendDisabled,
   isChatFinished,
@@ -259,16 +263,20 @@ export const TerminalPromptBox = ({
         <PromptFooter>
           <ChipRow>
             <TerminalPromptChip
-              icon={<IconFolder size={13} stroke={1.8} />}
-              label="~/code/my-twenty-app"
+              active={searchMode === 'company'}
+              icon={<IconBuildingSkyscraper size={13} stroke={1.8} />}
+              label="Company Search"
+              onClick={() => onSearchModeChange?.('company')}
             />
             <TerminalPromptChip
-              icon={<IconGitBranch size={13} stroke={1.8} />}
-              label="main"
+              active={searchMode === 'partner'}
+              icon={<IconUser size={13} stroke={1.8} />}
+              label="Partner Search"
+              onClick={() => onSearchModeChange?.('partner')}
             />
           </ChipRow>
           <ActionRow>
-            <MythosButton type="button">Mythos</MythosButton>
+            <DemoButton type="button">Demo</DemoButton>
             <TerminalSendButton
               disabled={isChatFinished ? false : sendDisabled}
               mode={isChatFinished ? 'reset' : 'send'}

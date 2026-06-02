@@ -76,7 +76,7 @@ export default function PricingPage() {
     <FusePageShell
       eyebrow="Pricing"
       title="Simple enough to start. Serious enough to grow."
-      body="V1 pricing should be easy to understand while the product matures. No fake enterprise packaging, no invented proof, and no integration claims before the material exists."
+      body="V1 pricing should be easy to understand while the product matures. No fake enterprise packaging, no invented logos, and no unsupported claims before the material exists."
     >
       <PricingGrid>
         {tiers.map((tier) => (

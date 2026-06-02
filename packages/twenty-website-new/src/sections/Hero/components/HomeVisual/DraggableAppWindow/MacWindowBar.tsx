@@ -47,7 +47,7 @@ const RightSpacer = styled.div`
 `;
 
 export const MacWindowBar = ({
-  title = 'Twenty',
+  title = 'Fuse',
   onDragStart,
   isDragging,
 }: MacWindowBarProps) => {

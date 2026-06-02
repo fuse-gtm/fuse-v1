@@ -2,8 +2,6 @@
 
 import { styled } from '@linaria/react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { DiffPill } from './TerminalDiff/DiffPill';
-import { DIFF_TOTALS } from './TerminalDiff/diffData';
 import { EDITOR_TOKENS } from './TerminalEditor/editorTokens';
 import { TERMINAL_TOKENS } from './terminalTokens';
 import { TerminalToggle, type TerminalToggleValue } from './TerminalToggle';
@@ -15,9 +13,6 @@ type TerminalTopBarProps = {
   onZoomTripleClick?: () => void;
   view?: TerminalToggleValue;
   onViewChange?: (value: TerminalToggleValue) => void;
-  diffVisible?: boolean;
-  diffOpen?: boolean;
-  onToggleDiff?: () => void;
 };
 
 const TopBarRoot = styled.div<{ $isDragging: boolean; $dark?: boolean }>`
@@ -42,13 +37,11 @@ const TopBarRoot = styled.div<{ $isDragging: boolean; $dark?: boolean }>`
   width: 100%;
 `;
 
-const TopRight = styled.div<{ $visible: boolean }>`
+const TopRight = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
-  transition: opacity 0.22s ease;
+  min-width: 1px;
 `;
 
 export const TerminalTopBar = ({
@@ -57,9 +50,6 @@ export const TerminalTopBar = ({
   onZoomTripleClick,
   view,
   onViewChange,
-  diffVisible = false,
-  diffOpen = false,
-  onToggleDiff,
 }: TerminalTopBarProps) => {
   const isDark = view === 'editor';
   return (
@@ -74,14 +64,7 @@ export const TerminalTopBar = ({
         theme={isDark ? 'dark' : 'light'}
         value={view}
       />
-      <TopRight $visible={diffVisible && !isDark}>
-        <DiffPill
-          added={DIFF_TOTALS.added}
-          isActive={diffOpen}
-          onClick={onToggleDiff}
-          removed={DIFF_TOTALS.removed}
-        />
-      </TopRight>
+      <TopRight />
     </TopBarRoot>
   );
 };

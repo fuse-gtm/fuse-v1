@@ -3,7 +3,6 @@
 import { styled } from '@linaria/react';
 import { useState } from 'react';
 import { ClaudeLogo } from './ClaudeLogo';
-import { CursorLogo } from './CursorLogo';
 import { EDITOR_TOKENS } from './TerminalEditor/editorTokens';
 import { TERMINAL_TOKENS } from './terminalTokens';
 
@@ -133,20 +132,7 @@ export const TerminalToggle = ({
   };
 
   return (
-    <ToggleRoot $dark={isDark} role="tablist" aria-label="Terminal mode">
-      <SegmentButton
-        $active={value === 'editor'}
-        $dark={isDark}
-        aria-selected={value === 'editor'}
-        onClick={selectSegment('editor')}
-        role="tab"
-        type="button"
-      >
-        <SegmentIconWrap>
-          <CursorLogo size={14} />
-        </SegmentIconWrap>
-        Editor
-      </SegmentButton>
+    <ToggleRoot $dark={isDark} role="tablist" aria-label="Fuse search mode">
       <SegmentButton
         $active={value === 'ai-chat'}
         $dark={isDark}
@@ -158,7 +144,7 @@ export const TerminalToggle = ({
         <SegmentIconWrap>
           <ClaudeLogo size={14} />
         </SegmentIconWrap>
-        AI Chat
+        Search
       </SegmentButton>
     </ToggleRoot>
   );

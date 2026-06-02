@@ -2,10 +2,13 @@ import { MENU_DATA } from '@/app/_constants';
 import { TalkToUsButton } from '@/app/components/ContactCalModal';
 import { LinkButton } from '@/design-system/components';
 import { FUSE_SIGN_UP_URL } from '@/lib/fuse-destinations';
+import { Hero as TwentyHero } from '@/sections/Hero/components';
+import type { HeroVisualType } from '@/sections/Hero/types';
 import { Menu } from '@/sections/Menu/components';
 import { theme } from '@/theme';
 import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -15,8 +18,6 @@ export const metadata: Metadata = {
 };
 
 const HOME_BACKGROUND_COLOR = '#F5F1EA';
-const STAGE_BACKGROUND_COLOR = '#FBFAF6';
-const ACCENT_COLOR = theme.colors.highlight[100];
 
 const heroHeadingClassName = css`
   max-width: 980px;
@@ -62,11 +63,16 @@ const Eyebrow = styled.p`
 
 const HeroTitle = styled.h1`
   font-family: ${theme.font.family.sans};
-  font-size: clamp(3.25rem, 9vw, 7.5rem);
+  font-size: ${theme.font.size(12)};
   font-weight: ${theme.font.weight.light};
   letter-spacing: 0;
-  line-height: 0.92;
+  line-height: ${theme.lineHeight(13.5)};
   max-width: 980px;
+
+  @media (min-width: ${theme.breakpoints.md}px) {
+    font-size: ${theme.font.size(20)};
+    line-height: ${theme.lineHeight(21.5)};
+  }
 `;
 
 const HeroBody = styled.p`
@@ -84,217 +90,6 @@ const CtaRow = styled.div`
   flex-wrap: wrap;
   gap: ${theme.spacing(3)};
   justify-content: center;
-`;
-
-const SearchStage = styled.div`
-  background: ${STAGE_BACKGROUND_COLOR};
-  border: 1px solid ${theme.colors.primary.border[10]};
-  border-radius: ${theme.radius(5)};
-  box-shadow:
-    0 24px 80px rgba(28, 28, 28, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  display: grid;
-  gap: ${theme.spacing(6)};
-  margin: 0 auto;
-  max-width: 1080px;
-  overflow: hidden;
-  padding: ${theme.spacing(4)};
-  width: 100%;
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    padding: ${theme.spacing(7)};
-  }
-`;
-
-const PromptBar = styled.div`
-  background: ${theme.colors.primary.background[100]};
-  border: 1px solid ${theme.colors.primary.border[10]};
-  border-radius: ${theme.radius(3)};
-  display: grid;
-  gap: ${theme.spacing(3)};
-  padding: ${theme.spacing(3)};
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    align-items: center;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-  }
-`;
-
-const Segment = styled.div`
-  align-items: center;
-  background: ${theme.colors.primary.text[5]};
-  border-radius: ${theme.radius(2)};
-  display: inline-grid;
-  grid-auto-flow: column;
-  justify-content: start;
-  padding: ${theme.spacing(1)};
-`;
-
-const SegmentButton = styled.span`
-  border-radius: ${theme.radius(1.5)};
-  color: ${theme.colors.primary.text[60]};
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(3)};
-  font-weight: ${theme.font.weight.medium};
-  padding: ${theme.spacing(2)} ${theme.spacing(3)};
-  text-transform: uppercase;
-
-  &[data-active='true'] {
-    background: ${theme.colors.primary.background[100]};
-    color: ${ACCENT_COLOR};
-  }
-`;
-
-const PromptText = styled.div`
-  color: ${theme.colors.primary.text[100]};
-  font-family: ${theme.font.family.sans};
-  font-size: clamp(1.125rem, 2vw, 1.75rem);
-  font-weight: ${theme.font.weight.light};
-  line-height: 1.2;
-  min-width: 0;
-`;
-
-const PromptAction = styled.div`
-  border: 1px solid ${theme.colors.primary.border[20]};
-  border-radius: ${theme.radius(2)};
-  color: ${theme.colors.primary.text[80]};
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(3)};
-  font-weight: ${theme.font.weight.medium};
-  justify-self: start;
-  padding: ${theme.spacing(2)} ${theme.spacing(3)};
-  text-transform: uppercase;
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    justify-self: end;
-  }
-`;
-
-const ResultsGrid = styled.div`
-  display: grid;
-  gap: ${theme.spacing(4)};
-
-  @media (min-width: ${theme.breakpoints.lg}px) {
-    grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
-  }
-`;
-
-const ResultsTable = styled.div`
-  border: 1px solid ${theme.colors.primary.border[10]};
-  border-radius: ${theme.radius(3)};
-  overflow: hidden;
-`;
-
-const TableHeader = styled.div`
-  background: ${theme.colors.primary.text[5]};
-  color: ${theme.colors.primary.text[60]};
-  display: none;
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(2.75)};
-  font-weight: ${theme.font.weight.medium};
-  grid-template-columns: 1.1fr 0.4fr 1.2fr 1fr;
-  line-height: ${theme.lineHeight(3)};
-  padding: ${theme.spacing(3)} ${theme.spacing(4)};
-  text-transform: uppercase;
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    display: grid;
-  }
-`;
-
-const ResultRow = styled.div`
-  background: ${theme.colors.primary.background[100]};
-  border-top: 1px solid ${theme.colors.primary.border[10]};
-  display: grid;
-  gap: ${theme.spacing(3)};
-  padding: ${theme.spacing(4)};
-
-  &:first-of-type {
-    border-top: none;
-  }
-
-  @media (min-width: ${theme.breakpoints.md}px) {
-    align-items: center;
-    grid-template-columns: 1.1fr 0.4fr 1.2fr 1fr;
-  }
-`;
-
-const PartnerCell = styled.div`
-  display: grid;
-  gap: ${theme.spacing(1)};
-`;
-
-const PartnerName = styled.span`
-  font-family: ${theme.font.family.sans};
-  font-size: ${theme.font.size(4)};
-  font-weight: ${theme.font.weight.medium};
-`;
-
-const PartnerMeta = styled.span`
-  color: ${theme.colors.primary.text[60]};
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(2.75)};
-  text-transform: uppercase;
-`;
-
-const FitPill = styled.span`
-  background: ${theme.colors.highlight[70]};
-  border-radius: ${theme.radius(1.5)};
-  color: ${theme.colors.primary.text[100]};
-  display: inline-flex;
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(3)};
-  font-weight: ${theme.font.weight.medium};
-  justify-content: center;
-  padding: ${theme.spacing(2)} ${theme.spacing(2.5)};
-  width: fit-content;
-`;
-
-const RowText = styled.p`
-  color: ${theme.colors.primary.text[80]};
-  font-size: ${theme.font.size(3.5)};
-  line-height: 1.45;
-`;
-
-const EvidencePanel = styled.aside`
-  background: ${theme.colors.secondary.background[100]};
-  border-radius: ${theme.radius(3)};
-  color: ${theme.colors.secondary.text[100]};
-  display: grid;
-  gap: ${theme.spacing(5)};
-  padding: ${theme.spacing(5)};
-`;
-
-const EvidenceTitle = styled.h2`
-  font-family: ${theme.font.family.sans};
-  font-size: ${theme.font.size(6)};
-  font-weight: ${theme.font.weight.light};
-  line-height: 1.05;
-`;
-
-const EvidenceList = styled.div`
-  display: grid;
-  gap: ${theme.spacing(3)};
-`;
-
-const EvidenceItem = styled.div`
-  border-top: 1px solid ${theme.colors.secondary.border[20]};
-  display: grid;
-  gap: ${theme.spacing(1)};
-  padding-top: ${theme.spacing(3)};
-`;
-
-const EvidenceLabel = styled.span`
-  color: ${theme.colors.secondary.text[60]};
-  font-family: ${theme.font.family.mono};
-  font-size: ${theme.font.size(2.75)};
-  text-transform: uppercase;
-`;
-
-const EvidenceCopy = styled.span`
-  color: ${theme.colors.secondary.text[80]};
-  font-size: ${theme.font.size(3.5)};
-  line-height: 1.45;
 `;
 
 const Section = styled.section`
@@ -409,6 +204,35 @@ const PartnerGrid = styled.div`
   }
 `;
 
+const PartnerCardLink = styled(Link)`
+  background: ${theme.colors.primary.background[100]};
+  border: 1px solid ${theme.colors.primary.border[10]};
+  border-radius: ${theme.radius(4)};
+  color: ${theme.colors.primary.text[100]};
+  display: grid;
+  gap: ${theme.spacing(5)};
+  min-height: 260px;
+  padding: ${theme.spacing(6)};
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease;
+
+  &:is(:hover, :focus-visible) {
+    border-color: ${theme.colors.primary.border[40]};
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 1px solid ${theme.colors.highlight[100]};
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
 const PricingGrid = styled.div`
   display: grid;
   gap: ${theme.spacing(4)};
@@ -470,44 +294,196 @@ const FinalTitle = styled.h2`
   max-width: 820px;
 `;
 
-const searchRows = [
-  {
-    name: 'Northstar Cloud',
-    meta: 'B2B SaaS · Marketplace',
-    fit: '92',
-    why: 'Shares 147 target accounts and launches partner content every month.',
-    next: 'Ask for co-sell pilot',
-  },
-  {
-    name: 'Fieldstack Labs',
-    meta: 'Agency · RevOps',
-    fit: '88',
-    why: 'Works with the exact segment your top customers come from.',
-    next: 'Map services overlap',
-  },
-  {
-    name: 'Mira Collective',
-    meta: 'Creator · Operators',
-    fit: '81',
-    why: 'Audience is small, specific, and already talking about the problem.',
-    next: 'Draft warm intro',
-  },
-];
-
-const evidenceItems = [
-  {
-    label: 'Fit drivers',
-    copy: 'Audience overlap, customer segment, existing GTM motion, and recent signal.',
-  },
-  {
-    label: 'Evidence trail',
-    copy: 'Every recommendation carries the pages, people, and notes that made it score.',
-  },
-  {
-    label: 'Engagement',
-    copy: 'Fuse turns a ranked partner into the next useful action, not another row in a CRM.',
-  },
-];
+const fuseHeroVisual: HeroVisualType = {
+  workspace: { icon: 'fuse', name: 'Fuse Partner OS' },
+  tableWidth: 1180,
+  actions: ['Filter', 'Score', 'Engage'],
+  workspaceNav: [
+    {
+      id: 'company-search',
+      label: 'Company Search',
+      icon: { kind: 'tabler', name: 'buildingSkyscraper', tone: 'blue' },
+      active: true,
+      page: {
+        type: 'table',
+        header: {
+          title: 'Company Search',
+          count: 4,
+          showListIcon: true,
+          actions: ['Save search', 'Create sequence'],
+        },
+        columns: [
+          { id: 'company', label: 'Company', width: 190, isFirstColumn: true },
+          { id: 'partnerType', label: 'Partner Type', width: 150 },
+          { id: 'fit', label: 'Fit', width: 80, align: 'right' },
+          { id: 'evidence', label: 'Evidence', width: 320 },
+          { id: 'nextMove', label: 'Next Move', width: 170 },
+        ],
+        rows: [
+          {
+            id: 'northstar-cloud',
+            cells: {
+              company: {
+                type: 'entity',
+                name: 'Northstar Cloud',
+                domain: 'northstar.com',
+              },
+              partnerType: { type: 'tag', value: 'Technology' },
+              fit: { type: 'number', value: '92' },
+              evidence: {
+                type: 'text',
+                value: 'Shared accounts, partner page, and recent category content.',
+              },
+              nextMove: { type: 'text', value: 'Map co-sell path' },
+            },
+          },
+          {
+            id: 'atlaspay',
+            cells: {
+              company: { type: 'entity', name: 'AtlasPay', domain: 'atlaspay.com' },
+              partnerType: { type: 'tag', value: 'Marketplace' },
+              fit: { type: 'number', value: '87' },
+              evidence: {
+                type: 'text',
+                value: 'Marketplace motion overlaps with your target segment.',
+              },
+              nextMove: { type: 'text', value: 'Review partner stack' },
+            },
+          },
+          {
+            id: 'brightlayer',
+            cells: {
+              company: {
+                type: 'entity',
+                name: 'Brightlayer',
+                domain: 'brightlayer.com',
+              },
+              partnerType: { type: 'tag', value: 'Channel' },
+              fit: { type: 'number', value: '83' },
+              evidence: {
+                type: 'text',
+                value: 'Community signal and partner motion point to a practical route in.',
+              },
+              nextMove: { type: 'text', value: 'Draft warm intro' },
+            },
+          },
+          {
+            id: 'revbridge',
+            cells: {
+              company: {
+                type: 'entity',
+                name: 'RevBridge',
+                domain: 'revbridge.com',
+              },
+              partnerType: { type: 'tag', value: 'Agency' },
+              fit: { type: 'number', value: '79' },
+              evidence: {
+                type: 'text',
+                value: 'Serves the same buyer and packages ecosystem services.',
+              },
+              nextMove: { type: 'text', value: 'Send pilot ask' },
+            },
+          },
+        ],
+      },
+    },
+    {
+      id: 'partner-search',
+      label: 'Partner Search',
+      icon: { kind: 'tabler', name: 'user', tone: 'teal' },
+      page: {
+        type: 'table',
+        header: {
+          title: 'Partner Search',
+          count: 4,
+          showListIcon: true,
+          actions: ['Save search', 'Draft outreach'],
+        },
+        columns: [
+          { id: 'partner', label: 'Partner', width: 190, isFirstColumn: true },
+          { id: 'motion', label: 'Motion', width: 150 },
+          { id: 'fit', label: 'Fit', width: 80, align: 'right' },
+          { id: 'evidence', label: 'Evidence', width: 320 },
+          { id: 'nextMove', label: 'Next Move', width: 170 },
+        ],
+        rows: [
+          {
+            id: 'fieldstack-labs',
+            cells: {
+              partner: {
+                type: 'person',
+                name: 'Fieldstack Labs',
+                shortLabel: 'F',
+                tone: 'green',
+              },
+              motion: { type: 'tag', value: 'Solutions' },
+              fit: { type: 'number', value: '88' },
+              evidence: {
+                type: 'text',
+                value: 'Serves the same buyer and already packages ecosystem work.',
+              },
+              nextMove: { type: 'text', value: 'Send pilot ask' },
+            },
+          },
+          {
+            id: 'mira-collective',
+            cells: {
+              partner: {
+                type: 'person',
+                name: 'Mira Collective',
+                shortLabel: 'M',
+                tone: 'pink',
+              },
+              motion: { type: 'tag', value: 'Creator' },
+              fit: { type: 'number', value: '81' },
+              evidence: {
+                type: 'text',
+                value: 'Small audience, high problem density, trusted operator context.',
+              },
+              nextMove: { type: 'text', value: 'Draft brief' },
+            },
+          },
+          {
+            id: 'lattice-works',
+            cells: {
+              partner: {
+                type: 'person',
+                name: 'Lattice Works',
+                shortLabel: 'L',
+                tone: 'purple',
+              },
+              motion: { type: 'tag', value: 'Channel' },
+              fit: { type: 'number', value: '79' },
+              evidence: {
+                type: 'text',
+                value: 'Recent posts show a clear thesis around partner-led pipeline.',
+              },
+              nextMove: { type: 'text', value: 'Find intro path' },
+            },
+          },
+          {
+            id: 'operator-field-notes',
+            cells: {
+              partner: {
+                type: 'person',
+                name: 'Operator Field Notes',
+                shortLabel: 'O',
+                tone: 'amber',
+              },
+              motion: { type: 'tag', value: 'Affiliate' },
+              fit: { type: 'number', value: '76' },
+              evidence: {
+                type: 'text',
+                value: 'Audience talks about the exact workflow gap Fuse solves.',
+              },
+              nextMove: { type: 'text', value: 'Write angle' },
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
 
 const impacts = [
   {
@@ -543,10 +519,26 @@ const workflow = [
 ];
 
 const partnerTypes = [
-  'Technology and channel partners',
-  'Marketplace partners',
-  'Agency and solutions partners',
-  'Creator and affiliate partners',
+  {
+    href: '/resources/technology-partners',
+    title: 'Technology and channel partners',
+    copy: 'Map technical fit, account overlap, and the route to a useful joint motion.',
+  },
+  {
+    href: '/resources/marketplace-partners',
+    title: 'Marketplace partners',
+    copy: 'Find the partners that can turn marketplace presence into distribution, not shelfware.',
+  },
+  {
+    href: '/resources/agency-partners',
+    title: 'Agency and solutions partners',
+    copy: 'Prioritize agencies by services, buyer fit, buying committee access, and timing.',
+  },
+  {
+    href: '/resources/creator-partners',
+    title: 'Creator and affiliate partners',
+    copy: 'Score people by audience context and trust, not vanity reach.',
+  },
 ];
 
 const pricing = [
@@ -582,7 +574,7 @@ const faqs = [
   {
     question: 'What makes the scoring useful?',
     answer:
-      'The score is tied to evidence: audience, ecosystem overlap, customer fit, timing, and the reason a partner should respond.',
+      'The score is tied to evidence: audience, ecosystem overlap, buyer fit, timing, and the reason a partner should respond.',
   },
 ];
 
@@ -627,53 +619,7 @@ export default function HomePage() {
           </CtaRow>
         </HeroCopy>
 
-        <SearchStage aria-label="Cached Fuse partner search demo">
-          <PromptBar>
-            <Segment aria-label="Search mode">
-              <SegmentButton data-active="true">Company</SegmentButton>
-              <SegmentButton data-active="false">Person</SegmentButton>
-            </Segment>
-            <PromptText>
-              Find software agencies already helping Series B infrastructure
-              companies expand into partner-led pipeline.
-            </PromptText>
-            <PromptAction>Search partners</PromptAction>
-          </PromptBar>
-
-          <ResultsGrid>
-            <ResultsTable>
-              <TableHeader>
-                <span>Partner</span>
-                <span>Fit</span>
-                <span>Why this partner</span>
-                <span>Next move</span>
-              </TableHeader>
-              {searchRows.map((row) => (
-                <ResultRow key={row.name}>
-                  <PartnerCell>
-                    <PartnerName>{row.name}</PartnerName>
-                    <PartnerMeta>{row.meta}</PartnerMeta>
-                  </PartnerCell>
-                  <FitPill>{row.fit}</FitPill>
-                  <RowText>{row.why}</RowText>
-                  <RowText>{row.next}</RowText>
-                </ResultRow>
-              ))}
-            </ResultsTable>
-
-            <EvidencePanel>
-              <EvidenceTitle>Why Fuse picked them</EvidenceTitle>
-              <EvidenceList>
-                {evidenceItems.map((item) => (
-                  <EvidenceItem key={item.label}>
-                    <EvidenceLabel>{item.label}</EvidenceLabel>
-                    <EvidenceCopy>{item.copy}</EvidenceCopy>
-                  </EvidenceItem>
-                ))}
-              </EvidenceList>
-            </EvidencePanel>
-          </ResultsGrid>
-        </SearchStage>
+        <TwentyHero.HomeVisual visual={fuseHeroVisual} />
       </Hero>
 
       <Section>
@@ -729,14 +675,11 @@ export default function HomePage() {
         </SectionIntro>
         <PartnerGrid>
           {partnerTypes.map((partnerType) => (
-            <ImpactCard key={partnerType}>
+            <PartnerCardLink href={partnerType.href} key={partnerType.href}>
               <CardKicker>Recruit · Engage · Enable · Win</CardKicker>
-              <CardTitle>{partnerType}</CardTitle>
-              <CardCopy>
-                Fuse adapts the same discovery, scoring, and engagement loop to
-                the details of this partner motion.
-              </CardCopy>
-            </ImpactCard>
+              <CardTitle>{partnerType.title}</CardTitle>
+              <CardCopy>{partnerType.copy}</CardCopy>
+            </PartnerCardLink>
           ))}
         </PartnerGrid>
       </Section>

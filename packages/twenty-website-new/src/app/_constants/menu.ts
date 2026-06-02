@@ -21,7 +21,7 @@ function buildNavItems(): MenuNavItemType[] {
             imageAlt: 'Partner discovery workspace',
             title: 'Find the accounts worth building with',
             description:
-              'Score fit by ecosystem overlap, audience, motion, and proof before you ask for time.',
+              'Score fit by ecosystem overlap, audience, motion, and evidence before you ask for time.',
           },
         },
         {
@@ -39,7 +39,7 @@ function buildNavItems(): MenuNavItemType[] {
         },
         {
           label: 'Agency partners',
-          description: 'Map services, customers, and co-sell paths',
+          description: 'Map services, accounts, and co-sell paths',
           href: '/resources/agency-partners',
           icon: 'users',
           preview: {

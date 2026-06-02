@@ -16,31 +16,33 @@ import {
   ConversationPanel,
   type ConversationMessage,
 } from './conversation/ConversationPanel';
-import { TerminalDiff } from './TerminalDiff/TerminalDiff';
 import { EDITOR_TOKENS } from './TerminalEditor/editorTokens';
-import { TerminalEditor } from './TerminalEditor/TerminalEditor';
 import { TerminalPromptBox } from './TerminalPromptBox';
 import { TerminalTopBar } from './TerminalTopBar';
 import { type TerminalToggleValue } from './TerminalToggle';
 import { TERMINAL_TOKENS } from './terminalTokens';
 
 const WINDOW_ID = 'terminal-window';
-const INITIAL_PROMPT_TEXT =
-  'Scaffold a launch-ops CRM in my workspace with rockets, launches, payloads, customers, and launch sites, with relevant actions for each.';
+const PROMPT_TEXT_BY_MODE = {
+  company:
+    'Find companies in our market that already work with partner-led infrastructure teams. Score them by evidence and show the next move.',
+  partner:
+    'Find partner operators and agencies who can introduce us to the right ecosystem accounts. Show fit, evidence, and outreach angle.',
+} as const;
 const CLEARED_PROMPT_TEXT = 'Ask anything…';
 
 // Initial / minimum dimensions for the Terminal window (Figma mock).
 // Initial height is tuned to hug the prompt box + top bar so there's no
 // large empty area above the prompt before the chat runs — it expands to
 // TERMINAL_CHAT_EXPANDED_HEIGHT once the conversation starts.
-const TERMINAL_INITIAL_WIDTH = 380;
-const TERMINAL_INITIAL_HEIGHT = 220;
+const TERMINAL_INITIAL_WIDTH = 540;
+const TERMINAL_INITIAL_HEIGHT = 250;
 const TERMINAL_CHAT_EXPANDED_HEIGHT = 480;
 const TERMINAL_EDITOR_WIDTH = 720;
 const TERMINAL_EDITOR_HEIGHT = 480;
 const TERMINAL_MIN_WIDTH = 300;
 const TERMINAL_MIN_HEIGHT = 200;
-const TERMINAL_INITIAL_BOTTOM_OFFSET = 96;
+const TERMINAL_INITIAL_BOTTOM_OFFSET = 280;
 const MIN_EDGE_GAP = 0;
 // Below this parent width, stack Terminal below App Window with a diagonal
 // offset so both windows stay visible and clickable on mobile.
@@ -180,16 +182,6 @@ const ChatColumn = styled.div`
   min-width: 0;
 `;
 
-const DiffSlide = styled.div<{ $open: boolean }>`
-  display: flex;
-  flex: 0 0 ${({ $open }) => ($open ? '55%' : '0')};
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-  transition: flex-basis 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  width: ${({ $open }) => ($open ? '55%' : '0')};
-`;
-
 const ResizeCornerBase = styled.div`
   height: 16px;
   position: absolute;
@@ -305,6 +297,7 @@ type DraggableTerminalProps = {
   onChatFinished?: () => void;
   onChatReset?: () => void;
   onJumpToConversationEnd?: () => void;
+  onSearchModeChange?: (mode: 'company' | 'partner') => void;
 };
 
 export const DraggableTerminal = ({
@@ -312,6 +305,7 @@ export const DraggableTerminal = ({
   onChatFinished,
   onChatReset,
   onJumpToConversationEnd,
+  onSearchModeChange,
 }: DraggableTerminalProps) => {
   const shellRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef<DragState | null>(null);
@@ -327,8 +321,10 @@ export const DraggableTerminal = ({
   const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [view, setView] = useState<TerminalToggleValue>('ai-chat');
+  const [searchMode, setSearchMode] = useState<'company' | 'partner'>(
+    'company',
+  );
   const [isChatFinished, setIsChatFinished] = useState(false);
-  const [isDiffOpen, setIsDiffOpen] = useState(false);
   const [animationsEnabled, setAnimationsEnabled] = useState(false);
   const [instantComplete, setInstantComplete] = useState(false);
 
@@ -344,6 +340,15 @@ export const DraggableTerminal = ({
   const { activate, zIndex } = useWindowOrder(WINDOW_ID);
 
   const hasStartedConversation = messages.length > 0;
+  const promptText = PROMPT_TEXT_BY_MODE[searchMode];
+
+  const handleSearchModeChange = useCallback(
+    (mode: 'company' | 'partner') => {
+      setSearchMode(mode);
+      onSearchModeChange?.(mode);
+    },
+    [onSearchModeChange],
+  );
 
   const resizeAnchored = useCallback(
     (targetWidth: number, targetHeight: number) => {
@@ -412,14 +417,20 @@ export const DraggableTerminal = ({
     setInstantComplete(false);
     const sendAt = Date.now();
     setMessages([
-      { id: `u-${sendAt}`, role: 'user', text: INITIAL_PROMPT_TEXT },
+      { id: `u-${sendAt}`, role: 'user', text: promptText },
       { id: `a-${sendAt}`, role: 'assistant' },
     ]);
     if (view === 'ai-chat') {
       const { width, height } = getTargetDimensions('ai-chat', true);
       resizeAnchored(width, height);
     }
-  }, [getTargetDimensions, hasStartedConversation, resizeAnchored, view]);
+  }, [
+    getTargetDimensions,
+    hasStartedConversation,
+    promptText,
+    resizeAnchored,
+    view,
+  ]);
 
   const handleViewChange = useCallback(
     (next: TerminalToggleValue) => {
@@ -437,17 +448,12 @@ export const DraggableTerminal = ({
     hasAnnouncedChatFinishedRef.current = false;
     setMessages([]);
     setIsChatFinished(false);
-    setIsDiffOpen(false);
     setInstantComplete(false);
     setView('ai-chat');
     const { width, height } = getTargetDimensions('ai-chat', false);
     resizeAnchored(width, height);
     onChatReset?.();
   }, [getTargetDimensions, onChatReset, resizeAnchored]);
-
-  const handleToggleDiff = useCallback(() => {
-    setIsDiffOpen((current) => !current);
-  }, []);
 
   const handleChatFinishedInternal = useCallback(() => {
     setIsChatFinished(true);
@@ -462,12 +468,11 @@ export const DraggableTerminal = ({
     if (!hasStartedConversation) {
       const sendAt = Date.now();
       setMessages([
-        { id: `u-${sendAt}`, role: 'user', text: INITIAL_PROMPT_TEXT },
+        { id: `u-${sendAt}`, role: 'user', text: promptText },
         { id: `a-${sendAt}`, role: 'assistant' },
       ]);
     }
     setInstantComplete(true);
-    setIsDiffOpen(false);
     setView('ai-chat');
     const { width, height } = getTargetDimensions('ai-chat', true);
     resizeAnchored(width, height);
@@ -478,6 +483,7 @@ export const DraggableTerminal = ({
     handleChatFinishedInternal,
     hasStartedConversation,
     onJumpToConversationEnd,
+    promptText,
     resizeAnchored,
   ]);
 
@@ -793,11 +799,8 @@ export const DraggableTerminal = ({
         onPointerDown={startResize('bottom-right')}
       />
       <TerminalTopBar
-        diffOpen={isDiffOpen}
-        diffVisible={isChatFinished}
         isDragging={isDragging}
         onDragStart={handleDragStart}
-        onToggleDiff={handleToggleDiff}
         onViewChange={handleViewChange}
         onZoomTripleClick={handleJumpToConversationEnd}
         view={view}
@@ -817,22 +820,18 @@ export const DraggableTerminal = ({
             <TerminalPromptBox
               isChatFinished={isChatFinished}
               onReset={handleResetConversation}
+              onSearchModeChange={handleSearchModeChange}
               onSend={handleSendPrompt}
               promptIsPlaceholder={hasStartedConversation}
               promptText={
                 hasStartedConversation
                   ? CLEARED_PROMPT_TEXT
-                  : INITIAL_PROMPT_TEXT
+                  : promptText
               }
+              searchMode={searchMode}
               sendDisabled={hasStartedConversation}
             />
           </ChatColumn>
-          <DiffSlide $open={isChatFinished && isDiffOpen}>
-            <TerminalDiff />
-          </DiffSlide>
-        </ViewLayer>
-        <ViewLayer $visible={view === 'editor'}>
-          <TerminalEditor showGeneratedFiles={isChatFinished} />
         </ViewLayer>
       </Body>
     </Shell>

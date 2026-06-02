@@ -118,22 +118,16 @@ const LAUNCH_SITE_ID = 'launch-sites';
 const buildIntroAndRocketParagraph = (
   onObjectCreated?: (id: string) => void,
 ): StreamingSegment[] => [
-  text(
-    "I'll scaffold a launch-ops CRM in your workspace: four new objects plus the standard ",
-  ),
-  node('rocket-companies', <InlineCode>Companies</InlineCode>),
-  text(' object for customers, with shared UUIDs in '),
-  node('rocket-ids', <FileLink>schema-identifiers.ts</FileLink>),
-  text('. First up: '),
+  text('I found a focused partner universe from your prompt. First view: '),
   node(
     'rocket-chip',
-    <InlineCode>Rocket</InlineCode>,
+    <InlineCode>Company Search</InlineCode>,
     onObjectCreated ? () => onObjectCreated(ROCKET_ID) : undefined,
   ),
   text(
-    '. Each vehicle gets a serial number, manufacturer, lifecycle status, reusability, launch date, dimensions, and target orbit in ',
+    '. It ranks companies by market fit, shared accounts, ecosystem motion, recent signal, and a suggested next move. Cached in ',
   ),
-  node('rocket-file', <FileLink>rocket.object.ts</FileLink>),
+  node('rocket-file', <FileLink>company-search.results.ts</FileLink>),
   text('.'),
 ];
 
@@ -143,13 +137,13 @@ const buildLaunchParagraph = (
   text('Next up: '),
   node(
     'launch-chip',
-    <InlineCode>Launch</InlineCode>,
+    <InlineCode>Partner Search</InlineCode>,
     onObjectCreated ? () => onObjectCreated(LAUNCH_ID) : undefined,
   ),
   text(
-    '. Every mission gets a unique mission code, status, mission type, planned and actual launch times, and a summary. Defined in ',
+    '. This finds operators, agencies, creators, and channel people with the right audience context and a credible path into the account. Defined in ',
   ),
-  node('launch-file', <FileLink>launch.object.ts</FileLink>),
+  node('launch-file', <FileLink>partner-search.results.ts</FileLink>),
   text('.'),
 ];
 
@@ -159,115 +153,73 @@ const buildPayloadParagraph = (
   text('Now '),
   node(
     'payload-chip',
-    <InlineCode>Payload</InlineCode>,
+    <InlineCode>Fit scoring</InlineCode>,
     onObjectCreated ? () => onObjectCreated(PAYLOAD_ID) : undefined,
   ),
   text(
-    '. This covers what actually flies: satellites, crew capsules, cargo, probes, and landers, with type, status, target orbit, mass, and a customer reference. Scoped in ',
+    '. Fuse keeps the score explainable: why this partner, why now, what evidence supports it, and what would make the score change. Scoped in ',
   ),
-  node('payload-file', <FileLink>payload.object.ts</FileLink>),
+  node('payload-file', <FileLink>fit-drivers.ts</FileLink>),
   text('.'),
 ];
 
 const buildCustomerParagraph = (
   onObjectCreated?: (id: string) => void,
 ): StreamingSegment[] => [
-  text('For customers, there is no new object. I reuse the standard '),
+  text('For engagement, the result connects to a practical '),
   node(
     'customer-chip',
-    <InlineCode>Companies</InlineCode>,
+    <InlineCode>Next move</InlineCode>,
     onObjectCreated ? () => onObjectCreated(COMPANIES_ID) : undefined,
   ),
   text(
-    ' object that ships with Twenty, so accounts, domain favicons, and the People relation work for free. ',
+    ': intro path, pilot ask, co-marketing angle, or research note. No fake proof, no integration claim, no generic outreach.',
   ),
-  node('customer-file', <FileLink>payload.object.ts</FileLink>),
-  text(' points its '),
-  node('customer-field', <InlineCode>customer</InlineCode>),
-  text(' relation straight at it.'),
 ];
 
 const buildLaunchSiteParagraph = (
   onObjectCreated?: (id: string) => void,
 ): StreamingSegment[] => [
-  text('Last object: '),
+  text('Last view: '),
   node(
     'launch-site-chip',
-    <InlineCode>Launch site</InlineCode>,
+    <InlineCode>Evidence trail</InlineCode>,
     onObjectCreated ? () => onObjectCreated(LAUNCH_SITE_ID) : undefined,
   ),
   text(
-    '. This covers pads and ranges with a site code, country, region, pad name, and operational status. Lives in ',
+    '. The recommendation keeps source pages, people, category fit, timing, and notes attached so a teammate can trust the ranking. Lives in ',
   ),
-  node('launch-site-file', <FileLink>launch-site.object.ts</FileLink>),
+  node('launch-site-file', <FileLink>evidence-trail.ts</FileLink>),
   text('.'),
 ];
 
 const PINNED_ACTIONS_PARAGRAPH: StreamingSegment[] = [
   text(
-    'Each object also gets 2-3 relevant quick commands pinned to its header. Next to ',
+    'The app preview now has the two top-level modes requested in the prompt box. Next to ',
   ),
   node('pa-new', <InlineCode>New</InlineCode>),
   text(', '),
-  node('pa-rocket', <InlineCode>Rocket</InlineCode>),
-  text(' has reuse / retire shortcuts, '),
-  node('pa-launch', <InlineCode>Launch</InlineCode>),
-  text(' has '),
-  node('pa-l-resched', <InlineCode>Reschedule</InlineCode>),
+  node('pa-rocket', <InlineCode>Company Search</InlineCode>),
   text(' and '),
-  node('pa-l-payload', <InlineCode>Add payload</InlineCode>),
-  text(', '),
-  node('pa-payload', <InlineCode>Payload</InlineCode>),
-  text(' has '),
-  node('pa-p-book', <InlineCode>Book slot</InlineCode>),
-  text(', '),
-  node('pa-companies', <InlineCode>Companies</InlineCode>),
-  text(' has a quick '),
-  node('pa-c-status', <InlineCode>Set status</InlineCode>),
-  text(', and '),
-  node('pa-site', <InlineCode>Launch site</InlineCode>),
-  text(' has '),
-  node('pa-s-window', <InlineCode>Book window</InlineCode>),
-  text('. Defined under '),
-  node('pa-folder', <FileLink>src/command-menu-items/</FileLink>),
+  node('pa-launch', <InlineCode>Partner Search</InlineCode>),
+  text(' switch the app table between cached result sets, while '),
+  node('pa-payload', <InlineCode>Score</InlineCode>),
+  text(' and '),
+  node('pa-p-book', <InlineCode>Engage</InlineCode>),
+  text(' keep the workflow tied to the selected partner. Defined under '),
+  node('pa-folder', <FileLink>src/app/(home)/page.tsx</FileLink>),
   text('.'),
 ];
 
 const WRAPUP_PARAGRAPH: StreamingSegment[] = [
-  text('Relations wire '),
-  node('w-rl', <InlineCode>Rocket → Launches</InlineCode>),
-  text(', '),
-  node('w-sl', <InlineCode>LaunchSite → Launches</InlineCode>),
-  text(', '),
-  node('w-cp', <InlineCode>Company → Payloads</InlineCode>),
-  text(', and '),
-  node('w-lp', <InlineCode>Launch → Payloads</InlineCode>),
-  text('. Each object gets an index view and sidebar entry; '),
-  node('w-launches', <InlineCode>Launches</InlineCode>),
-  text(' also has '),
-  node('w-upcoming', <FileLink>upcoming-launches.view.ts</FileLink>),
-  text(' and '),
-  node('w-past', <FileLink>past-launches.view.ts</FileLink>),
-  text('. Verified with '),
+  text('The homepage stays static on first paint: no live Exa or Websets call is needed to show the search demo. Verified with '),
   node('w-lint', <InlineCode>yarn lint</InlineCode>),
   text(', '),
   node('w-tsc', <InlineCode>tsc --noEmit</InlineCode>),
   text(', '),
   node(
     'w-vitest',
-    <InlineCode>vitest run schema.integration-test.ts</InlineCode>,
-  ),
-  text(', and '),
-  node('w-dev', <InlineCode>yarn twenty dev --once</InlineCode>),
-  text('. Reference: '),
-  node(
-    'w-docs',
-    <ReferenceLink
-      href="https://twenty.com/developers"
-      onClick={(event) => event.preventDefault()}
-    >
-      Twenty app-building docs
-    </ReferenceLink>,
+    <InlineCode>next build</InlineCode>,
   ),
   text('.'),
 ];
@@ -320,7 +272,7 @@ export const AssistantResponse = ({
   );
   const hasNotifiedChatFinishedRef = useRef(false);
   const advanceTimeoutsRef = useRef<Set<number>>(new Set());
-  const objectCreationHandler = instantComplete ? undefined : onObjectCreated;
+  const objectCreationHandler = undefined;
 
   useEffect(() => {
     const timeouts = advanceTimeoutsRef.current;

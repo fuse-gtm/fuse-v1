@@ -5,8 +5,10 @@ import type { ReactNode } from 'react';
 import { TERMINAL_TOKENS } from './terminalTokens';
 
 type TerminalPromptChipProps = {
+  active?: boolean;
   icon: ReactNode;
   label: string;
+  onClick?: () => void;
 };
 
 // min-width: 0 lets the chip shrink below its intrinsic content width so the
@@ -36,6 +38,17 @@ const ChipRoot = styled.button`
   &:hover {
     background: ${TERMINAL_TOKENS.surface.chipHoverBackground};
   }
+
+  &[data-active='true'] {
+    background: rgba(42, 102, 222, 0.1);
+    border-color: rgba(42, 102, 222, 0.32);
+    color: #204fba;
+  }
+
+  &:focus-visible {
+    outline: 1px solid rgba(42, 102, 222, 0.56);
+    outline-offset: 2px;
+  }
 `;
 
 const ChipIcon = styled.span`
@@ -56,11 +69,18 @@ const ChipLabel = styled.span`
 `;
 
 export const TerminalPromptChip = ({
+  active,
   icon,
   label,
+  onClick,
 }: TerminalPromptChipProps) => {
   return (
-    <ChipRoot type="button">
+    <ChipRoot
+      aria-pressed={active}
+      data-active={active ? 'true' : 'false'}
+      onClick={onClick}
+      type="button"
+    >
       <ChipIcon aria-hidden>{icon}</ChipIcon>
       <ChipLabel>{label}</ChipLabel>
     </ChipRoot>
