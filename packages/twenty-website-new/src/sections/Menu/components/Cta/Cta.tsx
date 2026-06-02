@@ -1,4 +1,5 @@
 import { LinkButton } from '@/design-system/components';
+import { FUSE_SIGN_IN_URL, FUSE_SIGN_UP_URL } from '@/lib/fuse-destinations';
 import type { MenuScheme } from '@/sections/Menu/types';
 import { theme } from '@/theme';
 import { styled } from '@linaria/react';
@@ -25,7 +26,7 @@ export function Cta({ scheme }: CtaProps) {
     <CtaContainer>
       <LinkButton
         color={buttonColor}
-        href="https://app.twenty.com/welcome"
+        href={FUSE_SIGN_IN_URL}
         label="Log in"
         size="small"
         type="anchor"
@@ -33,7 +34,7 @@ export function Cta({ scheme }: CtaProps) {
       />
       <LinkButton
         color={buttonColor}
-        href="https://app.twenty.com/welcome"
+        href={FUSE_SIGN_UP_URL}
         label="Get started"
         size="small"
         type="anchor"

@@ -5,6 +5,7 @@ import type {
   HeroKanbanPageDefinition,
   HeroTablePageDefinition,
 } from '@/sections/Hero/types';
+import { FUSE_CONTACT_URL } from '@/lib/fuse-destinations';
 import { SHARED_PEOPLE_AVATAR_URLS } from '@/lib/shared-asset-paths';
 
 const PEOPLE_AVATAR_URLS = {
@@ -1578,7 +1579,7 @@ export const HERO_DATA: HeroHomeDataType = {
       {
         id: 'book-demo',
         label: 'Book a demo',
-        href: 'https://cal.com/forms/f7841033-0a20-4958-8c92-4e34ec128a81',
+        href: FUSE_CONTACT_URL,
         icon: {
           kind: 'brand',
           brand: 'twenty',

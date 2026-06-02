@@ -8,8 +8,8 @@ import remarkGfm from 'remark-gfm';
 const MARKETING_ORIGIN =
   process.env.NEXT_PUBLIC_MARKETING_ASSET_ORIGIN ?? 'https://twenty.com';
 
-function resolveAssetUrl(url: string | undefined): string {
-  if (!url) {
+function resolveAssetUrl(url: string | Blob | undefined): string {
+  if (typeof url !== 'string' || !url) {
     return '';
   }
   if (url.startsWith('/')) {

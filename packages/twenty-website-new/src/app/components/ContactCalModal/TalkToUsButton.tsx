@@ -4,11 +4,10 @@ import {
   BaseButton,
   buttonBaseStyles,
 } from '@/design-system/components/Button/BaseButton';
+import { FUSE_CONTACT_URL } from '@/lib/fuse-destinations';
 import { styled } from '@linaria/react';
 
-import { useContactCalModal } from './ContactCalModalRoot';
-
-const StyledTrigger = styled.button`
+const StyledTrigger = styled.a`
   ${buttonBaseStyles}
 `;
 
@@ -19,14 +18,13 @@ type TalkToUsButtonProps = {
 };
 
 export function TalkToUsButton({ color, label, variant }: TalkToUsButtonProps) {
-  const { openContactCalModal } = useContactCalModal();
-
   return (
     <StyledTrigger
       data-color={color}
       data-variant={variant}
-      type="button"
-      onClick={openContactCalModal}
+      href={FUSE_CONTACT_URL}
+      rel="noopener noreferrer"
+      target="_blank"
     >
       <BaseButton color={color} label={label} variant={variant} />
     </StyledTrigger>

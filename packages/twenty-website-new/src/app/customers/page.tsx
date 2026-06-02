@@ -129,7 +129,7 @@ export default async function CaseStudiesCatalogPage() {
         <Signoff.Cta>
           <LinkButton
             color="secondary"
-            href="https://app.twenty.com/welcome"
+            href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
             label="Get started"
             type="anchor"
             variant="contained"
@@ -149,7 +149,7 @@ export default async function CaseStudiesCatalogPage() {
           <Faq.Cta>
             <LinkButton
               color="primary"
-              href="https://app.twenty.com/welcome"
+              href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
               label="Get started"
               type="anchor"
               variant="contained"

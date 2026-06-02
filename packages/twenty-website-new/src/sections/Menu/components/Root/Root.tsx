@@ -2,6 +2,7 @@
 
 import { Container, IconButton, LinkButton } from '@/design-system/components';
 import { CloseIcon, MenuIcon } from '@/icons';
+import { FUSE_SIGN_UP_URL } from '@/lib/fuse-destinations';
 import type {
   MenuNavItemType,
   MenuScheme,
@@ -175,7 +176,7 @@ export function Root({
             <MobileRightContainer>
               <LinkButton
                 color={buttonColor.linkButton}
-                href="https://app.twenty.com/welcome"
+                href={FUSE_SIGN_UP_URL}
                 label="Get started"
                 type="anchor"
                 variant="contained"

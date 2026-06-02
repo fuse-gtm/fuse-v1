@@ -4,11 +4,10 @@ import {
   BaseButton,
   buttonBaseStyles,
 } from '@/design-system/components/Button/BaseButton';
+import { FUSE_PARTNER_APPLICATION_URL } from '@/lib/fuse-destinations';
 import { styled } from '@linaria/react';
 
-import { usePartnerApplicationModal } from './PartnerApplicationModalRoot';
-
-const StyledTrigger = styled.button`
+const StyledTrigger = styled.a`
   ${buttonBaseStyles}
 `;
 
@@ -23,16 +22,13 @@ export function BecomePartnerButton({
   label = 'Become a partner',
   variant = 'contained',
 }: BecomePartnerButtonProps) {
-  const { openPartnerApplicationModal } = usePartnerApplicationModal();
-
   return (
     <StyledTrigger
       data-color={color}
       data-variant={variant}
-      type="button"
-      onClick={() => {
-        openPartnerApplicationModal();
-      }}
+      href={FUSE_PARTNER_APPLICATION_URL}
+      rel="noopener noreferrer"
+      target="_blank"
     >
       <BaseButton color={color} label={label} variant={variant} />
     </StyledTrigger>

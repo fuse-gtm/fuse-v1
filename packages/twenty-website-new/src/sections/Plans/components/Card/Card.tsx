@@ -522,7 +522,7 @@ export function Card({ card, highlighted = false, maxBullets }: CardProps) {
       <CtaWrapper>
         <LinkButton
           color="secondary"
-          href="https://app.twenty.com/welcome"
+          href="https://fuse-web-main-fuse-6cf22f29.vercel.app/auth/sign-up"
           label="Start for free"
           type="anchor"
           variant={highlighted ? 'contained' : 'outlined'}

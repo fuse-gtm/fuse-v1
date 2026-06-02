@@ -5,12 +5,11 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useState,
   type ReactNode,
 } from 'react';
 
 import type { PartnerProgramId } from '@/app/partners/_constants/partner-application-modal';
-import { PartnerApplicationModal } from './PartnerApplicationModal';
+import { FUSE_PARTNER_APPLICATION_URL } from '@/lib/fuse-destinations';
 
 type PartnerApplicationModalContextValue = {
   openPartnerApplicationModal: (programId?: PartnerProgramId) => void;
@@ -34,23 +33,12 @@ export function PartnerApplicationModalRoot({
 }: {
   children: ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
-  const [initialProgramId, setInitialProgramId] =
-    useState<PartnerProgramId>('technology');
-
   const openPartnerApplicationModal = useCallback(
-    (programId?: PartnerProgramId) => {
-      if (programId !== undefined) {
-        setInitialProgramId(programId);
-      }
-      setOpen(true);
+    (_programId?: PartnerProgramId) => {
+      window.location.assign(FUSE_PARTNER_APPLICATION_URL);
     },
     [],
   );
-
-  const closePartnerApplicationModal = useCallback(() => {
-    setOpen(false);
-  }, []);
 
   const contextValue = useMemo(
     () => ({ openPartnerApplicationModal }),
@@ -60,11 +48,6 @@ export function PartnerApplicationModalRoot({
   return (
     <PartnerApplicationModalContext.Provider value={contextValue}>
       {children}
-      <PartnerApplicationModal
-        initialProgramId={initialProgramId}
-        onClose={closePartnerApplicationModal}
-        open={open}
-      />
     </PartnerApplicationModalContext.Provider>
   );
 }

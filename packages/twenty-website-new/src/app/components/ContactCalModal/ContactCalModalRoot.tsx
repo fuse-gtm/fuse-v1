@@ -1,15 +1,13 @@
 'use client';
 
+import { FUSE_CONTACT_URL } from '@/lib/fuse-destinations';
 import {
   createContext,
   useCallback,
   useContext,
   useMemo,
-  useState,
   type ReactNode,
 } from 'react';
-
-import { ContactCalModal } from './ContactCalModal';
 
 type ContactCalModalContextValue = {
   openContactCalModal: () => void;
@@ -29,14 +27,8 @@ export function useContactCalModal() {
 }
 
 export function ContactCalModalRoot({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-
   const openContactCalModal = useCallback(() => {
-    setOpen(true);
-  }, []);
-
-  const closeContactCalModal = useCallback(() => {
-    setOpen(false);
+    window.location.assign(FUSE_CONTACT_URL);
   }, []);
 
   const contextValue = useMemo(
@@ -47,7 +39,6 @@ export function ContactCalModalRoot({ children }: { children: ReactNode }) {
   return (
     <ContactCalModalContext.Provider value={contextValue}>
       {children}
-      <ContactCalModal onClose={closeContactCalModal} open={open} />
     </ContactCalModalContext.Provider>
   );
 }

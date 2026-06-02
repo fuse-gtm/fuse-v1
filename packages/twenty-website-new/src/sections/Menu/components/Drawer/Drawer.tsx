@@ -6,6 +6,7 @@ import {
   INFORMATIVE_ICONS,
   SOCIAL_ICONS,
 } from '@/icons';
+import { FUSE_SIGN_IN_URL } from '@/lib/fuse-destinations';
 import type {
   MenuNavItemType,
   MenuScheme,
@@ -435,7 +436,7 @@ export function MenuDrawer({ navItems, scheme, socialLinks }: MenuDrawerProps) {
           <CtaContainer>
             <LinkButton
               color={buttonColor}
-              href="https://app.twenty.com/welcome"
+              href={FUSE_SIGN_IN_URL}
               label="Log in"
               type="anchor"
               variant="outlined"

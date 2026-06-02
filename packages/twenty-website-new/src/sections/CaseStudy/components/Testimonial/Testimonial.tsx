@@ -1,4 +1,3 @@
-import type { CaseStudyData } from '@/app/case-studies/_constants/types';
 import { Container, Eyebrow } from '@/design-system/components';
 import { theme } from '@/theme';
 import { styled } from '@linaria/react';
@@ -111,8 +110,19 @@ const AuthorDate = styled.span`
   line-height: ${theme.lineHeight(3.5)};
 `;
 
+type CaseStudyTestimonial = {
+  eyebrow: string;
+  quote: string;
+  author: {
+    name: string;
+    handle: string;
+    date: string;
+    avatarSrc?: string;
+  };
+};
+
 type TestimonialProps = {
-  testimonial: CaseStudyData['testimonial'];
+  testimonial: CaseStudyTestimonial;
 };
 
 export function Testimonial({ testimonial }: TestimonialProps) {
