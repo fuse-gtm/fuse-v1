@@ -2454,8 +2454,8 @@ export function HomeVisual({ visual }: { visual: HeroVisualType }) {
   };
 
   const handleSearchModeChange = useCallback(
-    (mode: 'company' | 'partner') => {
-      setActiveLabel(mode === 'company' ? 'Company Search' : 'Partner Search');
+    (mode: 'company' | 'person') => {
+      setActiveLabel(mode === 'company' ? 'Company results' : 'Person results');
     },
     [],
   );

@@ -9,21 +9,44 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { CHAT_TIMINGS } from './animationTiming';
-import {
-  CHANGESET_TOTALS,
-  ROCKET_CHANGESET,
-  type FileChange,
-} from './rocketChangeset';
 
 const ROW_STAGGER_MS = 24;
 const ROW_BASE_DELAY_MS = 40;
-const COLLAPSED_FILE_COUNT = 3;
+const COLLAPSED_RESULT_COUNT = 3;
+
+const RESULTS = [
+  {
+    label: 'Northstar Cloud',
+    meta: 'Technology partner',
+    score: '92',
+  },
+  {
+    label: 'Mira Kapoor',
+    meta: 'Agency operator',
+    score: '88',
+  },
+  {
+    label: 'AtlasPay',
+    meta: 'Marketplace partner',
+    score: '87',
+  },
+  {
+    label: 'Brightlayer',
+    meta: 'Channel partner',
+    score: '83',
+  },
+  {
+    label: 'Leo Martin',
+    meta: 'Creator partner',
+    score: '81',
+  },
+] as const;
 
 const CardRoot = styled.div`
   animation: chatCardRise ${CHAT_TIMINGS.fileCardEnterMs}ms
     cubic-bezier(0.22, 1, 0.36, 1) both;
-  background: #f5f5f5;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f7f6f2;
+  border: 1px solid #dad9d5;
   border-radius: 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   overflow: hidden;
@@ -43,7 +66,7 @@ const CardRoot = styled.div`
 
 const Header = styled.div`
   align-items: center;
-  background: #fafafa;
+  background: #ffffff;
   display: flex;
   gap: 8px;
   padding: 10px 14px;
@@ -60,15 +83,10 @@ const HeaderTitle = styled.div`
   gap: 6px;
 `;
 
-const DiffAdded = styled.span`
-  color: #2f7d52;
+const Score = styled.span`
+  color: rgba(0, 0, 0, 0.8);
   font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  font-weight: 600;
-`;
-
-const DiffRemoved = styled.span`
-  color: #a94a4f;
-  font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
   font-weight: 600;
 `;
 
@@ -95,18 +113,19 @@ const UndoButton = styled.button`
   }
 `;
 
-const FileList = styled.div`
+const ResultList = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
 `;
 
-const FileRow = styled.div<{ $delay: string }>`
-  animation: chatFileRowFade 240ms ease-out both;
+const ResultRow = styled.div<{ $delay: string }>`
+  animation: chatResultRowFade 240ms ease-out both;
   animation-delay: ${({ $delay }) => $delay};
   align-items: center;
-  display: flex;
+  display: grid;
   gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   padding: 9px 14px;
   transition: background-color 0.14s ease;
 
@@ -118,7 +137,7 @@ const FileRow = styled.div<{ $delay: string }>`
     background: rgba(0, 0, 0, 0.02);
   }
 
-  @keyframes chatFileRowFade {
+  @keyframes chatResultRowFade {
     from {
       opacity: 0;
       transform: translateY(3px);
@@ -130,11 +149,10 @@ const FileRow = styled.div<{ $delay: string }>`
   }
 `;
 
-const FilePath = styled.span`
+const ResultText = styled.span`
   color: rgba(0, 0, 0, 0.78);
-  flex: 1 1 auto;
-  font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 11.5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
   font-weight: 500;
   min-width: 0;
   overflow: hidden;
@@ -142,13 +160,14 @@ const FilePath = styled.span`
   white-space: nowrap;
 `;
 
-const DiffCounts = styled.span`
-  align-items: center;
-  display: inline-flex;
-  flex: 0 0 auto;
-  font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 11px;
-  gap: 6px;
+const ResultMeta = styled.span`
+  color: rgba(0, 0, 0, 0.46);
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Chevron = styled.span`
@@ -157,25 +176,6 @@ const Chevron = styled.span`
   display: inline-flex;
   flex: 0 0 auto;
 `;
-
-const ZeroCount = styled.span`
-  color: rgba(0, 0, 0, 0.35);
-`;
-
-const renderDiffCounts = (change: FileChange) => (
-  <DiffCounts>
-    {change.added > 0 ? (
-      <DiffAdded>+{change.added}</DiffAdded>
-    ) : (
-      <ZeroCount>+0</ZeroCount>
-    )}
-    {change.removed > 0 ? (
-      <DiffRemoved>-{change.removed}</DiffRemoved>
-    ) : (
-      <ZeroCount>-0</ZeroCount>
-    )}
-  </DiffCounts>
-);
 
 const SeeMoreButton = styled.button`
   align-items: center;
@@ -214,41 +214,40 @@ type ChangesSummaryCardProps = {
 export const ChangesSummaryCard = ({ onUndo }: ChangesSummaryCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hiddenCount = Math.max(
-    ROCKET_CHANGESET.length - COLLAPSED_FILE_COUNT,
+    RESULTS.length - COLLAPSED_RESULT_COUNT,
     0,
   );
-  const visibleChanges =
+  const visibleResults =
     isExpanded || hiddenCount === 0
-      ? ROCKET_CHANGESET
-      : ROCKET_CHANGESET.slice(0, COLLAPSED_FILE_COUNT);
+      ? RESULTS
+      : RESULTS.slice(0, COLLAPSED_RESULT_COUNT);
 
   return (
     <CardRoot>
       <Header>
         <HeaderTitle>
-          <span>{ROCKET_CHANGESET.length} files changed</span>
-          <DiffAdded>+{CHANGESET_TOTALS.added}</DiffAdded>
-          <DiffRemoved>-{CHANGESET_TOTALS.removed}</DiffRemoved>
+          <span>{RESULTS.length} scored results</span>
         </HeaderTitle>
         <UndoButton onClick={onUndo} type="button">
-          Undo
+          Reset
           <IconArrowBackUp size={12} stroke={2} />
         </UndoButton>
       </Header>
-      <FileList>
-        {visibleChanges.map((change, index) => (
-          <FileRow
+      <ResultList>
+        {visibleResults.map((result, index) => (
+          <ResultRow
             $delay={`${ROW_BASE_DELAY_MS + index * ROW_STAGGER_MS}ms`}
-            key={`${change.path}-${index}`}
+            key={`${result.label}-${index}`}
           >
-            <FilePath>{change.path}</FilePath>
-            {renderDiffCounts(change)}
+            <ResultText>{result.label}</ResultText>
+            <ResultMeta>{result.meta}</ResultMeta>
+            <Score>{result.score}</Score>
             <Chevron>
               <IconChevronRight size={14} stroke={1.8} />
             </Chevron>
-          </FileRow>
+          </ResultRow>
         ))}
-      </FileList>
+      </ResultList>
       {hiddenCount > 0 && (
         <SeeMoreButton
           onClick={() => setIsExpanded((current) => !current)}

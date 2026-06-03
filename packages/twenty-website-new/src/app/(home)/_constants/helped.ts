@@ -3,47 +3,47 @@ import type { HelpedDataType } from '@/sections/Helped/types/HelpedData';
 export const HELPED_DATA: HelpedDataType = {
   eyebrow: {
     heading: {
-      text: 'In production.',
+      text: 'The operating loop',
       fontFamily: 'sans',
     },
   },
   heading: [
     {
-      text: 'Dev teams power\ncompany-wide\n',
+      text: 'AI helps engage\nhigh-quality\n',
       fontFamily: 'serif',
     },
     {
-      text: 'change with Twenty',
+      text: 'partners faster',
       fontFamily: 'sans',
     },
   ],
   cards: [
     {
-      icon: 'w3villa',
-      heading: { text: 'Ship a product on Twenty', fontFamily: 'sans' },
+      icon: 'none',
+      heading: { text: 'Evidence beats enrichment', fontFamily: 'sans' },
       body: {
-        text: 'W3villa built W3Grads for AI mock interviews at scale, with Twenty as the operational backbone.',
+        text: 'The useful answer is not another enriched record. It is the reason a partner is worth attention.',
       },
       illustration: 'target',
-      href: '/customers/w3villa',
+      href: '/#homepage-cases',
     },
     {
-      icon: 'act-education',
-      heading: { text: 'Own your CRM end to end', fontFamily: 'sans' },
+      icon: 'none',
+      heading: { text: 'Partner fit is contextual', fontFamily: 'sans' },
       body: {
-        text: 'AC&T replaced a shuttered vendor CRM with self-hosted Twenty and cut CRM costs by more than 90%.',
+        text: 'A strong partner in one ecosystem can be noise in another. Fuse keeps the scoring tied to the motion.',
       },
       illustration: 'spaceship',
-      href: '/customers/act-education',
+      href: '/#homepage-cases',
     },
     {
-      icon: 'netzero',
-      heading: { text: 'Grow with a flexible foundation', fontFamily: 'sans' },
+      icon: 'none',
+      heading: { text: 'Search should become a system', fontFamily: 'sans' },
       body: {
-        text: 'NetZero runs a modular Twenty setup across carbon credits, ag products, and industrial systems.',
+        text: 'Saved searches, evidence, scores, and next moves make repeatable partner work possible.',
       },
       illustration: 'money',
-      href: '/customers/netzero',
+      href: '/#homepage-cases',
     },
   ],
 };

@@ -1,5 +1,5 @@
-// Static diff summary displayed after the assistant populates the cached Fuse
-// partner-search demo. Matches the shape of an IDE / Claude Code changeset.
+// Static summary data retained for the hidden review panel. The visible
+// landing-page demo uses product-facing result summaries instead.
 
 export type FileChange = {
   path: string;
@@ -8,26 +8,26 @@ export type FileChange = {
 };
 
 export const ROCKET_CHANGESET: ReadonlyArray<FileChange> = [
-  { path: 'src/app/(home)/page.tsx', added: 214, removed: 42 },
+  { path: 'Company results', added: 4, removed: 0 },
   {
-    path: 'src/sections/Hero/components/HomeVisual/DraggableTerminal/DraggableTerminal.tsx',
-    added: 32,
-    removed: 7,
-  },
-  {
-    path: 'src/sections/Hero/components/HomeVisual/DraggableTerminal/TerminalPromptBox.tsx',
-    added: 18,
-    removed: 8,
-  },
-  {
-    path: 'src/sections/Hero/components/HomeVisual/HomeVisual.tsx',
-    added: 8,
+    path: 'Person results',
+    added: 4,
     removed: 0,
   },
   {
-    path: 'src/app/resources/[partnerType]/page.tsx',
-    added: 64,
-    removed: 16,
+    path: 'Evidence signals',
+    added: 4,
+    removed: 0,
+  },
+  {
+    path: 'Next moves',
+    added: 4,
+    removed: 0,
+  },
+  {
+    path: 'Saved search',
+    added: 1,
+    removed: 0,
   },
 ];
 

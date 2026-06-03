@@ -4,7 +4,6 @@ import { IconBuildingSkyscraper, IconUser } from '@tabler/icons-react';
 import { styled } from '@linaria/react';
 import { useEffect, useState } from 'react';
 import { TERMINAL_TOKENS } from './terminalTokens';
-import { TerminalPromptChip } from './TerminalPromptChip';
 import { TerminalSendButton } from './TerminalSendButton';
 import { TRAFFIC_LIGHTS_ESCAPE_EVENT } from './TerminalTrafficLights';
 
@@ -16,13 +15,13 @@ const TRAFFIC_LIGHTS_ESCAPE_THRESHOLD = 5;
 // "Ask anything…" placeholder after the first demo chat finishes. The goal is
 // delight without derailing — nothing that looks like a real prompt response.
 const EASTER_EGG_MESSAGES = [
-  'Ask me to do something your CRM should have done years ago',
-  'Build the thing your admin said was impossible',
-  'Turn this CRM into something actually useful',
+  'Ask me to find the partner hiding in plain sight',
+  'Build the list your spreadsheet could not explain',
+  'Turn scattered partner notes into a useful next move',
   'Ask for a workflow. Not a miracle.',
-  'Describe the app you wish you already had',
-  'Create a spaceship. Or a sales workflow.',
-  'Make Salesforce nervous',
+  'Describe the partner motion you wish was already organized',
+  'Find the right ecosystem path',
+  'Make the next intro easier to explain',
   'Still here? Type the impossible',
   'Describe the tool you were not supposed to have.',
   'Build the thing hidden behind a paywall elsewhere.',
@@ -87,6 +86,45 @@ const PromptBox = styled.div`
   }
 `;
 
+const ModeRow = styled.div`
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+`;
+
+const ModeButton = styled.button<{ $active?: boolean }>`
+  align-items: center;
+  background: ${({ $active }) => ($active ? '#1c1c1c' : 'transparent')};
+  border: 1px solid
+    ${({ $active }) =>
+      $active ? '#1c1c1c' : TERMINAL_TOKENS.surface.promptBoxBorder};
+  border-radius: 8px;
+  color: ${({ $active }) =>
+    $active ? '#ffffff' : TERMINAL_TOKENS.text.muted};
+  cursor: pointer;
+  display: inline-flex;
+  font-family: ${TERMINAL_TOKENS.font.ui};
+  font-size: 12px;
+  font-weight: 500;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease,
+    transform 0.14s ease;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.28);
+    color: ${({ $active }) => ($active ? '#ffffff' : 'rgba(0, 0, 0, 0.78)')};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;
+
 const PromptTextRow = styled.div<{ $clickable?: boolean }>`
   align-items: flex-start;
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
@@ -127,8 +165,6 @@ const PromptText = styled.p<{ $isPlaceholder?: boolean }>`
   }
 `;
 
-// flex-wrap stays nowrap so narrow footers shrink the folder chip's label
-// with an ellipsis instead of pushing ActionRow (Send button) to a new line.
 const PromptFooter = styled.div`
   align-items: center;
   display: flex;
@@ -137,19 +173,6 @@ const PromptFooter = styled.div`
   width: 100%;
 `;
 
-// flex: 1 1 auto + min-width: 0 lets this row shrink with the first chip
-// rather than push Demo/Send to the next line.
-const ChipRow = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1 1 auto;
-  gap: 8px;
-  min-width: 0;
-`;
-
-// margin-left: auto keeps the Send button anchored to the right edge whether
-// the footer fits on one line or wraps. Without this, wrapping starts each
-// new line flush-left, pushing the blue Send to the bottom-left.
 const ActionRow = styled.div`
   align-items: center;
   display: flex;
@@ -186,8 +209,8 @@ const DemoButton = styled.button`
 type TerminalPromptBoxProps = {
   promptText: string;
   promptIsPlaceholder?: boolean;
-  searchMode?: 'company' | 'partner';
-  onSearchModeChange?: (mode: 'company' | 'partner') => void;
+  searchMode?: 'company' | 'person';
+  onSearchModeChange?: (mode: 'company' | 'person') => void;
   onSend?: () => void;
   sendDisabled?: boolean;
   isChatFinished?: boolean;
@@ -249,6 +272,24 @@ export const TerminalPromptBox = ({
   return (
     <PromptArea>
       <PromptBox data-wiggle={isWiggling ? 'true' : 'false'}>
+        <ModeRow aria-label="Search mode">
+          <ModeButton
+            $active={searchMode === 'company'}
+            onClick={() => onSearchModeChange?.('company')}
+            type="button"
+          >
+            <IconBuildingSkyscraper size={13} stroke={1.8} />
+            Company
+          </ModeButton>
+          <ModeButton
+            $active={searchMode === 'person'}
+            onClick={() => onSearchModeChange?.('person')}
+            type="button"
+          >
+            <IconUser size={13} stroke={1.8} />
+            Person
+          </ModeButton>
+        </ModeRow>
         <PromptTextRow
           $clickable={isChatFinished}
           onClick={handleEasterEggClick}
@@ -261,20 +302,6 @@ export const TerminalPromptBox = ({
           </PromptText>
         </PromptTextRow>
         <PromptFooter>
-          <ChipRow>
-            <TerminalPromptChip
-              active={searchMode === 'company'}
-              icon={<IconBuildingSkyscraper size={13} stroke={1.8} />}
-              label="Company Search"
-              onClick={() => onSearchModeChange?.('company')}
-            />
-            <TerminalPromptChip
-              active={searchMode === 'partner'}
-              icon={<IconUser size={13} stroke={1.8} />}
-              label="Partner Search"
-              onClick={() => onSearchModeChange?.('partner')}
-            />
-          </ChipRow>
           <ActionRow>
             <DemoButton type="button">Demo</DemoButton>
             <TerminalSendButton

@@ -40,7 +40,7 @@ export type EditorFile = {
 // Copies of the rocket-app schema files the assistant scaffolds. Embedded
 // directly so the preview can render multiple tabs without needing the real
 // filesystem at runtime. Keep in rough sync with
-// /Users/thomascolasdesfrancs/code/Twenty-apps/rockets-app/src/.
+// Hidden editor demo data retained for the terminal component.
 
 const schemaIdentifiersSource = `export const SCHEMA_IDS = {
   rocket: {
@@ -368,7 +368,7 @@ export default defineObject({
     },
     {
       // customer is a relation to the standard Companies object (no new
-      // Customer object — we reuse what ships with Twenty).
+      // Existing object reused by the hidden editor demo.
       universalIdentifier: SCHEMA_IDS.payload.fields.customer,
       type: FieldType.RELATION,
       name: 'customer',
@@ -1270,7 +1270,7 @@ export const DEFAULT_EDITOR_FILE_ID = 'launch-object';
 export const STARTER_EDITOR_FILE_ID = 'application-config';
 
 // Files (and explorer rows) that only exist after the chat scaffolds the
-// launch-ops CRM. Used to filter the explorer tree / tabs before generation.
+// Hidden editor demo filter. Used to filter the explorer tree / tabs.
 export const GENERATED_FILE_IDS: ReadonlySet<string> = new Set([
   'schema-identifiers',
   'rocket-object',

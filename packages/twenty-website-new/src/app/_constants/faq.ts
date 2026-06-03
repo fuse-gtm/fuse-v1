@@ -4,82 +4,73 @@ export const FAQ_DATA: FaqDataType = {
   illustration: 'faqBackground',
   eyebrow: {
     heading: {
-      text: 'Any Questions?',
+      text: 'Questions',
       fontFamily: 'sans',
     },
   },
   heading: [
     {
-      text: 'Stop fighting custom.\n',
+      text: 'A practical system for\n',
       fontFamily: 'serif',
     },
     {
-      text: ' Start building, with Twenty',
+      text: 'partner-led growth',
       fontFamily: 'sans',
     },
   ],
   questions: [
     {
       question: {
-        text: 'Is Twenty really open-source?',
+        text: 'Is Fuse a CRM?',
         fontFamily: 'sans',
       },
       answer: {
-        text: "Yes. Twenty is the #1 open source CRM on GitHub. You can self-host to fully own your infrastructure, or run it on our managed cloud for a zero-ops setup.",
+        text: 'Fuse is built for partner-led growth. It keeps useful context organized, but the first job is finding, scoring, and engaging the right partners.',
       },
     },
     {
       question: {
-        text: 'How long does it take to get started?',
+        text: 'Does the landing page use live search?',
         fontFamily: 'sans',
       },
       answer: {
-        text: 'Sign up for Cloud in under a minute and start your 30-day trial. For larger rollouts, our 4-hour Onboarding Packs or certified partners get you live in 1–2 weeks.',
+        text: 'No. The public demo is cached so the landing page loads quickly. Live discovery belongs inside the app experience.',
       },
     },
     {
       question: {
-        text: 'Can I migrate from Salesforce or HubSpot?',
+        text: 'What makes the scoring useful?',
         fontFamily: 'sans',
       },
       answer: {
-        text: 'Yes. Import your data via CSV, or use our API for 50,000+ records. Our partners can handle the full migration for you.',
+        text: 'The score is tied to evidence: audience, ecosystem overlap, buyer fit, timing, and the reason a partner should respond.',
       },
     },
     {
       question: {
-        text: 'Do I need a developer to customize Twenty?',
+        text: 'Can Fuse search for companies and people?',
         fontFamily: 'sans',
       },
       answer: {
-        text: 'No. Build custom objects, fields, views, and no-code workflows straight from Settings. Unlimited, no extra charge.',
+        text: 'Yes. The landing page demo shows the two top-level modes: Company for partner organizations and Person for operators, creators, agency leads, and channel people.',
       },
     },
     {
       question: {
-        text: 'Can developers extend Twenty with code?',
+        text: 'Why start with cached results?',
         fontFamily: 'sans',
       },
       answer: {
-        text: 'Yes, with our Apps framework. Scaffold an extension with `npx create-twenty-app` and ship custom objects, server-side logic functions, React components that render inside Twenty\u2019s UI, AI skills and agents, views, and navigation, all in TypeScript, deployable to any workspace.',
+        text: 'The landing page should be fast and reliable. Cached results show the product shape without making first paint depend on a live search provider.',
       },
     },
     {
       question: {
-        text: 'Does Twenty work with Claude, ChatGPT, and Cursor?',
+        text: 'What happens after a partner is scored?',
         fontFamily: 'sans',
       },
       answer: {
-        text: 'Yes. Every Cloud workspace ships with a native MCP server. Connect your AI assistant via OAuth and it can read and write your CRM data in natural language.',
-      },
-    },
-    {
-      question: {
-        text: 'What does Twenty cost?',
-        fontFamily: 'sans',
-      },
-      answer: {
-        text: 'Cloud Pro is $9/user/month (yearly). Organization is $19/user/month and unlocks SSO and row-level permissions for teams that need finer access control.',
+        text: 'Fuse turns the result into the next move: an intro path, pilot ask, co-marketing angle, or research note grounded in the evidence.',
       },
     },
   ],

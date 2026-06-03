@@ -50,27 +50,6 @@ const InlineCode = styled.span`
   padding: 1px 5px;
 `;
 
-const FileLink = styled.span`
-  color: #2a66de;
-  cursor: pointer;
-  font-family: ${TERMINAL_TOKENS.font.mono};
-  font-size: 12px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const ReferenceLink = styled.a`
-  color: #2a66de;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-
-  &:hover {
-    color: #1e4ea8;
-  }
-`;
-
 const CardWrap = styled.div<{ $instant: boolean }>`
   animation: ${({ $instant }) =>
     $instant
@@ -121,14 +100,12 @@ const buildIntroAndRocketParagraph = (
   text('I found a focused partner universe from your prompt. First view: '),
   node(
     'rocket-chip',
-    <InlineCode>Company Search</InlineCode>,
+    <InlineCode>Company</InlineCode>,
     onObjectCreated ? () => onObjectCreated(ROCKET_ID) : undefined,
   ),
   text(
-    '. It ranks companies by market fit, shared accounts, ecosystem motion, recent signal, and a suggested next move. Cached in ',
+    '. It ranks companies by market fit, shared accounts, ecosystem motion, recent signal, and a suggested next move.',
   ),
-  node('rocket-file', <FileLink>company-search.results.ts</FileLink>),
-  text('.'),
 ];
 
 const buildLaunchParagraph = (
@@ -137,14 +114,12 @@ const buildLaunchParagraph = (
   text('Next up: '),
   node(
     'launch-chip',
-    <InlineCode>Partner Search</InlineCode>,
+    <InlineCode>Person</InlineCode>,
     onObjectCreated ? () => onObjectCreated(LAUNCH_ID) : undefined,
   ),
   text(
-    '. This finds operators, agencies, creators, and channel people with the right audience context and a credible path into the account. Defined in ',
+    '. This finds operators, agencies, creators, and channel people with the right audience context and a credible path into the account.',
   ),
-  node('launch-file', <FileLink>partner-search.results.ts</FileLink>),
-  text('.'),
 ];
 
 const buildPayloadParagraph = (
@@ -157,10 +132,8 @@ const buildPayloadParagraph = (
     onObjectCreated ? () => onObjectCreated(PAYLOAD_ID) : undefined,
   ),
   text(
-    '. Fuse keeps the score explainable: why this partner, why now, what evidence supports it, and what would make the score change. Scoped in ',
+    '. Fuse keeps the score explainable: why this partner, why now, what evidence supports it, and what would make the score change.',
   ),
-  node('payload-file', <FileLink>fit-drivers.ts</FileLink>),
-  text('.'),
 ];
 
 const buildCustomerParagraph = (
@@ -187,41 +160,28 @@ const buildLaunchSiteParagraph = (
     onObjectCreated ? () => onObjectCreated(LAUNCH_SITE_ID) : undefined,
   ),
   text(
-    '. The recommendation keeps source pages, people, category fit, timing, and notes attached so a teammate can trust the ranking. Lives in ',
+    '. The recommendation keeps source pages, people, category fit, timing, and notes attached so a teammate can trust the ranking.',
   ),
-  node('launch-site-file', <FileLink>evidence-trail.ts</FileLink>),
-  text('.'),
 ];
 
 const PINNED_ACTIONS_PARAGRAPH: StreamingSegment[] = [
   text(
-    'The app preview now has the two top-level modes requested in the prompt box. Next to ',
+    'The app preview now has the two top-level modes requested in the prompt box. ',
   ),
-  node('pa-new', <InlineCode>New</InlineCode>),
-  text(', '),
-  node('pa-rocket', <InlineCode>Company Search</InlineCode>),
+  node('pa-rocket', <InlineCode>Company</InlineCode>),
   text(' and '),
-  node('pa-launch', <InlineCode>Partner Search</InlineCode>),
-  text(' switch the app table between cached result sets, while '),
+  node('pa-launch', <InlineCode>Person</InlineCode>),
+  text(' switch the app table between cached result sets. '),
   node('pa-payload', <InlineCode>Score</InlineCode>),
   text(' and '),
   node('pa-p-book', <InlineCode>Engage</InlineCode>),
-  text(' keep the workflow tied to the selected partner. Defined under '),
-  node('pa-folder', <FileLink>src/app/(home)/page.tsx</FileLink>),
-  text('.'),
+  text(' keep the workflow tied to the selected partner.'),
 ];
 
 const WRAPUP_PARAGRAPH: StreamingSegment[] = [
-  text('The homepage stays static on first paint: no live Exa or Websets call is needed to show the search demo. Verified with '),
-  node('w-lint', <InlineCode>yarn lint</InlineCode>),
-  text(', '),
-  node('w-tsc', <InlineCode>tsc --noEmit</InlineCode>),
-  text(', '),
-  node(
-    'w-vitest',
-    <InlineCode>next build</InlineCode>,
+  text(
+    'The landing page can show this immediately because the demo is cached. Live discovery belongs inside the app experience, not public first paint.',
   ),
-  text('.'),
 ];
 
 type Stage =

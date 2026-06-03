@@ -4,47 +4,29 @@ export const HOME_STEPPER_DATA: HomeStepperDataType = {
   steps: [
     {
       heading: [
-        {
-          text: 'Begin with production-grade',
-          fontFamily: 'serif',
-        },
-        {
-          text: ' building blocks',
-          fontFamily: 'sans',
-        },
+        { text: 'Discover high-fit ', fontFamily: 'serif' },
+        { text: 'companies and people', fontFamily: 'sans' },
       ],
       body: {
-        text: 'Compose your CRM and internal apps with a single extensibility toolkit. Data model, layout, and automation.',
+        text: 'Search by company or person and build a focused partner universe from real market, audience, and ecosystem signals.',
       },
     },
     {
       heading: [
-        {
-          text: 'Continue iteration',
-          fontFamily: 'serif',
-        },
-        {
-          text: ' without friction',
-          fontFamily: 'sans',
-        },
+        { text: 'Score fit with ', fontFamily: 'serif' },
+        { text: 'evidence', fontFamily: 'sans' },
       ],
       body: {
-        text: 'Enjoy unlimited customization using the AI coding tools you already love. Adapt your CRM to fit the way your business grows and wins.',
+        text: 'Turn scattered signals into explainable fit: why this partner, why now, what evidence supports it, and what could change.',
       },
     },
     {
       heading: [
-        {
-          text: 'Stay in control with our',
-          fontFamily: 'serif',
-        },
-        {
-          text: ' open-source software',
-          fontFamily: 'sans',
-        },
+        { text: 'Engage with the ', fontFamily: 'serif' },
+        { text: 'next move', fontFamily: 'sans' },
       ],
       body: {
-        text: "Don't get locked into someone else's ecosystem. Twenty's developer experience looks like normal software, with local setup, real data, live testing, and no proprietary tooling.",
+        text: 'Move from a scored result to the practical action: intro path, pilot ask, co-marketing angle, or research note.',
       },
     },
   ],

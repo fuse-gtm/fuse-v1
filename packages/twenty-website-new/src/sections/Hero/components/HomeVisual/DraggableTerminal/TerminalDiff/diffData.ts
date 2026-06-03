@@ -1,4 +1,4 @@
-// Diff data shown in the slide-in review panel. Reflects the launch-ops CRM
+// Diff data shown in the hidden slide-in review panel.
 // expansion (Rocket, Launch, Payload, Customer, Launch site) that the chat
 // scaffolds — matches the file list in ChangesSummaryCard.
 

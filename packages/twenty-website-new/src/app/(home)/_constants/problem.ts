@@ -1,24 +1,22 @@
 import type { ProblemDataType } from '@/sections/Problem/types';
 
 export const PROBLEM_DATA: ProblemDataType = {
-  eyebrow: { heading: { text: 'The Problem.', fontFamily: 'sans' } },
+  eyebrow: { heading: { text: 'The Frankenstack problem', fontFamily: 'sans' } },
   heading: [
-    { text: 'A custom CRM gives your org an edge, ', fontFamily: 'serif' },
-    { text: 'but building one ', fontFamily: 'sans' },
-    { text: 'comes with ', fontFamily: 'serif' },
-    { text: 'tradeoffs', fontFamily: 'sans' },
+    { text: 'Partner teams run complex ecosystems ', fontFamily: 'serif' },
+    { text: 'on passive databases', fontFamily: 'sans' },
   ],
   points: [
     {
-      heading: { text: 'The Giant Monolith', fontFamily: 'sans' },
+      heading: { text: 'Signals live everywhere', fontFamily: 'sans' },
       body: {
-        text: 'Proprietary languages, slow deployment cycles, and "black box" logic.',
+        text: 'Partner context is scattered across spreadsheets, email, LinkedIn, notes, search, and old systems of record.',
       },
     },
     {
-      heading: { text: 'The In-house Burden', fontFamily: 'sans' },
+      heading: { text: 'The record does not tell you what to do', fontFamily: 'sans' },
       body: {
-        text: "It's fragile. V1 ships quickly, but maintaining and making changes is a long term burden.",
+        text: 'A database can store names, but it does not explain fit, evidence, timing, or the next useful move.',
       },
     },
   ],

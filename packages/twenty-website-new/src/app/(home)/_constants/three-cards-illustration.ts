@@ -2,54 +2,63 @@ import type { ThreeCardsIllustrationDataType } from '@/sections/ThreeCards/types
 
 export const THREE_CARDS_ILLUSTRATION_DATA: ThreeCardsIllustrationDataType = {
   eyebrow: {
-    heading: { text: 'Stop settling for trade-offs.', fontFamily: 'sans' },
+    heading: { text: 'What the Frankenstack causes', fontFamily: 'sans' },
   },
   heading: [
-    { text: 'Assemble, iterate and adapt a robust CRM,', fontFamily: 'serif' },
-    { text: " that's quick to flex", fontFamily: 'sans' },
+    { text: 'Less partner busywork. ', fontFamily: 'serif' },
+    { text: 'Better judgment.', fontFamily: 'sans' },
   ],
   body: {
-    text: 'Compose your CRM and internal apps with a single extensibility toolkit.',
+    text: 'Busywork, credibility gaps, and generic AI are consequences of running partner ecosystems on scattered passive tools.',
   },
   illustrationCards: [
     {
-      heading: { text: 'Production grade quality', fontFamily: 'sans' },
+      heading: { text: 'Busywork', fontFamily: 'sans' },
       body: {
-        text: 'W3villa used Twenty as a production-grade framework for the data model, permissions, authentication, and workflow engine they would otherwise have rebuilt themselves.',
+        text: 'Hours disappear into spreadsheets, LinkedIn tabs, notes, and half-finished partner records before real work starts.',
       },
-      benefits: undefined,
+      benefits: [
+        { text: 'Manual list building', icon: 'edit' },
+        { text: 'Context switching', icon: 'eye' },
+        { text: 'Duplicate research', icon: 'search' },
+      ],
       attribution: {
-        role: { text: 'VP of Engineering' },
-        company: { text: 'W3villa Technologies' },
+        role: { text: 'Consequence 01' },
+        company: { text: 'Frankenstack' },
       },
       illustration: 'diamond',
-      caseStudySlug: 'w3villa',
     },
     {
-      heading: { text: 'AI for rapid iterations', fontFamily: 'sans' },
+      heading: { text: 'Credibility gap', fontFamily: 'sans' },
       body: {
-        text: 'Alternative Partners used agentic AI to compress what would typically be weeks of Salesforce migration work into something a single person could oversee.',
+        text: 'The partner pitch gets weaker when nobody can explain why this company, why now, or why the partner should care.',
       },
-      benefits: undefined,
+      benefits: [
+        { text: 'Weak rationale', icon: 'tag' },
+        { text: 'Unclear intro path', icon: 'users' },
+        { text: 'Low-trust outreach', icon: 'book' },
+      ],
       attribution: {
-        role: { text: 'Principal and Founder' },
-        company: { text: 'Alternative Partners' },
-      },
-      illustration: 'flash',
-      caseStudySlug: 'alternative-partners',
-    },
-    {
-      heading: { text: 'Control without drag', fontFamily: 'sans' },
-      body: {
-        text: 'AC&T moved to a self-hosted Twenty instance with no vendor risk, no forced migration, and CRM costs reduced by more than 90%.',
-      },
-      benefits: undefined,
-      attribution: {
-        role: { text: 'CRM Engineer' },
-        company: { text: 'AC&T Education Migration' },
+        role: { text: 'Consequence 02' },
+        company: { text: 'Frankenstack' },
       },
       illustration: 'lock',
-      caseStudySlug: 'act-education',
+    },
+    {
+      heading: { text: '"Fake" AI', fontFamily: 'sans' },
+      body: {
+        text: 'AI bolted onto passive databases can write text, but it cannot decide who is worth engaging without partner context.',
+      },
+      benefits: [
+        { text: 'Generic summaries', icon: 'code' },
+        { text: 'No evidence trail', icon: 'eye' },
+        { text: 'No next move', icon: 'check' },
+      ],
+      attribution: {
+        role: { text: 'Consequence 03' },
+        company: { text: 'Frankenstack' },
+      },
+      illustration: 'flash',
     },
   ],
 };

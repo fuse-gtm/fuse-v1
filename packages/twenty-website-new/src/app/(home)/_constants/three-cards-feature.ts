@@ -3,20 +3,19 @@ import type { ThreeCardsFeatureCardsDataType } from '@/sections/ThreeCards/types
 export const THREE_CARDS_FEATURE_DATA: ThreeCardsFeatureCardsDataType = {
   eyebrow: {
     heading: {
-      text: 'Skip the clunky UX that always comes with custom.',
+      text: 'Works across partner motions',
       fontFamily: 'sans',
     },
   },
   heading: [
-    { text: 'Make your GTM team happy', fontFamily: 'serif' },
-    { text: 'with ', fontFamily: 'serif', lineBreakBefore: true },
-    { text: "a CRM they'll love", fontFamily: 'sans' },
+    { text: 'The same loop for ', fontFamily: 'serif' },
+    { text: 'different ecosystems', fontFamily: 'sans' },
   ],
   featureCards: [
     {
-      heading: { text: 'Familiar, modern interface', fontFamily: 'sans' },
+      heading: { text: 'Technology and channel partners', fontFamily: 'sans' },
       body: {
-        text: "Twenty makes it simple. It's clean, intuitive, and built to feel like Notion.",
+        text: 'Map technical fit, account overlap, and the route to a useful joint motion.',
       },
       backgroundImageSrc:
         '/images/home/three-cards-feature/familiar-interface-gradient.webp',
@@ -24,9 +23,9 @@ export const THREE_CARDS_FEATURE_DATA: ThreeCardsFeatureCardsDataType = {
       illustration: 'familiar-interface',
     },
     {
-      heading: { text: 'Live data and AI built', fontFamily: 'sans' },
+      heading: { text: 'Marketplace and agency partners', fontFamily: 'sans' },
       body: {
-        text: 'Everything updates in real time, with AI chat always ready to help you move faster.',
+        text: 'Prioritize partners by buyer fit, services, distribution path, and timing.',
       },
       backgroundImageSrc:
         '/images/home/three-cards-feature/live-data-gradient.webp',
@@ -34,9 +33,9 @@ export const THREE_CARDS_FEATURE_DATA: ThreeCardsFeatureCardsDataType = {
       illustration: 'live-data',
     },
     {
-      heading: { text: 'Fast path to action', fontFamily: 'sans' },
+      heading: { text: 'Creator and affiliate partners', fontFamily: 'sans' },
       body: {
-        text: 'Smart patterns, shortcuts, and layouts make everyday tasks faster and easier to execute.',
+        text: 'Score people by audience context and trust, not vanity reach.',
       },
       backgroundImageSrc:
         '/images/home/three-cards-feature/fast-path-gradient.webp',

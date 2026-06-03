@@ -109,7 +109,7 @@ export function Card({ card }: CardProps) {
         <LinkButton
           color="primary"
           href={card.href}
-          label="Read the case"
+          label="Read the note"
           type="link"
           variant="outlined"
         />

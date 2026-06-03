@@ -25,9 +25,9 @@ import { TERMINAL_TOKENS } from './terminalTokens';
 const WINDOW_ID = 'terminal-window';
 const PROMPT_TEXT_BY_MODE = {
   company:
-    'Find companies in our market that already work with partner-led infrastructure teams. Score them by evidence and show the next move.',
-  partner:
-    'Find partner operators and agencies who can introduce us to the right ecosystem accounts. Show fit, evidence, and outreach angle.',
+    'Find companies selling into Shopify agencies that could help us reach ecommerce operators.',
+  person:
+    'Find people who influence agency partnerships in the Shopify ecosystem.',
 } as const;
 const CLEARED_PROMPT_TEXT = 'Ask anything…';
 
@@ -297,7 +297,7 @@ type DraggableTerminalProps = {
   onChatFinished?: () => void;
   onChatReset?: () => void;
   onJumpToConversationEnd?: () => void;
-  onSearchModeChange?: (mode: 'company' | 'partner') => void;
+  onSearchModeChange?: (mode: 'company' | 'person') => void;
 };
 
 export const DraggableTerminal = ({
@@ -321,7 +321,7 @@ export const DraggableTerminal = ({
   const [isResizing, setIsResizing] = useState(false);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [view, setView] = useState<TerminalToggleValue>('ai-chat');
-  const [searchMode, setSearchMode] = useState<'company' | 'partner'>(
+  const [searchMode, setSearchMode] = useState<'company' | 'person'>(
     'company',
   );
   const [isChatFinished, setIsChatFinished] = useState(false);
@@ -343,7 +343,7 @@ export const DraggableTerminal = ({
   const promptText = PROMPT_TEXT_BY_MODE[searchMode];
 
   const handleSearchModeChange = useCallback(
-    (mode: 'company' | 'partner') => {
+    (mode: 'company' | 'person') => {
       setSearchMode(mode);
       onSearchModeChange?.(mode);
     },
