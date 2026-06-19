@@ -24,6 +24,7 @@ Each doc follows the same structure:
 | Deploy Runbook | [SPEC-004-deploy-runbook.md](SPEC-004-deploy-runbook.md) | P0 | SPEC-002 |
 | Apollo Enrichment Integration | [SPEC-005-apollo-enrichment.md](SPEC-005-apollo-enrichment.md) | P1 | SPEC-001 (app framework) |
 | Partner Artifact Generator | [SPEC-006-partner-artifact-generator.md](SPEC-006-partner-artifact-generator.md) | P2 (scoped, not started — founder go-ahead required) | SPEC-001 (SDK framework), SPEC-005 (enriched data) |
+| Upstream-Based Twenty Deployment with Fuse Partner Apps | [SPEC-007-upstream-twenty-fuse-apps-deployment-prd.md](SPEC-007-upstream-twenty-fuse-apps-deployment-prd.md) | P0 | Nothing |
 
 ## Key references
 
