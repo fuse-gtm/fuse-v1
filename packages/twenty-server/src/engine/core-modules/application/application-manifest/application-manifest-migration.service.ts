@@ -100,8 +100,11 @@ export class ApplicationManifestMigrationService {
       ],
     );
 
-    const { featureFlagsMap, flatApplicationMaps, ...existingAllFlatEntityMaps } =
-      cacheResult;
+    const {
+      featureFlagsMap,
+      flatApplicationMaps,
+      ...existingAllFlatEntityMaps
+    } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -197,8 +200,11 @@ export class ApplicationManifestMigrationService {
       ApplicationManifestMigrationService.name,
     );
 
-    const { featureFlagsMap, flatApplicationMaps, ...existingAllFlatEntityMaps } =
-      cacheResult;
+    const {
+      featureFlagsMap,
+      flatApplicationMaps,
+      ...existingAllFlatEntityMaps
+    } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -359,9 +365,7 @@ export class ApplicationManifestMigrationService {
       return [twentyStandardFlatApplication.id];
     }
 
-    const installedApplicationIds = Object.values(
-      flatApplicationMaps.byId,
-    )
+    const installedApplicationIds = Object.values(flatApplicationMaps.byId)
       .filter(
         (flatApplication): flatApplication is FlatApplication =>
           isDefined(flatApplication) && !isDefined(flatApplication.deletedAt),

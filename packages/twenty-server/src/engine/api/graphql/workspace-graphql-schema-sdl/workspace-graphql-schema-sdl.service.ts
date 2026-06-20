@@ -226,12 +226,11 @@ export class WorkspaceGraphqlSchemaSDLService {
   }): string[] {
     const installedApplicationIds = Object.values(
       flatApplicationMaps?.byId ?? {},
-    )
-      .flatMap((flatApplication) =>
-        isDefined(flatApplication) && !isDefined(flatApplication.deletedAt)
-          ? [flatApplication.id]
-          : [],
-      );
+    ).flatMap((flatApplication) =>
+      isDefined(flatApplication) && !isDefined(flatApplication.deletedAt)
+        ? [flatApplication.id]
+        : [],
+    );
 
     if (installedApplicationIds.length > 0) {
       return [...new Set(installedApplicationIds)];
