@@ -83,7 +83,7 @@ export const buildManifest = async (
   const views: ViewManifest[] = [];
   const navigationMenuItems: NavigationMenuItemManifest[] = [];
   const pageLayouts: PageLayoutManifest[] = [];
-  const pageLayoutTabs: PageLayoutTabManifest[] = [];
+  const pageLayoutTabs: PageLayoutTabConfig[] = [];
   const postInstallLogicFunctions: PostInstallLogicFunctionApplicationManifest[] =
     [];
   const preInstallLogicFunctions: PreInstallLogicFunctionApplicationManifest[] =
@@ -341,7 +341,7 @@ export const buildManifest = async (
           filePath,
         });
 
-        const pageLayoutTabManifest: PageLayoutTabManifest = {
+        const pageLayoutTabManifest: PageLayoutTabConfig = {
           ...extract.config,
         };
 
@@ -411,6 +411,53 @@ export const buildManifest = async (
   const byPath = <T extends { filePath: string }>(a: T, b: T) =>
     a.filePath.localeCompare(b.filePath);
 
+  const pageLayoutTabsByPageLayoutUniversalIdentifier = new Map<
+    string,
+    PageLayoutTabManifest[]
+  >();
+
+  for (const {
+    pageLayoutUniversalIdentifier,
+    ...pageLayoutTab
+  } of pageLayoutTabs) {
+    const tabs =
+      pageLayoutTabsByPageLayoutUniversalIdentifier.get(
+        pageLayoutUniversalIdentifier,
+      ) ?? [];
+
+    tabs.push(pageLayoutTab);
+    pageLayoutTabsByPageLayoutUniversalIdentifier.set(
+      pageLayoutUniversalIdentifier,
+      tabs,
+    );
+  }
+
+  const pageLayoutUniversalIdentifiers = new Set(
+    pageLayouts.map((pageLayout) => pageLayout.universalIdentifier),
+  );
+
+  for (const pageLayoutUniversalIdentifier of pageLayoutTabsByPageLayoutUniversalIdentifier.keys()) {
+    if (!pageLayoutUniversalIdentifiers.has(pageLayoutUniversalIdentifier)) {
+      errors.push(
+        `PageLayoutTab references missing page layout "${pageLayoutUniversalIdentifier}". Add a definePageLayout() with that universalIdentifier.`,
+      );
+    }
+  }
+
+  const pageLayoutsWithTabs = pageLayouts.map((pageLayout) => {
+    const tabs = [
+      ...(pageLayout.tabs ?? []),
+      ...(pageLayoutTabsByPageLayoutUniversalIdentifier.get(
+        pageLayout.universalIdentifier,
+      ) ?? []),
+    ].sort(byId);
+
+    return {
+      ...pageLayout,
+      ...(tabs.length > 0 ? { tabs } : {}),
+    };
+  });
+
   const manifest = !application
     ? null
     : {
@@ -425,8 +472,7 @@ export const buildManifest = async (
         publicAssets: publicAssets.sort(byPath),
         views: views.sort(byId),
         navigationMenuItems: navigationMenuItems.sort(byId),
-        pageLayouts: pageLayouts.sort(byId),
-        pageLayoutTabs: pageLayoutTabs.sort(byId),
+        pageLayouts: pageLayoutsWithTabs.sort(byId),
       };
 
   const entityFilePaths: EntityFilePaths = {

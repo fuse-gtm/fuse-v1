@@ -37,7 +37,6 @@ const validManifest: Manifest = {
   views: [],
   navigationMenuItems: [],
   pageLayouts: [],
-  pageLayoutTabs: [],
 };
 
 describe('manifestValidate', () => {
