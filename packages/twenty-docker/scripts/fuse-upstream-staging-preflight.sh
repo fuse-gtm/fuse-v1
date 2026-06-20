@@ -99,8 +99,6 @@ set -a
 source "$ENV_FILE"
 set +a
 
-require_cmd git
-require_cmd yarn
 require_cmd curl
 
 if [ "$CHECK_DOCKER" = "true" ]; then
@@ -181,12 +179,17 @@ if [ "$(as_bool "${AUTH_MICROSOFT_ENABLED:-false}")" = "true" ]; then
   require_value AUTH_MICROSOFT_CALLBACK_URL
 fi
 
-require_file packages/twenty-apps/internal/fuse-partner-core/package.json
-require_file packages/twenty-apps/internal/fuse-agency-partner-program/package.json
-
 if [ "$RUN_APP_VALIDATORS" = "true" ]; then
+  require_cmd git
+  require_cmd yarn
+
+  require_file packages/twenty-apps/internal/fuse-partner-core/package.json
+  require_file packages/twenty-apps/internal/fuse-agency-partner-program/package.json
+
   yarn fuse:partner-core:validate
   yarn fuse:agency-partner:validate
+else
+  warn "Skipping Fuse app package validation (RUN_APP_VALIDATORS=false). Run validators in repo CI before deploy."
 fi
 
 echo "Upstream staging preflight passed (env=$ENV_FILE)"

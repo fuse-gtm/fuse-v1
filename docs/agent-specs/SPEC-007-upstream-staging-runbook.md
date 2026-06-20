@@ -102,6 +102,10 @@ Verify:
 docker manifest inspect ghcr.io/fuse-gtm/fuse-v1:fuse-upstream-staging-$(git rev-parse --short HEAD)
 ```
 
+The image build must use Dockerfile target `twenty`. Do not deploy the
+`twenty-app-dev` target to staging; that target is the all-in-one SDK/dev image
+and starts embedded Postgres/Redis services.
+
 ## Step 3: Boot Staging
 
 Run with `WORKSPACE_ID` intentionally absent:

@@ -100,6 +100,7 @@ jobs:
         with:
           context: .
           file: packages/twenty-docker/twenty/Dockerfile
+          target: twenty
           platforms: linux/amd64
           push: true
           tags: ${{ steps.tags.outputs.tags }}
@@ -129,5 +130,6 @@ jobs:
             echo ""
             echo "- Primary image: \`${{ steps.meta.outputs.image_ref }}\`"
             echo "- Tags pushed: \`${{ steps.tags.outputs.tags }}\`"
+            echo "- Docker target: \`twenty\`"
             echo "- Platform: \`linux/amd64\`"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -18,6 +18,7 @@ case "$host_arch" in
 esac
 
 PLATFORM="${PLATFORM:-$DEFAULT_PLATFORM}"
+BUILD_TARGET="${BUILD_TARGET:-twenty}"
 IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
 
 MODE=local \
@@ -27,9 +28,10 @@ CHECK_IMAGE_EXISTS=false \
 CHECK_BUILD_RESOURCES=false \
 bash "${SCRIPT_DIR}/fuse-deploy-preflight.sh"
 
-echo "Building local image ${IMAGE_REF} (${PLATFORM})"
+echo "Building local image ${IMAGE_REF} (${PLATFORM}, target=${BUILD_TARGET})"
 docker buildx build \
   --platform "${PLATFORM}" \
+  --target "${BUILD_TARGET}" \
   -f packages/twenty-docker/twenty/Dockerfile \
   -t "${IMAGE_REF}" \
   --load .
