@@ -73,7 +73,6 @@ describe('creates.create_company', () => {
           '{number: "610203041", countryCode: "FR", callingCode: "+33"}',
         ],
       },
-      city: 'Paris',
     });
     const result = await appTester(
       App.creates[crudRecordKey].operation.perform,

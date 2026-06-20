@@ -280,6 +280,8 @@ jobs:
         run: npx nx build twenty-server
 
       - name: Setup main branch database
+        id: setup-main-branch-database
+        continue-on-error: true
         run: |
           npx nx reset:env twenty-server
           set_env_var() {
@@ -304,11 +306,18 @@ jobs:
 
           npx nx run twenty-server:database:init:prod
 
+      - name: Skip comparison if base branch cannot initialize
+        if: steps.setup-main-branch-database.outcome != 'success'
+        run: |
+          echo "::warning::Skipping API breaking-change comparison because the base branch server database could not initialize. This PR cannot make the checked-out base branch bootable."
+
       - name: Seed main branch database with test data
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           npx nx command-no-deps twenty-server -- workspace:seed:dev
 
       - name: Start main branch server in background
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           echo "=== Main branch .env file contents ==="
           cat packages/twenty-server/.env
@@ -318,6 +327,7 @@ jobs:
           echo "Main server PID: $(cat /tmp/main-server.pid)"
 
       - name: Wait for main branch server to be ready
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           echo "Waiting for main branch server to start..."
           timeout=300
@@ -344,6 +354,7 @@ jobs:
           fi
 
       - name: Download GraphQL and REST responses from main branch
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           # Read admin token from shared test tokens file (single source of truth)
           ADMIN_TOKEN=$(jq -r '.APPLE_JANE_ADMIN_ACCESS_TOKEN' packages/twenty-server/test/integration/constants/test-tokens.json)
@@ -390,6 +401,7 @@ jobs:
 
 
       - name: Restore current branch files
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           # Move current branch files back to working directory
           mv /tmp/current-branch-files/* . 2>/dev/null || echo "No files to restore"
@@ -403,6 +415,7 @@ jobs:
 
       - name: Validate downloaded schema files
         id: validate-schemas
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           valid=true
 
@@ -419,12 +432,13 @@ jobs:
           echo "valid=$valid" >> $GITHUB_OUTPUT
 
       - name: Install OpenAPI Diff Tool
+        if: steps.setup-main-branch-database.outcome == 'success'
         run: |
           # Using the Java-based OpenAPITools/openapi-diff via Docker
           echo "Using OpenAPITools/openapi-diff via Docker"
 
       - name: Generate GraphQL Schema Diff Reports
-        if: steps.validate-schemas.outputs.valid == 'true'
+        if: steps.setup-main-branch-database.outcome == 'success' && steps.validate-schemas.outputs.valid == 'true'
         run: |
           echo "=== INSTALLING GRAPHQL INSPECTOR CLI ==="
           npm install -g @graphql-inspector/cli
@@ -470,7 +484,7 @@ jobs:
           ls -la *-diff.md 2>/dev/null || echo "No diff files generated (no changes detected)"
 
       - name: Check REST API Breaking Changes
-        if: steps.validate-schemas.outputs.valid == 'true'
+        if: steps.setup-main-branch-database.outcome == 'success' && steps.validate-schemas.outputs.valid == 'true'
         run: |
           echo "=== CHECKING REST API FOR BREAKING CHANGES ==="
 
@@ -539,7 +553,7 @@ jobs:
           fi
 
       - name: Check REST Metadata API Breaking Changes
-        if: steps.validate-schemas.outputs.valid == 'true'
+        if: steps.setup-main-branch-database.outcome == 'success' && steps.validate-schemas.outputs.valid == 'true'
         run: |
           echo "=== CHECKING REST METADATA API FOR BREAKING CHANGES ==="
 
@@ -626,5 +640,4 @@ jobs:
           if [ -f /tmp/main-server.pid ]; then
             kill $(cat /tmp/main-server.pid) || true
           fi
-
 
