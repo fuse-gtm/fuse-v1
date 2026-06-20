@@ -1,5 +1,9 @@
 import { defineRole } from 'twenty-sdk/define';
 import {
+  CORE_OBJECT_IDS,
+  STANDARD_OBJECT_IDS,
+} from 'src/constants/core-identifiers';
+import {
   DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
   OBJECT_IDS,
 } from 'src/constants/universal-identifiers';
@@ -16,6 +20,34 @@ export default defineRole({
   canDestroyAllObjectRecords: false,
   canBeAssignedToUsers: true,
   objectPermissions: [
+    {
+      objectUniversalIdentifier: STANDARD_OBJECT_IDS.company,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: false,
+      canDestroyObjectRecords: false,
+    },
+    {
+      objectUniversalIdentifier: STANDARD_OBJECT_IDS.person,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: false,
+      canDestroyObjectRecords: false,
+    },
+    {
+      objectUniversalIdentifier: CORE_OBJECT_IDS.partnerProfile,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: false,
+      canDestroyObjectRecords: false,
+    },
+    {
+      objectUniversalIdentifier: CORE_OBJECT_IDS.partnerEnrollment,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: false,
+      canDestroyObjectRecords: false,
+    },
     {
       objectUniversalIdentifier: OBJECT_IDS.agencyApplication,
       canReadObjectRecords: true,

@@ -109,6 +109,22 @@ const normalizeDomain = (website: string): string => {
   return hostname.replace(/^www\./, '');
 };
 
+const toCompanyDomainName = (normalizedDomain: string) => ({
+  primaryLinkUrl: `https://${normalizedDomain}`,
+  primaryLinkLabel: normalizedDomain,
+});
+
+const toPersonName = (displayName: string) => {
+  const [firstName = displayName, ...lastNameParts] = displayName
+    .trim()
+    .split(/\s+/);
+
+  return {
+    firstName,
+    lastName: lastNameParts.join(' '),
+  };
+};
+
 const stableJson = (value: Record<string, unknown>) =>
   JSON.stringify(
     Object.keys(value)
@@ -136,6 +152,7 @@ export const createAgencySubmissionPlan = (
   );
   const website = requireString(input.website, 'website');
   const normalizedDomain = normalizeDomain(website);
+  const applicantName = input.applicantName?.trim() || agencyName;
   const duplicateKey = `${normalizedDomain}:${applicantEmail}`;
   const isDuplicate = Boolean(input.existingApplicationId);
   const riskState = isDuplicate ? 'NEEDS_REVIEW' : 'CLEAR';
@@ -151,12 +168,12 @@ export const createAgencySubmissionPlan = (
       ? null
       : {
           name: agencyName,
-          domainName: normalizedDomain,
+          domainName: toCompanyDomainName(normalizedDomain),
         },
     personData: input.existingPersonId
       ? null
       : {
-          name: input.applicantName?.trim() || agencyName,
+          name: toPersonName(applicantName),
           emails: {
             primaryEmail: applicantEmail,
             additionalEmails: [],
@@ -167,7 +184,7 @@ export const createAgencySubmissionPlan = (
       status: isDuplicate ? 'NEEDS_REVIEW' : 'SUBMITTED',
       submittedAt: now,
       website,
-      applicantName: input.applicantName?.trim() || agencyName,
+      applicantName,
       applicantEmail,
       normalizedDomain,
       duplicateKey,

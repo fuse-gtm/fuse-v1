@@ -16,6 +16,7 @@ export const STANDARD_FIELD_IDS = {
 
 export const CORE_OBJECT_IDS = {
   partnerProfile: '59a27eee-9f9f-4555-93b2-11751b3debe0',
+  partnerEnrollment: '5fa030e3-6782-4bb9-bee2-98a8f22efdb7',
 } as const;
 
 export const CORE_FIELD_IDS = {

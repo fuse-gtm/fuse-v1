@@ -2,6 +2,7 @@ import { CoreApiClient } from 'twenty-client-sdk/core';
 import { defineLogicFunction, type RoutePayload } from 'twenty-sdk/define';
 import {
   createAgencyReferralEventPlan,
+  mergeAgencyReferralRollupDelta,
   type AgencyReferralEventInput,
   type AgencyReferralIdempotencyContext,
 } from 'src/lifecycle/agency-referral-attribution';
@@ -60,30 +61,70 @@ const handler = async (
     } as any);
   }
 
-  await client.mutation({
-    createAgencyReferralRollup: {
+  const { agencyReferralRollups } = await client.query({
+    agencyReferralRollups: {
       __args: {
-        data: {
-          name: `enrollment:${plan.eventData.enrollmentId}`,
-          scopeType: 'ENROLLMENT',
-          scopeId: plan.eventData.enrollmentId,
-          ...plan.rollupDelta,
-          lastEventAt: plan.eventData.occurredAt,
-          repairStatus: 'FRESH',
-          partnerProfileId: plan.eventData.partnerProfileId,
-          agencyGroupId: plan.eventData.agencyGroupId,
+        filter: { scopeId: { eq: plan.eventData.enrollmentId } },
+        first: 1,
+      },
+      edges: {
+        node: {
+          id: true,
+          leadCount: true,
+          saleCount: true,
+          revenueCents: true,
         },
       },
-      id: true,
     },
   } as any);
+
+  const existingRollup = agencyReferralRollups?.edges?.[0]?.node;
+  const rollupCounters = mergeAgencyReferralRollupDelta(
+    existingRollup,
+    plan.rollupDelta,
+  );
+  const rollupData = {
+    name: `enrollment:${plan.eventData.enrollmentId}`,
+    scopeType: 'ENROLLMENT',
+    scopeId: plan.eventData.enrollmentId,
+    ...rollupCounters,
+    lastEventAt: plan.eventData.occurredAt,
+    repairStatus: 'FRESH',
+    partnerProfileId: plan.eventData.partnerProfileId,
+    agencyGroupId: plan.eventData.agencyGroupId,
+  };
+
+  const rollupMutationResult = existingRollup?.id
+    ? await client.mutation({
+        updateAgencyReferralRollup: {
+          __args: {
+            id: existingRollup.id,
+            data: rollupData,
+          },
+          id: true,
+        },
+      } as any)
+    : await client.mutation({
+        createAgencyReferralRollup: {
+          __args: {
+            data: rollupData,
+          },
+          id: true,
+        },
+      } as any);
+
+  const agencyReferralRollupId =
+    rollupMutationResult.updateAgencyReferralRollup?.id ??
+    rollupMutationResult.createAgencyReferralRollup?.id;
 
   return {
     status: 'accepted',
     eventId: plan.eventData.eventId,
     agencyReferralEventId,
     agencyAttributionId,
+    agencyReferralRollupId,
     rollupDelta: plan.rollupDelta,
+    rollupTotals: rollupCounters,
   };
 };
 

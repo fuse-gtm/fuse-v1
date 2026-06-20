@@ -234,6 +234,26 @@ export const createAgencyReferralEventPlan = (
   };
 };
 
+export type AgencyReferralRollupCounters = {
+  leadCount?: number | null;
+  saleCount?: number | null;
+  revenueCents?: number | null;
+};
+
+export const mergeAgencyReferralRollupDelta = (
+  current: AgencyReferralRollupCounters | undefined,
+  delta: Required<
+    Pick<
+      AgencyReferralRollupCounters,
+      'leadCount' | 'saleCount' | 'revenueCents'
+    >
+  >,
+) => ({
+  leadCount: (current?.leadCount ?? 0) + delta.leadCount,
+  saleCount: (current?.saleCount ?? 0) + delta.saleCount,
+  revenueCents: (current?.revenueCents ?? 0) + delta.revenueCents,
+});
+
 export const repairAgencyReferralRollups = (
   events: AgencyReferralAcceptedEvent[],
 ) => {

@@ -227,6 +227,43 @@ curl -fsS -X POST https://<staging-host>/graphql \
   --data '{"query":"query { agencyApplications { edges { node { id name } } } }"}'
 ```
 
+App-owned routes are mounted under the workspace/app route prefix. Use the
+workspace subdomain host and `/s/agency/...` paths:
+
+```bash
+curl -fsS -X POST https://<workspace-subdomain>.<staging-host>/s/agency/applications/submit \
+  -H "Content-Type: application/json" \
+  --data @/tmp/spec007-submit-payload.json
+
+curl -fsS -X POST https://<workspace-subdomain>.<staging-host>/s/agency/applications/approve \
+  -H "Authorization: Bearer $(cat "$TWENTY_DEPLOY_API_KEY_FILE")" \
+  -H "Content-Type: application/json" \
+  --data @/tmp/spec007-approve-payload.json
+```
+
+Before smoking referral events, set the app-scoped signing secret. Query
+`findManyApplications` on `/metadata` to get the Agency app id, then run:
+
+```graphql
+mutation SetAgencySecret(
+  $key: String!
+  $value: String!
+  $applicationId: UUID!
+) {
+  updateOneApplicationVariable(
+    key: $key
+    value: $value
+    applicationId: $applicationId
+  )
+}
+```
+
+The referral route is `POST /s/agency/referrals/events`. A signed lead event
+followed by a signed sale event for the approved enrollment should return
+`status: "accepted"` for both events; the sale response should include rollup
+totals with `leadCount: 1`, `saleCount: 1`, and `revenueCents` equal to the sale
+payload amount.
+
 Application smoke:
 
 - Settings > Applications shows both Fuse private apps.

@@ -28,6 +28,14 @@ const submissionInput = {
   assert.equal(plan.applicationData.monthlyLeadVolumeBand, 'ELEVEN_TO_FIFTY');
   assert.equal(plan.applicationData.normalizedDomain, 'acmeagency.com');
   assert.equal(plan.companyData?.name, 'Acme Agency');
+  assert.deepEqual(plan.companyData?.domainName, {
+    primaryLinkUrl: 'https://acmeagency.com',
+    primaryLinkLabel: 'acmeagency.com',
+  });
+  assert.deepEqual(plan.personData?.name, {
+    firstName: 'Ada',
+    lastName: 'Partner',
+  });
   assert.equal(plan.personData?.emails.primaryEmail, 'ada@acmeagency.com');
   assert.equal(plan.reviewEventData.action, 'SUBMITTED');
 }

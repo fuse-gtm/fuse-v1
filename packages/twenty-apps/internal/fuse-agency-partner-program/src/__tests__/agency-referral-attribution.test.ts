@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {
   AgencyReferralAttributionError,
   createAgencyReferralEventPlan,
+  mergeAgencyReferralRollupDelta,
   repairAgencyReferralRollups,
   signAgencyReferralEvent,
   type AgencyReferralEventInput,
@@ -121,6 +122,35 @@ const withSignature = (
     (error) =>
       error instanceof AgencyReferralAttributionError &&
       error.code === 'INVALID_SIGNATURE',
+  );
+}
+
+{
+  assert.deepEqual(
+    mergeAgencyReferralRollupDelta(
+      { leadCount: 1, saleCount: 0, revenueCents: 0 },
+      { leadCount: 0, saleCount: 1, revenueCents: 9900 },
+    ),
+    {
+      leadCount: 1,
+      saleCount: 1,
+      revenueCents: 9900,
+    },
+  );
+}
+
+{
+  assert.deepEqual(
+    mergeAgencyReferralRollupDelta(undefined, {
+      leadCount: 1,
+      saleCount: 0,
+      revenueCents: 0,
+    }),
+    {
+      leadCount: 1,
+      saleCount: 0,
+      revenueCents: 0,
+    },
   );
 }
 
