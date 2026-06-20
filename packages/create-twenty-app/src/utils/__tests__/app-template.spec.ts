@@ -196,7 +196,7 @@ describe('copyBaseApplicationProject', () => {
     const appConfigContent = await fs.readFile(appConfigPath, 'utf8');
 
     expect(appConfigContent).toContain(
-      "import { defineApplication } from 'twenty-sdk'",
+      "import { defineApplication } from 'twenty-sdk/define'",
     );
     expect(appConfigContent).toContain('export default defineApplication({');
 
@@ -241,7 +241,7 @@ describe('copyBaseApplicationProject', () => {
     const roleConfigContent = await fs.readFile(roleConfigPath, 'utf8');
 
     expect(roleConfigContent).toContain(
-      "import { defineRole } from 'twenty-sdk'",
+      "import { defineRole } from 'twenty-sdk/define'",
     );
     expect(roleConfigContent).toContain('export default defineRole({');
 
@@ -726,7 +726,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(objectPath, 'utf8');
 
       expect(content).toContain(
-        "import { defineObject, FieldType } from 'twenty-sdk'",
+        "import { defineObject, FieldType } from 'twenty-sdk/define'",
       );
       expect(content).toContain('export default defineObject({');
       expect(content).toContain(
@@ -806,7 +806,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(fieldPath, 'utf8');
 
       expect(content).toContain(
-        "import { defineField, FieldType } from 'twenty-sdk'",
+        "import { defineField, FieldType } from 'twenty-sdk/define'",
       );
       expect(content).toContain(
         "import { EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER } from 'src/objects/example-object'",
@@ -842,7 +842,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(viewPath, 'utf8');
 
       expect(content).toContain(
-        "import { defineView, ViewKey } from 'twenty-sdk'",
+        "import { defineView, ViewKey } from 'twenty-sdk/define'",
       );
       expect(content).toContain(
         "import { EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER, NAME_FIELD_UNIVERSAL_IDENTIFIER } from 'src/objects/example-object'",
@@ -884,7 +884,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(navPath, 'utf8');
 
       expect(content).toContain(
-        "import { defineNavigationMenuItem } from 'twenty-sdk'",
+        "import { defineNavigationMenuItem } from 'twenty-sdk/define'",
       );
       expect(content).toContain('export default defineNavigationMenuItem({');
       expect(content).toContain("name: 'example-navigation-menu-item'");
@@ -916,7 +916,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(preInstallPath, 'utf8');
 
       expect(content).toContain(
-        "import { definePreInstallLogicFunction, type InstallLogicFunctionPayload } from 'twenty-sdk'",
+        "import { definePreInstallLogicFunction, type InstallPayload } from 'twenty-sdk/define'",
       );
       expect(content).toContain(
         'export default definePreInstallLogicFunction({',
@@ -924,7 +924,7 @@ describe('copyBaseApplicationProject', () => {
       expect(content).toContain("name: 'pre-install'");
       expect(content).toContain('timeoutSeconds: 300');
       expect(content).toContain(
-        'const handler = async (payload: InstallLogicFunctionPayload): Promise<void>',
+        'const handler = async (payload: InstallPayload): Promise<void>',
       );
       expect(content).toContain('payload.previousVersion');
 
@@ -1014,7 +1014,7 @@ describe('copyBaseApplicationProject', () => {
       const content = await fs.readFile(postInstallPath, 'utf8');
 
       expect(content).toContain(
-        "import { definePostInstallLogicFunction, type InstallLogicFunctionPayload } from 'twenty-sdk'",
+        "import { definePostInstallLogicFunction, type InstallPayload } from 'twenty-sdk/define'",
       );
       expect(content).toContain(
         'export default definePostInstallLogicFunction({',
@@ -1022,7 +1022,7 @@ describe('copyBaseApplicationProject', () => {
       expect(content).toContain("name: 'post-install'");
       expect(content).toContain('timeoutSeconds: 300');
       expect(content).toContain(
-        'const handler = async (payload: InstallLogicFunctionPayload): Promise<void>',
+        'const handler = async (payload: InstallPayload): Promise<void>',
       );
       expect(content).toContain('payload.previousVersion');
 
