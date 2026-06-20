@@ -27,13 +27,6 @@ describe('creates.create_company', () => {
           '{ url: "http://test.com/linkedin_url2", label: "Test linkedinUrl2" }',
         ],
       },
-      xLink: {
-        primaryLinkUrl: 'http://test.com/x_url',
-        primaryLinkLabel: 'Test xUrl',
-        secondaryLinks: [
-          '{ url: "http://test.com/x_url2", label: "Test xUrl2" }',
-        ],
-      },
       annualRecurringRevenue: {
         amountMicros: 100000000000,
         currencyCode: 'USD',
