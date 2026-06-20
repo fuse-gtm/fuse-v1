@@ -15,7 +15,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const twentyRules = await nxPlugin.loadWorkspaceRules('packages/twenty-eslint-rules');
+const twentyRules = await nxPlugin.loadWorkspaceRules(
+  'packages/twenty-eslint-rules',
+);
 
 export default [
   // Base JavaScript configuration
@@ -40,19 +42,22 @@ export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: {
-      'prettier': prettierPlugin,
-      'lingui': linguiPlugin,
+      prettier: prettierPlugin,
+      lingui: linguiPlugin,
       '@nx': nxPlugin,
       'prefer-arrow': preferArrowPlugin,
-      'import': importPlugin,
+      import: importPlugin,
       'unused-imports': unusedImportsPlugin,
-      'unicorn': unicornPlugin,
-      'twenty': { rules: twentyRules },
+      unicorn: unicornPlugin,
+      twenty: { rules: twentyRules },
     },
     rules: {
       // General rules
       'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
-      'no-console': ['warn', { allow: ['group', 'groupCollapsed', 'groupEnd'] }],
+      'no-console': [
+        'warn',
+        { allow: ['group', 'groupCollapsed', 'groupEnd'] },
+      ],
       'no-control-regex': 0,
       'no-debugger': 'error',
       'no-duplicate-imports': 'error',
@@ -138,7 +143,7 @@ export default [
         'error',
         {
           prefer: 'type-imports',
-          fixStyle: 'inline-type-imports'
+          fixStyle: 'inline-type-imports',
         },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',
