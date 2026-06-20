@@ -200,41 +200,6 @@ export class LocalDriver implements LogicFunctionDriver {
     const entries = await fs.readdir(depsNodeModules, {
       withFileTypes: true,
     });
-    await this.ensureSdkLayer({
-      flatApplication,
-      applicationUniversalIdentifier,
-    });
-  }
-
-  // Symlinks everything from the deps layer except twenty-client-sdk,
-  // which comes from the SDK layer (workspace-specific generated client).
-  private async assembleNodeModules({
-    sourceTemporaryDir,
-    flatApplication,
-    applicationUniversalIdentifier,
-  }: {
-    sourceTemporaryDir: string;
-    flatApplication: FlatApplication;
-    applicationUniversalIdentifier: string;
-  }): Promise<void> {
-    const depsNodeModules = join(
-      this.getDepsLayerPath(flatApplication),
-      'node_modules',
-    );
-    const sdkNodeModules = join(
-      this.getSdkLayerPath({
-        workspaceId: flatApplication.workspaceId,
-        applicationUniversalIdentifier,
-      }),
-      'node_modules',
-    );
-    const execNodeModules = join(sourceTemporaryDir, 'node_modules');
-
-    await fs.mkdir(execNodeModules, { recursive: true });
-
-    const entries = await fs.readdir(depsNodeModules, {
-      withFileTypes: true,
-    });
 
     const symlinkPromises = entries
       .filter((entry) => entry.name !== 'twenty-client-sdk')

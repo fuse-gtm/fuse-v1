@@ -96,7 +96,9 @@ export class ProcessPressureHealthIndicator
     const heapUsedMb = this.toMegabytes(memoryUsage.heapUsed);
     const heapTotalMb = this.toMegabytes(memoryUsage.heapTotal);
     const heapUsedRatio =
-      heapTotalMb === 0 ? 0 : this.round(memoryUsage.heapUsed / memoryUsage.heapTotal);
+      heapTotalMb === 0
+        ? 0
+        : this.round(memoryUsage.heapUsed / memoryUsage.heapTotal);
 
     return {
       system: {
