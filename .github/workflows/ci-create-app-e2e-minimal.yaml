@@ -168,11 +168,6 @@ jobs:
           cd /tmp/e2e-test-workspace/test-app
           npx --no-install twenty install
 
-      - name: Install scaffolded app
-        run: |
-          cd /tmp/e2e-test-workspace/test-app
-          npx --no-install twenty install
-
       - name: Execute create-hello-world-company logic function
         run: |
           cd /tmp/e2e-test-workspace/test-app
