@@ -10,7 +10,6 @@ export default defineApplication({
   displayName: 'Fuse Agency Partner Program',
   description:
     'Agency-specific partner program schema, operator views, and overview widget built on Fuse Partner Core.',
-  icon: 'IconAffiliate',
   defaultRoleUniversalIdentifier: DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
   applicationVariables: {
     AGENCY_EVENT_SIGNING_SECRET: {
