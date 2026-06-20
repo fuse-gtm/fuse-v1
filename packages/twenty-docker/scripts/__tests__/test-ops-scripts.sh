@@ -19,6 +19,16 @@ assert_contains() {
   fi
 }
 
+link_tool() {
+  local tool="$1"
+  local dest_dir="$2"
+  local tool_path
+
+  tool_path="$(command -v "$tool" 2>/dev/null || true)"
+  [ -n "$tool_path" ] || fail "Required test helper '${tool}' not found"
+  ln -s "$tool_path" "${dest_dir}/${tool}"
+}
+
 run_test_restore_cleanup_on_failure() {
   local tmp
   tmp="$(mktemp -d)"
@@ -128,26 +138,14 @@ exit 0
 JQ
 
   chmod +x "$mock_bin/aws" "$mock_bin/jq"
-
-  local path_without_psql=""
-  local path_segment
-  OLD_IFS="$IFS"
-  IFS=':'
-  for path_segment in $PATH; do
-    if [ -x "${path_segment}/psql" ]; then
-      continue
-    fi
-    if [ -z "$path_without_psql" ]; then
-      path_without_psql="$path_segment"
-    else
-      path_without_psql="${path_without_psql}:${path_segment}"
-    fi
-  done
-  IFS="$OLD_IFS"
+  link_tool date "$mock_bin"
+  link_tool dirname "$mock_bin"
+  link_tool mkdir "$mock_bin"
+  link_tool pwd "$mock_bin"
 
   export MOCK_AWS_LOG="$tmp/aws.log"
 
-  if PATH="$mock_bin:$path_without_psql" \
+  if PATH="$mock_bin" \
     DB_PASSWORD="test-password" \
     SOURCE_DB_INSTANCE="fuse-prod-db" \
     RESTORE_DB_INSTANCE="fuse-restore-drill-test" \
