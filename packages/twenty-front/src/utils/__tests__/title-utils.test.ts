@@ -49,7 +49,7 @@ describe('title-utils', () => {
     expect(getPageTitleFromPath('/settings/general')).toBe(
       'General - Settings',
     );
-    expect(getPageTitleFromPath('/')).toBe('Fuse');
-    expect(getPageTitleFromPath('/random')).toBe('Fuse');
+    expect(getPageTitleFromPath('/')).toBe('Twenty');
+    expect(getPageTitleFromPath('/random')).toBe('Twenty');
   });
 });

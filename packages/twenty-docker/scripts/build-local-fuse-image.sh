@@ -7,7 +7,7 @@ SCRIPT_DIR="${SELF_DIR}"
 cd "$REPO_ROOT"
 
 IMAGE_REPO="${IMAGE_REPO:-fuse-v1-local}"
-IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
+IMAGE_TAG="${IMAGE_TAG:-fuse-$(git rev-parse --short HEAD)}"
 WRITE_ENV_FILE="${WRITE_ENV_FILE:-}"
 
 host_arch="$(uname -m)"

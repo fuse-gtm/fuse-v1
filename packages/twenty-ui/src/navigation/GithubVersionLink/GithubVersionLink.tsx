@@ -1,6 +1,6 @@
 import { IconBrandGithub } from '@ui/icon';
 import { ClickToActionLink } from '@ui/navigation/ClickToActionLink/ClickToActionLink';
-import { GITHUB_LINK } from '@ui/navigation/link/constants/GithubLink';
+import { GITHUB_LINK } from '@ui/navigation/Link/constants/GithubLink';
 import { ThemeContext } from '@ui/theme-constants';
 import { useContext } from 'react';
 

@@ -36,7 +36,6 @@ export const WORKSPACE_CACHE_KEYS = {
 } as const;
 
 const TTL_ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
-const APPLICATION_SCOPED_GRAPHQL_SCHEMA_CACHE_VERSION = 'v2';
 
 @Injectable()
 export class WorkspaceCacheStorageService {
@@ -93,8 +92,7 @@ export class WorkspaceCacheStorageService {
     typeDefs: string,
     applicationId?: string,
   ): Promise<void> {
-    const applicationSuffix =
-      this.getGraphQLSchemaApplicationSuffix(applicationId);
+    const applicationSuffix = applicationId ? `:${applicationId}` : '';
 
     return this.cacheStorageService.set<string>(
       `${METADATA_VERSIONED_WORKSPACE_CACHE_KEY.GraphQLTypeDefs}:${workspaceId}:${metadataVersion}${applicationSuffix}`,
@@ -108,8 +106,7 @@ export class WorkspaceCacheStorageService {
     metadataVersion: number,
     applicationId?: string,
   ): Promise<string | undefined> {
-    const applicationSuffix =
-      this.getGraphQLSchemaApplicationSuffix(applicationId);
+    const applicationSuffix = applicationId ? `:${applicationId}` : '';
 
     return this.cacheStorageService.get<string>(
       `${METADATA_VERSIONED_WORKSPACE_CACHE_KEY.GraphQLTypeDefs}:${workspaceId}:${metadataVersion}${applicationSuffix}`,
@@ -122,8 +119,7 @@ export class WorkspaceCacheStorageService {
     usedScalarNames: string[],
     applicationId?: string,
   ): Promise<void> {
-    const applicationSuffix =
-      this.getGraphQLSchemaApplicationSuffix(applicationId);
+    const applicationSuffix = applicationId ? `:${applicationId}` : '';
 
     return this.cacheStorageService.set<string[]>(
       `${METADATA_VERSIONED_WORKSPACE_CACHE_KEY.GraphQLUsedScalarNames}:${workspaceId}:${metadataVersion}${applicationSuffix}`,
@@ -137,18 +133,11 @@ export class WorkspaceCacheStorageService {
     metadataVersion: number,
     applicationId?: string,
   ): Promise<string[] | undefined> {
-    const applicationSuffix =
-      this.getGraphQLSchemaApplicationSuffix(applicationId);
+    const applicationSuffix = applicationId ? `:${applicationId}` : '';
 
     return this.cacheStorageService.get<string[]>(
       `${METADATA_VERSIONED_WORKSPACE_CACHE_KEY.GraphQLUsedScalarNames}:${workspaceId}:${metadataVersion}${applicationSuffix}`,
     );
-  }
-
-  private getGraphQLSchemaApplicationSuffix(applicationId?: string): string {
-    return applicationId
-      ? `:${APPLICATION_SCOPED_GRAPHQL_SCHEMA_CACHE_VERSION}:${applicationId}`
-      : '';
   }
 
   getFeatureFlagsMapVersionFromCache(

@@ -1,6 +1,5 @@
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { type AllMetadataName } from 'twenty-shared/metadata';
 
 import { EMPTY_ORCHESTRATOR_FAILURE_REPORT } from 'src/engine/workspace-manager/workspace-migration/constant/empty-orchestrator-failure-report.constant';
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
@@ -8,7 +7,6 @@ import { buildMetadataValidationErrorPayload } from 'src/engine/workspace-manage
 import { type OrchestratorFailureReport } from 'src/engine/workspace-manager/workspace-migration/types/workspace-migration-orchestrator.type';
 
 const buildFailedValidation = (
-  metadataName: AllMetadataName,
   errors: Array<{
     code: string;
     message: string;
@@ -17,7 +15,6 @@ const buildFailedValidation = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any => ({
   type: 'create',
-  metadataName,
   errors,
   flatEntityMinimalInformation: {},
 });
@@ -45,12 +42,10 @@ describe('buildMetadataValidationErrorPayload', () => {
     const payload = buildMetadataValidationErrorPayload(
       buildException({
         view: [
-          buildFailedValidation('view', [{ code: 'A', message: 'a' }]),
-          buildFailedValidation('view', [{ code: 'B', message: 'b' }]),
+          buildFailedValidation([{ code: 'A', message: 'a' }]),
+          buildFailedValidation([{ code: 'B', message: 'b' }]),
         ],
-        viewGroup: [
-          buildFailedValidation('viewGroup', [{ code: 'C', message: 'c' }]),
-        ],
+        viewGroup: [buildFailedValidation([{ code: 'C', message: 'c' }])],
       }),
     );
 
@@ -62,37 +57,18 @@ describe('buildMetadataValidationErrorPayload', () => {
     expect(Object.keys(payload.errors).sort()).toEqual(['view', 'viewGroup']);
   });
 
-  it('uses the failed validation metadataName when it differs from the report bucket', () => {
-    const payload = buildMetadataValidationErrorPayload(
-      buildException({
-        view: [
-          buildFailedValidation('viewField', [
-            { code: 'VIEW_FIELD_ERROR', message: 'bad view field' },
-          ]),
-        ],
-      }),
-    );
-
-    expect(payload.summary).toEqual({
-      totalErrors: 1,
-      viewField: 1,
-    });
-    expect(payload.errors.view).toBeUndefined();
-    expect(payload.errors.viewField).toHaveLength(1);
-  });
-
   it('returns the generic "Many validation errors" descriptor when more than one failed validation is reported', () => {
     const payload = buildMetadataValidationErrorPayload(
       buildException({
         role: [
-          buildFailedValidation('role', [
+          buildFailedValidation([
             {
               code: 'ERR',
               message: 'x',
               userFriendlyMessage: msg`Only error`,
             },
           ]),
-          buildFailedValidation('role', [
+          buildFailedValidation([
             {
               code: 'ERR2',
               message: 'y',
@@ -112,7 +88,7 @@ describe('buildMetadataValidationErrorPayload', () => {
     const payload = buildMetadataValidationErrorPayload(
       buildException({
         role: [
-          buildFailedValidation('role', [
+          buildFailedValidation([
             {
               code: 'ROLE_ERROR',
               message: 'invalid',
@@ -130,7 +106,7 @@ describe('buildMetadataValidationErrorPayload', () => {
     const payload = buildMetadataValidationErrorPayload(
       buildException({
         view: [
-          buildFailedValidation('view', [
+          buildFailedValidation([
             { code: 'X', message: 'y' },
             { code: 'Z', message: 'z' },
           ]),
@@ -149,7 +125,7 @@ describe('buildMetadataValidationErrorPayload', () => {
     const payload = buildMetadataValidationErrorPayload(
       buildException({
         fieldMetadata: [
-          buildFailedValidation('fieldMetadata', [
+          buildFailedValidation([
             { code: 'A', message: 'first' },
             { code: 'B', message: 'second', userFriendlyMessage },
             {

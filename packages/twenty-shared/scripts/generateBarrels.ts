@@ -501,4 +501,3 @@ const main = () => {
   moduleIndexFiles.forEach(createTypeScriptFile);
 };
 main();
-process.exit(0);

@@ -1,13 +1,6 @@
 import { danger, markdown, schedule, warn } from 'danger';
 import todos from 'danger-plugin-todos';
 
-const MAX_FILES_FOR_TODO_SCAN = 1000;
-const changedFiles = [
-  ...danger.git.created_files,
-  ...danger.git.modified_files,
-  ...danger.git.deleted_files,
-];
-
 function getMdSection(category: string, message: string) {
   return `# ${category} <br>${message}`;
 }
@@ -26,15 +19,14 @@ if (packageChanged && !lockfileChanged) {
 }
 
 // Check environment configuration changes
-const envExampleChanged = danger.git.modified_files.find((x) =>
-  x.includes('.env.example'),
+const envExampleChanged = danger.git.modified_files.find((x) => 
+  x.includes('.env.example')
 );
 
 // Check if .env.example was changed
 if (envExampleChanged) {
   const message = 'Changes were made to .env.example';
-  const idea =
-    'Please make sure any new environment variables are properly documented with metadata in config-variables.ts';
+  const idea = 'Please make sure any new environment variables are properly documented with metadata in config-variables.ts';
   warn(`${message} - <i>${idea}</i>`);
 }
 
@@ -56,10 +48,4 @@ By submitting your Pull Request, you acknowledge that you agree with the terms o
 }
 
 // TODOS / Fixme
-if (changedFiles.length <= MAX_FILES_FOR_TODO_SCAN) {
-  schedule(todos());
-} else {
-  warn(
-    `Skipping TODO scan because this PR changes ${changedFiles.length} files. The TODO scan is limited to ${MAX_FILES_FOR_TODO_SCAN} files to keep Danger reliable on upstream sync PRs.`,
-  );
-}
+schedule(todos());

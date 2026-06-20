@@ -16,8 +16,8 @@ usage() {
   cat <<'EOF'
 Usage:
   bash packages/twenty-docker/scripts/fuse-deploy-rollback-drill.sh \
-    --tag-a partner-os-aaaa1111 \
-    --tag-b partner-os-bbbb2222
+    --tag-a main-aaaa1111 \
+    --tag-b main-bbbb2222
 
 Optional env:
   ENV_FILE=packages/twenty-docker/.env

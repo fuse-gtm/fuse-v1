@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
-import { LOGIC_FUNCTION_DRIVER_FACTORY_TOKEN } from 'src/engine/core-modules/logic-function/logic-function-drivers/constants/logic-function-driver-factory.token';
-import { type LogicFunctionDriver } from 'src/engine/core-modules/logic-function/logic-function-drivers/interfaces/logic-function-driver.interface';
 import { SecretEncryptionModule } from 'src/engine/core-modules/secret-encryption/secret-encryption.module';
 import { WorkspaceSchemaManagerModule } from 'src/engine/twenty-orm/workspace-schema-manager/workspace-schema-manager.module';
 import { CreateAgentActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/agent/services/create-agent-action-handler.service';
@@ -97,38 +95,6 @@ import { CreateConnectionProviderActionHandlerService } from 'src/engine/workspa
 import { DeleteConnectionProviderActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/connection-provider/services/delete-connection-provider-action-handler.service';
 import { UpdateConnectionProviderActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/connection-provider/services/update-connection-provider-action-handler.service';
 
-const isRunInstanceCommandsCommand = process.argv.includes(
-  'run-instance-commands',
-);
-
-const commandLogicFunctionDriver = {
-  delete: async () => undefined,
-  deleteApplicationResources: async () => undefined,
-  execute: async () => {
-    throw new Error(
-      'Logic function execution is disabled for migration command',
-    );
-  },
-  transpile: async () => {
-    throw new Error(
-      'Logic function transpilation is disabled for migration command',
-    );
-  },
-  installPrebuiltBundle: async () => undefined,
-  getInstalledBundleChecksum: async () => null,
-} satisfies LogicFunctionDriver;
-
-const commandOnlyProviders = isRunInstanceCommandsCommand
-  ? [
-      {
-        provide: LOGIC_FUNCTION_DRIVER_FACTORY_TOKEN,
-        useValue: {
-          getCurrentDriver: () => commandLogicFunctionDriver,
-        },
-      },
-    ]
-  : [];
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity]),
@@ -136,7 +102,6 @@ const commandOnlyProviders = isRunInstanceCommandsCommand
     SecretEncryptionModule,
   ],
   providers: [
-    ...commandOnlyProviders,
     CreateFieldActionHandlerService,
     UpdateFieldActionHandlerService,
     DeleteFieldActionHandlerService,

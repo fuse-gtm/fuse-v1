@@ -1,11 +1,8 @@
 ---
 title: Publicação
+icon: carregar
 description: Distribua seu aplicativo Twenty no Marketplace ou implante-o internamente.
 ---
-
-<Warning>
-  Os aplicativos estão atualmente em testes alfa. O recurso é funcional, mas ainda está evoluindo.
-</Warning>
 
 ## Visão Geral
 
@@ -66,13 +63,103 @@ O link de compartilhamento usa a URL base do servidor (sem qualquer subdomínio 
 
 ### Gerenciamento de versões
 
+Ao atualizar um aplicativo empacotado como tarball já implantado, o servidor exige que o `version` no `package.json` seja **estritamente maior** (de acordo com a ordenação do [semver](https://semver.org)) do que a versão atualmente implantada. Reimplantar a mesma versão, ou enviar uma inferior, é rejeitado antes que o tarball seja armazenado — você verá um erro `VERSION_ALREADY_EXISTS` na CLI.
+
 Para lançar uma atualização:
 
-1. Atualize o campo `version` no seu `package.json`
+1. Atualize o campo `version` no seu `package.json` (por exemplo, `1.2.3` → `1.2.4`, `1.3.0` ou `2.0.0`)
 2. Execute `yarn twenty deploy` (ou `yarn twenty deploy --remote production`)
 3. Os espaços de trabalho que têm o aplicativo instalado verão a atualização disponível em suas configurações
 
+<Note>
+Tags de pré-lançamento funcionam como esperado: incrementar `1.0.0-rc.1` → `1.0.0-rc.2` é permitido, e uma versão final como `1.0.0` é corretamente reconhecida como superior a `1.0.0-rc.5`. A versão em `package.json` deve ser, ela própria, uma string semver válida.
+</Note>
+
 {/* TODO: add screenshot of the Upgrade button */}
+
+### Compatibilidade da versão do servidor
+
+Se o seu aplicativo usar um recurso introduzido em uma versão específica do servidor Twenty (por exemplo, provedores OAuth adicionados na v2.3.0), você deve declarar a versão mínima do servidor que seu aplicativo requer usando o campo `engines.twenty` em `package.json`:
+
+```json filename="package.json"
+{
+  "name": "twenty-my-app",
+  "version": "1.0.0",
+  "engines": {
+    "node": "^24.5.0",
+    "twenty": ">=2.3.0"
+  }
+}
+```
+
+O valor é um [intervalo semver](https://github.com/npm/node-semver#ranges) padrão. Padrões comuns:
+
+| Intervalo                          | Significado                                                |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `>=2.3.0`                          | Qualquer servidor a partir de 2.3.0                        |
+| `>=2.3.0 \<3.0.0` | 2.3.0 ou posterior, mas abaixo da próxima versão principal |
+| `^2.3.0`                           | O mesmo que `>=2.3.0 \<3.0.0`             |
+
+**O que acontece no momento da implantação e da instalação:**
+
+* Se `engines.twenty` estiver definido e a versão do servidor de destino não satisfizer o intervalo, a implantação (upload do tarball) ou a instalação será rejeitada com o erro `SERVER_VERSION_INCOMPATIBLE` e uma mensagem indicando tanto o intervalo exigido quanto a versão real do servidor.
+* Se `engines.twenty` **não estiver definido**, o aplicativo é aceito em qualquer versão do servidor (retrocompatível com os aplicativos existentes).
+* Se o servidor não tiver `APP_VERSION` configurado, a verificação será ignorada.
+
+<Note>
+O servidor realiza a verificação definitiva — ele valida `engines.twenty` tanto no upload do tarball quanto na instalação no workspace. Se você implantar um tarball fora de banda ou instalar a partir do marketplace, o servidor ainda impõe a compatibilidade.
+</Note>
+
+## CI/CD automatizado (fluxos de trabalho pré-configurados)
+
+Os apps gerados com `create-twenty-app` já vêm com dois fluxos de trabalho do GitHub Actions prontos, em `.github/workflows/`. Eles estão prontos para executar assim que você fizer push do repositório para o GitHub — nenhuma configuração extra é necessária para CI, e CD requer apenas um único segredo.
+
+### CI — `ci.yml`
+
+Executa testes de integração a cada push para `main` e a cada pull request.
+
+**O que faz:**
+
+1. Faz checkout do código-fonte do seu app.
+2. Inicia uma instância de teste do Twenty isolada usando a ação composta `twentyhq/twenty/.github/actions/spawn-twenty-app-dev-test@main` (o equivalente em CI de `yarn twenty server start --test`).
+3. Habilita o Corepack, configura o Node.js a partir do seu `.nvmrc` e instala as dependências com `yarn install --immutable`.
+4. Executa `yarn test`, passando `TWENTY_API_URL` e `TWENTY_API_KEY` da instância iniciada para que seus testes possam se comunicar com um servidor real.
+
+**Opções de configuração:**
+
+* `TWENTY_VERSION` (env, padrão `latest`) — fixe a versão do servidor Twenty usada no CI editando isto em `ci.yml`.
+* A concorrência é agrupada por `github.ref` e cancela execuções em andamento quando há novos pushes.
+
+Nenhum segredo é necessário — a instância de teste é efêmera e existe apenas durante a execução do job.
+
+### CD — `cd.yml`
+
+Faz o deploy do seu app para um servidor Twenty configurado a cada push para `main` e, opcionalmente, a partir de um pull request quando o rótulo `deploy` é aplicado.
+
+**O que faz:**
+
+1. Faz checkout do head do PR (para PRs rotulados) ou do commit enviado.
+2. Executa `twentyhq/twenty/.github/actions/deploy-twenty-app@main` — o equivalente em CI de `yarn twenty deploy`.
+3. Executa `twentyhq/twenty/.github/actions/install-twenty-app@main` para que a versão recém-implantada seja instalada no workspace de destino.
+
+**Configuração obrigatória:**
+
+| Configuração            | Onde                                                                 | Finalidade                                                                                                       |
+| ----------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `TWENTY_DEPLOY_URL`     | `env` em `cd.yml` (padrão `http://localhost:3000`)                   | O servidor Twenty para o qual fazer o deploy. Altere isto para a URL real do seu servidor antes do primeiro uso. |
+| `TWENTY_DEPLOY_API_KEY` | Repositório do GitHub **Settings → Secrets and variables → Actions** | Chave de API com permissão de deploy no servidor de destino.                                                     |
+
+<Note>
+O `TWENTY_DEPLOY_URL` padrão de `http://localhost:3000` é um placeholder — ele não alcançará nada a partir de um runner hospedado pelo GitHub. Atualize-o para a URL pública do seu servidor (ou use um runner self-hosted com acesso à rede) antes de habilitar o CD.
+</Note>
+
+**Acionando um deploy de pré-visualização a partir de um PR:**
+
+Adicione o rótulo `deploy` a um pull request. A condição `if:` em `cd.yml` executará o job para esse PR usando o commit HEAD do PR, permitindo que você valide uma alteração no servidor de destino antes de fazer o merge.
+
+### Fixando as ações reutilizáveis
+
+Ambos os fluxos de trabalho fazem referência a ações reutilizáveis em `@main`, portanto as atualizações de ações no repositório `twentyhq/twenty` são aplicadas automaticamente. Se você quiser builds determinísticos, substitua `@main` por um SHA de commit ou uma tag de release em cada linha `uses:`.
 
 ## Publicação no npm
 
@@ -81,7 +168,7 @@ Publicar no npm torna seu aplicativo descobrível no Marketplace da Twenty. Qual
 ### Requisitos
 
 * Uma conta no [npm](https://www.npmjs.com)
-* A palavra-chave `twenty-app` no array `keywords` do seu `package.json` (já incluída quando você cria o projeto com `create-twenty-app`)
+* A palavra-chave `twenty-app` no array `keywords` do seu `package.json` (adicione-a manualmente — não é incluída por padrão no template `create-twenty-app`)
 
 ```json filename="package.json"
 {
@@ -111,6 +198,14 @@ export default defineApplication({
 
 Veja o [acordeão de defineApplication](/l/pt/developers/extend/apps/building#defineentity-functions) na página Building Apps para a lista completa de campos do marketplace (`author`, `category`, `aboutDescription`, `websiteUrl`, `termsUrl`, etc.).
 
+#### Dimensões recomendadas para capturas de tela
+
+O marketplace renderiza `screenshots` em um contêiner fixo de `8:5` (por exemplo, `1600×1000 px`).
+
+<Note>
+Capturas de tela de qualquer proporção são exibidas por completo e nunca são cortadas, mas qualquer coisa significativamente mais alta ou mais estreita que `8:5` exibirá faixas vazias nas laterais.
+</Note>
+
 ### Publicar
 
 ```bash filename="Terminal"
@@ -130,9 +225,9 @@ O servidor Twenty sincroniza seu catálogo do marketplace a partir do registro d
 Você pode acionar a sincronização imediatamente em vez de esperar:
 
 ```bash filename="Terminal"
-yarn twenty catalog-sync
+yarn twenty server catalog-sync
 # To target a specific remote:
-# yarn twenty catalog-sync --remote production
+# yarn twenty server catalog-sync --remote production
 ```
 
 Os metadados exibidos no marketplace vêm da sua configuração `defineApplication()` — campos como `displayName`, `description`, `author`, `category`, `logoUrl`, `screenshots`, `aboutDescription`, `websiteUrl` e `termsUrl`.
@@ -189,3 +284,12 @@ Você também pode instalar apps pela linha de comando:
 ```bash filename="Terminal"
 yarn twenty install
 ```
+
+<Note>
+O servidor impõe o versionamento semver na instalação, espelhando as regras da implantação:
+
+* Instalar a mesma versão que já está instalada no seu espaço de trabalho é rejeitado com um erro `APP_ALREADY_INSTALLED`.
+* Instalar uma versão inferior à atualmente instalada é rejeitado com um erro `CANNOT_DOWNGRADE_APPLICATION`.
+
+Para instalar uma versão mais recente, implante ou publique-a primeiro e, em seguida, execute novamente `yarn twenty install`.
+</Note>

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: Optional image tag override (defaults to partner-os-<shortsha>)
+        description: Optional image tag override (defaults to fuse-<shortsha>)
         required: false
         type: string
       push_branch_alias:
@@ -14,7 +14,7 @@ on:
         type: boolean
   push:
     branches:
-      - feat/partner-os-schema-spine
+      - main
       - release/**
     paths:
       - ".github/workflows/fuse-image-build.yml"
@@ -67,11 +67,11 @@ jobs:
           if [ -n "${INPUT_TAG}" ]; then
             IMAGE_TAG="${INPUT_TAG}"
           else
-            IMAGE_TAG="partner-os-${SHORT_SHA}"
+            IMAGE_TAG="fuse-${SHORT_SHA}"
           fi
 
           BRANCH_ALIAS="$(echo "${GITHUB_REF_NAME}" | tr '[:upper:]/' '[:lower:]-' | tr -cd 'a-z0-9._-')"
-          BRANCH_ALIAS_TAG="partner-os-${BRANCH_ALIAS}"
+          BRANCH_ALIAS_TAG="fuse-${BRANCH_ALIAS}"
 
           echo "image_repo=${IMAGE_REPO}" >> "$GITHUB_OUTPUT"
           echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"

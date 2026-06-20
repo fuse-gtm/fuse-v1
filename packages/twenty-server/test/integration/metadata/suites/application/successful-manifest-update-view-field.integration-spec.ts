@@ -98,7 +98,7 @@ describe('Manifest update - standalone view fields on existing views', () => {
       description: 'App for testing standalone view field manifest updates',
       sourcePath: 'test-manifest-update-view-field',
     });
-  }, 120000);
+  }, 60000);
 
   afterEach(async () => {
     await cleanupApplicationAndAppRegistration({
@@ -165,7 +165,7 @@ describe('Manifest update - standalone view fields on existing views', () => {
         ),
       ).toBe(true);
     }
-  }, 120000);
+  }, 60000);
 
   it('removes the contributed view field on uninstall while keeping the standard view intact', async () => {
     const person = await findPersonObject();

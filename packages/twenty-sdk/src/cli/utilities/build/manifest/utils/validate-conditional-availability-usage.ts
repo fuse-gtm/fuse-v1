@@ -5,10 +5,7 @@ import ts from 'typescript';
 const CONDITIONAL_AVAILABILITY_EXPRESSION_PROPERTY =
   'conditionalAvailabilityExpression';
 
-const EXPRESSION_VARIABLE_MODULE_SPECIFIERS = [
-  'twenty-sdk/define',
-  'twenty-sdk',
-];
+const EXPRESSION_VARIABLE_MODULE_SPECIFIERS = ['twenty-sdk/define', 'twenty-sdk'];
 
 const EXPRESSION_VARIABLE_NAMES = new Set<string>(
   CONDITIONAL_AVAILABILITY_VARIABLE_NAMES,

@@ -12,7 +12,6 @@ import {
   ApplicationExceptionCode,
 } from 'src/engine/core-modules/application/application.exception';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
-import { type FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 import { type FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
 import { LoggerService } from 'src/engine/core-modules/logger/logger.service';
 import { findFlatEntityByUniversalIdentifier } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-universal-identifier.util';
@@ -95,16 +94,11 @@ export class ApplicationManifestMigrationService {
       workspaceId,
       [
         ...Object.values(ALL_METADATA_NAME).map(getMetadataFlatEntityMapsKey),
-        'flatApplicationMaps',
         'featureFlagsMap',
       ],
     );
 
-    const {
-      featureFlagsMap,
-      flatApplicationMaps,
-      ...existingAllFlatEntityMaps
-    } = cacheResult;
+    const { featureFlagsMap, ...existingAllFlatEntityMaps } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -120,11 +114,11 @@ export class ApplicationManifestMigrationService {
       });
 
     const dependencyAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
-      applicationIds: this.getDependencyApplicationIds({
-        ownerFlatApplication,
-        twentyStandardFlatApplication,
-        flatApplicationMaps,
-      }),
+      applicationIds:
+        ownerFlatApplication.universalIdentifier ===
+        TWENTY_STANDARD_APPLICATION.universalIdentifier
+          ? [twentyStandardFlatApplication.id]
+          : [ownerFlatApplication.id, twentyStandardFlatApplication.id],
       fromAllFlatEntityMaps: existingAllFlatEntityMaps,
     });
 
@@ -189,7 +183,6 @@ export class ApplicationManifestMigrationService {
       workspaceId,
       [
         ...Object.values(ALL_METADATA_NAME).map(getMetadataFlatEntityMapsKey),
-        'flatApplicationMaps',
         'featureFlagsMap',
       ],
     );
@@ -200,11 +193,7 @@ export class ApplicationManifestMigrationService {
       ApplicationManifestMigrationService.name,
     );
 
-    const {
-      featureFlagsMap,
-      flatApplicationMaps,
-      ...existingAllFlatEntityMaps
-    } = cacheResult;
+    const { featureFlagsMap, ...existingAllFlatEntityMaps } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -220,11 +209,11 @@ export class ApplicationManifestMigrationService {
       });
 
     const dependencyAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
-      applicationIds: this.getDependencyApplicationIds({
-        ownerFlatApplication,
-        twentyStandardFlatApplication,
-        flatApplicationMaps,
-      }),
+      applicationIds:
+        ownerFlatApplication.universalIdentifier ===
+        TWENTY_STANDARD_APPLICATION.universalIdentifier
+          ? [twentyStandardFlatApplication.id]
+          : [ownerFlatApplication.id, twentyStandardFlatApplication.id],
       fromAllFlatEntityMaps: existingAllFlatEntityMaps,
     });
 
@@ -237,7 +226,6 @@ export class ApplicationManifestMigrationService {
             inferDeletionFromMissingEntities: true,
             applicationUniversalIdentifier:
               ownerFlatApplication.universalIdentifier,
-            rejectCrossApplicationViewFieldCreation: true,
           },
           fromToAllFlatEntityMaps: buildFromToAllUniversalFlatEntityMaps({
             fromAllFlatEntityMaps,
@@ -348,31 +336,5 @@ export class ApplicationManifestMigrationService {
       settingsCustomTabFrontComponentId,
       ...(isDefined(defaultRoleId) ? { defaultRoleId } : {}),
     });
-  }
-
-  private getDependencyApplicationIds({
-    ownerFlatApplication,
-    twentyStandardFlatApplication,
-    flatApplicationMaps,
-  }: {
-    ownerFlatApplication: FlatApplication;
-    twentyStandardFlatApplication: FlatApplication;
-    flatApplicationMaps: FlatApplicationCacheMaps;
-  }): string[] {
-    if (
-      ownerFlatApplication.universalIdentifier ===
-      TWENTY_STANDARD_APPLICATION.universalIdentifier
-    ) {
-      return [twentyStandardFlatApplication.id];
-    }
-
-    const installedApplicationIds = Object.values(flatApplicationMaps.byId)
-      .filter(
-        (flatApplication): flatApplication is FlatApplication =>
-          isDefined(flatApplication) && !isDefined(flatApplication.deletedAt),
-      )
-      .map((flatApplication) => flatApplication.id);
-
-    return [...new Set(installedApplicationIds)];
   }
 }

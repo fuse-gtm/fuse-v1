@@ -136,7 +136,7 @@ if [[ "$TWENTY_IMAGE" == *":partner-os-"* ]] && [ "$ALLOW_PARTNER_OS_IMAGE_TAG" 
 fi
 
 if [ -n "${WORKSPACE_ID:-}" ]; then
-  fail "WORKSPACE_ID is set. deploy-fuse-prod.sh would run workspace:bootstrap:partner-os; unset it for app-based staging."
+  fail "WORKSPACE_ID is set. Partner app schema should be installed through Twenty apps, not the deploy script."
 fi
 
 require_exact_bool IS_MULTIWORKSPACE_ENABLED true
