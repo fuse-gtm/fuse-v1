@@ -1,26 +1,21 @@
-import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
-import { ViewKey } from '@/views/types/ViewKey';
-import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
 import { createAtomFamilySelector } from '@/ui/utilities/state/jotai/utils/createAtomFamilySelector';
+import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { ViewKey } from '@/views/types/ViewKey';
 
-export const coreIndexViewIdFromObjectMetadataItemFamilySelector =
+export const indexViewIdFromObjectMetadataItemFamilySelector =
   createAtomFamilySelector<
     string | undefined,
     { objectMetadataItemId: string }
   >({
-    key: 'coreIndexViewIdFromObjectMetadataItemFamilySelector',
+    key: 'indexViewIdFromObjectMetadataItemFamilySelector',
     get:
       ({ objectMetadataItemId }) =>
       ({ get }) => {
-        const coreViews = get(coreViewsSelector);
-        const views = coreViews.map(convertCoreViewToView);
+        const views = get(viewsSelector);
         return views?.find(
           (view) =>
             view.objectMetadataId === objectMetadataItemId &&
-            view.key === ViewKey.Index,
+            view.key === ViewKey.INDEX,
         )?.id;
       },
   });
-
-// Dead-symbol stub: never committed / missing canonical. Returns undefined.
-export const indexViewIdFromObjectMetadataItemFamilySelector = (..._args: unknown[]): unknown => undefined;

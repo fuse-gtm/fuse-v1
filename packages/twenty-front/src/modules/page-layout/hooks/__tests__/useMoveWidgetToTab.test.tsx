@@ -26,7 +26,6 @@ const makeWidget = (
     title: id,
     isActive: true,
     type: WidgetType.FIELDS,
-    isOverridden: false,
     gridPosition: { column: 0, columnSpan: 1, row: 0, rowSpan: 1 },
     configuration: { __typename: 'FieldsConfiguration' as const },
     position: {
@@ -52,7 +51,6 @@ const makeTab = (
   layoutMode: PageLayoutTabLayoutMode.VERTICAL_LIST,
   pageLayoutId: '',
   widgets,
-  isOverridden: false,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   deletedAt: null,

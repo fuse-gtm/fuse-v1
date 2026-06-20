@@ -6,12 +6,6 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import packageJson from './package.json';
 
 export default defineConfig(() => {
-  const runtimeDependencies = Object.keys(
-    (packageJson as PackageJson).dependencies || {},
-  );
-  const isExternalDependency = (id: string) =>
-    runtimeDependencies.some((dep) => id === dep || id.startsWith(dep + '/'));
-
   return {
     root: __dirname,
     cacheDir:
@@ -29,7 +23,6 @@ export default defineConfig(() => {
     worker: {
       format: 'iife',
       rollupOptions: {
-        external: isExternalDependency,
         output: {
           inlineDynamicImports: true,
         },
@@ -62,7 +55,11 @@ export default defineConfig(() => {
           warn(warning);
         },
         external: (id: string) => {
-          return isExternalDependency(id);
+          const deps = Object.keys(
+            (packageJson as PackageJson).dependencies || {},
+          );
+
+          return deps.some((dep) => id === dep || id.startsWith(dep + '/'));
         },
         output: [
           {

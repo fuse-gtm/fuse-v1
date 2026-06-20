@@ -2,7 +2,7 @@ import { ForbiddenFieldDisplay } from '@/object-record/record-field/ui/meta-type
 import { type WidgetAccessDenialInfo } from '@/page-layout/widgets/types/WidgetAccessDenialInfo';
 import { plural, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
-import { AppTooltip } from 'twenty-ui/display';
+import { AppTooltip } from 'twenty-ui/surfaces';
 
 type PageLayoutWidgetForbiddenDisplayProps = {
   widgetId: string;
@@ -10,8 +10,11 @@ type PageLayoutWidgetForbiddenDisplayProps = {
 };
 
 export const PageLayoutWidgetForbiddenDisplay = ({
+  widgetId,
   restriction,
 }: PageLayoutWidgetForbiddenDisplayProps) => {
+  const tooltipId = `widget-forbidden-tooltip-${widgetId}`;
+
   const getTooltipContent = () => {
     if (restriction.type === 'object' && isDefined(restriction.objectName)) {
       const objectName = restriction.objectName;
@@ -34,10 +37,15 @@ export const PageLayoutWidgetForbiddenDisplay = ({
   };
 
   return (
-    <AppTooltip content={getTooltipContent()} place="top">
-      <div>
+    <>
+      <div id={tooltipId}>
         <ForbiddenFieldDisplay />
       </div>
-    </AppTooltip>
+      <AppTooltip
+        anchorSelect={`#${tooltipId}`}
+        content={getTooltipContent()}
+        place="top"
+      />
+    </>
   );
 };

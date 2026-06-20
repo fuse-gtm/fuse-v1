@@ -9,13 +9,7 @@
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^build",
-        {
-          "target": "build",
-          "projects": "twenty-sdk"
-        }
-      ],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist"],
       "options": {
         "cwd": "{projectRoot}",
@@ -26,28 +20,9 @@
         "parallel": false
       }
     },
-    "typecheck": {
-      "executor": "nx:run-commands",
-      "cache": true,
-      "dependsOn": [
-        "^build",
-        {
-          "target": "build",
-          "projects": "twenty-sdk"
-        }
-      ],
-      "options": {
-        "cwd": "packages/twenty-front-component-renderer",
-        "command": "tsgo -p tsconfig.json"
-      },
-      "configurations": {
-        "watch": {
-          "command": "tsgo -p tsconfig.json --watch"
-        }
-      }
-    },
-
+    "typecheck": {},
     "lint": {},
+    "test": {},
     "generate-remote-dom-elements": {
       "executor": "nx:run-commands",
       "cache": true,
@@ -92,10 +67,16 @@
       ],
       "inputs": [
         "{projectRoot}/scripts/front-component-stories/**/*",
-        "{projectRoot}/src/__stories__/example-sources/*",
+        "{projectRoot}/src/__stories__/html-tag/**/*",
+        "{projectRoot}/src/__stories__/host-api/**/*",
+        "{projectRoot}/src/__stories__/showcase/**/*",
+        "{projectRoot}/src/__stories__/shared/front-components/**/*",
         "{workspaceRoot}/packages/twenty-sdk/src/cli/utilities/build/**/*"
       ],
-      "outputs": ["{projectRoot}/src/__stories__/example-sources-built/*"],
+      "outputs": [
+        "{projectRoot}/src/__stories__/example-sources-built/*",
+        "{projectRoot}/src/__stories__/example-sources-built-preact/*"
+      ],
       "options": {
         "command": "tsx {projectRoot}/scripts/front-component-stories/build-source-examples.ts"
       }

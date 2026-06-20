@@ -12,7 +12,7 @@ export const WhatIsTwenty = ({ i18n }: WhatIsTwentyProps) => {
       <SubTitle value={i18n._('What is Fuse?')} />
       <MainText>
         {i18n._(
-          "It's a partnerships operating system to help teams discover, manage, and attribute partner-driven revenue.",
+          'Fuse is a partnerships operating system for managing partner programs, accounts, attribution, and collaboration workflows.',
         )}
       </MainText>
     </>

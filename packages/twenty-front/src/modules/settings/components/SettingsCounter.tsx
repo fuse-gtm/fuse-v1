@@ -1,6 +1,6 @@
 import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { styled } from '@linaria/react';
-import { IconMinus, IconPlus } from 'twenty-ui/display';
+import { IconMinus, IconPlus } from 'twenty-ui/icon';
 import { IconButton } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { castAsNumberOrNull } from '~/utils/cast-as-number-or-null';
@@ -29,10 +29,10 @@ const StyledTextInputContainer = styled.div`
   width: ${themeCssVariables.spacing[16]};
 
   > * input {
-    width: ${themeCssVariables.spacing[16]};
+    font-weight: ${themeCssVariables.font.weight.medium};
     height: ${themeCssVariables.spacing[6]};
     text-align: center;
-    font-weight: ${themeCssVariables.font.weight.medium};
+    width: ${themeCssVariables.spacing[16]};
   }
 `;
 

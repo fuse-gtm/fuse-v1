@@ -1,4 +1,4 @@
-import { FieldMetadataType } from '@/types/index';
+import { FieldMetadataType } from '@/types';
 
 export const isFieldMetadataEligibleForFieldsWidget = ({
   fieldName,

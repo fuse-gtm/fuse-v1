@@ -4,16 +4,18 @@ import { useState } from 'react';
 import { ensureAbsoluteUrl } from 'twenty-shared/utils';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
-import { extractDomainFromUrl } from '@/navigation-menu-item/utils/extractDomainFromUrl';
-import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
-import { SidePanelList } from '@/side-panel/components/SidePanelList';
+import { navigationMenuItemEditSectionState } from '@/navigation-menu-item/common/states/navigationMenuItemEditSectionState';
+import { extractDomainFromUrl } from '@/navigation-menu-item/display/link/utils/extractDomainFromUrl';
 import {
   type OrganizeActionsProps,
   SidePanelEditOrganizeActions,
-} from '@/side-panel/pages/navigation-menu-item/components/SidePanelEditOrganizeActions';
-import { SidePanelEditOwnerSection } from '@/side-panel/pages/navigation-menu-item/components/SidePanelEditOwnerSection';
-import { getOrganizeActionsSelectableItemIds } from '@/side-panel/pages/navigation-menu-item/utils/getOrganizeActionsSelectableItemIds';
+} from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
+import { SidePanelEditOwnerSection } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOwnerSection';
+import { getOrganizeActionsSelectableItemIds } from '@/navigation-menu-item/edit/side-panel/utils/getOrganizeActionsSelectableItemIds';
+import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
+import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { TextInput } from '@/ui/input/components/TextInput';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
 type SidePanelEditLinkItemViewProps = OrganizeActionsProps & {
   selectedItem: NavigationMenuItem;
@@ -22,6 +24,7 @@ type SidePanelEditLinkItemViewProps = OrganizeActionsProps & {
     updates: { link?: string; name?: string },
   ) => void;
   onOpenFolderPicker: () => void;
+  showMoveToFolder?: boolean;
 };
 
 export const SidePanelEditLinkItemView = ({
@@ -35,13 +38,19 @@ export const SidePanelEditLinkItemView = ({
   onRemove,
   onAddBefore,
   onAddAfter,
+  showMoveToFolder = false,
 }: SidePanelEditLinkItemViewProps) => {
   const { t } = useLingui();
+  const navigationMenuItemEditSection = useAtomStateValue(
+    navigationMenuItemEditSectionState,
+  );
+  const isDraftMode = navigationMenuItemEditSection === 'workspace';
   const [urlEditInput, setUrlEditInput] = useState('');
   const [lastAutoSetName, setLastAutoSetName] = useState<string | null>(null);
 
   const defaultLabel = t`Link label`;
-  const selectableItemIds = getOrganizeActionsSelectableItemIds(true);
+  const selectableItemIds =
+    getOrganizeActionsSelectableItemIds(showMoveToFolder);
 
   const currentName = selectedItem.name ?? defaultLabel;
   const currentDomain = selectedItem.link
@@ -54,7 +63,9 @@ export const SidePanelEditLinkItemView = ({
 
   const handleUrlChange = (value: string) => {
     setUrlEditInput(value);
-    if (!canAutoUpdateName) return;
+    // A personal favorite persists immediately, so the auto-derived name is
+    // applied on blur (see handleUrlBlur) rather than on every keystroke.
+    if (!isDraftMode || !canAutoUpdateName) return;
     const trimmed = value.trim();
     if (!isNonEmptyString(trimmed)) return;
     const domain = extractDomainFromUrl(ensureAbsoluteUrl(trimmed));
@@ -66,10 +77,21 @@ export const SidePanelEditLinkItemView = ({
 
   const handleUrlBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
-    if (isNonEmptyString(value)) {
-      onUpdateLink(selectedItem.id, { link: ensureAbsoluteUrl(value) });
-      setUrlEditInput('');
+    if (!isNonEmptyString(value)) {
+      return;
     }
+    const absoluteUrl = ensureAbsoluteUrl(value);
+    const updates: { link: string; name?: string } = { link: absoluteUrl };
+    const autoName =
+      !isDraftMode && canAutoUpdateName
+        ? extractDomainFromUrl(absoluteUrl)
+        : undefined;
+    if (autoName !== undefined) {
+      setLastAutoSetName(autoName);
+      updates.name = autoName;
+    }
+    onUpdateLink(selectedItem.id, updates);
+    setUrlEditInput('');
   };
 
   return (
@@ -91,9 +113,8 @@ export const SidePanelEditLinkItemView = ({
         onRemove={onRemove}
         onAddBefore={onAddBefore}
         onAddAfter={onAddAfter}
-        showMoveToFolder
+        showMoveToFolder={showMoveToFolder}
         onMoveToFolder={onOpenFolderPicker}
-        moveToFolderHasSubMenu
       />
       <SidePanelEditOwnerSection applicationId={selectedItem.applicationId} />
     </SidePanelList>

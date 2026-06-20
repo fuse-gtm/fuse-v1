@@ -4,9 +4,7 @@ import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decor
 import { FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
 @RegisteredInstanceCommand('1.23.0', 1775752781995)
-export class AddStandalonePageFastInstanceCommand
-  implements FastInstanceCommand
-{
+export class AddStandalonePageFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       'ALTER TABLE "core"."navigationMenuItem" ADD "pageLayoutId" uuid',
@@ -35,6 +33,9 @@ export class AddStandalonePageFastInstanceCommand
     );
     await queryRunner.query(
       "CREATE TYPE \"core\".\"navigationMenuItem_type_enum\" AS ENUM('VIEW', 'FOLDER', 'LINK', 'OBJECT', 'RECORD', 'PAGE_LAYOUT')",
+    );
+    await queryRunner.query(
+      'ALTER TABLE "core"."navigationMenuItem" ALTER COLUMN "type" DROP DEFAULT',
     );
     await queryRunner.query(
       'ALTER TABLE "core"."navigationMenuItem" ALTER COLUMN "type" TYPE "core"."navigationMenuItem_type_enum" USING "type"::"text"::"core"."navigationMenuItem_type_enum"',
@@ -70,7 +71,13 @@ export class AddStandalonePageFastInstanceCommand
       "CREATE TYPE \"core\".\"navigationMenuItem_type_enum_old\" AS ENUM('FOLDER', 'LINK', 'OBJECT', 'RECORD', 'VIEW')",
     );
     await queryRunner.query(
+      'ALTER TABLE "core"."navigationMenuItem" ALTER COLUMN "type" DROP DEFAULT',
+    );
+    await queryRunner.query(
       'ALTER TABLE "core"."navigationMenuItem" ALTER COLUMN "type" TYPE "core"."navigationMenuItem_type_enum_old" USING "type"::"text"::"core"."navigationMenuItem_type_enum_old"',
+    );
+    await queryRunner.query(
+      'ALTER TABLE "core"."navigationMenuItem" ALTER COLUMN "type" SET DEFAULT \'VIEW\'',
     );
     await queryRunner.query('DROP TYPE "core"."navigationMenuItem_type_enum"');
     await queryRunner.query(

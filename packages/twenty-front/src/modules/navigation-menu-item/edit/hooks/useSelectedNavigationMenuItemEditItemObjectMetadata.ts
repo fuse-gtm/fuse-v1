@@ -1,14 +1,12 @@
-import { useSelectedNavigationMenuItemEditItem } from '@/navigation-menu-item/hooks/useSelectedNavigationMenuItemEditItem';
-import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/utils/getObjectMetadataForNavigationMenuItem';
+import { useSelectedNavigationMenuItemEditItem } from '@/navigation-menu-item/edit/hooks/useSelectedNavigationMenuItemEditItem';
+import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/display/object/utils/getObjectMetadataForNavigationMenuItem';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
-import { convertCoreViewToView } from '@/views/utils/convertCoreViewToView';
+import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 
 export const useSelectedNavigationMenuItemEditItemObjectMetadata = () => {
   const { selectedItem } = useSelectedNavigationMenuItemEditItem();
-  const coreViews = useAtomStateValue(coreViewsSelector);
-  const views = coreViews.map(convertCoreViewToView);
+  const views = useAtomStateValue(viewsSelector);
   const { objectMetadataItems } = useObjectMetadataItems();
 
   const selectedItemObjectMetadata = selectedItem

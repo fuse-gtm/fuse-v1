@@ -3,12 +3,12 @@ import React from 'react';
 
 import { ModalStatefulWrapper } from '@/ui/layout/modal/components/ModalStatefulWrapper';
 import { Button } from 'twenty-ui/input';
+import { Section } from 'twenty-ui/layout';
 import {
   type ModalOverlay,
   type ModalPadding,
   type ModalSize,
-  Section,
-} from 'twenty-ui/layout';
+} from 'twenty-ui/surfaces';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 type StyledAppModalBaseProps = React.PropsWithChildren<{
@@ -91,7 +91,7 @@ export const StyledAppModalButton = (
   props: React.ComponentProps<typeof Button>,
 ) => (
   <StyledAppModalButtonContainer>
-    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
     <Button {...props} />
   </StyledAppModalButtonContainer>
 );
@@ -109,7 +109,7 @@ export const StyledAppModalSection = ({
   ...props
 }: React.ComponentProps<typeof Section>) => (
   <StyledAppModalSectionContainer>
-    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
     <Section {...props}>{children}</Section>
   </StyledAppModalSectionContainer>
 );

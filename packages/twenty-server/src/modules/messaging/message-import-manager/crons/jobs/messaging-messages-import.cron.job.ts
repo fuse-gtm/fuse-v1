@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { isDefined } from 'twenty-shared/utils';
 import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 
-import { MessageChannelSyncStage } from 'twenty-shared/types';
+import {
+  MessageChannelSyncStage,
+  MessageChannelType,
+} from 'twenty-shared/types';
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
 import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -14,10 +17,6 @@ import { Processor } from 'src/engine/core-modules/message-queue/decorators/proc
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 import { MessageQueueService } from 'src/engine/core-modules/message-queue/services/message-queue.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
-import {
-  DataSourceException,
-  DataSourceExceptionCode,
-} from 'src/engine/metadata-modules/data-source/data-source.exception';
 import {
   MessagingMessagesImportJob,
   type MessagingMessagesImportJobData,
@@ -62,6 +61,7 @@ export class MessagingMessagesImportCronJob {
               workspaceId: activeWorkspace.id,
               isSyncEnabled: true,
               syncStage: MessageChannelSyncStage.MESSAGES_IMPORT_PENDING,
+              type: Not(MessageChannelType.EMAIL_GROUP),
             },
           },
         );
@@ -136,9 +136,8 @@ export class MessagingMessagesImportCronJob {
                 id: activeWorkspace.id,
               },
             });
-            throw new DataSourceException(
+            throw new Error(
               'Workspace schema not found while the workspace is still active',
-              DataSourceExceptionCode.DATA_SOURCE_NOT_FOUND,
             );
           }
         } else {

@@ -1,6 +1,6 @@
-import { FirstDayOfTheWeek } from '../../../../types';
-import { assertUnreachable } from '../../../assertUnreachable';
-import { type FirstDayOfTheWeekSchema } from './firstDayOfWeekSchema';
+import { FirstDayOfTheWeek } from '@/types';
+import { assertUnreachable } from '@/utils/assertUnreachable';
+import { type FirstDayOfTheWeekSchema } from '@/utils/filter/dates/utils/firstDayOfWeekSchema';
 
 export const getFirstDayOfTheWeekAsANumberForDateFNS = (
   firstDayOfTheWeek: FirstDayOfTheWeekSchema,

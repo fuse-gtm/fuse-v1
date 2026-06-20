@@ -1,4 +1,4 @@
-import { IconHeartOff } from 'twenty-ui/display';
+import { IconHeartOff } from 'twenty-ui/icon';
 import { LightIconButton } from 'twenty-ui/input';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
@@ -6,7 +6,7 @@ import { NavigationMenuItemDroppableIds } from '@/navigation-menu-item/common/co
 import { NavigationMenuItemBackButton } from '@/navigation-menu-item/edit/components/NavigationMenuItemBackButton';
 import { NavigationMenuItemIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemIcon';
 import { NavigationMenuItemSortableItem } from '@/navigation-menu-item/display/dnd/components/NavigationMenuItemSortableItem';
-import { useDeleteNavigationMenuItem } from '@/navigation-menu-item/common/hooks/useDeleteNavigationMenuItem';
+import { useDeleteManyNavigationMenuItems } from '@/navigation-menu-item/common/hooks/useDeleteManyNavigationMenuItems';
 import { getNavigationMenuItemComputedLink } from '@/navigation-menu-item/display/utils/getNavigationMenuItemComputedLink';
 import { getNavigationMenuItemLabel } from '@/navigation-menu-item/display/utils/getNavigationMenuItemLabel';
 import { getNavigationMenuItemObjectNameSingular } from '@/navigation-menu-item/display/object/utils/getNavigationMenuItemObjectNameSingular';
@@ -15,6 +15,7 @@ import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMeta
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { NavigationDrawerItem } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerItem';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+import { lastVisitedViewPerObjectMetadataItemState } from '@/navigation/states/lastVisitedViewPerObjectMetadataItemState';
 
 type NavigationMenuItemFolderContentProps = {
   folderId: string;
@@ -29,7 +30,10 @@ export const NavigationMenuItemFolderContent = ({
 }: NavigationMenuItemFolderContentProps) => {
   const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
   const views = useAtomStateValue(viewsSelector);
-  const { deleteNavigationMenuItem } = useDeleteNavigationMenuItem();
+  const lastVisitedViewPerObjectMetadataItem = useAtomStateValue(
+    lastVisitedViewPerObjectMetadataItemState,
+  );
+  const { deleteManyNavigationMenuItems } = useDeleteManyNavigationMenuItems();
 
   const folderDroppableId = `${NavigationMenuItemDroppableIds.FAVORITE_FOLDER_PREFIX}${folderId}`;
 
@@ -42,11 +46,12 @@ export const NavigationMenuItemFolderContent = ({
           objectMetadataItems,
           views,
         );
-        const computedLink = getNavigationMenuItemComputedLink(
-          navigationMenuItem,
+        const computedLink = getNavigationMenuItemComputedLink({
+          item: navigationMenuItem,
           objectMetadataItems,
           views,
-        );
+          lastVisitedViewPerObjectMetadataItem,
+        });
         const objectNameSingular = getNavigationMenuItemObjectNameSingular(
           navigationMenuItem,
           objectMetadataItems,
@@ -76,7 +81,7 @@ export const NavigationMenuItemFolderContent = ({
                   Icon={IconHeartOff}
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteNavigationMenuItem(navigationMenuItem.id);
+                    deleteManyNavigationMenuItems([navigationMenuItem.id]);
                   }}
                   accent="tertiary"
                 />

@@ -1,19 +1,19 @@
-import { Avatar, IconFolder, useIcons } from 'twenty-ui/display';
-
-import { useAddRecordToNavigationMenuDraft } from '@/navigation-menu-item/hooks/useAddRecordToNavigationMenuDraft';
-import { useDraftNavigationMenuItems } from '@/navigation-menu-item/hooks/useDraftNavigationMenuItems';
-import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/hooks/useOpenNavigationMenuItemInSidePanel';
-import { addMenuItemInsertionContextState } from '@/navigation-menu-item/states/addMenuItemInsertionContextState';
-import type { AddToNavigationDragPayload } from '@/navigation-menu-item/types/add-to-navigation-drag-payload';
-import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
-import { SidePanelItemWithAddToNavigationDrag } from '@/side-panel/components/SidePanelItemWithAddToNavigationDrag';
-import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
+import { Avatar } from 'twenty-ui/data-display';
+import { useIcons } from 'twenty-ui/icon';
 import {
   CoreObjectNameSingular,
   NavigationMenuItemType,
 } from 'twenty-shared/types';
+import { isDefined } from 'twenty-shared/utils';
+
+import { pendingInsertionNavigationMenuItemState } from '@/navigation-menu-item/common/states/pendingInsertionNavigationMenuItemState';
+import type { AddToNavigationDragPayload } from '@/navigation-menu-item/common/types/add-to-navigation-drag-payload';
+import { useNavigationMenuItemEditController } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemEditController';
+import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/edit/hooks/useOpenNavigationMenuItemInSidePanel';
+import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
+import { SidePanelItemWithAddToNavigationDrag } from '@/side-panel/components/SidePanelItemWithAddToNavigationDrag';
+import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
+import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 
 type SearchRecord = {
   recordId: string;
@@ -25,23 +25,18 @@ type SearchRecord = {
 type SidePanelNewSidebarItemRecordItemProps = {
   record: SearchRecord;
   dragIndex?: number;
-  disableDrag?: boolean;
 };
 
 export const SidePanelNewSidebarItemRecordItem = ({
   record,
   dragIndex,
-  disableDrag = false,
 }: SidePanelNewSidebarItemRecordItemProps) => {
   const { getIcon } = useIcons();
-  const { addRecordToDraft } = useAddRecordToNavigationMenuDraft();
-  const { currentDraft } = useDraftNavigationMenuItems();
-  const addMenuItemInsertionContext = useAtomStateValue(
-    addMenuItemInsertionContextState,
-  );
-  const setAddMenuItemInsertionContext = useSetAtomState(
-    addMenuItemInsertionContextState,
-  );
+  const { createItem } = useNavigationMenuItemEditController();
+  const [
+    pendingInsertionNavigationMenuItem,
+    setPendingInsertionNavigationMenuItem,
+  ] = useAtomState(pendingInsertionNavigationMenuItemState);
   const { openNavigationMenuItemInSidePanel } =
     useOpenNavigationMenuItemInSidePanel();
   const { objectMetadataItems } = useObjectMetadataItems();
@@ -58,24 +53,30 @@ export const SidePanelNewSidebarItemRecordItem = ({
   };
 
   const handleSelectRecord = () => {
-    const itemId = addRecordToDraft(
+    if (!isDefined(objectMetadataItem)) {
+      return;
+    }
+    const itemId = createItem(
       {
-        recordId: record.recordId,
-        objectNameSingular: record.objectNameSingular,
-        label: record.label,
-        imageUrl: record.imageUrl,
+        type: NavigationMenuItemType.RECORD,
+        targetObjectMetadataId: objectMetadataItem.id,
+        targetRecordId: record.recordId,
+        targetRecordIdentifier: {
+          id: record.recordId,
+          labelIdentifier: record.label,
+          imageIdentifier: record.imageUrl ?? null,
+        },
       },
-      currentDraft,
-      addMenuItemInsertionContext?.targetFolderId ?? null,
-      addMenuItemInsertionContext?.targetIndex,
+      {
+        targetFolderId: pendingInsertionNavigationMenuItem?.folderId ?? null,
+        targetIndex: pendingInsertionNavigationMenuItem?.position,
+      },
     );
-    setAddMenuItemInsertionContext(null);
+    setPendingInsertionNavigationMenuItem(null);
     openNavigationMenuItemInSidePanel({
       itemId,
       pageTitle: record.label,
-      pageIcon: objectMetadataItem
-        ? getIcon(objectMetadataItem.icon)
-        : IconFolder,
+      pageIcon: getIcon(objectMetadataItem.icon),
     });
   };
 
@@ -101,7 +102,6 @@ export const SidePanelNewSidebarItemRecordItem = ({
         id={record.recordId}
         onClick={handleSelectRecord}
         dragIndex={dragIndex}
-        disableDrag={disableDrag}
         payload={recordPayload}
       />
     </SelectableListItem>

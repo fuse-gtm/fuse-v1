@@ -5,18 +5,46 @@ import { v4 } from 'uuid';
 import createTwentyAppPackageJson from 'package.json';
 import chalk from 'chalk';
 
+import { scaffoldIntegrationTest } from '@/utils/test-template';
+
 const SRC_FOLDER = 'src';
+
+type ExampleOptions = {
+  includeExampleObject: boolean;
+  includeExampleField: boolean;
+  includeExampleLogicFunction: boolean;
+  includeExampleFrontComponent: boolean;
+  includeExampleView: boolean;
+  includeExampleNavigationMenuItem: boolean;
+  includeExampleSkill: boolean;
+  includeExampleAgent: boolean;
+  includeExampleIntegrationTest: boolean;
+};
+
+const ALL_EXAMPLES: ExampleOptions = {
+  includeExampleObject: true,
+  includeExampleField: true,
+  includeExampleLogicFunction: true,
+  includeExampleFrontComponent: true,
+  includeExampleView: true,
+  includeExampleNavigationMenuItem: true,
+  includeExampleSkill: true,
+  includeExampleAgent: true,
+  includeExampleIntegrationTest: true,
+};
 
 export const copyBaseApplicationProject = async ({
   appName,
   appDisplayName,
   appDescription,
   appDirectory,
+  exampleOptions = ALL_EXAMPLES,
 }: {
   appName: string;
   appDisplayName: string;
   appDescription: string;
   appDirectory: string;
+  exampleOptions?: ExampleOptions;
 }) => {
   console.log(chalk.gray('Generating application project...'));
   await fs.copy(join(__dirname, './constants/template'), appDirectory);
@@ -37,11 +65,10 @@ export const copyBaseApplicationProject = async ({
 
   await createNvmrc(appDirectory);
 
-  await createPublicAssetDirectory(appDirectory);
-
   const sourceFolderPath = join(appDirectory, SRC_FOLDER);
 
   await fs.ensureDir(sourceFolderPath);
+  await fs.remove(join(sourceFolderPath, 'default-role.ts'));
 
   await createDefaultRoleConfig({
     displayName: appDisplayName,
@@ -151,6 +178,12 @@ export const copyBaseApplicationProject = async ({
     appDirectory: sourceFolderPath,
     fileName: 'application-config.ts',
   });
+
+  await updatePackageJson({
+    appName,
+    appDirectory,
+    includeExampleIntegrationTest: exampleOptions.includeExampleIntegrationTest,
+  });
 };
 
 // npm strips dotfiles/dotdirs (.gitignore, .github/) from published packages,
@@ -159,6 +192,7 @@ const renameDotfiles = async ({ appDirectory }: { appDirectory: string }) => {
   const renames = [
     { from: 'gitignore', to: '.gitignore' },
     { from: 'github', to: '.github' },
+    { from: 'yarnrc.yml', to: '.yarnrc.yml' },
   ];
 
   for (const { from, to } of renames) {
@@ -168,6 +202,48 @@ const renameDotfiles = async ({ appDirectory }: { appDirectory: string }) => {
       await fs.rename(sourcePath, join(appDirectory, to));
     }
   }
+};
+
+const addEmptyPublicDirectory = async ({
+  appDirectory,
+}: {
+  appDirectory: string;
+}) => {
+  await fs.ensureDir(join(appDirectory, 'public'));
+};
+
+const generateUniversalIdentifiers = async ({
+  appDisplayName,
+  appDescription,
+  appDirectory,
+}: {
+  appDisplayName: string;
+  appDescription: string;
+  appDirectory: string;
+}) => {
+  const universalIdentifiersPath = join(
+    appDirectory,
+    SRC_FOLDER,
+    'constants',
+    'universal-identifiers.ts',
+  );
+
+  if (!(await fs.pathExists(universalIdentifiersPath))) {
+    return;
+  }
+
+  const universalIdentifiersFileContent = await fs.readFile(
+    universalIdentifiersPath,
+    'utf-8',
+  );
+
+  await fs.writeFile(
+    universalIdentifiersPath,
+    universalIdentifiersFileContent
+      .replace('DISPLAY-NAME-TO-BE-GENERATED', appDisplayName)
+      .replace('DESCRIPTION-TO-BE-GENERATED', appDescription)
+      .replace(/UUID-TO-BE-GENERATED/g, () => v4()),
+  );
 };
 
 const createGitignore = async (appDirectory: string) => {
@@ -221,15 +297,49 @@ const createNvmrc = async (appDirectory: string) => {
 const createDefaultRoleConfig = async ({
   displayName,
   appDirectory,
+  fileFolder,
+  fileName,
 }: {
+  displayName: string;
   appDirectory: string;
+  fileFolder?: string;
+  fileName: string;
 }) => {
-  await fs.ensureDir(join(appDirectory, 'public'));
+  const universalIdentifier = v4();
+
+  const content = `import { defineRole } from 'twenty-sdk/define';
+
+export const DEFAULT_ROLE_UNIVERSAL_IDENTIFIER =
+  '${universalIdentifier}';
+
+export default defineRole({
+  universalIdentifier: DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
+  label: '${displayName} default function role',
+  description: '${displayName} default function role',
+  canReadAllObjectRecords: true,
+  canUpdateAllObjectRecords: true,
+  canSoftDeleteAllObjectRecords: true,
+  canDestroyAllObjectRecords: false,
+});
+`;
+
+  await fs.ensureDir(join(appDirectory, fileFolder ?? ''));
+  await fs.writeFile(join(appDirectory, fileFolder ?? '', fileName), content);
 };
 
+const createDefaultFrontComponent = async ({
+  appDirectory,
+  fileFolder,
+  fileName,
+}: {
+  appDirectory: string;
+  fileFolder?: string;
+  fileName: string;
+}) => {
+  const universalIdentifier = v4();
   const content = `import { useEffect, useState } from 'react';
 import { CoreApiClient, CoreSchema } from 'twenty-client-sdk/core';
-import { defineFrontComponent } from 'twenty-sdk';
+import { defineFrontComponent } from 'twenty-sdk/define';
 
 export const HELLO_WORLD_FRONT_COMPONENT_UNIVERSAL_IDENTIFIER =
   '${universalIdentifier}';
@@ -305,7 +415,7 @@ const createExamplePageLayout = async ({
 
   const content = `import { EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER } from 'src/objects/example-object';
 import { HELLO_WORLD_FRONT_COMPONENT_UNIVERSAL_IDENTIFIER } from 'src/front-components/hello-world';
-import { definePageLayout, PageLayoutTabLayoutMode } from 'twenty-sdk';
+import { definePageLayout, PageLayoutTabLayoutMode } from 'twenty-sdk/define';
 
 export default definePageLayout({
   universalIdentifier: '${pageLayoutUniversalIdentifier}',
@@ -351,7 +461,7 @@ const createDefaultFunction = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineLogicFunction } from 'twenty-sdk';
+  const content = `import { defineLogicFunction } from 'twenty-sdk/define';
 
 const handler = async (): Promise<{ message: string }> => {
   return { message: 'Hello, World!' };
@@ -387,7 +497,7 @@ const createCreateCompanyFunction = async ({
   const universalIdentifier = v4();
 
   const content = `import { CoreApiClient } from 'twenty-client-sdk/core';
-import { defineLogicFunction } from 'twenty-sdk';
+import { defineLogicFunction } from 'twenty-sdk/define';
 
 const handler = async (): Promise<{ message: string }> => {
   const client = new CoreApiClient();
@@ -438,9 +548,9 @@ const createDefaultPreInstallFunction = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { definePreInstallLogicFunction, type InstallLogicFunctionPayload } from 'twenty-sdk';
+  const content = `import { definePreInstallLogicFunction, type InstallPayload } from 'twenty-sdk/define';
 
-const handler = async (payload: InstallLogicFunctionPayload): Promise<void> => {
+const handler = async (payload: InstallPayload): Promise<void> => {
   console.log('Pre install logic function executed successfully!', payload.previousVersion);
 };
 
@@ -468,9 +578,9 @@ const createDefaultPostInstallFunction = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { definePostInstallLogicFunction, type InstallLogicFunctionPayload } from 'twenty-sdk';
+  const content = `import { definePostInstallLogicFunction, type InstallPayload } from 'twenty-sdk/define';
 
-const handler = async (payload: InstallLogicFunctionPayload): Promise<void> => {
+const handler = async (payload: InstallPayload): Promise<void> => {
   console.log('Post install logic function executed successfully!', payload.previousVersion);
 };
 
@@ -499,7 +609,7 @@ const createExampleObject = async ({
   const objectUniversalIdentifier = v4();
   const nameFieldUniversalIdentifier = v4();
 
-  const content = `import { defineObject, FieldType } from 'twenty-sdk';
+  const content = `import { defineObject, FieldType } from 'twenty-sdk/define';
 
 export const EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER =
   '${objectUniversalIdentifier}';
@@ -544,7 +654,7 @@ const createExampleField = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineField, FieldType } from 'twenty-sdk';
+  const content = `import { defineField, FieldType } from 'twenty-sdk/define';
 import { EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER } from 'src/objects/example-object';
 
 export default defineField({
@@ -573,7 +683,7 @@ const createExampleView = async ({
   const universalIdentifier = v4();
   const viewFieldUniversalIdentifier = v4();
 
-  const content = `import { defineView, ViewKey } from 'twenty-sdk';
+  const content = `import { defineView, ViewKey } from 'twenty-sdk/define';
 import { EXAMPLE_OBJECT_UNIVERSAL_IDENTIFIER, NAME_FIELD_UNIVERSAL_IDENTIFIER } from 'src/objects/example-object';
 
 export const EXAMPLE_VIEW_UNIVERSAL_IDENTIFIER = '${universalIdentifier}';
@@ -612,7 +722,7 @@ const createExampleNavigationMenuItem = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineNavigationMenuItem } from 'twenty-sdk';
+  const content = `import { defineNavigationMenuItem } from 'twenty-sdk/define';
 import { EXAMPLE_VIEW_UNIVERSAL_IDENTIFIER } from 'src/views/example-view';
 
 export default defineNavigationMenuItem({
@@ -641,7 +751,7 @@ const createExampleSkill = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineSkill } from 'twenty-sdk';
+  const content = `import { defineSkill } from 'twenty-sdk/define';
 
 export const EXAMPLE_SKILL_UNIVERSAL_IDENTIFIER =
   '${universalIdentifier}';
@@ -671,7 +781,7 @@ const createExampleAgent = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineAgent } from 'twenty-sdk';
+  const content = `import { defineAgent } from 'twenty-sdk/define';
 
 export const EXAMPLE_AGENT_UNIVERSAL_IDENTIFIER =
   '${universalIdentifier}';
@@ -705,7 +815,7 @@ const createApplicationConfig = async ({
 }) => {
   const universalIdentifier = v4();
 
-  const content = `import { defineApplication } from 'twenty-sdk';
+  const content = `import { defineApplication } from 'twenty-sdk/define';
 import { DEFAULT_ROLE_UNIVERSAL_IDENTIFIER } from 'src/roles/default-role';
 
 export const APPLICATION_UNIVERSAL_IDENTIFIER =
@@ -731,46 +841,37 @@ const createYarnLock = async (appDirectory: string) => {
   await fs.writeFile(join(appDirectory, 'yarn.lock'), yarnLockContent);
 };
 
-const createPackageJson = async ({
+const updatePackageJson = async ({
   appName,
   appDirectory,
+  includeExampleIntegrationTest,
 }: {
   appName: string;
   appDirectory: string;
+  includeExampleIntegrationTest: boolean;
 }) => {
   const packageJson = await fs.readJson(join(appDirectory, 'package.json'));
 
-  const devDependencies: Record<string, string> = {
-    typescript: '^5.9.3',
-    '@types/node': '^24.7.2',
-    '@types/react': '^19.0.0',
-    react: '^19.0.0',
-    'react-dom': '^19.0.0',
-    oxlint: '^0.16.0',
-    'twenty-sdk': createTwentyAppPackageJson.version,
+  packageJson.name = appName;
+  packageJson.dependencies = {
+    ...(packageJson.dependencies ?? {}),
     'twenty-client-sdk': createTwentyAppPackageJson.version,
+    'twenty-sdk': createTwentyAppPackageJson.version,
   };
+  packageJson.devDependencies = packageJson.devDependencies ?? {};
+  packageJson.scripts = packageJson.scripts ?? {};
 
   if (includeExampleIntegrationTest) {
-    scripts.test = 'vitest run';
-    scripts['test:watch'] = 'vitest';
-    devDependencies.vitest = '^3.1.1';
-    devDependencies['vite-tsconfig-paths'] = '^4.2.1';
+    packageJson.scripts.test = 'vitest run';
+    packageJson.scripts['test:watch'] = 'vitest';
+    packageJson.devDependencies.vitest = '^3.1.1';
+    packageJson.devDependencies['vite-tsconfig-paths'] = '^4.2.1';
+  } else {
+    delete packageJson.scripts.test;
+    delete packageJson.scripts['test:watch'];
+    delete packageJson.devDependencies.vitest;
+    delete packageJson.devDependencies['vite-tsconfig-paths'];
   }
-
-  const packageJson = {
-    name: appName,
-    version: '0.1.0',
-    license: 'MIT',
-    engines: {
-      node: '^24.5.0',
-      npm: 'please-use-yarn',
-      yarn: '>=4.0.2',
-    },
-    packageManager: 'yarn@4.9.2',
-    scripts,
-    devDependencies,
-  };
 
   await fs.writeFile(
     join(appDirectory, 'package.json'),

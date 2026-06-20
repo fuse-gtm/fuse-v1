@@ -1,5 +1,5 @@
-import { ViewFilterOperand } from '../../../../types';
-import { resolveRelativeDateTimeFilterStringified } from './resolveRelativeDateTimeFilterStringified';
+import { ViewFilterOperand } from '@/types';
+import { resolveRelativeDateTimeFilterStringified } from '@/utils/filter/dates/utils/resolveRelativeDateTimeFilterStringified';
 
 export type ResolvedDateTimeFilterValue<O extends ViewFilterOperand> =
   O extends ViewFilterOperand.IS_RELATIVE

@@ -1,8 +1,10 @@
 import { useDeleteOneFieldMetadataItem } from '@/object-metadata/hooks/useDeleteOneFieldMetadataItem';
 import { useFieldMetadataItem } from '@/object-metadata/hooks/useFieldMetadataItem';
+import { useGetIsMetadataItemCustom } from '@/object-metadata/hooks/useGetIsMetadataItemCustom';
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
+import { isDDLLockedState } from '@/client-config/states/isDDLLockedState';
 import { isObjectMetadataReadOnly } from '@/object-record/read-only/utils/isObjectMetadataReadOnly';
 import { SettingsItemTypeTag } from '@/settings/components/SettingsItemTypeTag';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
@@ -10,46 +12,47 @@ import { SettingsObjectFieldInactiveActionDropdown } from '@/settings/data-model
 import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { styled } from '@linaria/react';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useLingui } from '@lingui/react/macro';
 import { useContext, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FieldMetadataType, SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
-import { IconChevronRight, useIcons } from 'twenty-ui/display';
+import { IconChevronRight, useIcons } from 'twenty-ui/icon';
 import { UndecoratedLink } from 'twenty-ui/navigation';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 
 type SettingsObjectRelationItemTableRowProps = {
   fieldMetadataItem: FieldMetadataItem;
-  objectMetadataItem: ObjectMetadataItem;
+  objectMetadataItem: EnrichedObjectMetadataItem;
 };
 
 export const OBJECT_RELATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
   'minmax(0, 1fr) 148px 148px 36px';
 
 const StyledNameContainer = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   flex: 1;
-  min-width: 0;
   gap: ${themeCssVariables.spacing[1]};
+  min-width: 0;
 `;
 
 const StyledNameLabel = styled.div`
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const StyledInactiveLabel = styled.span`
   color: ${themeCssVariables.font.color.extraLight};
-  font-size: ${themeCssVariables.font.size.sm};
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   flex: 0 999 auto;
+  font-size: ${themeCssVariables.font.size.sm};
   min-width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &::before {
     content: '·';
@@ -77,11 +80,11 @@ const StyledLinkContainer = styled.div`
 
   > a {
     color: ${themeCssVariables.font.color.primary};
+    overflow: hidden;
     text-decoration: underline;
     text-decoration-color: ${themeCssVariables.border.color.strong};
-    text-underline-offset: 2px;
-    overflow: hidden;
     text-overflow: ellipsis;
+    text-underline-offset: 2px;
     white-space: nowrap;
 
     &:hover {
@@ -100,6 +103,8 @@ export const SettingsObjectRelationItemTableRow = ({
   const navigate = useNavigateSettings();
   const { getIcon } = useIcons();
 
+  const getIsMetadataItemCustom = useGetIsMetadataItemCustom();
+
   const Icon = getIcon(fieldMetadataItem.icon);
 
   const getRelationMetadata = useGetRelationMetadata();
@@ -109,9 +114,12 @@ export const SettingsObjectRelationItemTableRow = ({
       [fieldMetadataItem, getRelationMetadata],
     ) ?? {};
 
-  const readonly = isObjectMetadataReadOnly({
-    objectMetadataItem,
-  });
+  const isDDLLocked = useAtomStateValue(isDDLLockedState);
+
+  const readonly =
+    isObjectMetadataReadOnly({
+      objectMetadataItem,
+    }) || isDDLLocked;
 
   const { activateMetadataField } = useFieldMetadataItem();
   const { deleteOneFieldMetadataItem } = useDeleteOneFieldMetadataItem();
@@ -121,7 +129,7 @@ export const SettingsObjectRelationItemTableRow = ({
     fieldName: fieldMetadataItem.name,
   });
 
-  // eslint-disable-next-line twenty/no-navigate-prefer-link
+  // oxlint-disable-next-line twenty/no-navigate-prefer-link
   const navigateToFieldEdit = () =>
     navigate(SettingsPath.ObjectFieldEdit, {
       objectNamePlural: objectMetadataItem.namePlural,
@@ -149,20 +157,24 @@ export const SettingsObjectRelationItemTableRow = ({
     : undefined;
 
   const targetObjectLabel =
-    isRelatedObjectLinkable && relationObjectMetadataItem
+    isRelatedObjectLinkable && isDefined(relationObjectMetadataItem)
       ? relationObjectMetadataItem.labelPlural
       : fieldMetadataItem.label;
 
   return (
     <TableRow
       gridTemplateColumns={OBJECT_RELATION_TABLE_ROW_GRID_TEMPLATE_COLUMNS}
-      to={linkToNavigate}
+      // The row can't be a Link: it contains a nested link to the related
+      // object, and <a> inside <a> is invalid HTML (React 19 errors on it).
+      // oxlint-disable-next-line twenty/no-navigate-prefer-link
+      onClick={navigateToFieldEdit}
+      cursor="pointer"
     >
       <TableCell
         color={themeCssVariables.font.color.primary}
         gap={themeCssVariables.spacing[2]}
       >
-        {!!Icon && (
+        {isDefined(Icon) && (
           <Icon
             style={{
               minWidth: theme.icon.size.md,
@@ -198,7 +210,6 @@ export const SettingsObjectRelationItemTableRow = ({
       <TableCell>
         <SettingsItemTypeTag
           item={{
-            isCustom: fieldMetadataItem.isCustom ?? undefined,
             isRemote: objectMetadataItem.isRemote,
             applicationId: fieldMetadataItem.applicationId,
           }}
@@ -222,7 +233,14 @@ export const SettingsObjectRelationItemTableRow = ({
         padding={`0 ${themeCssVariables.spacing[1]} 0 ${themeCssVariables.spacing[2]}`}
       >
         {fieldMetadataItem.isActive ? (
-          <UndecoratedLink to={linkToNavigate}>
+          // The row navigates via onClick (it can't be a Link because it
+          // contains a nested link to the related object). This chevron is a
+          // real link to the same destination so keyboard users can still reach
+          // field edit; stopPropagation avoids firing the row onClick too.
+          <UndecoratedLink
+            to={linkToNavigate}
+            onClick={(event) => event.stopPropagation()}
+          >
             <StyledIconChevronRightContainer>
               <IconChevronRight
                 size={theme.icon.size.md}
@@ -232,7 +250,7 @@ export const SettingsObjectRelationItemTableRow = ({
           </UndecoratedLink>
         ) : (
           <SettingsObjectFieldInactiveActionDropdown
-            isCustomField={fieldMetadataItem.isCustom === true}
+            isCustomField={getIsMetadataItemCustom(fieldMetadataItem)}
             readonly={readonly}
             fieldMetadataItemId={fieldMetadataItem.id}
             onEdit={navigateToFieldEdit}

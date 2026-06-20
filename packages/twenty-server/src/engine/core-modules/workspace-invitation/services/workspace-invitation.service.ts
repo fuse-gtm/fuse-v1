@@ -314,17 +314,19 @@ export class WorkspaceInvitationService {
           );
         }
 
+        const logo = isDefined(workspace.logoFileId)
+          ? await this.fileUrlService.signFileByIdUrl({
+              fileId: workspace.logoFileId,
+              workspaceId: workspace.id,
+              fileFolder: FileFolder.CorePicture,
+            })
+          : undefined;
+
         const emailData = {
           link: link.toString(),
           workspace: {
             name: workspace.displayName,
-            logo: isDefined(workspace.logoFileId)
-              ? this.fileUrlService.signFileByIdUrl({
-                  fileId: workspace.logoFileId,
-                  workspaceId: workspace.id,
-                  fileFolder: FileFolder.CorePicture,
-                })
-              : undefined,
+            logo,
           },
           sender: {
             email: sender.userEmail,
@@ -346,7 +348,7 @@ export class WorkspaceInvitationService {
         const subject = i18n._(joinTeamMsg);
 
         await this.emailService.send({
-          from: `${sender.name.firstName} ${sender.name.lastName} (via Fuse) <${this.twentyConfigService.get('EMAIL_FROM_ADDRESS')}>`,
+          from: `${sender.name.firstName} ${sender.name.lastName} (via Twenty) <${this.twentyConfigService.get('EMAIL_FROM_ADDRESS')}>`,
           to: invitation.value.email,
           subject,
           text,

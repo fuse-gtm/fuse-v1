@@ -1,12 +1,12 @@
 import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { styled } from '@linaria/react';
-import { NotificationCounter } from 'twenty-ui/navigation';
+import { NotificationCounter } from 'twenty-ui/data-display';
 
 const StyledNotificationCounterContainer = styled.div`
+  left: -7px;
   position: absolute;
   top: -7px;
-  left: -7px;
   z-index: 1000;
 `;
 

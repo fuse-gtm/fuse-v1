@@ -5,7 +5,8 @@ import { t } from '@lingui/core/macro';
 import { useContext, useMemo } from 'react';
 import { FieldMetadataType, CoreObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { AppTooltip, IconEraser, TooltipDelay } from 'twenty-ui/display';
+import { IconEraser } from 'twenty-ui/icon';
+import { AppTooltip, TooltipDelay } from 'twenty-ui/surfaces';
 import { type JsonValue } from 'type-fest';
 
 import { useFieldMetadataItemById } from '@/object-metadata/hooks/useFieldMetadataItemById';
@@ -201,32 +202,36 @@ export const SettingsRolePermissionsObjectLevelRecordLevelPermissionValueInput =
     };
 
     if (isDynamicMode) {
+      const tooltipId = `record-level-permission-value-${recordFilterId}`;
       const fullLabel = isDefined(workspaceMemberFieldLabel)
         ? `Me / ${workspaceMemberFieldLabel}`
         : 'Me';
 
       return (
-        <StyledContainer>
-          <AppTooltip
-            content={fullLabel}
-            delay={TooltipDelay.shortDelay}
-            noArrow
-            place="bottom"
-          >
-            <StyledReadOnlyInput>
+        <>
+          <StyledContainer>
+            <StyledReadOnlyInput id={tooltipId}>
               <StyledMeText>{t`Me`}</StyledMeText>
               {isDefined(workspaceMemberFieldLabel) && (
                 <StyledFieldLabel>{` / ${workspaceMemberFieldLabel}`}</StyledFieldLabel>
               )}
             </StyledReadOnlyInput>
-          </AppTooltip>
-          <StyledIconContainer
-            onClick={handleResetToStaticValue}
-            aria-label={t`Reset to static value`}
-          >
-            <IconEraser size={theme.icon.size.sm} />
-          </StyledIconContainer>
-        </StyledContainer>
+            <StyledIconContainer
+              onClick={handleResetToStaticValue}
+              aria-label={t`Reset to static value`}
+            >
+              <IconEraser size={theme.icon.size.sm} />
+            </StyledIconContainer>
+          </StyledContainer>
+          <AppTooltip
+            anchorSelect={`#${tooltipId}`}
+            content={fullLabel}
+            delay={TooltipDelay.shortDelay}
+            noArrow
+            place="bottom"
+            positionStrategy="fixed"
+          />
+        </>
       );
     }
 

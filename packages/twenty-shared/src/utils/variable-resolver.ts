@@ -1,5 +1,5 @@
-import { evalFromContext } from './evalFromContext';
-import { isDefined } from './validation/isDefined';
+import { evalFromContext } from '@/utils/evalFromContext';
+import { isDefined } from '@/utils/validation';
 
 const isString = (value: unknown): value is string => {
   return typeof value === 'string';

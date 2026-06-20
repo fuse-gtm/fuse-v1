@@ -6,11 +6,11 @@ import {
   type ReactNode,
 } from 'react';
 
+type ElementWithChildren = ReactElement<{ children?: ReactNode }>;
+
 export const wrapHeadingsWithAnchor = (children: ReactNode): ReactNode => {
-  const hasChildren = (
-    element: ReactElement,
-  ): element is ReactElement<{ children: ReactNode }> => {
-    return element.props.children !== undefined;
+  const hasChildren = (element: ReactElement): element is ElementWithChildren => {
+    return (element.props as { children?: ReactNode }).children !== undefined;
   };
   const idCounts = new Map<string, number>();
 
@@ -20,7 +20,9 @@ export const wrapHeadingsWithAnchor = (children: ReactNode): ReactNode => {
       typeof child.type === 'string' &&
       ['h1', 'h2', 'h3', 'h4'].includes(child.type)
     ) {
-      const baseId = child.props.children
+      const headingElement = child as ElementWithChildren;
+      const headingChildren = headingElement.props.children;
+      const baseId = String(headingChildren)
         .toString()
         .replace(/\s+/g, '-')
         .toLowerCase();
@@ -32,7 +34,7 @@ export const wrapHeadingsWithAnchor = (children: ReactNode): ReactNode => {
       return cloneElement(child as ReactElement<any>, {
         id,
         className: 'anchor',
-        children: <a href={`#${id}`}>{child.props.children}</a>,
+        children: <a href={`#${id}`}>{headingChildren}</a>,
       });
     }
 

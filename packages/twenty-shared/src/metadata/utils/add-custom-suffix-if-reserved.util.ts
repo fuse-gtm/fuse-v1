@@ -1,4 +1,4 @@
-import { RESERVED_METADATA_NAME_KEYWORDS } from '@/metadata/index';
+import { RESERVED_METADATA_NAME_KEYWORDS } from '@/metadata';
 
 export const addCustomSuffixIfIsReserved = (name: string): string => {
   if (!name) return name;

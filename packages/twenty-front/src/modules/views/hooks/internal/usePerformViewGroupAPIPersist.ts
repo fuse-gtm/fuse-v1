@@ -8,13 +8,13 @@ import { t } from '@lingui/core/macro';
 import { CrudOperationType } from 'twenty-shared/types';
 import { useMutation } from '@apollo/client/react';
 import {
-  type UpdateCoreViewGroupMutationVariables,
-  UpdateCoreViewGroupDocument,
+  type UpdateManyViewGroupsMutationVariables,
+  UpdateManyViewGroupsDocument,
 } from '~/generated-metadata/graphql';
 
 export const usePerformViewGroupAPIPersist = () => {
-  const [updateCoreViewGroupMutation] = useMutation(
-    UpdateCoreViewGroupDocument,
+  const [updateManyViewGroupsMutation] = useMutation(
+    UpdateManyViewGroupsDocument,
   );
 
   const { handleMetadataError } = useMetadataErrorHandler();
@@ -22,31 +22,30 @@ export const usePerformViewGroupAPIPersist = () => {
 
   const performViewGroupAPIUpdate = useCallback(
     async (
-      updateCoreViewGroupInputs: UpdateCoreViewGroupMutationVariables[],
+      updateViewGroupInputs: UpdateManyViewGroupsMutationVariables,
     ): Promise<
-      MetadataRequestResult<
-        Awaited<ReturnType<typeof updateCoreViewGroupMutation>>[]
-      >
+      MetadataRequestResult<Awaited<
+        ReturnType<typeof updateManyViewGroupsMutation>
+      > | null>
     > => {
-      if (updateCoreViewGroupInputs.length === 0) {
+      if (
+        !Array.isArray(updateViewGroupInputs.inputs) ||
+        updateViewGroupInputs.inputs.length === 0
+      ) {
         return {
           status: 'successful',
-          response: [],
+          response: null,
         };
       }
 
       try {
-        const results = await Promise.all(
-          updateCoreViewGroupInputs.map((variables) =>
-            updateCoreViewGroupMutation({
-              variables,
-            }),
-          ),
-        );
+        const result = await updateManyViewGroupsMutation({
+          variables: updateViewGroupInputs,
+        });
 
         return {
           status: 'successful',
-          response: results,
+          response: result,
         };
       } catch (error) {
         if (CombinedGraphQLErrors.is(error)) {
@@ -64,7 +63,7 @@ export const usePerformViewGroupAPIPersist = () => {
         };
       }
     },
-    [updateCoreViewGroupMutation, handleMetadataError, enqueueErrorSnackBar],
+    [updateManyViewGroupsMutation, handleMetadataError, enqueueErrorSnackBar],
   );
 
   return {

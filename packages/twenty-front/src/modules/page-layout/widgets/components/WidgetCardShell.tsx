@@ -12,7 +12,7 @@ import { WidgetCardHeader } from '@/page-layout/widgets/widget-card/components/W
 import { styled } from '@linaria/react';
 import { type MouseEvent, useContext } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { IconLock } from 'twenty-ui/display';
+import { IconLock } from 'twenty-ui/icon';
 import { ThemeContext } from 'twenty-ui/theme-constants';
 import { WidgetType } from '~/generated-metadata/graphql';
 
@@ -67,6 +67,9 @@ export const WidgetCardShell = ({
 }: WidgetCardShellProps) => {
   const { theme } = useContext(ThemeContext);
 
+  const dataTestId =
+    widget.type === WidgetType.FIELDS ? 'record-fields-widget' : widget.id;
+
   return (
     <WidgetComponentInstanceContext.Provider value={{ instanceId: widget.id }}>
       <WidgetCard
@@ -81,7 +84,7 @@ export const WidgetCardShell = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         data-widget-id={widget.id}
-        data-testid={widget.id}
+        data-testid={dataTestId}
         className="widget"
       >
         {showHeader && (

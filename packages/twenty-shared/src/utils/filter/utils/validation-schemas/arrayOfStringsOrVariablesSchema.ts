@@ -1,4 +1,4 @@
-import { isValidVariable } from '../../..';
+import { isValidVariable } from '@/utils';
 import { z } from 'zod';
 
 export const arrayOfStringsOrVariablesSchema = z

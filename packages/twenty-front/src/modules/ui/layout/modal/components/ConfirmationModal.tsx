@@ -8,14 +8,10 @@ import { ModalStatefulWrapper } from '@/ui/layout/modal/components/ModalStateful
 import { useModal } from '@/ui/layout/modal/hooks/useModal';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { H1Title, H1TitleFontColor } from 'twenty-ui/display';
+import { H1Title, H1TitleFontColor } from 'twenty-ui/typography';
 import { Button, type ButtonAccent } from 'twenty-ui/input';
-import {
-  Section,
-  SectionAlignment,
-  SectionFontColor,
-  type ModalOverlay,
-} from 'twenty-ui/layout';
+import { Section, SectionAlignment, SectionFontColor } from 'twenty-ui/layout';
+import { type ModalOverlay } from 'twenty-ui/surfaces';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 export type ConfirmationModalProps = {
@@ -42,7 +38,7 @@ export const StyledCenteredButton = (
   props: React.ComponentProps<typeof Button>,
 ) => (
   <StyledCenteredButtonContainer>
-    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
     <Button {...props} />
   </StyledCenteredButtonContainer>
 );
@@ -74,7 +70,7 @@ export const StyledConfirmationButton = (
   props: React.ComponentProps<typeof Button>,
 ) => (
   <StyledConfirmationButtonContainer>
-    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    {/* oxlint-disable-next-line react/jsx-props-no-spreading */}
     <Button {...props} />
   </StyledConfirmationButtonContainer>
 );

@@ -1,20 +1,20 @@
 import { styled } from '@linaria/react';
 import { useContext } from 'react';
-import { CardContent } from 'twenty-ui/layout';
-import { type IconComponent } from 'twenty-ui/display';
+import { CardContent } from 'twenty-ui/surfaces';
+import { type IconComponent } from 'twenty-ui/icon';
 import { Radio } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledRadioCardContentContainer = styled.div`
   > * {
-    display: flex;
     align-items: center;
-    padding: ${themeCssVariables.spacing[2]};
     border: 1px solid ${themeCssVariables.border.color.medium};
     border-radius: ${themeCssVariables.border.radius.sm};
+    cursor: pointer;
+    display: flex;
     flex-grow: 1;
     gap: ${themeCssVariables.spacing[2]};
-    cursor: pointer;
+    padding: ${themeCssVariables.spacing[2]};
 
     &:hover {
       background: ${themeCssVariables.background.transparent.lighter};
@@ -37,6 +37,7 @@ const StyledTitle = styled.div`
 const StyledDescription = styled.div`
   color: ${themeCssVariables.font.color.tertiary};
   font-size: ${themeCssVariables.font.size.sm};
+  line-height: ${themeCssVariables.text.lineHeight.lg};
 `;
 
 type SettingsRadioCardProps = {

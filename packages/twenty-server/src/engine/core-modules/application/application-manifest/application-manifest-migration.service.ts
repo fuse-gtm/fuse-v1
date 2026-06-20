@@ -1,18 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { type Manifest } from 'twenty-shared/application';
 import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
 import { isDefined } from 'twenty-shared/utils';
 
+import { ComputeApplicationManifestAllUniversalFlatEntityMapsService } from 'src/engine/core-modules/application/application-manifest/services/compute-application-manifest-all-universal-flat-entity-maps.service';
 import { buildFromToAllUniversalFlatEntityMaps } from 'src/engine/core-modules/application/application-manifest/utils/build-from-to-all-universal-flat-entity-maps.util';
-import { computeApplicationManifestAllUniversalFlatEntityMaps } from 'src/engine/core-modules/application/application-manifest/utils/compute-application-manifest-all-universal-flat-entity-maps.util';
 import { getApplicationSubAllFlatEntityMaps } from 'src/engine/core-modules/application/application-manifest/utils/get-application-sub-all-flat-entity-maps.util';
 import {
   ApplicationException,
   ApplicationExceptionCode,
 } from 'src/engine/core-modules/application/application.exception';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
+import { type FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 import { type FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
+import { LoggerService } from 'src/engine/core-modules/logger/logger.service';
 import { findFlatEntityByUniversalIdentifier } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-universal-identifier.util';
 import { getMetadataFlatEntityMapsKey } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-flat-entity-maps-key.util';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
@@ -23,14 +25,12 @@ import { WorkspaceMigration } from 'src/engine/workspace-manager/workspace-migra
 
 @Injectable()
 export class ApplicationManifestMigrationService {
-  private readonly logger = new Logger(
-    ApplicationManifestMigrationService.name,
-  );
-
   constructor(
     private readonly workspaceCacheService: WorkspaceCacheService,
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
     private readonly applicationService: ApplicationService,
+    private readonly computeManifestFlatEntityMapsService: ComputeApplicationManifestAllUniversalFlatEntityMapsService,
+    private readonly logger: LoggerService,
   ) {}
 
   async syncPreInstallLogicFunctionFromManifest({
@@ -71,13 +71,17 @@ export class ApplicationManifestMigrationService {
       fields: [],
       logicFunctions: [preInstallLogicFunctionManifest],
       frontComponents: [],
+      permissionFlags: [],
       roles: [],
       skills: [],
       agents: [],
       publicAssets: [],
       views: [],
+      viewFields: [],
       navigationMenuItems: [],
       pageLayouts: [],
+      pageLayoutTabs: [],
+      commandMenuItems: [],
     };
 
     const now = new Date().toISOString();
@@ -91,11 +95,16 @@ export class ApplicationManifestMigrationService {
       workspaceId,
       [
         ...Object.values(ALL_METADATA_NAME).map(getMetadataFlatEntityMapsKey),
+        'flatApplicationMaps',
         'featureFlagsMap',
       ],
     );
 
-    const { featureFlagsMap, ...existingAllFlatEntityMaps } = cacheResult;
+    const {
+      featureFlagsMap,
+      flatApplicationMaps,
+      ...existingAllFlatEntityMaps
+    } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -103,18 +112,19 @@ export class ApplicationManifestMigrationService {
     });
 
     const toAllUniversalFlatEntityMaps =
-      computeApplicationManifestAllUniversalFlatEntityMaps({
+      this.computeManifestFlatEntityMapsService.compute({
         manifest: preInstallOnlyManifest,
         ownerFlatApplication,
         now,
+        workspaceId,
       });
 
     const dependencyAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
-      applicationIds:
-        ownerFlatApplication.universalIdentifier ===
-        TWENTY_STANDARD_APPLICATION.universalIdentifier
-          ? [twentyStandardFlatApplication.id]
-          : [ownerFlatApplication.id, twentyStandardFlatApplication.id],
+      applicationIds: this.getDependencyApplicationIds({
+        ownerFlatApplication,
+        twentyStandardFlatApplication,
+        flatApplicationMaps,
+      }),
       fromAllFlatEntityMaps: existingAllFlatEntityMaps,
     });
 
@@ -149,6 +159,7 @@ export class ApplicationManifestMigrationService {
 
     this.logger.log(
       `Pre-install logic function synced for application ${ownerFlatApplication.universalIdentifier}`,
+      ApplicationManifestMigrationService.name,
     );
   }
 
@@ -156,10 +167,12 @@ export class ApplicationManifestMigrationService {
     manifest,
     workspaceId,
     ownerFlatApplication,
+    dryRun = false,
   }: {
     manifest: Manifest;
     workspaceId: string;
     ownerFlatApplication: FlatApplication;
+    dryRun?: boolean;
   }): Promise<{
     workspaceMigration: WorkspaceMigration;
     hasSchemaMetadataChanged: boolean;
@@ -171,15 +184,27 @@ export class ApplicationManifestMigrationService {
         { workspaceId },
       );
 
+    const recomputeStart = performance.now();
     const cacheResult = await this.workspaceCacheService.getOrRecompute(
       workspaceId,
       [
         ...Object.values(ALL_METADATA_NAME).map(getMetadataFlatEntityMapsKey),
+        'flatApplicationMaps',
         'featureFlagsMap',
       ],
     );
+    const recomputeMs = performance.now() - recomputeStart;
 
-    const { featureFlagsMap, ...existingAllFlatEntityMaps } = cacheResult;
+    this.logger.perf(
+      `[install-perf] syncMetadataFromManifest ALL_METADATA_NAME getOrRecompute flat-maps took ${recomputeMs.toFixed(1)}ms (logicFunctions=${manifest.logicFunctions.length})`,
+      ApplicationManifestMigrationService.name,
+    );
+
+    const {
+      featureFlagsMap,
+      flatApplicationMaps,
+      ...existingAllFlatEntityMaps
+    } = cacheResult;
 
     const fromAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
       applicationIds: [ownerFlatApplication.id],
@@ -187,21 +212,23 @@ export class ApplicationManifestMigrationService {
     });
 
     const toAllUniversalFlatEntityMaps =
-      computeApplicationManifestAllUniversalFlatEntityMaps({
+      this.computeManifestFlatEntityMapsService.compute({
         manifest,
         ownerFlatApplication,
         now,
+        workspaceId,
       });
 
     const dependencyAllFlatEntityMaps = getApplicationSubAllFlatEntityMaps({
-      applicationIds:
-        ownerFlatApplication.universalIdentifier ===
-        TWENTY_STANDARD_APPLICATION.universalIdentifier
-          ? [twentyStandardFlatApplication.id]
-          : [ownerFlatApplication.id, twentyStandardFlatApplication.id],
+      applicationIds: this.getDependencyApplicationIds({
+        ownerFlatApplication,
+        twentyStandardFlatApplication,
+        flatApplicationMaps,
+      }),
       fromAllFlatEntityMaps: existingAllFlatEntityMaps,
     });
 
+    const validateBuildRunStart = performance.now();
     const validateAndBuildResult =
       await this.workspaceMigrationValidateBuildAndRunService.validateBuildAndRunWorkspaceMigrationFromTo(
         {
@@ -210,6 +237,7 @@ export class ApplicationManifestMigrationService {
             inferDeletionFromMissingEntities: true,
             applicationUniversalIdentifier:
               ownerFlatApplication.universalIdentifier,
+            rejectCrossApplicationViewFieldCreation: true,
           },
           fromToAllFlatEntityMaps: buildFromToAllUniversalFlatEntityMaps({
             fromAllFlatEntityMaps,
@@ -218,8 +246,15 @@ export class ApplicationManifestMigrationService {
           workspaceId,
           dependencyAllFlatEntityMaps,
           additionalCacheDataMaps: { featureFlagsMap },
+          dryRun,
         },
       );
+    const validateBuildRunMs = performance.now() - validateBuildRunStart;
+
+    this.logger.perf(
+      `[install-perf] syncMetadataFromManifest validateBuildAndRunWorkspaceMigrationFromTo took ${validateBuildRunMs.toFixed(1)}ms (dryRun=${dryRun}, actions=${validateAndBuildResult.status === 'success' ? validateAndBuildResult.workspaceMigration.actions.length : 'n/a-failed'})`,
+      ApplicationManifestMigrationService.name,
+    );
 
     if (validateAndBuildResult.status === 'fail') {
       throw new WorkspaceMigrationBuilderException(
@@ -229,14 +264,17 @@ export class ApplicationManifestMigrationService {
     }
 
     this.logger.log(
-      `Metadata migration completed for application ${ownerFlatApplication.universalIdentifier}`,
+      `Metadata migration ${dryRun ? 'plan computed (dry run)' : 'completed'} for application ${ownerFlatApplication.universalIdentifier}`,
+      ApplicationManifestMigrationService.name,
     );
 
-    await this.syncDefaultRoleAndSettingsCustomTab({
-      manifest,
-      workspaceId,
-      ownerFlatApplication,
-    });
+    if (!dryRun) {
+      await this.syncDefaultRoleAndSettingsCustomTab({
+        manifest,
+        workspaceId,
+        ownerFlatApplication,
+      });
+    }
 
     return {
       workspaceMigration: validateAndBuildResult.workspaceMigration,
@@ -310,5 +348,31 @@ export class ApplicationManifestMigrationService {
       settingsCustomTabFrontComponentId,
       ...(isDefined(defaultRoleId) ? { defaultRoleId } : {}),
     });
+  }
+
+  private getDependencyApplicationIds({
+    ownerFlatApplication,
+    twentyStandardFlatApplication,
+    flatApplicationMaps,
+  }: {
+    ownerFlatApplication: FlatApplication;
+    twentyStandardFlatApplication: FlatApplication;
+    flatApplicationMaps: FlatApplicationCacheMaps;
+  }): string[] {
+    if (
+      ownerFlatApplication.universalIdentifier ===
+      TWENTY_STANDARD_APPLICATION.universalIdentifier
+    ) {
+      return [twentyStandardFlatApplication.id];
+    }
+
+    const installedApplicationIds = Object.values(flatApplicationMaps.byId)
+      .filter(
+        (flatApplication): flatApplication is FlatApplication =>
+          isDefined(flatApplication) && !isDefined(flatApplication.deletedAt),
+      )
+      .map((flatApplication) => flatApplication.id);
+
+    return [...new Set(installedApplicationIds)];
   }
 }

@@ -1,14 +1,19 @@
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
+import { isNonEmptyString } from '@sniptt/guards';
+import { useLingui } from '@lingui/react/macro';
+import { useRef } from 'react';
 import {
   type FrontComponentExecutionContext,
   type FrontComponentHostCommunicationApi,
 } from 'twenty-front-component-renderer';
-import { type AppPath, type EnqueueSnackbarParams } from 'twenty-shared/types';
+import { AppPath, type EnqueueSnackbarParams } from 'twenty-shared/types';
 
 import { currentUserState } from '@/auth/states/currentUserState';
 import { useCommandMenuConfirmationModal } from '@/command-menu-item/confirmation-modal/hooks/useCommandMenuConfirmationModal';
 import { useUnmountCommand } from '@/command-menu-item/engine-command/hooks/useUnmountEngineCommand';
 import { commandMenuItemProgressFamilyState } from '@/command-menu-item/states/commandMenuItemProgressFamilyState';
+import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
+import { contextStoreRecordShowParentViewComponentState } from '@/context-store/states/contextStoreRecordShowParentViewComponentState';
 import { useRequestApplicationTokenRefresh } from '@/front-components/hooks/useRequestApplicationTokenRefresh';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
@@ -16,24 +21,33 @@ import { sidePanelSearchState } from '@/side-panel/states/sidePanelSearchState';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomFamilyState } from '@/ui/utilities/state/jotai/hooks/useSetAtomFamilyState';
+import { useStore } from 'jotai';
 import { assertUnreachable, isDefined } from 'twenty-shared/utils';
-import { useIcons } from 'twenty-ui/display';
+import { useIcons } from 'twenty-ui/icon';
+import { useCopyToClipboard } from '~/hooks/useCopyToClipboard';
 import { useNavigateApp } from '~/hooks/useNavigateApp';
+
+const FRONT_COMPONENT_CLIPBOARD_MAX_LENGTH = 64 * 1024;
+const FRONT_COMPONENT_CLIPBOARD_RATE_LIMIT_MS = 1000;
+const FRONT_COMPONENT_CLIPBOARD_PREVIEW_LENGTH = 30;
 
 export const useFrontComponentExecutionContext = ({
   frontComponentId,
   commandMenuItemId,
-  recordId,
+  selectedRecordIds,
+  colorScheme,
 }: {
   frontComponentId: string;
   commandMenuItemId?: string;
-  recordId?: string;
+  selectedRecordIds?: string[];
+  colorScheme: 'light' | 'dark';
 }): {
   executionContext: FrontComponentExecutionContext;
   frontComponentHostCommunicationApi: FrontComponentHostCommunicationApi;
 } => {
   const currentUser = useAtomStateValue(currentUserState);
   const navigateApp = useNavigateApp();
+  const store = useStore();
   const { requestAccessTokenRefresh } = useRequestApplicationTokenRefresh({
     frontComponentId,
   });
@@ -49,6 +63,10 @@ export const useFrontComponentExecutionContext = ({
     enqueueWarningSnackBar,
   } = useSnackBar();
   const { closeSidePanelMenu } = useSidePanelMenu();
+  const { copyToClipboard: copyToClipboardWithSnackbar } = useCopyToClipboard();
+  const { t } = useLingui();
+  // oxlint-disable-next-line twenty/no-state-useref
+  const lastCopyToClipboardCallAtRef = useRef<number>(Number.NEGATIVE_INFINITY);
   const setCommandMenuItemProgress = useSetAtomFamilyState(
     commandMenuItemProgressFamilyState,
     commandMenuItemId ?? '',
@@ -60,6 +78,27 @@ export const useFrontComponentExecutionContext = ({
     queryParams,
     options,
   ) => {
+    if (to === AppPath.RecordShowPage) {
+      const targetObjectNameSingular = (
+        params as { objectNameSingular?: string | null } | undefined
+      )?.objectNameSingular;
+
+      const parentViewAtom =
+        contextStoreRecordShowParentViewComponentState.atomFamily({
+          instanceId: MAIN_CONTEXT_STORE_INSTANCE_ID,
+        });
+
+      const parentView = store.get(parentViewAtom);
+
+      if (
+        isDefined(parentView) &&
+        isDefined(targetObjectNameSingular) &&
+        parentView.parentViewObjectNameSingular !== targetObjectNameSingular
+      ) {
+        store.set(parentViewAtom, undefined);
+      }
+    }
+
     navigateApp(
       to as AppPath,
       params as Parameters<typeof navigateApp>[1],
@@ -127,7 +166,9 @@ export const useFrontComponentExecutionContext = ({
   const executionContext: FrontComponentExecutionContext = {
     frontComponentId,
     userId: currentUser?.id ?? null,
-    recordId: recordId ?? null,
+    recordId: selectedRecordIds?.length === 1 ? selectedRecordIds[0] : null,
+    selectedRecordIds: selectedRecordIds ?? [],
+    colorScheme,
   };
 
   const unmountFrontComponent: FrontComponentHostCommunicationApi['unmountFrontComponent'] =
@@ -151,6 +192,36 @@ export const useFrontComponentExecutionContext = ({
       setCommandMenuItemProgress(Math.max(0, Math.min(100, progress)));
     };
 
+  const copyToClipboard: FrontComponentHostCommunicationApi['copyToClipboard'] =
+    async (text) => {
+      if (!isNonEmptyString(text)) {
+        return;
+      }
+
+      if (text.length > FRONT_COMPONENT_CLIPBOARD_MAX_LENGTH) {
+        return;
+      }
+
+      const now = Date.now();
+      if (
+        now - lastCopyToClipboardCallAtRef.current <
+        FRONT_COMPONENT_CLIPBOARD_RATE_LIMIT_MS
+      ) {
+        return;
+      }
+      lastCopyToClipboardCallAtRef.current = now;
+
+      const preview =
+        text.length > FRONT_COMPONENT_CLIPBOARD_PREVIEW_LENGTH
+          ? `${text.slice(0, FRONT_COMPONENT_CLIPBOARD_PREVIEW_LENGTH)}…`
+          : text;
+
+      await copyToClipboardWithSnackbar(
+        text,
+        t`Application copied "${preview}" to your clipboard`,
+      );
+    };
+
   const frontComponentHostCommunicationApi: FrontComponentHostCommunicationApi =
     {
       navigate,
@@ -161,6 +232,7 @@ export const useFrontComponentExecutionContext = ({
       unmountFrontComponent,
       closeSidePanel,
       updateProgress,
+      copyToClipboard,
     };
 
   return {

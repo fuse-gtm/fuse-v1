@@ -13,8 +13,8 @@ import {
   IconPencil,
   IconTrash,
   IconX,
-  OverflowingTextWithTooltip,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
+import { OverflowingTextWithTooltip } from 'twenty-ui/surfaces';
 import { LightIconButton } from 'twenty-ui/input';
 import { MenuItem } from 'twenty-ui/navigation';
 import type { ApplicationVariable } from '~/generated-metadata/graphql';
@@ -24,7 +24,7 @@ const StyledEditModeTableRow = (
 ) => (
   <TableRow
     gridTemplateColumns="180px auto 56px"
-    // eslint-disable-next-line react/jsx-props-no-spreading
+    // oxlint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
 );
@@ -32,7 +32,7 @@ const StyledEditModeTableRow = (
 const StyledTableRow = (props: React.ComponentProps<typeof TableRow>) => (
   <TableRow
     gridTemplateColumns="180px 300px 32px"
-    // eslint-disable-next-line react/jsx-props-no-spreading
+    // oxlint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
 );

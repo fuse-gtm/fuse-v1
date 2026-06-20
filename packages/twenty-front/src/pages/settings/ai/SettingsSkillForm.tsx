@@ -13,22 +13,21 @@ import { IconPicker } from '@/ui/input/components/IconPicker';
 import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { TextArea } from '@/ui/input/components/TextArea';
 import { TitleInput } from '@/ui/input/components/TitleInput';
-import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
+import { SettingsPageLayout } from '@/settings/components/layout/SettingsPageLayout';
 import { t } from '@lingui/core/macro';
 import { AppPath, SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
 import {
-  AppTooltip,
-  H2Title,
   IconArchive,
   IconArchiveOff,
   IconInfoCircle,
   IconRefresh,
   IconTrash,
-  TooltipDelay,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
+import { AppTooltip, Card, TooltipDelay } from 'twenty-ui/surfaces';
+import { H2Title } from 'twenty-ui/typography';
 import { Button } from 'twenty-ui/input';
-import { Card, Section } from 'twenty-ui/layout';
+import { Section } from 'twenty-ui/layout';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
@@ -422,7 +421,7 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
   );
 
   return (
-    <SubMenuTopBarContainer
+    <SettingsPageLayout
       title={title}
       actionButton={
         isCreateMode ? (
@@ -438,7 +437,7 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
       links={[
         {
           children: t`Workspace`,
-          href: getSettingsPath(SettingsPath.Workspace),
+          href: getSettingsPath(SettingsPath.General),
         },
         { children: t`AI`, href: getSettingsPath(SettingsPath.AI) },
         { children: breadcrumbText },
@@ -481,6 +480,7 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
                   textAreaId="skill-description-textarea"
                   placeholder={t`Write a description`}
                   minRows={3}
+                  maxRows={5}
                   value={formValues.description}
                   onChange={(value) =>
                     handleFieldChange('description', value ?? '')
@@ -524,19 +524,23 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
                         fullWidth
                         RightIcon={() =>
                           apiNameTooltipText && (
-                            <AppTooltip
-                              content={apiNameTooltipText}
-                              offset={5}
-                              noArrow
-                              place="bottom"
-                              delay={TooltipDelay.shortDelay}
-                            >
+                            <>
                               <IconInfoCircle
+                                id="info-circle-id-skill-name"
                                 size={theme.icon.size.md}
                                 color={theme.font.color.tertiary}
                                 style={{ outline: 'none' }}
                               />
-                            </AppTooltip>
+                              <AppTooltip
+                                anchorSelect="#info-circle-id-skill-name"
+                                content={apiNameTooltipText}
+                                offset={5}
+                                noArrow
+                                place="bottom"
+                                positionStrategy="fixed"
+                                delay={TooltipDelay.shortDelay}
+                              />
+                            </>
                           )
                         }
                       />
@@ -597,6 +601,6 @@ export const SettingsSkillForm = ({ mode }: { mode: 'create' | 'edit' }) => {
         confirmButtonText={t`Delete`}
         loading={isSubmitting}
       />
-    </SubMenuTopBarContainer>
+    </SettingsPageLayout>
   );
 };

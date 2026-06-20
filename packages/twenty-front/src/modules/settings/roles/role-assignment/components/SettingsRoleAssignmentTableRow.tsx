@@ -6,12 +6,9 @@ import { useContext } from 'react';
 import { t } from '@lingui/core/macro';
 import { styled } from '@linaria/react';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import {
-  Avatar,
-  IconKey,
-  OverflowingTextWithTooltip,
-  useIcons,
-} from 'twenty-ui/display';
+import { Avatar } from 'twenty-ui/data-display';
+import { IconKey, useIcons } from 'twenty-ui/icon';
+import { OverflowingTextWithTooltip } from 'twenty-ui/surfaces';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { type Agent, type ApiKeyForRole } from '~/generated-metadata/graphql';
 import { dateLocaleState } from '~/localization/states/dateLocaleState';
@@ -33,8 +30,8 @@ const StyledNameCell = styled.div`
 const StyledNameContainer = styled.div`
   align-items: center;
   display: flex;
-  overflow: hidden;
   gap: ${themeCssVariables.spacing[2]};
+  overflow: hidden;
   width: 100%;
 `;
 

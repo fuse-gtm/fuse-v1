@@ -1,0 +1,37 @@
+{
+  "name": "fuse-agency-partner-program",
+  "version": "0.1.5",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^24.5.0",
+    "npm": "please-use-yarn",
+    "yarn": ">=4.0.2"
+  },
+  "keywords": [
+    "twenty-app",
+    "fuse",
+    "partner-app",
+    "agency"
+  ],
+  "packageManager": "yarn@4.13.0",
+  "scripts": {
+    "twenty": "twenty",
+    "lint": "oxlint -c .oxlintrc.json .",
+    "lint:fix": "oxlint --fix -c .oxlintrc.json .",
+    "test:attribution": "tsx src/__tests__/agency-referral-attribution.test.ts",
+    "test:lifecycle": "tsx src/__tests__/agency-application-lifecycle.test.ts",
+    "test:operator": "tsx src/__tests__/agency-operator-panels-and-prompts.test.ts",
+    "test:spec": "tsx src/__tests__/agency-partner-spec.test.ts"
+  },
+  "dependencies": {
+    "twenty-client-sdk": "0.7.0-canary.0",
+    "twenty-sdk": "1.23.0-canary.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "oxlint": "^0.16.0",
+    "tsx": "^4.17.0",
+    "typescript": "^5.9.3"
+  }
+}

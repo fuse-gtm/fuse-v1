@@ -25,7 +25,7 @@ import {
   IllustrationIconSetting,
   IllustrationIconText,
   IllustrationIconUser,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
 import { FieldMetadataType } from '~/generated-metadata/graphql';
 
 //TODO : isIncludedInUniqueConstraint refactor - https://github.com/twentyhq/core-team-issues/issues/1097
@@ -179,14 +179,14 @@ export const SETTINGS_COMPOSITE_FIELD_TYPE_CONFIGS = {
     ],
     exampleValues: [
       {
-        primaryLinkUrl: 'fusegtm.com',
+        primaryLinkUrl: 'twenty.com',
         primaryLinkLabel: '',
-        secondaryLinks: [{ url: 'fusegtm.com', label: 'Fuse' }],
+        secondaryLinks: [{ url: 'twenty.com', label: 'Twenty' }],
       },
       {
-        primaryLinkUrl: 'github.com/fuse-gtm/fuse-v1',
-        primaryLinkLabel: 'Fuse Repo',
-        secondaryLinks: [{ url: 'fusegtm.com', label: '' }],
+        primaryLinkUrl: 'github.com/twentyhq/twenty',
+        primaryLinkLabel: 'Twenty Repo',
+        secondaryLinks: [{ url: 'twenty.com', label: '' }],
       },
       {
         primaryLinkUrl: 'react.dev',
@@ -209,7 +209,7 @@ export const SETTINGS_COMPOSITE_FIELD_TYPE_CONFIGS = {
             .primaryPhoneCallingCode,
         isImportable: true,
         isFilterable: true,
-        isIncludedInUniqueConstraint: false,
+        isIncludedInUniqueConstraint: true,
       },
       {
         subFieldName:
@@ -220,7 +220,7 @@ export const SETTINGS_COMPOSITE_FIELD_TYPE_CONFIGS = {
             .primaryPhoneCountryCode,
         isImportable: true,
         isFilterable: false,
-        isIncludedInUniqueConstraint: false,
+        isIncludedInUniqueConstraint: true,
       },
       {
         subFieldName:

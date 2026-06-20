@@ -2,10 +2,10 @@ import {
   type LinksFilter,
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
-} from '../../types';
-import { CustomError } from '../errors';
+} from '@/types';
+import { CustomError } from '@/utils/errors';
 
-import { type RecordFilter } from './turnRecordFilterGroupIntoGqlOperationFilter';
+import { type RecordFilter } from '@/utils/filter/turnRecordFilterGroupIntoGqlOperationFilter';
 import { isNonEmptyString } from '@sniptt/guards';
 
 export const computeEmptyGqlOperationFilterForLinks = ({

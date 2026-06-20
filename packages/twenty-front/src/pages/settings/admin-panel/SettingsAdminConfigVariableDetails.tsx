@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { isConfigVariablesInDbEnabledState } from '@/client-config/states/isConfigVariablesInDbEnabledState';
+import { useApolloAdminClient } from '@/settings/admin-panel/apollo/hooks/useApolloAdminClient';
 import { ConfigVariableHelpText } from '@/settings/admin-panel/config-variables/components/ConfigVariableHelpText';
 import { ConfigVariableValueInput } from '@/settings/admin-panel/config-variables/components/ConfigVariableValueInput';
 import { useConfigVariableActions } from '@/settings/admin-panel/config-variables/hooks/useConfigVariableActions';
 import { ConfigVariableEdit } from '@/settings/config-variables/components/ConfigVariableEdit';
 import { SettingsSkeletonLoader } from '@/settings/components/SettingsSkeletonLoader';
-import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
+import { SettingsPageLayout } from '@/settings/components/layout/SettingsPageLayout';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { SettingsPath, type ConfigVariableValue } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
@@ -16,7 +17,7 @@ import { useQuery } from '@apollo/client/react';
 import {
   ConfigSource,
   GetDatabaseConfigVariableDocument,
-} from '~/generated-metadata/graphql';
+} from '~/generated-admin/graphql';
 
 const hasMeaningfulValue = (value: ConfigVariableValue): boolean => {
   if (value === null || value === undefined) {
@@ -33,6 +34,7 @@ const hasMeaningfulValue = (value: ConfigVariableValue): boolean => {
 
 export const SettingsAdminConfigVariableDetails = () => {
   const { variableName } = useParams();
+  const apolloAdminClient = useApolloAdminClient();
 
   const { t } = useLingui();
 
@@ -45,6 +47,7 @@ export const SettingsAdminConfigVariableDetails = () => {
   const { data: configVariableData, loading } = useQuery(
     GetDatabaseConfigVariableDocument,
     {
+      client: apolloAdminClient,
       variables: { key: variableName ?? '' },
       fetchPolicy: 'network-only',
     },
@@ -94,7 +97,7 @@ export const SettingsAdminConfigVariableDetails = () => {
   };
 
   return (
-    <SubMenuTopBarContainer
+    <SettingsPageLayout
       links={[
         {
           children: t`Other`,
@@ -141,6 +144,6 @@ export const SettingsAdminConfigVariableDetails = () => {
           />
         }
       />
-    </SubMenuTopBarContainer>
+    </SettingsPageLayout>
   );
 };

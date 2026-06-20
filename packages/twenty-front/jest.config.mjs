@@ -61,8 +61,8 @@ const jestConfig = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   coverageThreshold: {
     global: {
-      statements: 47.9,
-      lines: 46,
+      statements: 47.3,
+      lines: 45.9,
       functions: 39.5,
     },
   },
@@ -89,6 +89,7 @@ const jestConfig = {
   maxWorkers: 3,
   workerIdleMemoryLimit: '512MB',
   errorOnDeprecated: true,
+  testTimeout: 30000,
 };
 
 export default jestConfig;

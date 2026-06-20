@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
+import { LOGIC_FUNCTION_DRIVER_FACTORY_TOKEN } from 'src/engine/core-modules/logic-function/logic-function-drivers/constants/logic-function-driver-factory.token';
+import { type LogicFunctionDriver } from 'src/engine/core-modules/logic-function/logic-function-drivers/interfaces/logic-function-driver.interface';
+import { SecretEncryptionModule } from 'src/engine/core-modules/secret-encryption/secret-encryption.module';
 import { WorkspaceSchemaManagerModule } from 'src/engine/twenty-orm/workspace-schema-manager/workspace-schema-manager.module';
 import { CreateAgentActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/agent/services/create-agent-action-handler.service';
 import { DeleteAgentActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/agent/services/delete-agent-action-handler.service';
@@ -45,6 +48,9 @@ import { UpdatePageLayoutActionHandlerService } from 'src/engine/workspace-manag
 import { CreatePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/permission-flag/services/create-permission-flag-action-handler.service';
 import { DeletePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/permission-flag/services/delete-permission-flag-action-handler.service';
 import { UpdatePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/permission-flag/services/update-permission-flag-action-handler.service';
+import { CreateRolePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-permission-flag/services/create-role-permission-flag-action-handler.service';
+import { DeleteRolePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-permission-flag/services/delete-role-permission-flag-action-handler.service';
+import { UpdateRolePermissionFlagActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-permission-flag/services/update-role-permission-flag-action-handler.service';
 import { CreateRoleTargetActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-target/services/create-role-target-action-handler.service';
 import { DeleteRoleTargetActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-target/services/delete-role-target-action-handler.service';
 import { UpdateRoleTargetActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/role-target/services/update-role-target-action-handler.service';
@@ -81,16 +87,56 @@ import { UpdateViewSortActionHandlerService } from 'src/engine/workspace-manager
 import { CreateViewActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/view/services/create-view-action-handler.service';
 import { DeleteViewActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/view/services/delete-view-action-handler.service';
 import { UpdateViewActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/view/services/update-view-action-handler.service';
+import { CreateApplicationVariableActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/application-variable/services/create-application-variable-action-handler.service';
+import { DeleteApplicationVariableActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/application-variable/services/delete-application-variable-action-handler.service';
+import { UpdateApplicationVariableActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/application-variable/services/update-application-variable-action-handler.service';
 import { CreateWebhookActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/webhook/services/create-webhook-action-handler.service';
 import { DeleteWebhookActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/webhook/services/delete-webhook-action-handler.service';
 import { UpdateWebhookActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/webhook/services/update-webhook-action-handler.service';
+import { CreateConnectionProviderActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/connection-provider/services/create-connection-provider-action-handler.service';
+import { DeleteConnectionProviderActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/connection-provider/services/delete-connection-provider-action-handler.service';
+import { UpdateConnectionProviderActionHandlerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/connection-provider/services/update-connection-provider-action-handler.service';
+
+const isRunInstanceCommandsCommand = process.argv.includes(
+  'run-instance-commands',
+);
+
+const commandLogicFunctionDriver = {
+  delete: async () => undefined,
+  deleteApplicationResources: async () => undefined,
+  execute: async () => {
+    throw new Error(
+      'Logic function execution is disabled for migration command',
+    );
+  },
+  transpile: async () => {
+    throw new Error(
+      'Logic function transpilation is disabled for migration command',
+    );
+  },
+  installPrebuiltBundle: async () => undefined,
+  getInstalledBundleChecksum: async () => null,
+} satisfies LogicFunctionDriver;
+
+const commandOnlyProviders = isRunInstanceCommandsCommand
+  ? [
+      {
+        provide: LOGIC_FUNCTION_DRIVER_FACTORY_TOKEN,
+        useValue: {
+          getCurrentDriver: () => commandLogicFunctionDriver,
+        },
+      },
+    ]
+  : [];
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity]),
     WorkspaceSchemaManagerModule,
+    SecretEncryptionModule,
   ],
   providers: [
+    ...commandOnlyProviders,
     CreateFieldActionHandlerService,
     UpdateFieldActionHandlerService,
     DeleteFieldActionHandlerService,
@@ -142,6 +188,10 @@ import { UpdateWebhookActionHandlerService } from 'src/engine/workspace-manager/
     CreateRoleTargetActionHandlerService,
     DeleteRoleTargetActionHandlerService,
     UpdateRoleTargetActionHandlerService,
+
+    CreateRolePermissionFlagActionHandlerService,
+    UpdateRolePermissionFlagActionHandlerService,
+    DeleteRolePermissionFlagActionHandlerService,
 
     CreatePermissionFlagActionHandlerService,
     UpdatePermissionFlagActionHandlerService,
@@ -198,6 +248,14 @@ import { UpdateWebhookActionHandlerService } from 'src/engine/workspace-manager/
     CreateWebhookActionHandlerService,
     UpdateWebhookActionHandlerService,
     DeleteWebhookActionHandlerService,
+
+    CreateApplicationVariableActionHandlerService,
+    UpdateApplicationVariableActionHandlerService,
+    DeleteApplicationVariableActionHandlerService,
+
+    CreateConnectionProviderActionHandlerService,
+    UpdateConnectionProviderActionHandlerService,
+    DeleteConnectionProviderActionHandlerService,
   ],
 })
 export class WorkspaceSchemaMigrationRunnerActionHandlersModule {}

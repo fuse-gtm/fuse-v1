@@ -1,6 +1,6 @@
 import { styled } from '@linaria/react';
 import { useContext } from 'react';
-import { IconPoint } from 'twenty-ui/display';
+import { IconPoint } from 'twenty-ui/icon';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledWrapper = styled.div`
@@ -16,20 +16,20 @@ type AdvancedSettingsContentWrapperWithDotProps = {
 };
 
 const StyledDotContainer = styled.div<{ dotPosition: DotPosition }>`
+  align-items: ${({ dotPosition }) =>
+    dotPosition === 'top' ? 'stretch' : 'center'};
   display: flex;
-  position: absolute;
   height: 100%;
   left: calc(-1 * ${themeCssVariables.spacing[5]});
 
+  position: absolute;
   top: ${({ dotPosition }) => (dotPosition === 'top' ? '0' : 'auto')};
-  align-items: ${({ dotPosition }) =>
-    dotPosition === 'top' ? 'stretch' : 'center'};
 `;
 
 const StyledIconPointContainer = styled.span`
-  margin-right: 0;
-  display: flex;
   align-items: center;
+  display: flex;
+  margin-right: 0;
 `;
 
 export const AdvancedSettingsContentWrapperWithDot = ({

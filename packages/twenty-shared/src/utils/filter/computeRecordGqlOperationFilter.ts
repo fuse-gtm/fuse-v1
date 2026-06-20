@@ -1,34 +1,40 @@
 import {
-  type PartialFieldMetadataItem,
   type RecordFilterValueDependencies,
   type RecordGqlOperationFilter,
-} from '../../types';
+} from '@/types';
 import {
   turnRecordFilterGroupsIntoGqlOperationFilter,
   type RecordFilter,
   type RecordFilterGroup,
-} from './turnRecordFilterGroupIntoGqlOperationFilter';
-import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
-import { isDefined } from '../validation/isDefined';
+} from '@/utils/filter/turnRecordFilterGroupIntoGqlOperationFilter';
+import {
+  type FieldShared,
+  turnRecordFilterIntoRecordGqlOperationFilter,
+} from '@/utils/filter/turnRecordFilterIntoGqlOperationFilter';
+import { isDefined } from '@/utils/validation/isDefined';
 
 export const computeRecordGqlOperationFilter = ({
-  fields,
+  fieldMetadataItems,
   recordFilters,
   recordFilterGroups,
   filterValueDependencies,
 }: {
   recordFilters: Omit<RecordFilter, 'id'>[];
-  fields: PartialFieldMetadataItem[];
+  fieldMetadataItems: FieldShared[];
   recordFilterGroups: RecordFilterGroup[];
   filterValueDependencies: RecordFilterValueDependencies;
 }): RecordGqlOperationFilter => {
+  const fieldMetadataItemById = new Map(
+    fieldMetadataItems.map((field) => [field.id, field]),
+  );
+
   const regularRecordGqlOperationFilter: RecordGqlOperationFilter[] =
     recordFilters
       .filter((filter) => !isDefined(filter.recordFilterGroupId))
       .map((regularFilter) => {
         return turnRecordFilterIntoRecordGqlOperationFilter({
           recordFilter: regularFilter,
-          fieldMetadataItems: fields,
+          fieldMetadataItemById,
           filterValueDependencies,
         });
       })
@@ -42,7 +48,7 @@ export const computeRecordGqlOperationFilter = ({
     turnRecordFilterGroupsIntoGqlOperationFilter({
       filterValueDependencies,
       filters: recordFilters,
-      fields,
+      fieldMetadataItemById,
       recordFilterGroups,
       currentRecordFilterGroupId: outermostFilterGroupId,
     });

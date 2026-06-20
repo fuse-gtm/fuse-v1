@@ -13,13 +13,13 @@ import { TableCell } from '@/ui/layout/table/components/TableCell';
 import { useState } from 'react';
 import { SettingsPath } from 'twenty-shared/types';
 import {
-  H2Title,
   IconFilter,
   IconKey,
   IconPlus,
   IconRobot,
   IconSearch,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
+import { H2Title } from 'twenty-ui/typography';
 import { Button } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { MenuItemToggle } from 'twenty-ui/navigation';
@@ -32,8 +32,8 @@ const StyledCreateRoleSectionContainer = styled.div`
     border-top: 1px solid ${themeCssVariables.border.color.light};
     display: flex;
     justify-content: flex-end;
-    padding-top: ${themeCssVariables.spacing[2]};
     padding-bottom: ${themeCssVariables.spacing[2]};
+    padding-top: ${themeCssVariables.spacing[2]};
   }
 `;
 

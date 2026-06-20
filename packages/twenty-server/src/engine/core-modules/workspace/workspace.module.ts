@@ -6,7 +6,7 @@ import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
 
 import { TypeORMModule } from 'src/database/typeorm/typeorm.module';
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
-import { AuditModule } from 'src/engine/core-modules/audit/audit.module';
+import { PreInstalledAppsModule } from 'src/engine/core-modules/application/pre-installed-apps/pre-installed-apps.module';
 import { TokenModule } from 'src/engine/core-modules/auth/token/token.module';
 import { BillingModule } from 'src/engine/core-modules/billing/billing.module';
 import { BillingSubscriptionEntity } from 'src/engine/core-modules/billing/entities/billing-subscription.entity';
@@ -20,6 +20,7 @@ import { FileModule } from 'src/engine/core-modules/file/file.module';
 import { MetricsModule } from 'src/engine/core-modules/metrics/metrics.module';
 import { OnboardingModule } from 'src/engine/core-modules/onboarding/onboarding.module';
 import { PublicDomainEntity } from 'src/engine/core-modules/public-domain/public-domain.entity';
+import { SdkClientModule } from 'src/engine/core-modules/sdk-client/sdk-client.module';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { UserWorkspaceModule } from 'src/engine/core-modules/user-workspace/user-workspace.module';
 import { UserEntity } from 'src/engine/core-modules/user/user.entity';
@@ -35,7 +36,6 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 import { WorkspaceResolver } from 'src/engine/core-modules/workspace/workspace.resolver';
 import { BillingDisabledGuard } from 'src/engine/guards/billing-disabled.guard';
 import { AiAgentModule } from 'src/engine/metadata-modules/ai/ai-agent/ai-agent.module';
-import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-source.module';
 import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.module';
 import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadata/object-metadata.module';
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
@@ -55,7 +55,6 @@ import { StandardObjectsPrefillModule } from 'src/engine/workspace-manager/stand
     StandardObjectsPrefillModule,
     NestjsQueryGraphQLModule.forFeature({
       imports: [
-        AuditModule,
         BillingModule,
         FileModule,
         TokenModule,
@@ -69,7 +68,6 @@ import { StandardObjectsPrefillModule } from 'src/engine/workspace-manager/stand
         UserWorkspaceModule,
         WorkspaceManagerModule,
         FeatureFlagModule,
-        DataSourceModule,
         OnboardingModule,
         WorkspaceDataSourceModule,
         TypeORMModule,
@@ -84,11 +82,13 @@ import { StandardObjectsPrefillModule } from 'src/engine/workspace-manager/stand
         ViewModule,
         WorkspaceManyOrAllFlatEntityMapsCacheModule,
         ApplicationModule,
+        PreInstalledAppsModule,
         EnterpriseModule,
         StandardObjectsPrefillModule,
         WorkspaceMigrationModule,
         CoreEntityCacheModule,
         UpgradeModule,
+        SdkClientModule,
       ],
       services: [WorkspaceService],
       resolvers: workspaceAutoResolverOpts,

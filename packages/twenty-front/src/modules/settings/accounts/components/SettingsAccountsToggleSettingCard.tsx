@@ -1,5 +1,5 @@
 import { styled } from '@linaria/react';
-import { Card, CardContent } from 'twenty-ui/layout';
+import { Card, CardContent } from 'twenty-ui/surfaces';
 import { Toggle } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
@@ -17,9 +17,9 @@ type SettingsAccountsToggleSettingCardProps = {
 const StyledCardContentContainer = styled.div`
   > * {
     align-items: center;
+    cursor: pointer;
     display: flex;
     gap: ${themeCssVariables.spacing[4]};
-    cursor: pointer;
 
     &:hover {
       background: ${themeCssVariables.background.transparent.lighter};
@@ -39,9 +39,9 @@ const StyledDescription = styled.div`
 `;
 
 const StyledToggleContainer = styled.span`
-  margin-left: auto;
-  display: flex;
   align-items: center;
+  display: flex;
+  margin-left: auto;
 `;
 
 export const SettingsAccountsToggleSettingCard = ({

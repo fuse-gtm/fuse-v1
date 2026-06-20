@@ -61,5 +61,3 @@ export const useReplyContext = (
     threadLoading,
   ]);
 };
-
-export type ReplyContextReady = { ready: boolean };

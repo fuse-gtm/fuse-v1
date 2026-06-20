@@ -24,8 +24,8 @@ Scope: remaining branding debt after `rebrand: replace all Twenty branding with 
 
 ### Surfaced by wave 2C verifier (2026-04-23) — new branded-text debt
 
-- [ ] `packages/twenty-front/src/pages/settings/applications/utils/getCustomApplicationDescription.ts` — user-visible markdown description references `twenty.com/developers/extend/apps/...` doc links and `create-twenty-app` CLI. Rewrite to Fuse docs (`docs.fusegtm.com`) + Fuse CLI name (or drop the create-CLI line if Fuse doesn't publish one).
-- [ ] `packages/twenty-front/src/pages/settings/applications/utils/getStandardApplicationDescription.ts` — same shape as above; same rewrite.
+- [x] `packages/twenty-front/src/pages/settings/applications/utils/getCustomApplicationDescription.ts` — user-visible markdown description references `twenty.com/developers/extend/apps/...` doc links and `create-twenty-app` CLI. Rewritten to Fuse docs (`docs.fusegtm.com`) and private Fuse app packaging language. ✅ (2026-06-20)
+- [x] `packages/twenty-front/src/pages/settings/applications/utils/getStandardApplicationDescription.ts` — same shape as above; same rewrite. ✅ (2026-06-20)
 - [ ] `packages/twenty-server/src/engine/workspace-manager/dev-seeder/core/utils/get-page-layout-widget-data-seeds.util.ts:620` — dev-seeder widget URL embeds `star-history.com/?repos=twentyhq%2Ftwenty`. Low priority (dev seeder, not runtime for prod workspaces). Rewrite to `repos=fuse-gtm%2Ffuse-v1` or drop the widget from the seed.
 
 ### Wave 2C auth-cookie note (not branding, but tracked here until the ops-log index lands)
@@ -37,6 +37,7 @@ Scope: remaining branding debt after `rebrand: replace all Twenty branding with 
 - [x] `ENTERPRISE_KEY` set in `packages/twenty-docker/.env` → activates on next deploy ✅
 
 ### What Organization Self-Hosted unlocks (beyond Free Self-Hosted)
+
 - **SSO integration** — Single Sign-On with identity providers (guard: `EnterpriseFeaturesEnabledGuard`)
 - **Row-level permissions** — fine-grained access control at the record level (RLS predicates)
 - **Event logs** — workspace-level audit/event log queries
@@ -46,6 +47,7 @@ Scope: remaining branding debt after `rebrand: replace all Twenty branding with 
 - **Per-user licensing** — each user needs a licence; no free view-only seats
 
 ### Timeline
+
 - Billing enforcement expected early Q2 2026, no firm date yet (per Twenty support)
 - Contact: contact@twenty.com (mention self-hosting with Org license)
 

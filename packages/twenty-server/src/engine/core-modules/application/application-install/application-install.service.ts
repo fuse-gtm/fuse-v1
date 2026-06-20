@@ -19,24 +19,52 @@ import { ApplicationRegistrationSourceType } from 'src/engine/core-modules/appli
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { ApplicationPackageFetcherService } from 'src/engine/core-modules/application/application-package/application-package-fetcher.service';
+import {
+  ApplicationVersionValidationService,
+  type VersionValidationFailureReason,
+} from 'src/engine/core-modules/application/application-package/application-version-validation.service';
 import { ApplicationSyncService } from 'src/engine/core-modules/application/application-manifest/application-sync.service';
 import { CacheLockService } from 'src/engine/core-modules/cache-lock/cache-lock.service';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
+import {
+  LogicFunctionTriggerJob,
+  type LogicFunctionTriggerJobData,
+} from 'src/engine/core-modules/logic-function/logic-function-trigger/jobs/logic-function-trigger.job';
+import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
+import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
+import { MessageQueueService } from 'src/engine/core-modules/message-queue/services/message-queue.service';
 import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client/sdk-client-generation.service';
+import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
+import { LogicFunctionExecutorService } from 'src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.service';
+
 @Injectable()
 export class ApplicationInstallService {
   private readonly logger = new Logger(ApplicationInstallService.name);
+
+  private static readonly VERSION_REASON_TO_EXCEPTION_CODE: Record<
+    VersionValidationFailureReason,
+    ApplicationExceptionCode
+  > = {
+    INVALID_REQUIRED_VERSION:
+      ApplicationExceptionCode.INVALID_APP_ENGINE_REQUIREMENT,
+    INVALID_SERVER_VERSION: ApplicationExceptionCode.INVALID_SERVER_VERSION,
+    INCOMPATIBLE: ApplicationExceptionCode.SERVER_VERSION_INCOMPATIBLE,
+  };
 
   constructor(
     @InjectRepository(ApplicationRegistrationEntity)
     private readonly appRegistrationRepository: Repository<ApplicationRegistrationEntity>,
     private readonly applicationService: ApplicationService,
     private readonly applicationPackageFetcherService: ApplicationPackageFetcherService,
+    private readonly applicationVersionValidationService: ApplicationVersionValidationService,
     private readonly applicationSyncService: ApplicationSyncService,
     private readonly fileStorageService: FileStorageService,
     private readonly logicFunctionExecutorService: LogicFunctionExecutorService,
     private readonly cacheLockService: CacheLockService,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
+    @InjectMessageQueue(MessageQueue.logicFunctionQueue)
+    private readonly messageQueueService: MessageQueueService,
+    private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
   async installApplication(params: {
@@ -103,6 +131,27 @@ export class ApplicationInstallService {
       return true;
     }
 
+    const requiredServerVersion =
+      resolvedPackage.packageJson.engines?.['twenty'];
+
+    const versionValidation =
+      await this.applicationVersionValidationService.validateServerCompatibility(
+        requiredServerVersion,
+      );
+
+    if (!versionValidation.compatible) {
+      await this.applicationPackageFetcherService.cleanupExtractedDir(
+        resolvedPackage.cleanupDir,
+      );
+
+      throw new ApplicationException(
+        versionValidation.message,
+        ApplicationInstallService.VERSION_REASON_TO_EXCEPTION_CODE[
+          versionValidation.reason
+        ],
+      );
+    }
+
     const universalIdentifier = appRegistration.universalIdentifier;
 
     const existingApplication =
@@ -128,6 +177,7 @@ export class ApplicationInstallService {
       existingApplication,
       universalIdentifier,
       name: resolvedPackage.manifest.application.displayName,
+      logo: resolvedPackage.manifest.application.logoUrl ?? null,
       workspaceId: params.workspaceId,
       applicationRegistrationId: appRegistration.id,
       sourceType: appRegistration.sourceType,
@@ -165,22 +215,22 @@ export class ApplicationInstallService {
         }
       }
 
-      const universalIdentifier = appRegistration.universalIdentifier;
-
-      const { application, wasCreated } = await this.ensureApplicationExists({
-        universalIdentifier,
-        name: resolvedPackage.manifest.application.displayName,
-        workspaceId: params.workspaceId,
-        applicationRegistrationId: appRegistration.id,
-        sourceType: appRegistration.sourceType,
-      });
-
       await this.writeFilesToStorage(
         resolvedPackage.extractedDir,
         resolvedPackage.manifest,
         universalIdentifier,
         params.workspaceId,
       );
+
+      await this.runPreInstallHook({
+        manifest: resolvedPackage.manifest,
+        workspaceId: params.workspaceId,
+        applicationRegistrationId: appRegistration.id,
+        previousVersion,
+        newVersion,
+        isVersionUpgrade,
+        universalIdentifier,
+      });
 
       const { hasSchemaMetadataChanged } =
         await this.applicationSyncService.synchronizeFromManifest({
@@ -189,13 +239,22 @@ export class ApplicationInstallService {
           applicationRegistrationId: appRegistration.id,
         });
 
-      if (wasCreated || hasSchemaMetadataChanged) {
+      if (!isVersionUpgrade || hasSchemaMetadataChanged) {
         await this.sdkClientGenerationService.generateSdkClientForApplication({
           workspaceId: params.workspaceId,
           applicationId: application.id,
           applicationUniversalIdentifier: universalIdentifier,
         });
       }
+
+      await this.runPostInstallHook({
+        manifest: resolvedPackage.manifest,
+        workspaceId: params.workspaceId,
+        previousVersion,
+        newVersion,
+        isVersionUpgrade,
+        universalIdentifier,
+      });
 
       this.logger.log(
         `Successfully installed app ${universalIdentifier} v${resolvedPackage.packageJson.version ?? 'unknown'}`,
@@ -432,11 +491,8 @@ export class ApplicationInstallService {
         );
       }
 
-      // TODO: mimeType should be defined, default to application/octet-stream, which won't be displayed
-      // inline by the browser (forced download) due to Content-Disposition security headers.
       await this.fileStorageService.writeFile({
         sourceFile: content,
-        mimeType: undefined,
         fileFolder,
         applicationUniversalIdentifier,
         workspaceId,
@@ -484,28 +540,23 @@ export class ApplicationInstallService {
     existingApplication: ApplicationEntity | null;
     universalIdentifier: string;
     name: string;
+    logo: string | null;
     workspaceId: string;
     applicationRegistrationId: string;
     sourceType: ApplicationRegistrationSourceType;
-  }): Promise<{ application: ApplicationEntity; wasCreated: boolean }> {
-    const existing = await this.applicationService.findByUniversalIdentifier({
-      universalIdentifier: params.universalIdentifier,
-      workspaceId: params.workspaceId,
-    });
-
-    if (isDefined(existing)) {
-      return { application: existing, wasCreated: false };
+  }): Promise<ApplicationEntity> {
+    if (isDefined(params.existingApplication)) {
+      return params.existingApplication;
     }
 
-    const application = await this.applicationService.create({
+    return await this.applicationService.create({
       universalIdentifier: params.universalIdentifier,
       name: params.name,
+      logo: params.logo,
       sourcePath: params.universalIdentifier,
       sourceType: params.sourceType,
       applicationRegistrationId: params.applicationRegistrationId,
       workspaceId: params.workspaceId,
     });
-
-    return { application, wasCreated: true };
   }
 }

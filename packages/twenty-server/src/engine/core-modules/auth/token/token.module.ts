@@ -11,12 +11,12 @@ import { LoginTokenService } from 'src/engine/core-modules/auth/token/services/l
 import { RefreshTokenService } from 'src/engine/core-modules/auth/token/services/refresh-token.service';
 import { RenewTokenService } from 'src/engine/core-modules/auth/token/services/renew-token.service';
 import { WorkspaceAgnosticTokenService } from 'src/engine/core-modules/auth/token/services/workspace-agnostic-token.service';
+import { ImpersonationAuthorizationModule } from 'src/engine/core-modules/impersonation/impersonation-authorization.module';
 import { JwtModule } from 'src/engine/core-modules/jwt/jwt.module';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { UserEntity } from 'src/engine/core-modules/user/user.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { CoreEntityCacheModule } from 'src/engine/core-entity-cache/core-entity-cache.module';
-import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-source.module';
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
@@ -31,10 +31,10 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
       ApplicationEntity,
     ]),
     TypeORMModule,
-    DataSourceModule,
     PermissionsModule,
     WorkspaceCacheModule,
     CoreEntityCacheModule,
+    ImpersonationAuthorizationModule,
   ],
   providers: [
     RenewTokenService,

@@ -13,7 +13,7 @@ import {
   RouteTriggerException,
   RouteTriggerExceptionCode,
 } from 'src/engine/core-modules/logic-function/logic-function-trigger/triggers/route/exceptions/route-trigger.exception';
-import { buildLogicFunctionEvent } from 'src/engine/core-modules/logic-function/logic-function-trigger/triggers/route/utils/build-logic-function-event.util';
+import { LogicFunctionTriggerService } from 'src/engine/core-modules/logic-function/logic-function-trigger/logic-function-trigger.service';
 import {
   LogicFunctionException,
   LogicFunctionExceptionCode,
@@ -22,7 +22,6 @@ import { LogicFunctionEntity } from 'src/engine/metadata-modules/logic-function/
 import {
   LogicFunctionExecutionException,
   LogicFunctionExecutionExceptionCode,
-  LogicFunctionExecutorService,
 } from 'src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.service';
 import { CustomException } from 'src/utils/custom-exception';
 
@@ -32,7 +31,7 @@ export class RouteTriggerService {
 
   constructor(
     private readonly accessTokenService: AccessTokenService,
-    private readonly logicFunctionExecutorService: LogicFunctionExecutorService,
+    private readonly logicFunctionTriggerService: LogicFunctionTriggerService,
     private readonly workspaceDomainsService: WorkspaceDomainsService,
     @InjectRepository(LogicFunctionEntity)
     private readonly logicFunctionRepository: Repository<LogicFunctionEntity>,
@@ -50,10 +49,8 @@ export class RouteTriggerService {
   }> {
     const host = `${request.protocol}://${request.get('host')}`;
 
-    const workspace =
-      await this.workspaceDomainsService.getWorkspaceByOriginOrDefaultWorkspace(
-        host,
-      );
+    const { workspace, publicDomain } =
+      await this.workspaceDomainsService.resolveWorkspaceAndPublicDomain(host);
 
     assertIsDefinedOrThrow(
       workspace,
@@ -63,11 +60,15 @@ export class RouteTriggerService {
       ),
     );
 
+    // App-scoped public domain → restrict matches to that app's logic functions.
+    const applicationId = publicDomain?.applicationId ?? null;
+
     const logicFunctionsWithHttpRouteTrigger =
       await this.logicFunctionRepository.find({
         where: {
           workspaceId: workspace.id,
           httpRouteTriggerSettings: Not(IsNull()),
+          ...(isDefined(applicationId) ? { applicationId } : {}),
         },
       });
 
@@ -141,14 +142,16 @@ export class RouteTriggerService {
       }
     }
 
-    if (
-      error instanceof LogicFunctionException &&
-      error.code === LogicFunctionExceptionCode.LOGIC_FUNCTION_NOT_FOUND
-    ) {
-      return RouteTriggerExceptionCode.LOGIC_FUNCTION_NOT_FOUND;
+    if (error instanceof LogicFunctionException) {
+      switch (error.code) {
+        case LogicFunctionExceptionCode.LOGIC_FUNCTION_NOT_FOUND:
+          return RouteTriggerExceptionCode.LOGIC_FUNCTION_NOT_FOUND;
+        case LogicFunctionExceptionCode.LOGIC_FUNCTION_DISABLED:
+          return RouteTriggerExceptionCode.FORBIDDEN_EXCEPTION;
+      }
     }
 
-    return RouteTriggerExceptionCode.LOGIC_FUNCTION_EXECUTION_ERROR;
+    return RouteTriggerExceptionCode.ROUTE_TRIGGER_PLATFORM_ERROR;
   }
 
   async handle({
@@ -166,26 +169,30 @@ export class RouteTriggerService {
 
     const httpRouteSettings = logicFunction.httpRouteTriggerSettings;
 
+    let userWorkspaceId: string | null = null;
+    let userId: string | null = null;
+
     if (httpRouteSettings?.isAuthRequired) {
-      await this.validateWorkspaceFromRequest({
+      const authContext = await this.validateWorkspaceFromRequest({
         request,
         workspaceId: logicFunction.workspaceId,
       });
+
+      userWorkspaceId = authContext.userWorkspaceId ?? null;
+      userId = authContext.user?.id ?? null;
     }
 
-    const event = buildLogicFunctionEvent({
-      request,
-      pathParameters: pathParams,
-      forwardedRequestHeaders: httpRouteSettings?.forwardedRequestHeaders ?? [],
-    });
-
-    let result;
+    let outcome;
 
     try {
-      result = await this.logicFunctionExecutorService.execute({
-        logicFunctionId: logicFunction.id,
-        workspaceId: logicFunction.workspaceId,
-        payload: event,
+      outcome = await this.logicFunctionTriggerService.run({
+        logicFunction,
+        request,
+        pathParameters: pathParams,
+        forwardedRequestHeaders:
+          httpRouteSettings?.forwardedRequestHeaders ?? [],
+        userId,
+        userWorkspaceId,
       });
     } catch (error) {
       if (error instanceof RouteTriggerException) {
@@ -211,17 +218,13 @@ export class RouteTriggerService {
       );
     }
 
-    if (!isDefined(result)) {
-      return result;
-    }
-
-    if (result.error) {
+    if (outcome.kind === 'userError') {
       throw new RouteTriggerException(
-        result.error.errorMessage,
-        RouteTriggerExceptionCode.LOGIC_FUNCTION_EXECUTION_ERROR,
+        outcome.errorMessage,
+        RouteTriggerExceptionCode.ROUTE_TRIGGER_USER_UNCAUGHT_ERROR,
       );
     }
 
-    return result.data;
+    return outcome.response;
   }
 }

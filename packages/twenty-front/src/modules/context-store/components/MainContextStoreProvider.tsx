@@ -2,11 +2,10 @@ import { MainContextStoreProviderEffect } from '@/context-store/components/MainC
 import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
 import { useIsSettingsPage } from '@/navigation/hooks/useIsSettingsPage';
 import { useLastVisitedView } from '@/navigation/hooks/useLastVisitedView';
-import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
-import { useShowAuthModal } from '@/ui/layout/hooks/useShowAuthModal';
+import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
 import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilyStateValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { coreViewsSelector } from '@/views/states/selectors/coreViewsSelector';
+import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { AppPath } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
@@ -38,8 +37,6 @@ const getViewId = (
   return undefined;
 };
 
-const SIGN_IN_BACKGROUND_OBJECT_NAME_PLURAL = 'companies';
-
 export const MainContextStoreProvider = () => {
   const location = useLocation();
   const isRecordIndexPage = isMatchingLocation(
@@ -49,21 +46,16 @@ export const MainContextStoreProvider = () => {
   const isRecordShowPage = isMatchingLocation(location, AppPath.RecordShowPage);
   const isStandalonePage = isMatchingLocation(location, AppPath.PageLayoutPage);
   const isSettingsPage = useIsSettingsPage();
-  const showAuthModal = useShowAuthModal();
 
-  const objectNamePluralFromParams = useParams().objectNamePlural ?? '';
+  const objectNamePlural = useParams().objectNamePlural ?? '';
   const objectNameSingular = useParams().objectNameSingular ?? '';
-
-  const objectNamePlural = showAuthModal
-    ? SIGN_IN_BACKGROUND_OBJECT_NAME_PLURAL
-    : objectNamePluralFromParams;
 
   const [searchParams] = useSearchParams();
   const viewIdQueryParamRaw = searchParams.get('viewId');
 
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsState);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
   const metadataStore = useAtomFamilyStateValue(metadataStoreState, 'views');
-  const coreViews = useAtomStateValue(coreViewsSelector);
+  const views = useAtomStateValue(viewsSelector);
 
   const objectMetadataItem = objectMetadataItems.find(
     (objectMetadataItem) =>
@@ -73,7 +65,7 @@ export const MainContextStoreProvider = () => {
 
   const { getLastVisitedViewIdFromObjectNamePlural } = useLastVisitedView();
 
-  const viewIdQueryParamView = coreViews.find(
+  const viewIdQueryParamView = views.find(
     (view) => view.id === viewIdQueryParamRaw,
   );
 
@@ -87,7 +79,7 @@ export const MainContextStoreProvider = () => {
     objectMetadataItem?.namePlural ?? '',
   );
 
-  const lastVisitedView = coreViews.find(
+  const lastVisitedView = views.find(
     (view) => view.id === lastVisitedViewIdRaw,
   );
 
@@ -97,13 +89,13 @@ export const MainContextStoreProvider = () => {
       ? lastVisitedViewIdRaw
       : undefined;
 
-  const indexViewId = coreViews.find(
+  const indexViewId = views.find(
     (view) =>
       view.objectMetadataId === objectMetadataItem?.id &&
       view.key === ViewKey.INDEX,
   )?.id;
 
-  const firstAvailableViewId = coreViews.find(
+  const firstAvailableViewId = views.find(
     (view) =>
       view.objectMetadataId === objectMetadataItem?.id &&
       view.type !== ViewType.FIELDS_WIDGET,
@@ -120,8 +112,7 @@ export const MainContextStoreProvider = () => {
     (isRecordIndexPage ||
       isRecordShowPage ||
       isStandalonePage ||
-      isSettingsPage ||
-      showAuthModal) &&
+      isSettingsPage) &&
     metadataStore.status === 'up-to-date';
 
   if (!shouldComputeContextStore) {

@@ -1,6 +1,6 @@
 import { useGetRelationMetadata } from '@/object-metadata/hooks/useGetRelationMetadata';
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { RELATION_TYPES } from '@/settings/data-model/constants/RelationTypes';
 import { SettingsObjectFieldDataType } from '@/settings/data-model/object-details/components/SettingsObjectFieldDataType';
 import { type SettingsFieldType } from '@/settings/data-model/types/SettingsFieldType';
@@ -12,7 +12,7 @@ import { TableRow } from '@/ui/layout/table/components/TableRow';
 import { styled } from '@linaria/react';
 import { useContext, useMemo } from 'react';
 import { isDefined } from 'twenty-shared/utils';
-import { useIcons } from 'twenty-ui/display';
+import { useIcons } from 'twenty-ui/icon';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { v4 } from 'uuid';
 import {
@@ -24,16 +24,16 @@ export const FIELD_PERMISSION_TABLE_ROW_GRID_TEMPLATE_COLUMNS =
   '180px minmax(0, 1fr) 60px 60px';
 
 const StyledNameLabel = styled.div`
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
-
+  text-overflow: ellipsis;
   user-select: none;
+
+  white-space: nowrap;
 `;
 
 type SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRowProps = {
   fieldMetadataItem: FieldMetadataItem;
-  objectMetadataItem: ObjectMetadataItem;
+  objectMetadataItem: EnrichedObjectMetadataItem;
   fieldPermissions: FieldPermission[];
   roleId: string;
   isLabelIdentifier: boolean;
@@ -157,7 +157,7 @@ export const SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRow =
           color={themeCssVariables.font.color.primary}
           gap={themeCssVariables.spacing[2]}
         >
-          {!!Icon && (
+          {isDefined(Icon) && (
             <Icon
               style={{
                 minWidth: theme.icon.size.md,
@@ -192,7 +192,7 @@ export const SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRow =
             <TableCell>
               <OverridableCheckbox
                 disabled={
-                  (fieldMetadataItem.isUIReadOnly || isLabelIdentifier) ?? false
+                  !(fieldMetadataItem.isUIEditable ?? true) || isLabelIdentifier
                 }
                 checked={true}
                 onChange={handleSeeChange}
@@ -203,7 +203,7 @@ export const SettingsRolePermissionsObjectLevelObjectFieldPermissionTableRow =
           {shouldShowUpdateTableHeader && (
             <TableCell align="left">
               <OverridableCheckbox
-                disabled={fieldMetadataItem.isUIReadOnly ?? false}
+                disabled={!(fieldMetadataItem.isUIEditable ?? true)}
                 checked={true}
                 onChange={handleUpdateChange}
                 type={isUpdateRestricted ? 'override' : 'default'}
