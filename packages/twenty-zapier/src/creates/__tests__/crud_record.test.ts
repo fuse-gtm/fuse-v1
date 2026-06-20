@@ -27,11 +27,10 @@ describe('creates.create_company', () => {
           '{ url: "http://test.com/linkedin_url2", label: "Test linkedinUrl2" }',
         ],
       },
-      annualRecurringRevenue: {
+      annualRevenue: {
         amountMicros: 100000000000,
         currencyCode: 'USD',
       },
-      idealCustomerProfile: true,
       employees: 25,
     });
     const result = await appTester(
@@ -45,13 +44,13 @@ describe('creates.create_company', () => {
         requestDb({
           z,
           bundle,
-          query: `query findCompany {company(filter: {id: {eq: "${result.data.createCompany.id}"}}){id annualRecurringRevenue{amountMicros currencyCode}}}`,
+          query: `query findCompany {company(filter: {id: {eq: "${result.data.createCompany.id}"}}){id annualRevenue{amountMicros currencyCode}}}`,
         }),
       bundle,
     );
-    expect(
-      checkDbResult.data.company.annualRecurringRevenue.amountMicros,
-    ).toEqual(100000000000);
+    expect(checkDbResult.data.company.annualRevenue.amountMicros).toEqual(
+      100000000000,
+    );
   });
   test('should run to create a Person Record', async () => {
     const bundle = getBundleForTest({
