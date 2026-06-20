@@ -30,10 +30,6 @@ const checks: FileCheck[] = [
     required: ['Welcome to Fuse'],
   },
   {
-    path: 'packages/twenty-front/src/pages/auth/FuseSignInUp.tsx',
-    required: ['Sign in to Fuse'],
-  },
-  {
     path: 'packages/twenty-front/src/modules/auth/sign-in-up/components/FooterNote.tsx',
     required: [
       'By using Fuse',
@@ -43,10 +39,6 @@ const checks: FileCheck[] = [
   },
   {
     path: 'packages/twenty-front/src/pages/onboarding/SyncEmails.tsx',
-    required: ['with Fuse'],
-  },
-  {
-    path: 'packages/twenty-front/src/pages/onboarding/FuseSyncEmails.tsx',
     required: ['with Fuse'],
   },
   {

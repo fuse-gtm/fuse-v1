@@ -56,6 +56,24 @@ export type {
   PageLayoutManifest,
 } from './pageLayoutManifestType';
 export type {
+  FusePartnerType,
+  FuseProgramMechanic,
+  FuseCommercialModel,
+  PartnerAppSpecTaxonomy,
+  PartnerAppStandardObjectExtension,
+  PartnerAppSeedData,
+  PartnerAppInstallHooks,
+  PartnerAppSpec,
+  PartnerAppSpecValidationIssueCode,
+  PartnerAppSpecValidationIssue,
+  PartnerAppSpecValidationResult,
+} from './partnerAppSpecType';
+export {
+  FUSE_PARTNER_TYPES,
+  FUSE_PROGRAM_MECHANICS,
+  FUSE_COMMERCIAL_MODELS,
+} from './partnerAppSpecType';
+export type {
   PermissionFlagPermissionType,
   PermissionFlagManifest,
 } from './permissionFlagManifestType';
@@ -76,6 +94,10 @@ export type { SkillManifest } from './skillManifestType';
 export type { StoredOAuthConnectionProviderConfig } from './storedOAuthConnectionProviderConfigType';
 export type { SyncableEntityOptions } from './syncableEntityOptionsType';
 export type { ToolTriggerSettings } from './toolTriggerSettingsType';
+export {
+  validatePartnerAppSpec,
+  assertValidPartnerAppSpec,
+} from './validatePartnerAppSpec';
 export type {
   ViewManifestFilterValue,
   ViewFieldManifest,
