@@ -435,6 +435,88 @@ export const ATTRIBUTION_STATUS_OPTIONS: FieldOption[] = [
   },
 ];
 
+export const REFERRAL_EVENT_TYPE_OPTIONS: FieldOption[] = [
+  {
+    id: '793ac413-5208-4eba-9663-7736418c9ed5',
+    value: 'lead',
+    label: 'Lead',
+    color: 'blue',
+    position: 0,
+  },
+  {
+    id: 'a3873c16-37b2-4ab5-81ce-d886764a5ad9',
+    value: 'sale',
+    label: 'Sale',
+    color: 'green',
+    position: 1,
+  },
+];
+
+export const REFERRAL_EVENT_STATUS_OPTIONS: FieldOption[] = [
+  {
+    id: '9f748b2b-ef6d-4e1b-a816-5f1ed9c7193a',
+    value: 'accepted',
+    label: 'Accepted',
+    color: 'green',
+    position: 0,
+  },
+  {
+    id: '799df785-8050-4552-9ca1-f878a6de84cc',
+    value: 'duplicate',
+    label: 'Duplicate',
+    color: 'orange',
+    position: 1,
+  },
+  {
+    id: 'e3ee5b9a-8e54-411c-92dd-2509a5cd61f1',
+    value: 'rejected',
+    label: 'Rejected',
+    color: 'red',
+    position: 2,
+  },
+];
+
+export const REFERRAL_ROLLUP_SCOPE_OPTIONS: FieldOption[] = [
+  {
+    id: 'e66c5fa1-4d9a-42b5-a4b5-6e98a395900f',
+    value: 'partner_profile',
+    label: 'Partner Profile',
+    color: 'blue',
+    position: 0,
+  },
+  {
+    id: '8f2ba098-08c5-4308-808d-e0e966fd7b43',
+    value: 'agency_group',
+    label: 'Agency Group',
+    color: 'purple',
+    position: 1,
+  },
+  {
+    id: 'd1c6907c-8071-400d-ac62-a156efdba8f9',
+    value: 'enrollment',
+    label: 'Enrollment',
+    color: 'green',
+    position: 2,
+  },
+];
+
+export const REFERRAL_ROLLUP_REPAIR_STATUS_OPTIONS: FieldOption[] = [
+  {
+    id: 'e3f1c1a8-308b-4a28-9087-a9b0314bfb3e',
+    value: 'fresh',
+    label: 'Fresh',
+    color: 'green',
+    position: 0,
+  },
+  {
+    id: 'bdc2c8b5-384f-4742-818e-8a51c959b487',
+    value: 'repaired',
+    label: 'Repaired',
+    color: 'blue',
+    position: 1,
+  },
+];
+
 export const TASK_TYPE_OPTIONS: FieldOption[] = [
   {
     id: 'd36fc132-5f24-477a-8568-493db26fced0',

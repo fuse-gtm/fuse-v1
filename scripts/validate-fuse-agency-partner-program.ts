@@ -6,6 +6,7 @@ import { validatePartnerAppSpec } from '../packages/twenty-shared/src/applicatio
 import {
   FIELD_IDS,
   FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  ATTRIBUTION_LOGIC_FUNCTION_IDS,
   LIFECYCLE_LOGIC_FUNCTION_IDS,
   NAVIGATION_IDS,
   OBJECT_IDS,
@@ -78,13 +79,13 @@ const main = async () => {
     logicFunctions: manifest.logicFunctions.length,
   };
 
-  assert.equal(manifest.objects.length, 7);
+  assert.equal(manifest.objects.length, 9);
   assert.equal(manifest.roles.length, 1);
-  assert.equal(manifest.views.length, 9);
-  assert.equal(manifest.navigationMenuItems.length, 10);
+  assert.equal(manifest.views.length, 11);
+  assert.equal(manifest.navigationMenuItems.length, 12);
   assert.equal(manifest.pageLayouts.length, 1);
   assert.equal(manifest.frontComponents.length, 1);
-  assert.equal(manifest.logicFunctions.length, 4);
+  assert.equal(manifest.logicFunctions.length, 6);
 
   assertIncludesIds(
     'custom objects',
@@ -116,6 +117,8 @@ const main = async () => {
       ...Object.values(FIELD_IDS.agencyTask),
       ...Object.values(FIELD_IDS.agencyGroup),
       ...Object.values(FIELD_IDS.agencyReviewEvent),
+      ...Object.values(FIELD_IDS.agencyReferralEvent),
+      ...Object.values(FIELD_IDS.agencyReferralRollup),
     ],
   );
 
@@ -153,6 +156,7 @@ const main = async () => {
     [
       POST_INSTALL_UNIVERSAL_IDENTIFIER,
       ...Object.values(LIFECYCLE_LOGIC_FUNCTION_IDS),
+      ...Object.values(ATTRIBUTION_LOGIC_FUNCTION_IDS),
     ],
   );
 

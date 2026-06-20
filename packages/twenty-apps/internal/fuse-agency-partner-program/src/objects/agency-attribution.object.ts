@@ -98,5 +98,19 @@ export default defineObject({
         joinColumnName: 'opportunityId',
       },
     },
+    {
+      universalIdentifier: FIELD_IDS.agencyAttribution.referralEvents,
+      type: FieldType.RELATION,
+      name: 'referralEvents',
+      label: 'Referral Events',
+      icon: 'IconWebhook',
+      relationTargetObjectMetadataUniversalIdentifier:
+        OBJECT_IDS.agencyReferralEvent,
+      relationTargetFieldMetadataUniversalIdentifier:
+        FIELD_IDS.agencyReferralEvent.agencyAttribution,
+      universalSettings: {
+        relationType: RelationType.ONE_TO_MANY,
+      },
+    },
   ],
 });

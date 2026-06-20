@@ -2,6 +2,8 @@ import { type PartnerAppSpec } from 'twenty-shared/application';
 import { STANDARD_OBJECT_IDS } from 'src/constants/core-identifiers';
 import {
   APPLICATION_UNIVERSAL_IDENTIFIER,
+  APPLICATION_VARIABLE_IDS,
+  ATTRIBUTION_LOGIC_FUNCTION_IDS,
   DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
   FIELD_IDS,
   FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
@@ -22,10 +24,20 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       'Agency-specific partner program schema, operator views, and overview widget built on Fuse Partner Core.',
     icon: 'IconAffiliate',
     defaultRoleUniversalIdentifier: DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
+    applicationVariables: {
+      AGENCY_EVENT_SIGNING_SECRET: {
+        universalIdentifier:
+          APPLICATION_VARIABLE_IDS.agencyEventSigningSecret,
+        description:
+          'Secret used to validate signed agency referral lead and sale events.',
+        isSecret: true,
+      },
+    },
     packageJsonChecksum: null,
     yarnLockChecksum: null,
   },
   version: '0.1.0',
+  requiredApplicationVariables: ['AGENCY_EVENT_SIGNING_SECRET'],
   taxonomy: {
     partnerType: 'agency',
     programMechanics: ['referral', 'services'],
@@ -63,6 +75,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: OBJECT_IDS.agencyTask },
     { universalIdentifier: OBJECT_IDS.agencyGroup },
     { universalIdentifier: OBJECT_IDS.agencyReviewEvent },
+    { universalIdentifier: OBJECT_IDS.agencyReferralEvent },
+    { universalIdentifier: OBJECT_IDS.agencyReferralRollup },
   ] as any,
   relationFields: [
     { universalIdentifier: FIELD_IDS.agencyApplication.partnerProfile },
@@ -81,6 +95,14 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: FIELD_IDS.agencyReviewEvent.application },
     { universalIdentifier: FIELD_IDS.agencyReviewEvent.partnerProfile },
     { universalIdentifier: FIELD_IDS.agencyReviewEvent.agencyGroup },
+    { universalIdentifier: FIELD_IDS.agencyReferralEvent.partnerProfile },
+    { universalIdentifier: FIELD_IDS.agencyReferralEvent.agencyGroup },
+    { universalIdentifier: FIELD_IDS.agencyReferralEvent.agencyAttribution },
+    { universalIdentifier: FIELD_IDS.agencyReferralRollup.partnerProfile },
+    { universalIdentifier: FIELD_IDS.agencyReferralRollup.agencyGroup },
+    { universalIdentifier: FIELD_IDS.agencyGroup.referralEvents },
+    { universalIdentifier: FIELD_IDS.agencyGroup.referralRollups },
+    { universalIdentifier: FIELD_IDS.agencyAttribution.referralEvents },
     { universalIdentifier: FIELD_IDS.partnerProfile.agencyApplications },
     { universalIdentifier: FIELD_IDS.partnerProfile.serviceCapabilities },
     { universalIdentifier: FIELD_IDS.partnerProfile.resources },
@@ -88,6 +110,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: FIELD_IDS.partnerProfile.agencyTasks },
     { universalIdentifier: FIELD_IDS.partnerProfile.agencyGroups },
     { universalIdentifier: FIELD_IDS.partnerProfile.reviewEvents },
+    { universalIdentifier: FIELD_IDS.partnerProfile.referralEvents },
+    { universalIdentifier: FIELD_IDS.partnerProfile.referralRollups },
   ] as any,
   roles: [{ universalIdentifier: DEFAULT_ROLE_UNIVERSAL_IDENTIFIER }] as any,
   views: [
@@ -100,6 +124,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: VIEW_IDS.tasks },
     { universalIdentifier: VIEW_IDS.agencyGroups },
     { universalIdentifier: VIEW_IDS.reviewEvents },
+    { universalIdentifier: VIEW_IDS.referralEvents },
+    { universalIdentifier: VIEW_IDS.referralRollups },
   ] as any,
   pageLayouts: [{ universalIdentifier: PAGE_LAYOUT_IDS.partnerProfile }] as any,
   navigationMenuItems: [
@@ -113,6 +139,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: NAVIGATION_IDS.tasks },
     { universalIdentifier: NAVIGATION_IDS.agencyGroups },
     { universalIdentifier: NAVIGATION_IDS.reviewEvents },
+    { universalIdentifier: NAVIGATION_IDS.referralEvents },
+    { universalIdentifier: NAVIGATION_IDS.referralRollups },
   ] as any,
   frontComponents: [
     { universalIdentifier: FRONT_COMPONENT_UNIVERSAL_IDENTIFIER },
@@ -156,6 +184,28 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
         'src/logic-functions/lifecycle/reject-agency-application.logic-function.ts',
       builtHandlerPath:
         'src/logic-functions/lifecycle/reject-agency-application.logic-function.mjs',
+      builtHandlerChecksum: null,
+      handlerName: 'default.config.handler',
+      toolInputSchema: {},
+    },
+    {
+      universalIdentifier: ATTRIBUTION_LOGIC_FUNCTION_IDS.ingestReferralEvent,
+      name: 'ingest-agency-referral-event',
+      sourceHandlerPath:
+        'src/logic-functions/lifecycle/ingest-agency-referral-event.logic-function.ts',
+      builtHandlerPath:
+        'src/logic-functions/lifecycle/ingest-agency-referral-event.logic-function.mjs',
+      builtHandlerChecksum: null,
+      handlerName: 'default.config.handler',
+      toolInputSchema: {},
+    },
+    {
+      universalIdentifier: ATTRIBUTION_LOGIC_FUNCTION_IDS.repairReferralRollups,
+      name: 'repair-agency-referral-rollups',
+      sourceHandlerPath:
+        'src/logic-functions/lifecycle/repair-agency-referral-rollups.logic-function.ts',
+      builtHandlerPath:
+        'src/logic-functions/lifecycle/repair-agency-referral-rollups.logic-function.mjs',
       builtHandlerChecksum: null,
       handlerName: 'default.config.handler',
       toolInputSchema: {},

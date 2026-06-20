@@ -94,5 +94,33 @@ export default defineObject({
         relationType: RelationType.ONE_TO_MANY,
       },
     },
+    {
+      universalIdentifier: FIELD_IDS.agencyGroup.referralEvents,
+      type: FieldType.RELATION,
+      name: 'referralEvents',
+      label: 'Referral Events',
+      icon: 'IconWebhook',
+      relationTargetObjectMetadataUniversalIdentifier:
+        OBJECT_IDS.agencyReferralEvent,
+      relationTargetFieldMetadataUniversalIdentifier:
+        FIELD_IDS.agencyReferralEvent.agencyGroup,
+      universalSettings: {
+        relationType: RelationType.ONE_TO_MANY,
+      },
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyGroup.referralRollups,
+      type: FieldType.RELATION,
+      name: 'referralRollups',
+      label: 'Referral Rollups',
+      icon: 'IconChartBar',
+      relationTargetObjectMetadataUniversalIdentifier:
+        OBJECT_IDS.agencyReferralRollup,
+      relationTargetFieldMetadataUniversalIdentifier:
+        FIELD_IDS.agencyReferralRollup.agencyGroup,
+      universalSettings: {
+        relationType: RelationType.ONE_TO_MANY,
+      },
+    },
   ],
 });

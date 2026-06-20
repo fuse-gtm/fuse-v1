@@ -65,5 +65,19 @@ export default defineRole({
       canSoftDeleteObjectRecords: true,
       canDestroyObjectRecords: false,
     },
+    {
+      objectUniversalIdentifier: OBJECT_IDS.agencyReferralEvent,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: true,
+      canDestroyObjectRecords: false,
+    },
+    {
+      objectUniversalIdentifier: OBJECT_IDS.agencyReferralRollup,
+      canReadObjectRecords: true,
+      canUpdateObjectRecords: true,
+      canSoftDeleteObjectRecords: true,
+      canDestroyObjectRecords: false,
+    },
   ],
 });

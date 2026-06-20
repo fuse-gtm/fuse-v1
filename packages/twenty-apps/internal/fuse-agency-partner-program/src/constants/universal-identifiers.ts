@@ -13,6 +13,15 @@ export const LIFECYCLE_LOGIC_FUNCTION_IDS = {
   rejectApplication: '62f3cd49-4bb5-4cd5-af75-426d627c333c',
 } as const;
 
+export const ATTRIBUTION_LOGIC_FUNCTION_IDS = {
+  ingestReferralEvent: 'ef9178f4-e024-49b1-ab88-9dc6e639f0f4',
+  repairReferralRollups: '2c132755-f3c5-4326-9b82-4b397a75df5b',
+} as const;
+
+export const APPLICATION_VARIABLE_IDS = {
+  agencyEventSigningSecret: 'e3b62de2-c80d-402f-adf3-b3e6d25c73ab',
+} as const;
+
 export const FRONT_COMPONENT_UNIVERSAL_IDENTIFIER =
   '7e871e07-1387-4692-9334-dfe5b132f7b8';
 
@@ -30,6 +39,8 @@ export const OBJECT_IDS = {
   agencyTask: 'd813ebd6-e5e4-4e9a-9d8f-4dcaf1bf9c6a',
   agencyGroup: '44fa1a1c-ea5b-4a0e-97c3-db2407f46ade',
   agencyReviewEvent: 'd3487013-6c21-4298-839f-6466769ea320',
+  agencyReferralEvent: '453162e8-732b-49ce-acba-c62dadcce99e',
+  agencyReferralRollup: '4cd57acd-0ea8-42e8-9fca-fa3ce71e7b0b',
 } as const;
 
 export const FIELD_IDS = {
@@ -76,6 +87,7 @@ export const FIELD_IDS = {
     status: '08a21482-a479-4635-84c2-15b1ad264292',
     partnerProfile: '36e94332-0c6f-41ff-b60f-9ccfebca6c6a',
     opportunity: 'f76ecae4-0cf4-4810-91fd-180f2e88d6fb',
+    referralEvents: '50f4e6f8-c993-47af-9da8-51847fafdb44',
   },
   agencyTask: {
     name: '41772d33-0661-4305-97ed-154c38c0a646',
@@ -91,6 +103,8 @@ export const FIELD_IDS = {
     partnerProfile: 'c470f82f-260c-4755-902a-1722f12a6092',
     applications: '639321a0-dc7e-4804-b2e3-cc63237c3cee',
     reviewEvents: 'd4433a49-0e17-47bc-a3dc-03d946e64578',
+    referralEvents: '5e6caec4-b023-4047-9ba4-79ffb5ce52c4',
+    referralRollups: '8238b7a9-e8ed-4e0c-a118-e260a211fb42',
   },
   agencyReviewEvent: {
     name: '172269fd-34df-432c-bef5-d6c95b05ed67',
@@ -102,6 +116,34 @@ export const FIELD_IDS = {
     partnerProfile: '6ae08959-50a5-4209-8b10-ac07d41f5a2c',
     agencyGroup: 'c5f0a93a-f308-482b-b72b-1213dce8c3e4',
   },
+  agencyReferralEvent: {
+    name: '95fb450e-eebf-419c-a646-0b7a19a237b6',
+    eventId: '65aa6473-eba6-4c47-8455-721115a1465a',
+    eventType: '82bbc27b-bcbd-41d7-a4f8-7d71a533fa05',
+    signature: 'c85e5a05-d111-4ced-b6c3-55af6189b95a',
+    customerId: '729e28a0-7d5d-439d-85fd-43b4b34f9f97',
+    invoiceId: 'f822b70e-39be-447e-a6f9-6c0bf979ad83',
+    enrollmentId: '095a793d-30ec-44a1-8a7b-98a4d9c08915',
+    amountCents: '7fe958fa-7ac0-460f-8fab-03023bc244d1',
+    status: 'cf829d73-7c35-4143-b7d8-fdd53186fbe5',
+    occurredAt: '39f831b6-8ed5-49b4-b07d-ac4aede2852a',
+    payloadJson: '62b8a910-f938-4f90-969d-46659a435195',
+    partnerProfile: '07cf739b-8aed-4fdf-bb7b-5aabed1d2cf3',
+    agencyGroup: 'eb3fca9f-3222-4928-8654-9c86a6d396e0',
+    agencyAttribution: 'ba9cd6f2-64b8-468a-9d2d-1ba2798ae9c2',
+  },
+  agencyReferralRollup: {
+    name: '8e26e756-f4ef-4b28-aa6b-9d309e6c475a',
+    scopeType: 'f7527eba-0ba0-4556-8bd2-12c5c11bd938',
+    scopeId: '0d292ff3-d7a9-4ffe-871d-d3b74777b7c5',
+    leadCount: '6728db7c-70bf-4fa4-b340-93d62e26bb3f',
+    saleCount: '8cdcff09-a6ca-44e6-b9e6-c92852d4a150',
+    revenueCents: '014b43c1-8080-4612-b4f1-56b994f0a51c',
+    lastEventAt: '1e98455c-4414-4c27-b126-b88682f12bfb',
+    repairStatus: '0fbe3972-70be-4863-8ba6-a472d3f0878b',
+    partnerProfile: 'c754701f-fd78-47c1-be40-ec7a6115cec2',
+    agencyGroup: 'ea6cdcde-48ae-4033-854d-30ff2afec05a',
+  },
   partnerProfile: {
     agencyApplications: 'a5307e4b-273a-4da5-bce1-d70969ce4773',
     serviceCapabilities: 'fdbdcdb5-c939-4c5c-9dc4-20b3ec605eea',
@@ -110,6 +152,8 @@ export const FIELD_IDS = {
     agencyTasks: '24ee9a0b-5a2e-41c9-87a7-c972a3da6d97',
     agencyGroups: '2c3778af-c0ce-4260-b84c-04a0917a30bd',
     reviewEvents: '5b95452a-3ae5-46b3-8e53-a33b3181ea4e',
+    referralEvents: 'a1859cb1-565e-44fb-b234-eb17f21432a8',
+    referralRollups: '94231cac-48db-4ccd-8ec5-e4fdf5a41b36',
   },
   company: {
     agencyApplications: 'fccc842f-4c60-453a-a2ed-59495d8cba6c',
@@ -132,6 +176,8 @@ export const VIEW_IDS = {
   tasks: 'b74fc04e-61e7-4ba2-bbe0-245593e63073',
   agencyGroups: '2d248d6c-373a-4d15-b342-72e357552ddb',
   reviewEvents: 'e39f35b0-0313-4c55-ae91-6937a4b68f1e',
+  referralEvents: '25c90064-0300-4afb-b206-d40d307bd0e0',
+  referralRollups: '36f619f2-f13a-4c45-96d3-1557a280ae35',
 } as const;
 
 export const NAVIGATION_IDS = {
@@ -145,6 +191,8 @@ export const NAVIGATION_IDS = {
   tasks: '6b1040c6-396c-43d7-aada-632b2149c4a6',
   agencyGroups: 'f08c000b-390a-4cac-b207-dfa7026ce410',
   reviewEvents: '2a02fd00-c31f-42a9-8bf8-a79d3254c0dc',
+  referralEvents: 'b9692f9d-f08c-4a7a-abf6-36e06a56afe3',
+  referralRollups: '7866d8cd-118e-4148-9438-687a12c1bbcf',
 } as const;
 
 export const VIEW_FIELD_IDS = [
@@ -182,6 +230,14 @@ export const VIEW_FIELD_IDS = [
   'ae209b2a-55d6-4f7c-b3ca-305d473d7f87',
   '1dd71c06-83c8-43e5-bf37-097d1b530795',
   '601ee316-4251-4914-bcb9-c8459c0cd371',
+  '78143907-4cc9-4d40-a112-f9bfbd9b5870',
+  '7567201c-47dc-40f2-8c01-fe9912aa645e',
+  'b3c2d95e-fae8-4c5d-a37d-90b9772a82f4',
+  'e5f65456-dd99-4d98-be67-5ba35b29f71e',
+  'b24f5b54-5826-4bea-91fe-eed4f4043d7e',
+  '01012698-c00e-4bf1-b491-164faa58bac7',
+  '9f250410-cae1-416e-85cc-da7362e353e9',
+  '9afd4c5e-ffe3-49ee-aa75-43c3cbbd1249',
 ] as const;
 
 export const VIEW_FILTER_IDS = {
@@ -199,6 +255,8 @@ export const VIEW_SORT_IDS = {
   tasks: 'c2db3b05-4ee5-4ec5-ab9a-45cfbee23591',
   agencyGroups: 'd2e0a4ab-5443-444d-ad6e-4ddd95b83f33',
   reviewEvents: 'd4ab165f-4330-4321-8895-ac55deee4580',
+  referralEvents: '01d856f1-cfe8-47c9-884e-12094f972aae',
+  referralRollups: 'd655b832-2fe5-47f5-9d5a-7231a82fc8df',
 } as const;
 
 export const SEED_DATA_IDS = {
