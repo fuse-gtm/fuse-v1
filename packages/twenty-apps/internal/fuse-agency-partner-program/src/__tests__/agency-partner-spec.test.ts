@@ -30,8 +30,10 @@ assert.equal(fuseAgencyPartnerProgramSpec.relationFields.length, 33);
 assert.equal(fuseAgencyPartnerProgramSpec.views.length, 11);
 assert.equal(fuseAgencyPartnerProgramSpec.pageLayouts.length, 1);
 assert.equal(fuseAgencyPartnerProgramSpec.navigationMenuItems.length, 12);
-assert.equal(fuseAgencyPartnerProgramSpec.frontComponents.length, 1);
+assert.equal(fuseAgencyPartnerProgramSpec.frontComponents.length, 3);
 assert.equal(fuseAgencyPartnerProgramSpec.logicFunctions.length, 6);
+assert.equal(fuseAgencyPartnerProgramSpec.skills.length, 1);
+assert.equal(fuseAgencyPartnerProgramSpec.agents.length, 1);
 assert.equal(fuseAgencyPartnerProgramSpec.seedData.length, 5);
 
 console.log('Fuse Agency Partner Program spec validation passed.');

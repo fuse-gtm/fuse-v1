@@ -4,14 +4,16 @@ import { resolve } from 'node:path';
 import { buildManifest } from '../packages/twenty-sdk/src/cli/utilities/build/manifest/manifest-build';
 import { validatePartnerAppSpec } from '../packages/twenty-shared/src/application/validatePartnerAppSpec';
 import {
-  FIELD_IDS,
-  FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  AGENT_IDS,
   ATTRIBUTION_LOGIC_FUNCTION_IDS,
+  FIELD_IDS,
+  FRONT_COMPONENT_IDS,
   LIFECYCLE_LOGIC_FUNCTION_IDS,
   NAVIGATION_IDS,
   OBJECT_IDS,
   PAGE_LAYOUT_IDS,
   POST_INSTALL_UNIVERSAL_IDENTIFIER,
+  SKILL_IDS,
   VIEW_IDS,
 } from '../packages/twenty-apps/internal/fuse-agency-partner-program/src/constants/universal-identifiers';
 import { fuseAgencyPartnerProgramSpec } from '../packages/twenty-apps/internal/fuse-agency-partner-program/src/partner-app-spec';
@@ -84,8 +86,10 @@ const main = async () => {
   assert.equal(manifest.views.length, 11);
   assert.equal(manifest.navigationMenuItems.length, 12);
   assert.equal(manifest.pageLayouts.length, 1);
-  assert.equal(manifest.frontComponents.length, 1);
+  assert.equal(manifest.frontComponents.length, 3);
   assert.equal(manifest.logicFunctions.length, 6);
+  assert.equal(manifest.skills.length, 1);
+  assert.equal(manifest.agents.length, 1);
 
   assertIncludesIds(
     'custom objects',
@@ -145,7 +149,7 @@ const main = async () => {
     manifest.frontComponents.map(
       (frontComponent) => frontComponent.universalIdentifier,
     ),
-    [FRONT_COMPONENT_UNIVERSAL_IDENTIFIER],
+    Object.values(FRONT_COMPONENT_IDS),
   );
 
   assertIncludesIds(
@@ -158,6 +162,18 @@ const main = async () => {
       ...Object.values(LIFECYCLE_LOGIC_FUNCTION_IDS),
       ...Object.values(ATTRIBUTION_LOGIC_FUNCTION_IDS),
     ],
+  );
+
+  assertIncludesIds(
+    'skills',
+    manifest.skills.map((skill) => skill.universalIdentifier),
+    Object.values(SKILL_IDS),
+  );
+
+  assertIncludesIds(
+    'agents',
+    manifest.agents.map((agent) => agent.universalIdentifier),
+    Object.values(AGENT_IDS),
   );
 
   console.log('Fuse Agency Partner Program validation passed:');

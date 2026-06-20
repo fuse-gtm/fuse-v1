@@ -25,10 +25,28 @@ export const APPLICATION_VARIABLE_IDS = {
 export const FRONT_COMPONENT_UNIVERSAL_IDENTIFIER =
   '7e871e07-1387-4692-9334-dfe5b132f7b8';
 
+export const FRONT_COMPONENT_IDS = {
+  overview: FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  applicationReview: '2cc01851-c456-466e-9657-d3f71c644d51',
+  performance: 'c4989d8d-a8b3-4432-91d4-f377df5d4e20',
+} as const;
+
 export const PAGE_LAYOUT_IDS = {
   partnerProfile: 'dab5072a-1e69-4adf-923c-36a2ab00339c',
   overviewTab: 'e05fe618-904e-4258-922f-3c01bd02e4af',
   overviewWidget: 'f6af09ed-b790-4f3d-9746-56cd1e7111d2',
+  applicationReviewTab: '64d391e0-68e4-4d29-be63-53b6f3527179',
+  applicationReviewWidget: '1ff78785-fe3c-49d3-82c2-1d714445ce1b',
+  performanceTab: 'e0df6388-1098-4c6d-986d-1c10aaf5328e',
+  performanceWidget: 'ef418949-85b6-432d-976b-adde7be76591',
+} as const;
+
+export const SKILL_IDS = {
+  agencyProgramOperator: '82355e50-de2f-41ec-8d29-e0660ee10136',
+} as const;
+
+export const AGENT_IDS = {
+  agencyProgramOperator: '613014d1-a7a8-43c5-8917-9dfb5c2bca52',
 } as const;
 
 export const OBJECT_IDS = {

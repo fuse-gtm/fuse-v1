@@ -6,6 +6,7 @@ import {
   ATTRIBUTION_LOGIC_FUNCTION_IDS,
   DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
   FIELD_IDS,
+  FRONT_COMPONENT_IDS,
   FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
   LIFECYCLE_LOGIC_FUNCTION_IDS,
   NAVIGATION_IDS,
@@ -13,6 +14,8 @@ import {
   PAGE_LAYOUT_IDS,
   POST_INSTALL_UNIVERSAL_IDENTIFIER,
   SEED_DATA_IDS,
+  AGENT_IDS,
+  SKILL_IDS,
   VIEW_IDS,
 } from 'src/constants/universal-identifiers';
 
@@ -144,6 +147,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
   ] as any,
   frontComponents: [
     { universalIdentifier: FRONT_COMPONENT_UNIVERSAL_IDENTIFIER },
+    { universalIdentifier: FRONT_COMPONENT_IDS.applicationReview },
+    { universalIdentifier: FRONT_COMPONENT_IDS.performance },
   ] as any,
   logicFunctions: [
     {
@@ -211,8 +216,12 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       toolInputSchema: {},
     },
   ] as any,
-  skills: [],
-  agents: [],
+  skills: [
+    { universalIdentifier: SKILL_IDS.agencyProgramOperator },
+  ] as any,
+  agents: [
+    { universalIdentifier: AGENT_IDS.agencyProgramOperator },
+  ] as any,
   installHooks: {
     postInstallLogicFunctionUniversalIdentifier:
       POST_INSTALL_UNIVERSAL_IDENTIFIER,

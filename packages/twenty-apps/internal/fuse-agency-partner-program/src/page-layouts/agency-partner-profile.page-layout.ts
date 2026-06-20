@@ -1,6 +1,6 @@
 import { CORE_OBJECT_IDS } from 'src/constants/core-identifiers';
 import {
-  FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  FRONT_COMPONENT_IDS,
   PAGE_LAYOUT_IDS,
 } from 'src/constants/universal-identifiers';
 import { definePageLayout, PageLayoutTabLayoutMode } from 'twenty-sdk/define';
@@ -25,7 +25,44 @@ export default definePageLayout({
           configuration: {
             configurationType: 'FRONT_COMPONENT',
             frontComponentUniversalIdentifier:
-              FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+              FRONT_COMPONENT_IDS.overview,
+          },
+        },
+      ],
+    },
+    {
+      universalIdentifier: PAGE_LAYOUT_IDS.applicationReviewTab,
+      title: 'Application Review',
+      position: 70,
+      icon: 'IconClipboardText',
+      layoutMode: PageLayoutTabLayoutMode.CANVAS,
+      widgets: [
+        {
+          universalIdentifier: PAGE_LAYOUT_IDS.applicationReviewWidget,
+          title: 'Application Review',
+          type: 'FRONT_COMPONENT',
+          configuration: {
+            configurationType: 'FRONT_COMPONENT',
+            frontComponentUniversalIdentifier:
+              FRONT_COMPONENT_IDS.applicationReview,
+          },
+        },
+      ],
+    },
+    {
+      universalIdentifier: PAGE_LAYOUT_IDS.performanceTab,
+      title: 'Performance',
+      position: 80,
+      icon: 'IconChartBar',
+      layoutMode: PageLayoutTabLayoutMode.CANVAS,
+      widgets: [
+        {
+          universalIdentifier: PAGE_LAYOUT_IDS.performanceWidget,
+          title: 'Performance',
+          type: 'FRONT_COMPONENT',
+          configuration: {
+            configurationType: 'FRONT_COMPONENT',
+            frontComponentUniversalIdentifier: FRONT_COMPONENT_IDS.performance,
           },
         },
       ],
