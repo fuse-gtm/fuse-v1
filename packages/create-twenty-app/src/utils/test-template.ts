@@ -173,6 +173,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 const APP_PATH = process.cwd();
 const TWENTY_API_URL = process.env.TWENTY_API_URL ?? 'http://localhost:2020';
 const TWENTY_API_KEY = process.env.TWENTY_API_KEY;
+const ALREADY_DEPLOYED_VERSION_MESSAGE =
+  'version must be higher than the currently deployed version';
 
 describe('App installation', () => {
   beforeAll(async () => {
@@ -197,10 +199,18 @@ describe('App installation', () => {
       onProgress: (message: string) => console.log(\`[deploy] \${message}\`),
     });
 
-    if (!deployResult.success) {
+    const isAlreadyDeployedVersion =
+      !deployResult.success &&
+      deployResult.error?.message.includes(ALREADY_DEPLOYED_VERSION_MESSAGE);
+
+    if (!deployResult.success && !isAlreadyDeployedVersion) {
       throw new Error(
         \`Deploy failed: \${deployResult.error?.message ?? 'Unknown error'}\`,
       );
+    }
+
+    if (isAlreadyDeployedVersion) {
+      console.warn('App version is already deployed; reusing it for install.');
     }
 
     const installResult = await appInstall({ appPath: APP_PATH });

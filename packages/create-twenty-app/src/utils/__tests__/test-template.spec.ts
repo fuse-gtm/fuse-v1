@@ -62,6 +62,8 @@ describe('scaffoldIntegrationTest', () => {
       expect(content).toContain('await appUninstall({ appPath: APP_PATH })');
       expect(content).toContain('serverUrl: TWENTY_API_URL');
       expect(content).toContain('token: TWENTY_API_KEY');
+      expect(content).toContain('ALREADY_DEPLOYED_VERSION_MESSAGE');
+      expect(content).toContain('App version is already deployed');
       expect(content).toContain('new MetadataApiClient()');
       expect(content).toContain('findManyApplications');
       expect(content).toContain('APPLICATION_UNIVERSAL_IDENTIFIER');
