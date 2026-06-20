@@ -46,6 +46,24 @@ export type {
   PageLayoutTabManifest,
   PageLayoutManifest,
 } from './pageLayoutManifestType';
+export type {
+  FusePartnerType,
+  FuseProgramMechanic,
+  FuseCommercialModel,
+  PartnerAppSpecTaxonomy,
+  PartnerAppStandardObjectExtension,
+  PartnerAppSeedData,
+  PartnerAppInstallHooks,
+  PartnerAppSpec,
+  PartnerAppSpecValidationIssueCode,
+  PartnerAppSpecValidationIssue,
+  PartnerAppSpecValidationResult,
+} from './partnerAppSpecType';
+export {
+  FUSE_PARTNER_TYPES,
+  FUSE_PROGRAM_MECHANICS,
+  FUSE_COMMERCIAL_MODELS,
+} from './partnerAppSpecType';
 export type { PostInstallLogicFunctionApplicationManifest } from './postInstallLogicFunctionApplicationType';
 export type { PreInstallLogicFunctionApplicationManifest } from './preInstallLogicFunctionApplicationType';
 export type {
@@ -57,6 +75,10 @@ export type {
 export type { ServerVariables } from './server-variables.type';
 export type { SkillManifest } from './skillManifestType';
 export type { SyncableEntityOptions } from './syncableEntityOptionsType';
+export {
+  validatePartnerAppSpec,
+  assertValidPartnerAppSpec,
+} from './validatePartnerAppSpec';
 export type {
   ViewManifestFilterValue,
   ViewFieldManifest,
