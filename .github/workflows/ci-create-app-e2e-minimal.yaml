@@ -137,10 +137,16 @@ jobs:
         run: PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d postgres -c 'CREATE DATABASE "test";'
 
       - name: Setup database and start server
-        run: npx nx run twenty-server:database:reset && nohup npx nx start:ci twenty-server &
+        run: |
+          npx nx run twenty-server:database:reset
+          nohup npx nx start:ci twenty-server > /tmp/twenty-server.log 2>&1 &
 
       - name: Wait for server to be ready
-        run: npx wait-on http://localhost:3000/healthz --timeout 120000 --interval 1000
+        run: |
+          npx wait-on http://localhost:3000/healthz --timeout 180000 --interval 1000 || {
+            cat /tmp/twenty-server.log
+            exit 1
+          }
 
       - name: Authenticate with twenty-server
         run: |
