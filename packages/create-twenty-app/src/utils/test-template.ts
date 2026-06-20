@@ -42,9 +42,11 @@ export default defineConfig({
   test: {
     testTimeout: 120_000,
     hookTimeout: 120_000,
+    fileParallelism: false,
     include: ['src/**/*.integration-test.ts'],
     setupFiles: ['src/__tests__/setup-test.ts'],
     env: {
+      TWENTY_API_URL: process.env.TWENTY_API_URL ?? 'http://localhost:2020',
       TWENTY_API_KEY:
         '${SEED_API_KEY}',
     },
@@ -94,42 +96,57 @@ import * as path from 'path';
 import { beforeAll } from 'vitest';
 
 const TWENTY_API_URL = process.env.TWENTY_API_URL ?? 'http://localhost:2020';
-const TEST_CONFIG_DIR = path.join(os.tmpdir(), '.twenty-sdk-test');
+const TWENTY_API_KEY = process.env.TWENTY_API_KEY;
+const TEST_CONFIG_PATH = path.join(os.homedir(), '.twenty', 'config.test.json');
 
-const assertServerIsReachable = async () => {
+const validateEnv = (): { apiUrl: string; apiKey: string } => {
+  if (!TWENTY_API_URL || !TWENTY_API_KEY) {
+    throw new Error(
+      'TWENTY_API_URL and TWENTY_API_KEY must be set. ' +
+        'Start a Twenty server before executing integration tests.',
+    );
+  }
+
+  return { apiUrl: TWENTY_API_URL, apiKey: TWENTY_API_KEY };
+};
+
+const assertServerIsReachable = async (apiUrl: string) => {
   let response: Response;
 
   try {
-    response = await fetch(\`\${TWENTY_API_URL}/healthz\`);
+    response = await fetch(\`\${apiUrl}/healthz\`);
   } catch {
     throw new Error(
-      \`Twenty server is not reachable at \${TWENTY_API_URL}. \` +
+      \`Twenty server is not reachable at \${apiUrl}. \` +
         'Make sure the server is running before executing integration tests.',
     );
   }
 
   if (!response.ok) {
-    throw new Error(\`Server at \${TWENTY_API_URL} returned \${response.status}\`);
+    throw new Error(\`Server at \${apiUrl} returned \${response.status}\`);
   }
 };
 
 beforeAll(async () => {
-  await assertServerIsReachable();
+  const { apiUrl, apiKey } = validateEnv();
 
-  fs.mkdirSync(TEST_CONFIG_DIR, { recursive: true });
+  await assertServerIsReachable(apiUrl);
+
+  fs.mkdirSync(path.dirname(TEST_CONFIG_PATH), { recursive: true });
 
   const configFile = {
+    version: 1,
     remotes: {
       local: {
-        apiUrl: process.env.TWENTY_API_URL,
-        apiKey: process.env.TWENTY_API_KEY,
+        apiUrl,
+        apiKey,
       },
     },
     defaultRemote: 'local',
   };
 
   fs.writeFileSync(
-    path.join(TEST_CONFIG_DIR, 'config.json'),
+    TEST_CONFIG_PATH,
     JSON.stringify(configFile, null, 2),
   );
 });
@@ -154,9 +171,13 @@ import { MetadataApiClient } from 'twenty-client-sdk/metadata';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const APP_PATH = process.cwd();
+const TWENTY_API_URL = process.env.TWENTY_API_URL ?? 'http://localhost:2020';
+const TWENTY_API_KEY = process.env.TWENTY_API_KEY;
 
 describe('App installation', () => {
   beforeAll(async () => {
+    await appUninstall({ appPath: APP_PATH }).catch(() => undefined);
+
     const buildResult = await appBuild({
       appPath: APP_PATH,
       tarball: true,
@@ -171,6 +192,8 @@ describe('App installation', () => {
 
     const deployResult = await appDeploy({
       tarballPath: buildResult.data.tarballPath!,
+      serverUrl: TWENTY_API_URL,
+      token: TWENTY_API_KEY,
       onProgress: (message: string) => console.log(\`[deploy] \${message}\`),
     });
 

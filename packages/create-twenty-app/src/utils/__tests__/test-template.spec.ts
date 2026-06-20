@@ -59,6 +59,9 @@ describe('scaffoldIntegrationTest', () => {
       expect(content).toContain('appDeploy');
       expect(content).toContain('appInstall');
       expect(content).toContain('appUninstall');
+      expect(content).toContain('await appUninstall({ appPath: APP_PATH })');
+      expect(content).toContain('serverUrl: TWENTY_API_URL');
+      expect(content).toContain('token: TWENTY_API_KEY');
       expect(content).toContain('new MetadataApiClient()');
       expect(content).toContain('findManyApplications');
       expect(content).toContain('APPLICATION_UNIVERSAL_IDENTIFIER');
@@ -82,8 +85,8 @@ describe('scaffoldIntegrationTest', () => {
 
       const content = await fs.readFile(setupTestPath, 'utf8');
 
-      expect(content).toContain('.twenty-sdk-test');
-      expect(content).toContain('config.json');
+      expect(content).toContain('.twenty');
+      expect(content).toContain('config.test.json');
       expect(content).toContain('process.env.TWENTY_API_URL');
       expect(content).toContain('process.env.TWENTY_API_KEY');
       expect(content).toContain('assertServerIsReachable');
@@ -104,6 +107,7 @@ describe('scaffoldIntegrationTest', () => {
       const content = await fs.readFile(vitestConfigPath, 'utf8');
 
       expect(content).toContain('TWENTY_API_KEY');
+      expect(content).toContain('TWENTY_API_URL');
       expect(content).not.toContain('TWENTY_TEST_API_KEY');
       expect(content).toContain('setup-test.ts');
       expect(content).toContain('tsconfig.spec.json');
