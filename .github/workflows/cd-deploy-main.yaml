@@ -1,22 +1,277 @@
 name: CD deploy main
 
-permissions:
-  contents: read
-
 on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Optional image tag override. Defaults to main-<shortsha>.
+        required: false
+        type: string
+      verify_public_url:
+        description: Verify public health after deploy.
+        required: false
+        default: true
+        type: boolean
+      register_crons:
+        description: Register background jobs after deploy.
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/cd-deploy-main.yaml"
+      - "packages/twenty-docker/**"
+      - "packages/twenty-server/**"
+      - "packages/twenty-front/**"
+      - "packages/twenty-shared/**"
+      - "packages/twenty-ui/**"
+      - "packages/twenty-sdk/**"
+      - "packages/twenty-emails/**"
+      - ".yarn/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".yarnrc.yml"
+      - "nx.json"
+      - "tsconfig.base.json"
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: fuse-prod-deploy
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  FUSE_PROD_INSTANCE_ID: ${{ vars.FUSE_PROD_INSTANCE_ID || secrets.FUSE_PROD_INSTANCE_ID }}
+  FUSE_PROD_PUBLIC_BASE_URL: ${{ vars.FUSE_PROD_PUBLIC_BASE_URL || 'https://app.fusegtm.com' }}
+  FUSE_PROD_REMOTE_ROOT: ${{ vars.FUSE_PROD_REMOTE_ROOT || '/opt/fuse' }}
+  IMAGE_REPO: ghcr.io/fuse-gtm/fuse-v1
 
 jobs:
-  deploy-main:
-    timeout-minutes: 3
+  build-and-deploy:
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
-          token: ${{ secrets.TWENTY_INFRA_TOKEN }}
-          repository: twentyhq/twenty-infra
-          event-type: auto-deploy-main
-          client-payload: '{"github": ${{ toJson(github) }}}' # Passes the entire github context to the downstream workflow
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(git rev-parse --short=10 HEAD)"
+          INPUT_TAG="${{ github.event.inputs.image_tag }}"
+
+          if [ -n "${INPUT_TAG}" ]; then
+            IMAGE_TAG="${INPUT_TAG}"
+          else
+            IMAGE_TAG="main-${SHORT_SHA}"
+          fi
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${IMAGE_REPO}:${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "sha_tag=${IMAGE_REPO}:sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push linux/amd64 image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/twenty-docker/twenty/Dockerfile
+          target: twenty
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image_ref }}
+            ${{ steps.meta.outputs.sha_tag }}
+          cache-from: type=gha,scope=fuse-image-build
+          cache-to: type=gha,mode=max,scope=fuse-image-build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Validate AWS deploy inputs
+        run: |
+          set -euo pipefail
+          test -n "${FUSE_PROD_INSTANCE_ID}" || {
+            echo "FUSE_PROD_INSTANCE_ID must be set as a repository variable or secret." >&2
+            exit 1
+          }
+
+      - name: Deploy image on Fuse AWS host
+        id: deploy
+        env:
+          IMAGE_REF: ${{ steps.meta.outputs.image_ref }}
+          REGISTER_CRONS: ${{ github.event_name == 'push' && 'true' || github.event.inputs.register_crons }}
+          VERIFY_PUBLIC_URL: ${{ github.event_name == 'push' && 'true' || github.event.inputs.verify_public_url }}
+        run: |
+          set -euo pipefail
+
+          remote_script="$(mktemp)"
+          cat > "${remote_script}" <<'REMOTE_SCRIPT'
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          export HOME=/root
+          REMOTE_ROOT="${REMOTE_ROOT:?REMOTE_ROOT is required}"
+          IMAGE_REF="${IMAGE_REF:?IMAGE_REF is required}"
+          PUBLIC_BASE_URL="${PUBLIC_BASE_URL:?PUBLIC_BASE_URL is required}"
+          REGISTER_CRONS="${REGISTER_CRONS:-true}"
+          VERIFY_PUBLIC_URL="${VERIFY_PUBLIC_URL:-true}"
+
+          cd "${REMOTE_ROOT}"
+          ENV_FILE="packages/twenty-docker/.env"
+
+          if [ ! -f "${ENV_FILE}" ]; then
+            echo "Missing env file: ${REMOTE_ROOT}/${ENV_FILE}" >&2
+            exit 1
+          fi
+
+          cp "${ENV_FILE}" "${ENV_FILE}.bak.${GITHUB_SHA:-manual}.$(date +%Y%m%d%H%M%S)"
+          env_backup="$(mktemp)"
+          cp "${ENV_FILE}" "${env_backup}"
+
+          if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            if git fetch --depth=1 origin "${GITHUB_SHA}"; then
+              git reset --hard FETCH_HEAD
+              cp "${env_backup}" "${ENV_FILE}"
+            else
+              echo "Warning: failed to fetch ${GITHUB_SHA}; deploying with existing host scripts." >&2
+            fi
+          else
+            echo "Warning: ${REMOTE_ROOT} is not a git checkout; deploying with existing host scripts." >&2
+          fi
+
+          if grep -q '^TWENTY_IMAGE=' "${ENV_FILE}"; then
+            sed -i "s#^TWENTY_IMAGE=.*#TWENTY_IMAGE=${IMAGE_REF}#" "${ENV_FILE}"
+          else
+            echo "TWENTY_IMAGE=${IMAGE_REF}" >> "${ENV_FILE}"
+          fi
+
+          if grep -q '^TRUST_PROXY=' "${ENV_FILE}"; then
+            sed -i 's#^TRUST_PROXY=.*#TRUST_PROXY=1#' "${ENV_FILE}"
+          else
+            echo "TRUST_PROXY=1" >> "${ENV_FILE}"
+          fi
+
+          unset WORKSPACE_ID
+
+          EXTRA_COMPOSE_FILE=packages/twenty-docker/docker-compose.aws.yml \
+          PUBLIC_BASE_URL="${PUBLIC_BASE_URL}" \
+          VERIFY_PUBLIC_URL="${VERIFY_PUBLIC_URL}" \
+          MAX_WAIT_SECONDS=900 \
+          PUBLIC_MAX_WAIT_SECONDS=300 \
+          REGISTER_CRONS_POST_DEPLOY="${REGISTER_CRONS}" \
+          bash packages/twenty-docker/scripts/deploy-fuse-prod.sh
+          REMOTE_SCRIPT
+
+          command_id="$(
+            aws ssm send-command \
+              --region "${AWS_REGION}" \
+              --instance-ids "${FUSE_PROD_INSTANCE_ID}" \
+              --document-name AWS-RunShellScript \
+              --comment "Deploy ${IMAGE_REF} to Fuse prod" \
+              --parameters "$(
+                jq -nc \
+                  --arg script "$(cat "${remote_script}")" \
+                  --arg image_ref "${IMAGE_REF}" \
+                  --arg public_base_url "${FUSE_PROD_PUBLIC_BASE_URL}" \
+                  --arg remote_root "${FUSE_PROD_REMOTE_ROOT}" \
+                  --arg register_crons "${REGISTER_CRONS}" \
+                  --arg verify_public_url "${VERIFY_PUBLIC_URL}" \
+                  --arg github_sha "${GITHUB_SHA}" \
+                  '{
+                    commands: [
+                      "export IMAGE_REF=" + ($image_ref | @sh),
+                      "export PUBLIC_BASE_URL=" + ($public_base_url | @sh),
+                      "export REMOTE_ROOT=" + ($remote_root | @sh),
+                      "export REGISTER_CRONS=" + ($register_crons | @sh),
+                      "export VERIFY_PUBLIC_URL=" + ($verify_public_url | @sh),
+                      "export GITHUB_SHA=" + ($github_sha | @sh),
+                      $script
+                    ]
+                  }'
+              )" \
+              --query 'Command.CommandId' \
+              --output text
+          )"
+
+          echo "command_id=${command_id}" >> "$GITHUB_OUTPUT"
+          echo "SSM command: ${command_id}"
+
+          for _ in $(seq 1 120); do
+            status="$(
+              aws ssm list-command-invocations \
+                --region "${AWS_REGION}" \
+                --command-id "${command_id}" \
+                --details \
+                --query 'CommandInvocations[0].CommandPlugins[0].Status' \
+                --output text
+            )"
+
+            case "${status}" in
+              Success|Cancelled|TimedOut|Failed|Cancelling)
+                break
+                ;;
+              *)
+                sleep 10
+                ;;
+            esac
+          done
+
+          aws ssm list-command-invocations \
+            --region "${AWS_REGION}" \
+            --command-id "${command_id}" \
+            --details \
+            --query 'CommandInvocations[0].CommandPlugins[0].Output' \
+            --output text
+
+          final_status="$(
+            aws ssm list-command-invocations \
+              --region "${AWS_REGION}" \
+              --command-id "${command_id}" \
+              --details \
+              --query 'CommandInvocations[0].CommandPlugins[0].Status' \
+              --output text
+          )"
+
+          if [ "${final_status}" != "Success" ]; then
+            echo "Deploy command failed with status ${final_status}" >&2
+            exit 1
+          fi
+
+      - name: Verify public health
+        run: |
+          set -euo pipefail
+          curl -fsS --max-time 15 "${FUSE_PROD_PUBLIC_BASE_URL%/}/healthz"
+
+      - name: Write workflow summary
+        run: |
+          {
+            echo "## Fuse production deploy complete"
+            echo ""
+            echo "- Image: \`${{ steps.meta.outputs.image_ref }}\`"
+            echo "- Public URL: \`${FUSE_PROD_PUBLIC_BASE_URL}\`"
+            echo "- SSM command: \`${{ steps.deploy.outputs.command_id }}\`"
+            echo "- Partner OS bootstrap: skipped"
+          } >> "$GITHUB_STEP_SUMMARY"
