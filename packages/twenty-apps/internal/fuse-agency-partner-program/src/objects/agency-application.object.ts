@@ -7,6 +7,7 @@ import {
 } from 'twenty-sdk/define';
 import {
   AGENCY_APPLICATION_STATUS_OPTIONS,
+  AGENCY_RISK_STATE_OPTIONS,
   AGENCY_SERVICE_BUCKET_OPTIONS,
   MONTHLY_LEAD_VOLUME_OPTIONS,
 } from 'src/constants/options';
@@ -58,6 +59,45 @@ export default defineObject({
       icon: 'IconWorldWww',
     },
     {
+      universalIdentifier: FIELD_IDS.agencyApplication.applicantName,
+      type: FieldType.TEXT,
+      name: 'applicantName',
+      label: 'Applicant Name',
+      icon: 'IconUser',
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.applicantEmail,
+      type: FieldType.TEXT,
+      name: 'applicantEmail',
+      label: 'Applicant Email',
+      icon: 'IconMail',
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.normalizedDomain,
+      type: FieldType.TEXT,
+      name: 'normalizedDomain',
+      label: 'Normalized Domain',
+      icon: 'IconWorldWww',
+      isUnique: true,
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.duplicateKey,
+      type: FieldType.TEXT,
+      name: 'duplicateKey',
+      label: 'Duplicate Key',
+      icon: 'IconFingerprint',
+      isUnique: true,
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.riskState,
+      type: FieldType.SELECT,
+      name: 'riskState',
+      label: 'Risk State',
+      icon: 'IconShieldCheck',
+      options: AGENCY_RISK_STATE_OPTIONS,
+      defaultValue: 'clear',
+    },
+    {
       universalIdentifier: FIELD_IDS.agencyApplication.serviceBuckets,
       type: FieldType.MULTI_SELECT,
       name: 'serviceBuckets',
@@ -80,6 +120,13 @@ export default defineObject({
       name: 'reviewDecisionReason',
       label: 'Review Decision Reason',
       icon: 'IconNotes',
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.reviewedAt,
+      type: FieldType.DATE_TIME,
+      name: 'reviewedAt',
+      label: 'Reviewed At',
+      icon: 'IconCalendarCheck',
     },
     {
       universalIdentifier: FIELD_IDS.agencyApplication.partnerProfile,
@@ -130,6 +177,36 @@ export default defineObject({
         relationType: RelationType.MANY_TO_ONE,
         onDelete: OnDeleteAction.SET_NULL,
         joinColumnName: 'personId',
+      },
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.agencyGroup,
+      type: FieldType.RELATION,
+      name: 'agencyGroup',
+      label: 'Agency Group',
+      icon: 'IconUsersGroup',
+      relationTargetObjectMetadataUniversalIdentifier: OBJECT_IDS.agencyGroup,
+      relationTargetFieldMetadataUniversalIdentifier:
+        FIELD_IDS.agencyGroup.applications,
+      isNullable: true,
+      universalSettings: {
+        relationType: RelationType.MANY_TO_ONE,
+        onDelete: OnDeleteAction.SET_NULL,
+        joinColumnName: 'agencyGroupId',
+      },
+    },
+    {
+      universalIdentifier: FIELD_IDS.agencyApplication.reviewEvents,
+      type: FieldType.RELATION,
+      name: 'reviewEvents',
+      label: 'Review Events',
+      icon: 'IconTimelineEvent',
+      relationTargetObjectMetadataUniversalIdentifier:
+        OBJECT_IDS.agencyReviewEvent,
+      relationTargetFieldMetadataUniversalIdentifier:
+        FIELD_IDS.agencyReviewEvent.application,
+      universalSettings: {
+        relationType: RelationType.ONE_TO_MANY,
       },
     },
   ],

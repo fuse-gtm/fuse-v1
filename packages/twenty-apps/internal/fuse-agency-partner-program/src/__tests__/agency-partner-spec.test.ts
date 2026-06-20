@@ -22,12 +22,13 @@ assert.ok(
 );
 
 assert.equal(fuseAgencyPartnerProgramSpec.standardObjectExtensions.length, 3);
-assert.equal(fuseAgencyPartnerProgramSpec.customObjects.length, 5);
-assert.equal(fuseAgencyPartnerProgramSpec.relationFields.length, 13);
-assert.equal(fuseAgencyPartnerProgramSpec.views.length, 7);
+assert.equal(fuseAgencyPartnerProgramSpec.customObjects.length, 7);
+assert.equal(fuseAgencyPartnerProgramSpec.relationFields.length, 23);
+assert.equal(fuseAgencyPartnerProgramSpec.views.length, 9);
 assert.equal(fuseAgencyPartnerProgramSpec.pageLayouts.length, 1);
-assert.equal(fuseAgencyPartnerProgramSpec.navigationMenuItems.length, 8);
+assert.equal(fuseAgencyPartnerProgramSpec.navigationMenuItems.length, 10);
 assert.equal(fuseAgencyPartnerProgramSpec.frontComponents.length, 1);
-assert.equal(fuseAgencyPartnerProgramSpec.seedData.length, 4);
+assert.equal(fuseAgencyPartnerProgramSpec.logicFunctions.length, 4);
+assert.equal(fuseAgencyPartnerProgramSpec.seedData.length, 5);
 
 console.log('Fuse Agency Partner Program spec validation passed.');

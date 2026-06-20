@@ -5,6 +5,7 @@ import {
   DEFAULT_ROLE_UNIVERSAL_IDENTIFIER,
   FIELD_IDS,
   FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  LIFECYCLE_LOGIC_FUNCTION_IDS,
   NAVIGATION_IDS,
   OBJECT_IDS,
   PAGE_LAYOUT_IDS,
@@ -60,6 +61,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: OBJECT_IDS.agencyResource },
     { universalIdentifier: OBJECT_IDS.agencyAttribution },
     { universalIdentifier: OBJECT_IDS.agencyTask },
+    { universalIdentifier: OBJECT_IDS.agencyGroup },
+    { universalIdentifier: OBJECT_IDS.agencyReviewEvent },
   ] as any,
   relationFields: [
     { universalIdentifier: FIELD_IDS.agencyApplication.partnerProfile },
@@ -70,11 +73,21 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: FIELD_IDS.agencyAttribution.partnerProfile },
     { universalIdentifier: FIELD_IDS.agencyAttribution.opportunity },
     { universalIdentifier: FIELD_IDS.agencyTask.partnerProfile },
+    { universalIdentifier: FIELD_IDS.agencyApplication.agencyGroup },
+    { universalIdentifier: FIELD_IDS.agencyApplication.reviewEvents },
+    { universalIdentifier: FIELD_IDS.agencyGroup.partnerProfile },
+    { universalIdentifier: FIELD_IDS.agencyGroup.applications },
+    { universalIdentifier: FIELD_IDS.agencyGroup.reviewEvents },
+    { universalIdentifier: FIELD_IDS.agencyReviewEvent.application },
+    { universalIdentifier: FIELD_IDS.agencyReviewEvent.partnerProfile },
+    { universalIdentifier: FIELD_IDS.agencyReviewEvent.agencyGroup },
     { universalIdentifier: FIELD_IDS.partnerProfile.agencyApplications },
     { universalIdentifier: FIELD_IDS.partnerProfile.serviceCapabilities },
     { universalIdentifier: FIELD_IDS.partnerProfile.resources },
     { universalIdentifier: FIELD_IDS.partnerProfile.attributions },
     { universalIdentifier: FIELD_IDS.partnerProfile.agencyTasks },
+    { universalIdentifier: FIELD_IDS.partnerProfile.agencyGroups },
+    { universalIdentifier: FIELD_IDS.partnerProfile.reviewEvents },
   ] as any,
   roles: [{ universalIdentifier: DEFAULT_ROLE_UNIVERSAL_IDENTIFIER }] as any,
   views: [
@@ -85,6 +98,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: VIEW_IDS.resources },
     { universalIdentifier: VIEW_IDS.attribution },
     { universalIdentifier: VIEW_IDS.tasks },
+    { universalIdentifier: VIEW_IDS.agencyGroups },
+    { universalIdentifier: VIEW_IDS.reviewEvents },
   ] as any,
   pageLayouts: [{ universalIdentifier: PAGE_LAYOUT_IDS.partnerProfile }] as any,
   navigationMenuItems: [
@@ -96,6 +111,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     { universalIdentifier: NAVIGATION_IDS.resources },
     { universalIdentifier: NAVIGATION_IDS.attribution },
     { universalIdentifier: NAVIGATION_IDS.tasks },
+    { universalIdentifier: NAVIGATION_IDS.agencyGroups },
+    { universalIdentifier: NAVIGATION_IDS.reviewEvents },
   ] as any,
   frontComponents: [
     { universalIdentifier: FRONT_COMPONENT_UNIVERSAL_IDENTIFIER },
@@ -106,6 +123,39 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       name: 'seed-fuse-agency-partner-program',
       sourceHandlerPath: 'src/logic-functions/post-install.ts',
       builtHandlerPath: 'src/logic-functions/post-install.mjs',
+      builtHandlerChecksum: null,
+      handlerName: 'default.config.handler',
+      toolInputSchema: {},
+    },
+    {
+      universalIdentifier: LIFECYCLE_LOGIC_FUNCTION_IDS.submitApplication,
+      name: 'submit-agency-application',
+      sourceHandlerPath:
+        'src/logic-functions/lifecycle/submit-agency-application.logic-function.ts',
+      builtHandlerPath:
+        'src/logic-functions/lifecycle/submit-agency-application.logic-function.mjs',
+      builtHandlerChecksum: null,
+      handlerName: 'default.config.handler',
+      toolInputSchema: {},
+    },
+    {
+      universalIdentifier: LIFECYCLE_LOGIC_FUNCTION_IDS.approveApplication,
+      name: 'approve-agency-application',
+      sourceHandlerPath:
+        'src/logic-functions/lifecycle/approve-agency-application.logic-function.ts',
+      builtHandlerPath:
+        'src/logic-functions/lifecycle/approve-agency-application.logic-function.mjs',
+      builtHandlerChecksum: null,
+      handlerName: 'default.config.handler',
+      toolInputSchema: {},
+    },
+    {
+      universalIdentifier: LIFECYCLE_LOGIC_FUNCTION_IDS.rejectApplication,
+      name: 'reject-agency-application',
+      sourceHandlerPath:
+        'src/logic-functions/lifecycle/reject-agency-application.logic-function.ts',
+      builtHandlerPath:
+        'src/logic-functions/lifecycle/reject-agency-application.logic-function.mjs',
       builtHandlerChecksum: null,
       handlerName: 'default.config.handler',
       toolInputSchema: {},
@@ -126,6 +176,11 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
         {
           name: 'Example Agency Application',
           status: 'needs_review',
+          applicantName: 'Example Agency Partner',
+          applicantEmail: 'partner@example-agency.com',
+          normalizedDomain: 'example-agency.com',
+          duplicateKey: 'example-agency.com:partner@example-agency.com',
+          riskState: 'clear',
           serviceBuckets: ['revenue_ops', 'technology_implementation'],
           monthlyLeadVolumeBand: 'eleven_to_fifty',
         },
@@ -165,6 +220,18 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
           name: 'Review Example Agency Application',
           taskType: 'application_review',
           status: 'open',
+        },
+      ],
+    },
+    {
+      universalIdentifier: SEED_DATA_IDS.agencyGroups,
+      targetObjectUniversalIdentifier: OBJECT_IDS.agencyGroup,
+      label: 'Starter agency groups',
+      records: [
+        {
+          name: 'Default Agency Partners',
+          tier: 'standard',
+          status: 'active',
         },
       ],
     },

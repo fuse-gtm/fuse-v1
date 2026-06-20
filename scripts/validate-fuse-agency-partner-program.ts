@@ -6,6 +6,7 @@ import { validatePartnerAppSpec } from '../packages/twenty-shared/src/applicatio
 import {
   FIELD_IDS,
   FRONT_COMPONENT_UNIVERSAL_IDENTIFIER,
+  LIFECYCLE_LOGIC_FUNCTION_IDS,
   NAVIGATION_IDS,
   OBJECT_IDS,
   PAGE_LAYOUT_IDS,
@@ -77,13 +78,13 @@ const main = async () => {
     logicFunctions: manifest.logicFunctions.length,
   };
 
-  assert.equal(manifest.objects.length, 5);
+  assert.equal(manifest.objects.length, 7);
   assert.equal(manifest.roles.length, 1);
-  assert.equal(manifest.views.length, 7);
-  assert.equal(manifest.navigationMenuItems.length, 8);
+  assert.equal(manifest.views.length, 9);
+  assert.equal(manifest.navigationMenuItems.length, 10);
   assert.equal(manifest.pageLayouts.length, 1);
   assert.equal(manifest.frontComponents.length, 1);
-  assert.equal(manifest.logicFunctions.length, 1);
+  assert.equal(manifest.logicFunctions.length, 4);
 
   assertIncludesIds(
     'custom objects',
@@ -113,6 +114,8 @@ const main = async () => {
       ...Object.values(FIELD_IDS.agencyResource),
       ...Object.values(FIELD_IDS.agencyAttribution),
       ...Object.values(FIELD_IDS.agencyTask),
+      ...Object.values(FIELD_IDS.agencyGroup),
+      ...Object.values(FIELD_IDS.agencyReviewEvent),
     ],
   );
 
@@ -147,7 +150,10 @@ const main = async () => {
     manifest.logicFunctions.map(
       (logicFunction) => logicFunction.universalIdentifier,
     ),
-    [POST_INSTALL_UNIVERSAL_IDENTIFIER],
+    [
+      POST_INSTALL_UNIVERSAL_IDENTIFIER,
+      ...Object.values(LIFECYCLE_LOGIC_FUNCTION_IDS),
+    ],
   );
 
   console.log('Fuse Agency Partner Program validation passed:');

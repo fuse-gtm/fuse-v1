@@ -43,6 +43,14 @@ const SEED_RESOURCES = [
   },
 ];
 
+const SEED_GROUPS = [
+  {
+    name: 'Default Agency Partners',
+    tier: 'standard',
+    status: 'active',
+  },
+];
+
 const SEED_TASKS = [
   {
     name: 'Review Example Agency Application',
@@ -76,6 +84,13 @@ const handler = async () => {
     },
   } as any);
 
+  const { createAgencyGroups } = await client.mutation({
+    createAgencyGroups: {
+      __args: { data: SEED_GROUPS as any },
+      id: true,
+    },
+  } as any);
+
   const { createAgencyTasks } = await client.mutation({
     createAgencyTasks: {
       __args: { data: SEED_TASKS as any },
@@ -88,6 +103,7 @@ const handler = async () => {
     seededAgencyServiceCapabilities:
       createAgencyServiceCapabilities?.length ?? 0,
     seededAgencyResources: createAgencyResources?.length ?? 0,
+    seededAgencyGroups: createAgencyGroups?.length ?? 0,
     seededAgencyTasks: createAgencyTasks?.length ?? 0,
   };
 };

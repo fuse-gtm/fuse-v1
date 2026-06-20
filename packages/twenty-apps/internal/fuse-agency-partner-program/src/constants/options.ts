@@ -101,6 +101,116 @@ export const AGENCY_APPLICATION_STATUS_OPTIONS: FieldOption[] = [
   },
 ];
 
+export const AGENCY_RISK_STATE_OPTIONS: FieldOption[] = [
+  {
+    id: 'de322ce8-6a66-4b19-93fc-6ac8daefc2be',
+    value: 'clear',
+    label: 'Clear',
+    color: 'green',
+    position: 0,
+  },
+  {
+    id: '4e04eb19-c56c-480f-9751-4e43be56bc2e',
+    value: 'needs_review',
+    label: 'Needs Review',
+    color: 'yellow',
+    position: 1,
+  },
+  {
+    id: '674258e4-9a51-44e5-82ea-aad6a6dddcff',
+    value: 'fraud_review',
+    label: 'Fraud Review',
+    color: 'orange',
+    position: 2,
+  },
+  {
+    id: 'd4e110f5-1649-4ec8-a028-195d194857ca',
+    value: 'blocked',
+    label: 'Blocked',
+    color: 'red',
+    position: 3,
+  },
+];
+
+export const AGENCY_GROUP_TIER_OPTIONS: FieldOption[] = [
+  {
+    id: '3dad4c58-4beb-4a5c-a422-1f03fe2d47c7',
+    value: 'standard',
+    label: 'Standard',
+    color: 'blue',
+    position: 0,
+  },
+  {
+    id: '9fa7102f-2adf-426b-bc94-088f7dd8af8d',
+    value: 'premier',
+    label: 'Premier',
+    color: 'purple',
+    position: 1,
+  },
+  {
+    id: '64a5e72a-5595-49b0-ada8-04e1d2836f10',
+    value: 'strategic',
+    label: 'Strategic',
+    color: 'green',
+    position: 2,
+  },
+];
+
+export const AGENCY_GROUP_STATUS_OPTIONS: FieldOption[] = [
+  {
+    id: '7c3d8b0e-4a33-4e17-ac9f-61d710f6dd9a',
+    value: 'active',
+    label: 'Active',
+    color: 'green',
+    position: 0,
+  },
+  {
+    id: 'fb655900-468e-438b-98fb-ee21276945c2',
+    value: 'paused',
+    label: 'Paused',
+    color: 'orange',
+    position: 1,
+  },
+  {
+    id: '872d0892-a94c-48ff-b95b-404f5fa14f82',
+    value: 'archived',
+    label: 'Archived',
+    color: 'gray',
+    position: 2,
+  },
+];
+
+export const AGENCY_REVIEW_ACTION_OPTIONS: FieldOption[] = [
+  {
+    id: 'dc8741b2-11ee-4cf7-8aeb-992f47501db8',
+    value: 'submitted',
+    label: 'Submitted',
+    color: 'blue',
+    position: 0,
+  },
+  {
+    id: '4842eb01-2aa7-4818-9816-0c94875a9aa6',
+    value: 'approved',
+    label: 'Approved',
+    color: 'green',
+    position: 1,
+  },
+  {
+    id: '65a11950-701e-4c9a-8228-50ea60e480d5',
+    value: 'rejected',
+    label: 'Rejected',
+    color: 'red',
+    position: 2,
+  },
+  {
+    id: '1446b2ae-77fa-44c4-91c2-6c4138a12caa',
+    value: 'duplicate_detected',
+    label: 'Duplicate Detected',
+    color: 'orange',
+    position: 3,
+  },
+];
+
 export const MONTHLY_LEAD_VOLUME_OPTIONS: FieldOption[] = [
   {
     id: 'c521706c-6f58-41b1-89f1-08eebdb214ae',

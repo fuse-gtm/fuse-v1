@@ -7,6 +7,12 @@ export const DEFAULT_ROLE_UNIVERSAL_IDENTIFIER =
 export const POST_INSTALL_UNIVERSAL_IDENTIFIER =
   '0537f797-6ea8-42b4-b487-8e19f3d86caf';
 
+export const LIFECYCLE_LOGIC_FUNCTION_IDS = {
+  submitApplication: 'a8ec70bf-82fc-4f3f-8fc7-ea67b98d0bc9',
+  approveApplication: 'c6b3b938-7de3-48a4-8880-fc45c5df7353',
+  rejectApplication: '62f3cd49-4bb5-4cd5-af75-426d627c333c',
+} as const;
+
 export const FRONT_COMPONENT_UNIVERSAL_IDENTIFIER =
   '7e871e07-1387-4692-9334-dfe5b132f7b8';
 
@@ -22,6 +28,8 @@ export const OBJECT_IDS = {
   agencyResource: '4288afa9-8b85-4a66-9006-b68ea36521ba',
   agencyAttribution: '1fd4c7f2-9564-4400-ae47-da5d4f7a13a8',
   agencyTask: 'd813ebd6-e5e4-4e9a-9d8f-4dcaf1bf9c6a',
+  agencyGroup: '44fa1a1c-ea5b-4a0e-97c3-db2407f46ade',
+  agencyReviewEvent: 'd3487013-6c21-4298-839f-6466769ea320',
 } as const;
 
 export const FIELD_IDS = {
@@ -30,12 +38,20 @@ export const FIELD_IDS = {
     status: '893a5736-3e5c-489a-a7e6-3e4a8a7353af',
     submittedAt: '3732bd83-93ec-4bc3-bb2f-0d2c7baafa29',
     website: 'e8053fc6-db9f-4b2c-9ccf-8905986ef234',
+    applicantName: '96f623b3-d32d-4a1d-b858-d604a62df7ad',
+    applicantEmail: 'a4f8341d-ee25-40be-8099-1ac2c899e715',
+    normalizedDomain: 'd149985c-929a-4d3b-a8dc-c65513c1fc02',
+    duplicateKey: 'bd73b5f7-1646-40f7-a138-6144cf876ee4',
+    riskState: 'ec934d63-e851-45a5-bd1f-aa57cc5493e2',
+    reviewedAt: 'becf14ad-2a4a-4027-8007-88969b80b83a',
     serviceBuckets: 'e05fbef4-5cc0-47b2-8881-95e87105e43d',
     monthlyLeadVolumeBand: '2ef2e4ec-95ab-4ed4-8f25-5ccc52d0f1b2',
     reviewDecisionReason: 'f5accc40-912a-4cce-b82f-6c7c7461338e',
     partnerProfile: 'dc3db1eb-f8f7-408e-a788-e3201cd2a403',
     company: '9693f440-d173-4ab5-af91-6ed29dd58eef',
     person: '50faef7b-17f3-4af8-bbce-58b46acac7e4',
+    agencyGroup: 'b3c2ae15-4d67-4957-9b1d-66c3582ab2ff',
+    reviewEvents: '845b05b3-4fef-43e8-9a83-ab0cfa8fed9b',
   },
   agencyServiceCapability: {
     name: '3bcc0804-3d00-4c60-b052-320da0eac93c',
@@ -68,12 +84,32 @@ export const FIELD_IDS = {
     dueAt: 'e12f8248-d466-4f95-af74-64d1229c5e1f',
     partnerProfile: 'c249341e-0723-4792-a842-f41e2dfd9879',
   },
+  agencyGroup: {
+    name: '745fd009-f944-43b6-8add-278a897d7246',
+    tier: '6815ff70-1299-44b6-ad2b-6bb147759fb2',
+    status: 'e12c96a9-5695-4d56-8fc6-ab8fa790105f',
+    partnerProfile: 'c470f82f-260c-4755-902a-1722f12a6092',
+    applications: '639321a0-dc7e-4804-b2e3-cc63237c3cee',
+    reviewEvents: 'd4433a49-0e17-47bc-a3dc-03d946e64578',
+  },
+  agencyReviewEvent: {
+    name: '172269fd-34df-432c-bef5-d6c95b05ed67',
+    action: '74e9e212-5a3e-4e18-8a7a-c2d4ad524ee5',
+    reason: '0f6ab384-4677-4d8e-8312-5e85acc79f67',
+    evidenceJson: '9f2b2fac-ca2c-4e5a-8d47-f24b65f977e1',
+    occurredAt: '6d4e7ce2-8009-40d0-bb3d-23c62b3a4bd9',
+    application: '1fc6709d-654a-455f-b0f2-b017359cda90',
+    partnerProfile: '6ae08959-50a5-4209-8b10-ac07d41f5a2c',
+    agencyGroup: 'c5f0a93a-f308-482b-b72b-1213dce8c3e4',
+  },
   partnerProfile: {
     agencyApplications: 'a5307e4b-273a-4da5-bce1-d70969ce4773',
     serviceCapabilities: 'fdbdcdb5-c939-4c5c-9dc4-20b3ec605eea',
     resources: '0f3b085b-dadb-4799-a92e-4c8c1d80d54e',
     attributions: 'c4faf7b9-a9d2-4ec6-be25-6687a627eef9',
     agencyTasks: '24ee9a0b-5a2e-41c9-87a7-c972a3da6d97',
+    agencyGroups: '2c3778af-c0ce-4260-b84c-04a0917a30bd',
+    reviewEvents: '5b95452a-3ae5-46b3-8e53-a33b3181ea4e',
   },
   company: {
     agencyApplications: 'fccc842f-4c60-453a-a2ed-59495d8cba6c',
@@ -94,6 +130,8 @@ export const VIEW_IDS = {
   resources: 'df1efa3e-1ecc-4fe1-b3eb-8cfe82b0a0eb',
   attribution: 'b9892ebd-4721-4c02-89a2-d5cd8b2c3c7e',
   tasks: 'b74fc04e-61e7-4ba2-bbe0-245593e63073',
+  agencyGroups: '2d248d6c-373a-4d15-b342-72e357552ddb',
+  reviewEvents: 'e39f35b0-0313-4c55-ae91-6937a4b68f1e',
 } as const;
 
 export const NAVIGATION_IDS = {
@@ -105,6 +143,8 @@ export const NAVIGATION_IDS = {
   resources: '0c7f2c9f-a6a6-4639-a89f-310f60f958e4',
   attribution: 'c9b1696b-2ca6-4635-b772-b91ede9d7b4d',
   tasks: '6b1040c6-396c-43d7-aada-632b2149c4a6',
+  agencyGroups: 'f08c000b-390a-4cac-b207-dfa7026ce410',
+  reviewEvents: '2a02fd00-c31f-42a9-8bf8-a79d3254c0dc',
 } as const;
 
 export const VIEW_FIELD_IDS = [
@@ -134,6 +174,14 @@ export const VIEW_FIELD_IDS = [
   'b0bd0531-bb59-4353-9afb-2b5e416e68f1',
   'b4da0e49-4ac2-41e1-8716-45c9257db06d',
   '1ae24fce-8bd1-494a-bb34-2b498e4e3564',
+  'bb3df936-80f1-4b44-8069-dbb1cb6b4a6a',
+  'b5a7afda-8117-442f-af2f-d8eb77b22511',
+  'b009a9ec-8555-4ce0-93de-d5e605d7a65b',
+  'f14ba4ab-2045-4638-9259-02dc7559ca2a',
+  'b5c6984f-b17c-4d0a-a819-a4c37146cb89',
+  'ae209b2a-55d6-4f7c-b3ca-305d473d7f87',
+  '1dd71c06-83c8-43e5-bf37-097d1b530795',
+  '601ee316-4251-4914-bcb9-c8459c0cd371',
 ] as const;
 
 export const VIEW_FILTER_IDS = {
@@ -149,6 +197,8 @@ export const VIEW_SORT_IDS = {
   resources: '7e74ec97-eb16-4728-ac15-ad80ea980980',
   attribution: '9ad51f85-3b99-4cfe-8c8d-31df8067f15e',
   tasks: 'c2db3b05-4ee5-4ec5-ab9a-45cfbee23591',
+  agencyGroups: 'd2e0a4ab-5443-444d-ad6e-4ddd95b83f33',
+  reviewEvents: 'd4ab165f-4330-4321-8895-ac55deee4580',
 } as const;
 
 export const SEED_DATA_IDS = {
@@ -156,4 +206,5 @@ export const SEED_DATA_IDS = {
   serviceCapabilities: '674bf389-ca1a-47eb-8310-d48553d5fed7',
   resources: 'd29c7c5a-de63-4afe-b681-16c6e696c7d9',
   tasks: '98573d72-3924-4007-81ae-f0c1b3e76d64',
+  agencyGroups: '068375cc-d45b-4da8-aa06-12af44dfa0ce',
 } as const;

@@ -19,6 +19,7 @@
     "twenty": "twenty",
     "lint": "oxlint -c .oxlintrc.json .",
     "lint:fix": "oxlint --fix -c .oxlintrc.json .",
+    "test:lifecycle": "tsx src/__tests__/agency-application-lifecycle.test.ts",
     "test:spec": "tsx src/__tests__/agency-partner-spec.test.ts"
   },
   "dependencies": {
