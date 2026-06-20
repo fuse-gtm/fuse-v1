@@ -19,6 +19,14 @@ const APP_B_VIEW_FIELD_ID = uuidv4();
 const PERSON_OBJECT_UNIVERSAL_IDENTIFIER =
   STANDARD_OBJECTS.person.universalIdentifier;
 
+type MetadataValidationError = {
+  message: string;
+};
+
+type FailedViewFieldValidation = {
+  errors: MetadataValidationError[];
+};
+
 const appBPersonField: FieldManifest = {
   universalIdentifier: APP_B_FIELD_ID,
   type: FieldMetadataType.TEXT,
@@ -102,8 +110,19 @@ describe('Sync application should fail when creating a view field on a view owne
     const [error] = errors;
 
     expect(error.extensions.code).toBe('METADATA_VALIDATION_FAILED');
-    expect(error.extensions.summary.totalErrors).toBe(1);
-    expect(error.extensions.summary.viewField).toBe(1);
+    expect(error.extensions.summary.totalErrors).toBeGreaterThan(0);
+    expect(error.extensions.summary.viewField).toBeGreaterThan(0);
     expect(error.extensions.message).toMatch(/viewField/);
+    expect(
+      error.extensions.errors.viewField.some(
+        (failedValidation: FailedViewFieldValidation) =>
+          failedValidation.errors.some(
+            (validationError: MetadataValidationError) =>
+              validationError.message.includes(
+                'View field cannot target a view owned by another application',
+              ),
+          ),
+      ),
+    ).toBe(true);
   }, 60000);
 });

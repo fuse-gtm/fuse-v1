@@ -237,6 +237,7 @@ export class ApplicationManifestMigrationService {
             inferDeletionFromMissingEntities: true,
             applicationUniversalIdentifier:
               ownerFlatApplication.universalIdentifier,
+            rejectCrossApplicationViewFieldCreation: true,
           },
           fromToAllFlatEntityMaps: buildFromToAllUniversalFlatEntityMaps({
             fromAllFlatEntityMaps,

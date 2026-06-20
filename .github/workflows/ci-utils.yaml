@@ -26,9 +26,24 @@ jobs:
     if: github.event.action != 'closed'
     steps:
       - uses: actions/checkout@v4
+      - name: Check PR diff size
+        id: pr-diff-size
+        shell: bash
+        run: |
+          git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.head.sha }}
+          changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | wc -l | tr -d ' ')
+          echo "changed-files=${changed_files}" >> "${GITHUB_OUTPUT}"
+          if [ "${changed_files}" -gt 1000 ]; then
+            echo "skip-danger=true" >> "${GITHUB_OUTPUT}"
+            echo "::notice::Skipping Danger because this PR changes ${changed_files} files."
+          else
+            echo "skip-danger=false" >> "${GITHUB_OUTPUT}"
+          fi
       - name: Install dependencies
+        if: steps.pr-diff-size.outputs.skip-danger != 'true'
         uses: ./.github/actions/yarn-install
       - name: Utils / Run Danger.js
+        if: steps.pr-diff-size.outputs.skip-danger != 'true'
         run: cd packages/twenty-utils && npx nx danger:ci
         env:
           DANGER_GITHUB_API_TOKEN: ${{ github.token }}

@@ -6,7 +6,6 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { ScalarsExplorerService } from 'src/engine/api/graphql/services/scalars-explorer.service';
 import { WorkspaceGraphQLSchemaGenerator } from 'src/engine/api/graphql/workspace-schema-builder/workspace-graphql-schema.factory';
-import { type FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 import { FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 import {
   FlatEntityMapsException,
@@ -88,7 +87,6 @@ export class WorkspaceGraphqlSchemaSDLService {
 
       const applicationIds = this.getApplicationSchemaDependencyIds({
         applicationId,
-        flatApplicationMaps,
         twentyStandardApplicationId,
       });
 
@@ -217,23 +215,13 @@ export class WorkspaceGraphqlSchemaSDLService {
 
   private getApplicationSchemaDependencyIds({
     applicationId,
-    flatApplicationMaps,
     twentyStandardApplicationId,
   }: {
     applicationId: string;
-    flatApplicationMaps: FlatApplicationCacheMaps | undefined;
     twentyStandardApplicationId: string | undefined;
   }): string[] {
-    const installedApplicationIds = Object.values(
-      flatApplicationMaps?.byId ?? {},
-    ).flatMap((flatApplication) =>
-      isDefined(flatApplication) && !isDefined(flatApplication.deletedAt)
-        ? [flatApplication.id]
-        : [],
-    );
-
-    if (installedApplicationIds.length > 0) {
-      return [...new Set(installedApplicationIds)];
+    if (applicationId === twentyStandardApplicationId) {
+      return [applicationId];
     }
 
     return [
