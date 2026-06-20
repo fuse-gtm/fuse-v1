@@ -17,6 +17,33 @@ const UNIVERSAL_IDENTIFIERS_PATH = join(
   'constants',
   'universal-identifiers.ts',
 );
+const APPLICATION_FILE_NAME = 'application-config.ts';
+const DEFAULT_ROLE_FILE_NAME = 'default-role.ts';
+const GENERATED_DIR = 'generated';
+
+const ALL_EXAMPLES = {
+  includeExampleObject: true,
+  includeExampleField: true,
+  includeExampleSkill: true,
+  includeExampleAgent: true,
+  includeExampleLogicFunction: true,
+  includeExampleFrontComponent: true,
+  includeExampleView: true,
+  includeExampleNavigationMenuItem: true,
+  includeExampleIntegrationTest: true,
+};
+
+const NO_EXAMPLES = {
+  includeExampleObject: false,
+  includeExampleField: false,
+  includeExampleSkill: false,
+  includeExampleAgent: false,
+  includeExampleLogicFunction: false,
+  includeExampleFrontComponent: false,
+  includeExampleView: false,
+  includeExampleNavigationMenuItem: false,
+  includeExampleIntegrationTest: false,
+};
 
 // Template content matching template/src/constants/universal-identifiers.ts
 const TEMPLATE_UNIVERSAL_IDENTIFIERS = `export const APP_DISPLAY_NAME = 'DISPLAY-NAME-TO-BE-GENERATED';
@@ -37,6 +64,26 @@ const TEMPLATE_PACKAGE_JSON = {
   },
 };
 
+const TEMPLATE_TSCONFIG = {
+  compilerOptions: {
+    paths: {
+      'src/*': ['./src/*'],
+    },
+  },
+};
+
+const seedTemplateFiles = async (appDirectory: string) => {
+  await fs.ensureDir(join(appDirectory, 'src', 'constants'));
+  await fs.writeFile(
+    join(appDirectory, UNIVERSAL_IDENTIFIERS_PATH),
+    TEMPLATE_UNIVERSAL_IDENTIFIERS,
+  );
+  await fs.writeJson(join(appDirectory, 'package.json'), TEMPLATE_PACKAGE_JSON);
+  await fs.writeJson(join(appDirectory, 'tsconfig.json'), TEMPLATE_TSCONFIG);
+};
+
+const seedTsconfig = seedTemplateFiles;
+
 describe('copyBaseApplicationProject', () => {
   let testAppDirectory: string;
 
@@ -49,15 +96,7 @@ describe('copyBaseApplicationProject', () => {
 
     // Seed the files that generateUniversalIdentifiers and updatePackageJson
     // expect to find (since fs.copy is mocked and won't actually create them)
-    await fs.ensureDir(join(testAppDirectory, 'src', 'constants'));
-    await fs.writeFile(
-      join(testAppDirectory, UNIVERSAL_IDENTIFIERS_PATH),
-      TEMPLATE_UNIVERSAL_IDENTIFIERS,
-    );
-    await fs.writeJson(
-      join(testAppDirectory, 'package.json'),
-      TEMPLATE_PACKAGE_JSON,
-    );
+    await seedTemplateFiles(testAppDirectory);
 
     jest.clearAllMocks();
   });
@@ -102,10 +141,10 @@ describe('copyBaseApplicationProject', () => {
     const packageJson = await fs.readJson(packageJsonPath);
     expect(packageJson.name).toBe('my-test-app');
     expect(packageJson.version).toBe('0.1.0');
-    expect(packageJson.devDependencies['twenty-sdk']).toBe(
+    expect(packageJson.dependencies['twenty-sdk']).toBe(
       createTwentyAppPackageJson.version,
     );
-    expect(packageJson.devDependencies['twenty-client-sdk']).toBe(
+    expect(packageJson.dependencies['twenty-client-sdk']).toBe(
       createTwentyAppPackageJson.version,
     );
     expect(packageJson.scripts['twenty']).toBe('twenty');
@@ -342,15 +381,7 @@ describe('copyBaseApplicationProject', () => {
 
   it('should generate unique UUIDs across different scaffolds', async () => {
     const firstAppDir = join(testAppDirectory, 'app1');
-    await fs.ensureDir(join(firstAppDir, 'src', 'constants'));
-    await fs.writeFile(
-      join(firstAppDir, UNIVERSAL_IDENTIFIERS_PATH),
-      TEMPLATE_UNIVERSAL_IDENTIFIERS,
-    );
-    await fs.writeJson(
-      join(firstAppDir, 'package.json'),
-      TEMPLATE_PACKAGE_JSON,
-    );
+    await seedTemplateFiles(firstAppDir);
     await copyBaseApplicationProject({
       appName: 'app-one',
       appDisplayName: 'App One',
@@ -359,15 +390,7 @@ describe('copyBaseApplicationProject', () => {
     });
 
     const secondAppDir = join(testAppDirectory, 'app2');
-    await fs.ensureDir(join(secondAppDir, 'src', 'constants'));
-    await fs.writeFile(
-      join(secondAppDir, UNIVERSAL_IDENTIFIERS_PATH),
-      TEMPLATE_UNIVERSAL_IDENTIFIERS,
-    );
-    await fs.writeJson(
-      join(secondAppDir, 'package.json'),
-      TEMPLATE_PACKAGE_JSON,
-    );
+    await seedTemplateFiles(secondAppDir);
     await copyBaseApplicationProject({
       appName: 'app-two',
       appDisplayName: 'App Two',
