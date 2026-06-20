@@ -9,7 +9,6 @@ import { getSettingsPath, isDefined } from 'twenty-shared/utils';
 import { AI_ADMIN_PATH } from '@/settings/admin-panel/ai/constants/AiAdminPath';
 import { AI_PROVIDER_SOURCE } from '@/settings/admin-panel/ai/constants/AiProviderSource';
 import {
-  H2Title,
   type IconComponent,
   IconFlag,
   IconKey,
@@ -19,12 +18,14 @@ import {
   IconTag,
   IconTrash,
   IconWorld,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
+import { H2Title } from 'twenty-ui/typography';
 import { Button, SearchInput } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { RoundedLink, UndecoratedLink } from 'twenty-ui/navigation';
 
 import { useClientConfig } from '@/client-config/hooks/useClientConfig';
+import { useApolloAdminClient } from '@/settings/admin-panel/apollo/hooks/useApolloAdminClient';
 import { SettingsSkeletonLoader } from '@/settings/components/SettingsSkeletonLoader';
 import { SettingsAiModelsTable } from '@/settings/ai/components/SettingsAiModelsTable';
 import { REMOVE_AI_PROVIDER } from '@/settings/admin-panel/ai/graphql/mutations/removeAiProvider';
@@ -39,17 +40,18 @@ import { SettingsPageContainer } from '@/settings/components/SettingsPageContain
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { ConfirmationModal } from '@/ui/layout/modal/components/ConfirmationModal';
 import { useModal } from '@/ui/layout/modal/hooks/useModal';
-import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
+import { SettingsPageLayout } from '@/settings/components/layout/SettingsPageLayout';
 import {
   type AdminAiModelConfig,
   SetAdminAiModelEnabledDocument,
-} from '~/generated-metadata/graphql';
+} from '~/generated-admin/graphql';
 
 const REMOVE_PROVIDER_MODAL_ID = 'settings-ai-provider-remove';
 const REMOVE_MODEL_MODAL_ID = 'settings-ai-model-remove';
 
 export const SettingsAdminAiProviderDetail = () => {
   const { providerName } = useParams<{ providerName: string }>();
+  const apolloAdminClient = useApolloAdminClient();
   const navigate = useNavigate();
   const { enqueueErrorSnackBar, enqueueSuccessSnackBar } = useSnackBar();
   const { refetch: refetchClientConfig } = useClientConfig();
@@ -62,7 +64,9 @@ export const SettingsAdminAiProviderDetail = () => {
   } | null>(null);
 
   const { data: providersData, loading: isLoadingProviders } =
-    useQuery<GetAiProvidersResult>(GET_AI_PROVIDERS);
+    useQuery<GetAiProvidersResult>(GET_AI_PROVIDERS, {
+      client: apolloAdminClient,
+    });
 
   const {
     data: modelsData,
@@ -72,12 +76,20 @@ export const SettingsAdminAiProviderDetail = () => {
     getAdminAiModels: {
       models: AdminAiModelConfig[];
     };
-  }>(GET_ADMIN_AI_MODELS);
+  }>(GET_ADMIN_AI_MODELS, { client: apolloAdminClient });
 
-  const [setModelEnabled] = useMutation(SetAdminAiModelEnabledDocument);
-  const [setModelsEnabled] = useMutation(SET_ADMIN_AI_MODELS_ENABLED);
-  const [removeAiProvider] = useMutation(REMOVE_AI_PROVIDER);
-  const [removeModelFromProvider] = useMutation(REMOVE_MODEL_FROM_PROVIDER);
+  const [setModelEnabled] = useMutation(SetAdminAiModelEnabledDocument, {
+    client: apolloAdminClient,
+  });
+  const [setModelsEnabled] = useMutation(SET_ADMIN_AI_MODELS_ENABLED, {
+    client: apolloAdminClient,
+  });
+  const [removeAiProvider] = useMutation(REMOVE_AI_PROVIDER, {
+    client: apolloAdminClient,
+  });
+  const [removeModelFromProvider] = useMutation(REMOVE_MODEL_FROM_PROVIDER, {
+    client: apolloAdminClient,
+  });
 
   const handleRemoveProvider = async () => {
     if (!providerName) {
@@ -291,7 +303,7 @@ export const SettingsAdminAiProviderDetail = () => {
   }
 
   return (
-    <SubMenuTopBarContainer
+    <SettingsPageLayout
       links={[
         {
           children: t`Other`,
@@ -412,7 +424,7 @@ export const SettingsAdminAiProviderDetail = () => {
 
       <ConfirmationModal
         modalInstanceId={REMOVE_PROVIDER_MODAL_ID}
-        title={t`Remove provider "${provider?.label ?? providerName}"`}
+        title={t`Remove provider "${provider?.label ?? providerName ?? ''}"`}
         subtitle={t`This will disconnect all models from this provider. Models will no longer be available until a new provider is configured.`}
         onConfirmClick={handleRemoveProvider}
         confirmButtonText={t`Remove`}
@@ -427,6 +439,6 @@ export const SettingsAdminAiProviderDetail = () => {
         confirmButtonText={t`Remove`}
         confirmButtonAccent="danger"
       />
-    </SubMenuTopBarContainer>
+    </SettingsPageLayout>
   );
 };

@@ -15,28 +15,22 @@ const StyledContainer = styled.div`
   height: ${RECORD_TABLE_ROW_HEIGHT}px;
   justify-content: center;
   min-width: ${RECORD_TABLE_COLUMN_CHECKBOX_WIDTH};
-  width: ${RECORD_TABLE_COLUMN_CHECKBOX_WIDTH};
   padding-right: ${themeCssVariables.spacing[1]};
-`;
-
-const StyledRecordTableTdContainer = styled.div`
-  border-left: 1px solid transparent;
+  width: ${RECORD_TABLE_COLUMN_CHECKBOX_WIDTH};
 `;
 
 export const RecordTableCellCheckboxPlaceholder = () => {
   const { hasUserSelectedAllRows } = useRecordTableBodyContextOrThrow();
 
   return (
-    <StyledRecordTableTdContainer>
-      <RecordTableCellStyleWrapper
-        isSelected={hasUserSelectedAllRows}
-        hasRightBorder={false}
-        widthClassName={RECORD_TABLE_COLUMN_CHECKBOX_WIDTH_CLASS_NAME}
-      >
-        <StyledContainer data-select-disable>
-          <Checkbox hoverable checked={hasUserSelectedAllRows === true} />
-        </StyledContainer>
-      </RecordTableCellStyleWrapper>
-    </StyledRecordTableTdContainer>
+    <RecordTableCellStyleWrapper
+      isSelected={hasUserSelectedAllRows}
+      hasRightBorder={false}
+      widthClassName={RECORD_TABLE_COLUMN_CHECKBOX_WIDTH_CLASS_NAME}
+    >
+      <StyledContainer data-select-disable>
+        <Checkbox hoverable checked={hasUserSelectedAllRows === true} />
+      </StyledContainer>
+    </RecordTableCellStyleWrapper>
   );
 };

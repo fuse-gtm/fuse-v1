@@ -8,19 +8,23 @@ config({
 });
 
 export function generateFrontConfig(): void {
-  const configObject = {
-    window: {
-      _env_: {
-        REACT_APP_SERVER_BASE_URL: process.env.SERVER_URL,
-      },
-    },
-  };
+  // When FRONT_AUTO_BASE_URL=true (or SERVER_URL is unset), inject an empty
+  // _env_ so the frontend's getDefaultUrl() fallback resolves the API origin
+  // from the page's own hostname at request time. This lets the same deploy
+  // be reached at both http://<external-ip> and http://localhost without a
+  // hairpin through the public interface.
+  const useAutoUrl =
+    process.env.FRONT_AUTO_BASE_URL === 'true' || !process.env.SERVER_URL;
 
-  const configString = `<!-- BEGIN: Fuse Config -->
-    <script id="fuse-env-config">
-      window._env_ = ${JSON.stringify(configObject.window._env_, null, 2)};
+  const envForFront = useAutoUrl
+    ? {}
+    : { REACT_APP_SERVER_BASE_URL: process.env.SERVER_URL };
+
+  const configString = `<!-- BEGIN: Twenty Config -->
+    <script id="twenty-env-config">
+      window._env_ = ${JSON.stringify(envForFront, null, 2)};
     </script>
-    <!-- END: Fuse Config -->`;
+    <!-- END: Twenty Config -->`;
 
   const distPath = path.join(__dirname, '..', 'front');
   const indexPath = path.join(distPath, 'index.html');
@@ -29,7 +33,7 @@ export function generateFrontConfig(): void {
     let indexContent = fs.readFileSync(indexPath, 'utf8');
 
     indexContent = indexContent.replace(
-      /<!-- BEGIN: Fuse Config -->[\s\S]*?<!-- END: Fuse Config -->/,
+      /<!-- BEGIN: Twenty Config -->[\s\S]*?<!-- END: Twenty Config -->/,
       configString,
     );
 

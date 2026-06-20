@@ -1,4 +1,4 @@
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { SettingsRolePermissionsObjectLevelTableHeader } from '@/settings/roles/role-permissions/object-level-permissions/components/SettingsRolePermissionsObjectLevelTableHeader';
 import { SettingsRolePermissionsObjectLevelTableRow } from '@/settings/roles/role-permissions/object-level-permissions/components/SettingsRolePermissionsObjectLevelTableRow';
 import { useFilterObjectMetadataItemsWithPermissionOverride } from '@/settings/roles/role-permissions/object-level-permissions/hooks/useFilterObjectWithPermissionOverride';
@@ -12,7 +12,7 @@ import { t } from '@lingui/core/macro';
 import { useMemo } from 'react';
 import { SettingsPath } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { IconPlus } from 'twenty-ui/display';
+import { IconPlus } from 'twenty-ui/icon';
 import { Button } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
@@ -23,8 +23,8 @@ const StyledCreateObjectOverrideSectionContainer = styled.div`
     border-top: 1px solid ${themeCssVariables.border.color.light};
     display: flex;
     justify-content: flex-end;
-    padding-top: ${themeCssVariables.spacing[2]};
     padding-bottom: ${themeCssVariables.spacing[2]};
+    padding-top: ${themeCssVariables.spacing[2]};
   }
 `;
 
@@ -37,7 +37,7 @@ type SettingsRolePermissionsObjectLevelSectionProps = {
   roleId: string;
   isEditable: boolean;
   fromAgentId?: string;
-  objectMetadataItemsFromMarketplaceApp?: ObjectMetadataItem[];
+  objectMetadataItemsFromMarketplaceApp?: EnrichedObjectMetadataItem[];
 };
 
 export const SettingsRolePermissionsObjectLevelSection = ({

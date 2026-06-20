@@ -4,7 +4,8 @@ import { SettingsRoleAssignmentWorkspaceMemberPickerDropdown } from '@/settings/
 import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
 import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
 import { styled } from '@linaria/react';
-import { AppTooltip, IconPlus, TooltipDelay } from 'twenty-ui/display';
+import { IconPlus } from 'twenty-ui/icon';
+import { AppTooltip, TooltipDelay } from 'twenty-ui/surfaces';
 import { Button } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
@@ -65,33 +66,27 @@ export const RoleAssignmentSection = ({
           dropdownId={config.dropdownId}
           dropdownOffset={{ x: 0, y: 4 }}
           clickableComponent={
-            config.tooltip ? (
-              <AppTooltip
-                content={config.tooltip.content()}
-                delay={TooltipDelay.noDelay}
-                hidden={
-                  !config.tooltip.shouldShow(allWorkspaceMembersHaveThisRole)
-                }
-              >
-                <div>
-                  <Button
-                    Icon={IconPlus}
-                    title={config.buttonTitle()}
-                    variant="secondary"
-                    size="small"
-                    disabled={allWorkspaceMembersHaveThisRole}
-                  />
-                </div>
-              </AppTooltip>
-            ) : (
-              <Button
-                Icon={IconPlus}
-                title={config.buttonTitle()}
-                variant="secondary"
-                size="small"
-                disabled={allWorkspaceMembersHaveThisRole}
-              />
-            )
+            <>
+              <div id={config.tooltip?.anchorId}>
+                <Button
+                  Icon={IconPlus}
+                  title={config.buttonTitle()}
+                  variant="secondary"
+                  size="small"
+                  disabled={allWorkspaceMembersHaveThisRole}
+                />
+              </div>
+              {config.tooltip && (
+                <AppTooltip
+                  anchorSelect={`#${config.tooltip.anchorId}`}
+                  content={config.tooltip.content()}
+                  delay={TooltipDelay.noDelay}
+                  hidden={
+                    !config.tooltip.shouldShow(allWorkspaceMembersHaveThisRole)
+                  }
+                />
+              )}
+            </>
           }
           dropdownComponents={
             roleTargetType === 'member' ? (

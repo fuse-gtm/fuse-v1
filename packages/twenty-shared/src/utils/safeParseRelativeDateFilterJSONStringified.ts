@@ -1,9 +1,9 @@
 import {
   relativeDateFilterSchema,
   type RelativeDateFilter,
-} from './filter/dates/utils/relativeDateFilterSchema';
+} from '@/utils/filter/dates/utils/relativeDateFilterSchema';
 
-export const safeParseRelativeDateFilterJSONStringified = (
+export const safeParseRelativeDateFilterJsonStringified = (
   value: string,
 ): RelativeDateFilter | undefined => {
   try {

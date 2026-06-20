@@ -8,7 +8,7 @@ import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAto
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
-import { AppTooltip, TooltipDelay } from 'twenty-ui/display';
+import { AppTooltip, TooltipDelay } from 'twenty-ui/surfaces';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -62,23 +62,28 @@ export const SettingsRolePermissionsObjectLevelOverrideCell = ({
   const humanReadableAction =
     objectPermissionKeyToHumanReadable(objectPermissionKey);
 
+  const containerId = `object-level-permission-override-${roleId}-${objectPermissionKey}-${objectMetadataItem.id}`;
+
   return (
-    <AppTooltip
-      content={
-        permissionValue === false
-          ? t`${roleLabel} can't ${humanReadableAction} ${objectLabel} records`
-          : t`${roleLabel} can ${humanReadableAction} ${objectLabel} records`
-      }
-      delay={TooltipDelay.shortDelay}
-      noArrow
-      place="bottom"
-    >
-      <StyledContainer>
+    <>
+      <StyledContainer id={containerId}>
         <PermissionIcon
           permission={objectPermissionKey}
           state={permissionValue === false ? 'revoked' : 'granted'}
         />
       </StyledContainer>
-    </AppTooltip>
+      <AppTooltip
+        anchorSelect={`#${containerId}`}
+        content={
+          permissionValue === false
+            ? t`${roleLabel} can't ${humanReadableAction} ${objectLabel} records`
+            : t`${roleLabel} can ${humanReadableAction} ${objectLabel} records`
+        }
+        delay={TooltipDelay.shortDelay}
+        noArrow
+        place="bottom"
+        positionStrategy="fixed"
+      />
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { MetadataEventEmitter } from 'src/engine/subscriptions/metadata-event/metadata-event-emitter';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationBuildOrchestratorService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-build-orchestrator.service';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
@@ -15,6 +16,7 @@ import { WorkspaceMigrationRunnerModule } from 'src/engine/workspace-manager/wor
   providers: [
     WorkspaceMigrationValidateBuildAndRunService,
     WorkspaceMigrationBuildOrchestratorService,
+    MetadataEventEmitter,
   ],
   exports: [
     WorkspaceMigrationValidateBuildAndRunService,

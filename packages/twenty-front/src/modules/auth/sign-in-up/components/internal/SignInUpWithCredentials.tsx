@@ -1,4 +1,3 @@
-import { useFuseEmailValidation } from '@/auth/sign-in-up/hooks/useFuseEmailValidation';
 import { useHasMultipleAuthMethods } from '@/auth/sign-in-up/hooks/useHasMultipleAuthMethods';
 import { useSignInUp } from '@/auth/sign-in-up/hooks/useSignInUp';
 import { type Form } from '@/auth/sign-in-up/hooks/useSignInUpForm';
@@ -55,7 +54,6 @@ export const SignInUpWithCredentials = ({
     lastAuthenticatedMethodState,
   );
   const hasMultipleAuthMethods = useHasMultipleAuthMethods();
-  const { validateEmail } = useFuseEmailValidation();
 
   const {
     signInUpMode,
@@ -81,14 +79,6 @@ export const SignInUpWithCredentials = ({
         setShowErrors(true);
         return;
       }
-      const emailValue = form.getValues('email');
-      const { isValid: isFuseValid, error: fuseError } =
-        validateEmail(emailValue);
-      if (!isFuseValid && isDefined(fuseError)) {
-        form.setError('email', { type: 'manual', message: fuseError });
-        setShowErrors(true);
-        return;
-      }
       continueWithCredentials();
     } else if (signInUpStep === SignInUpStep.Password) {
       if (!form.formState.isSubmitting) {
@@ -100,7 +90,6 @@ export const SignInUpWithCredentials = ({
 
   const onEmailChange = (email: string) => {
     if (email !== form.getValues('email')) {
-      form.clearErrors('email');
       setSignInUpStep(SignInUpStep.Email);
     }
   };

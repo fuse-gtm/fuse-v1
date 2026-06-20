@@ -1,19 +1,22 @@
-import { isNonEmptyString } from '@sniptt/guards';
-import { z } from 'zod';
-
-import { CURRENCY_CODE_LABELS } from '../../constants';
-import { type CurrencyCode } from '../../constants/CurrencyCode';
+import { CURRENCY_CODE_LABELS } from '@/constants';
+import { type CurrencyCode } from '@/constants/CurrencyCode';
 import {
   FieldMetadataType,
   ViewFilterOperand,
   type PartialFieldMetadataItem,
   type RecordGqlOperationFilter,
-} from '../../types';
-import { filterSelectOptionsOfFieldMetadataItem, type RecordFilter } from '..';
-import { isNonEmptyArray } from '../array/isNonEmptyArray';
-import { isDefined } from '../validation/isDefined';
-import { turnRecordFilterIntoRecordGqlOperationFilter } from './turnRecordFilterIntoGqlOperationFilter';
-import { createAnyFieldRecordFilterBaseProperties } from './utils/createAnyFieldRecordFilterBaseProperties';
+} from '@/types';
+import {
+  filterSelectOptionsOfFieldMetadataItem,
+  type RecordFilter,
+} from '@/utils';
+import { isNonEmptyArray } from '@/utils/array/isNonEmptyArray';
+import { turnRecordFilterIntoRecordGqlOperationFilter } from '@/utils/filter/turnRecordFilterIntoGqlOperationFilter';
+import { createAnyFieldRecordFilterBaseProperties } from '@/utils/filter/utils/createAnyFieldRecordFilterBaseProperties';
+import { isDefined } from '@/utils/validation';
+import { isNonEmptyString } from '@sniptt/guards';
+
+import { z } from 'zod';
 
 const currencies: { value: CurrencyCode; label: string }[] = Object.entries(
   CURRENCY_CODE_LABELS,
@@ -218,11 +221,15 @@ export const turnAnyFieldFilterIntoRecordGqlFilter = ({
     }
   }
 
+  const fieldMetadataItemById = new Map(
+    fields.map((field) => [field.id, field]),
+  );
+
   const baseRecordGqlOperationFilters = anyFieldRecordFilters
     .map((recordFilter) =>
       turnRecordFilterIntoRecordGqlOperationFilter({
         filterValueDependencies: {},
-        fieldMetadataItems: fields,
+        fieldMetadataItemById,
         recordFilter,
       }),
     )

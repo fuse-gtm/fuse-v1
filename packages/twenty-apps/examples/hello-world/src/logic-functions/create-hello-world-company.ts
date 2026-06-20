@@ -1,5 +1,5 @@
 import { CoreApiClient } from 'twenty-client-sdk/core';
-import { defineLogicFunction } from 'twenty-sdk';
+import { defineLogicFunction } from 'twenty-sdk/define';
 
 const handler = async (): Promise<{ message: string }> => {
   const client = new CoreApiClient();
@@ -16,8 +16,12 @@ const handler = async (): Promise<{ message: string }> => {
     },
   });
 
+  if (!createCompany?.id || !createCompany?.name) {
+    throw new Error('Failed to create company: missing id or name in response');
+  }
+
   return {
-    message: `Created company "${createCompany?.name}" with id ${createCompany?.id}`,
+    message: `Created company "${createCompany.name}" with id ${createCompany.id}`,
   };
 };
 

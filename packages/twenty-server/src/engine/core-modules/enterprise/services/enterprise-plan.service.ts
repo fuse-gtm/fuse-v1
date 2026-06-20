@@ -17,6 +17,7 @@ import {
   ENTERPRISE_JWT_PUBLIC_KEY,
 } from 'src/engine/core-modules/enterprise/constants/enterprise-public-key.constant';
 import {
+  type EnterpriseInstanceMetadata,
   type EnterpriseKeyPayload,
   type EnterpriseLicenseInfo,
   type EnterpriseValidityPayload,
@@ -27,6 +28,9 @@ import {
   ConfigVariableExceptionCode,
 } from 'src/engine/core-modules/twenty-config/twenty-config.exception';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
+import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
+import { UserEntity } from 'src/engine/core-modules/user/user.entity';
+import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
 @Injectable()
 export class EnterprisePlanService implements OnModuleInit {
@@ -38,6 +42,12 @@ export class EnterprisePlanService implements OnModuleInit {
     private readonly twentyConfigService: TwentyConfigService,
     @InjectRepository(AppTokenEntity)
     private readonly appTokenRepository: Repository<AppTokenEntity>,
+    @InjectRepository(UserWorkspaceEntity)
+    private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(WorkspaceEntity)
+    private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
   async onModuleInit() {
@@ -142,33 +152,12 @@ export class EnterprisePlanService implements OnModuleInit {
     return false;
   }
 
-  hasValidEnterpriseKey(): boolean {
-    // Fuse: enterprise features are always enabled for self-hosted
-    return true;
-  }
-
   isValid(): boolean {
-    // Fuse: enterprise features are always enabled for self-hosted
-    return true;
+    return this.hasValidEnterpriseValidityToken();
   }
 
   isValidEnterpriseKeyFormat(key: string): boolean {
     return this.verifyJwt<EnterpriseKeyPayload>(key) !== null;
-  }
-
-  private checkLegacyKey(): boolean {
-    const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
-
-    if (!isDefined(enterpriseKey)) {
-      return false;
-    }
-
-    this.logger.warn(
-      'Unsigned enterprise keys are deprecated and will stop working ' +
-        'in a future version. Please obtain a signed key from twenty.com.',
-    );
-
-    return true;
   }
 
   async getLicenseInfo(): Promise<EnterpriseLicenseInfo> {
@@ -183,15 +172,6 @@ export class EnterprisePlanService implements OnModuleInit {
         licensee: this.cachedKeyPayload?.licensee ?? null,
         expiresAt: new Date(this.cachedValidityPayload.exp * 1000),
         subscriptionId: this.cachedValidityPayload.sub,
-      };
-    }
-
-    if (this.checkLegacyKey()) {
-      return {
-        isValid: true,
-        licensee: null,
-        expiresAt: null,
-        subscriptionId: null,
       };
     }
 
@@ -223,13 +203,110 @@ export class EnterprisePlanService implements OnModuleInit {
   }
 
   async refreshValidityToken(): Promise<boolean> {
-    // Fuse: no outbound phone-home calls
-    return true;
+    const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
+
+    if (!enterpriseKey) {
+      this.logger.warn('No ENTERPRISE_KEY configured, skipping refresh');
+
+      return false;
+    }
+
+    this.refreshKeyPayload();
+
+    if (!isDefined(this.cachedKeyPayload)) {
+      this.logger.warn(
+        'ENTERPRISE_KEY is not a valid signed JWT, skipping refresh',
+      );
+
+      return false;
+    }
+
+    const apiUrl = this.twentyConfigService.get('ENTERPRISE_API_URL');
+    const validateUrl = `${apiUrl}/validate`;
+
+    try {
+      const instanceMetadata = await this.gatherInstanceMetadata();
+
+      const response = await fetch(validateUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enterpriseKey, instanceMetadata }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+
+        this.logger.warn(
+          `Enterprise refresh failed with status ${response.status}: ${errorData.error ?? 'Unknown error'}`,
+        );
+
+        return false;
+      }
+
+      const data = await response.json();
+
+      if (!data.validityToken) {
+        this.logger.warn('Enterprise refresh response missing validityToken');
+
+        return false;
+      }
+
+      await this.saveNewValidityTokenToDb(data.validityToken);
+      await this.loadValidityToken();
+
+      this.logger.log('Enterprise validity token refreshed successfully');
+
+      return true;
+    } catch (error) {
+      this.logger.warn(
+        `Enterprise refresh failed: ${error instanceof Error ? error.message : 'Network error'}. Current validity token will continue to work until expiration.`,
+      );
+
+      return false;
+    }
   }
 
-  async reportSeats(_seatCount: number): Promise<boolean> {
-    // Fuse: no outbound phone-home calls
-    return true;
+  async reportSeats(seatCount: number): Promise<boolean> {
+    const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
+
+    if (!enterpriseKey) {
+      return false;
+    }
+
+    if (!isDefined(this.cachedKeyPayload)) {
+      return false;
+    }
+
+    const apiUrl = this.twentyConfigService.get('ENTERPRISE_API_URL');
+    const seatsUrl = `${apiUrl}/seats`;
+
+    try {
+      const instanceMetadata = await this.gatherInstanceMetadata();
+
+      const response = await fetch(seatsUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enterpriseKey, seatCount, instanceMetadata }),
+      });
+
+      if (!response.ok) {
+        this.logger.warn(
+          `Seat reporting failed with status ${response.status}`,
+        );
+
+        return false;
+      }
+
+      this.logger.log(`Reported ${seatCount} seats to enterprise API`);
+
+      return true;
+    } catch (error) {
+      this.logger.warn(
+        `Seat reporting failed: ${error instanceof Error ? error.message : 'Network error'}`,
+      );
+
+      return false;
+    }
   }
 
   async getSubscriptionStatus(): Promise<{
@@ -378,11 +455,62 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
-  // In development, try both keys so production keys work when testing locally
+  // Best-effort only: must never throw and fail a license refresh.
+  private async gatherInstanceMetadata(): Promise<EnterpriseInstanceMetadata> {
+    return {
+      serverId: this.twentyConfigService.get('SERVER_ID') ?? null,
+      serverUrl: this.twentyConfigService.get('SERVER_URL') ?? null,
+      appVersion: this.twentyConfigService.get('APP_VERSION') ?? null,
+      nodeEnv: this.twentyConfigService.get('NODE_ENV') ?? null,
+      telemetryEnabled:
+        this.twentyConfigService.get('TELEMETRY_ENABLED') ?? null,
+      workspaceCount: await this.safeCount(() =>
+        this.workspaceRepository.count(),
+      ),
+      activeUserWorkspaceCount: await this.safeCount(() =>
+        this.userWorkspaceRepository.count({ where: { deletedAt: IsNull() } }),
+      ),
+      distinctUserCount: await this.safeCount(() =>
+        this.userRepository.count({ where: { deletedAt: IsNull() } }),
+      ),
+      adminContactEmail: await this.getAdminContactEmail(),
+      sentAt: new Date().toISOString(),
+    };
+  }
+
+  private async safeCount(
+    countFn: () => Promise<number>,
+  ): Promise<number | null> {
+    try {
+      return await countFn();
+    } catch {
+      return null;
+    }
+  }
+
+  private async getAdminContactEmail(): Promise<string | null> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { deletedAt: IsNull() },
+        order: { createdAt: 'ASC' },
+        select: { email: true },
+      });
+
+      return user?.email ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  // In development and Jest integration tests, try both keys so production keys
+  // work locally
   private getPublicKeysToTry(): string[] {
     const nodeEnv = this.twentyConfigService.get('NODE_ENV');
 
-    if (nodeEnv === NodeEnvironment.DEVELOPMENT) {
+    if (
+      nodeEnv === NodeEnvironment.DEVELOPMENT ||
+      nodeEnv === NodeEnvironment.TEST
+    ) {
       return [ENTERPRISE_JWT_PUBLIC_KEY, ENTERPRISE_JWT_DEV_PUBLIC_KEY];
     }
 

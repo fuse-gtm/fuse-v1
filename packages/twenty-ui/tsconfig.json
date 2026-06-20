@@ -14,9 +14,7 @@
     "paths": {
       "@ui/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
-      "twenty-shared": ["../twenty-shared/src/index.ts"],
-      "twenty-shared/*": ["../twenty-shared/src/*"],
-      "@/*": ["../twenty-shared/src/*"]
+      "@styles/*": ["./src/styles/*"]
     }
   },
   "include": [

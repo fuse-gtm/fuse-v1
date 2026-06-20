@@ -21,7 +21,7 @@ import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/com
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
-import { useIcons } from 'twenty-ui/display';
+import { useIcons } from 'twenty-ui/icon';
 import { MenuItemSelect } from 'twenty-ui/navigation';
 import { type FieldConfiguration } from '~/generated-metadata/graphql';
 import { filterBySearchQuery } from '~/utils/filterBySearchQuery';
@@ -80,7 +80,11 @@ export const FieldWidgetFieldDropdownContent = () => {
     const needsDisplayModeSwitch =
       isDefined(selectedField) &&
       isDefined(currentDisplayMode) &&
-      !isDisplayModeValidForFieldType(selectedField.type, currentDisplayMode);
+      !isDisplayModeValidForFieldType(
+        selectedField.type,
+        currentDisplayMode,
+        selectedField.relation?.type,
+      );
 
     updateCurrentWidgetConfig({
       configToUpdate: {

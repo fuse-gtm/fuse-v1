@@ -17,6 +17,10 @@ If you are shaping one workspace for one business, keep it here. If you are buil
 
 #### Build your own app
 
-Start from a Fuse app package, keep app identifiers stable, and publish it as a private app for Fuse workspaces.
+Scaffold a new app in one command:
 
-See the [Fuse app development guide](https://docs.fusegtm.com/docs/developers/extend) for the manifest, install, and release flow.`;
+\`\`\`bash
+npx create-twenty-app@latest my-twenty-app
+\`\`\`
+
+See the [Getting Started guide](https://twenty.com/developers/extend/apps/getting-started) for the full walkthrough, and [Building Apps](https://twenty.com/developers/extend/apps/building) for the \`defineApplication\` / \`defineEntity\` APIs.`;

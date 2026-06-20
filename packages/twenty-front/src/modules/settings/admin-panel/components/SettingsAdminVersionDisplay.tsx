@@ -44,7 +44,7 @@ export const SettingsAdminVersionDisplay = ({
 
   return (
     <StyledActionLink
-      href={`https://github.com/fuse-gtm/fuse-v1/pkgs/container/fuse-v1`}
+      href={`https://hub.docker.com/r/twentycrm/twenty/tags?name=${version}`}
       target="_blank"
       rel="noreferrer"
     >

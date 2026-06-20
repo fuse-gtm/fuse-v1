@@ -1,4 +1,4 @@
-import { FieldMetadataType } from '@/types/index';
+import { FieldMetadataType } from '@/types';
 
 const SEARCHABLE_FIELD_TYPES = [
   FieldMetadataType.TEXT,

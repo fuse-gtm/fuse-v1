@@ -17,7 +17,7 @@ import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useId, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
-import { IconMaximize } from 'twenty-ui/display';
+import { IconMaximize } from 'twenty-ui/icon';
 import { LightIconButton } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
@@ -120,7 +120,7 @@ export const FormAdvancedTextFieldInput = ({
       defaultValue,
       contentType,
       onUpdate: (editor) => {
-        if (contentType === 'markdown') {
+        if (contentType === 'markdown' || contentType === 'html') {
           onChange(editor.getHTML());
         } else {
           const jsonContent = editor.getJSON();

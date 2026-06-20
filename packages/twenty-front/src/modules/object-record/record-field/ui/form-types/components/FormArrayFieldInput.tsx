@@ -27,7 +27,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isNonEmptyArray } from '@sniptt/guards';
 import { useContext, useId, useRef, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
-import { IconPlus } from 'twenty-ui/display';
+import { IconPlus } from 'twenty-ui/icon';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { MenuItem } from 'twenty-ui/navigation';
 import { toSpliced } from '~/utils/array/toSpliced';
@@ -56,13 +56,13 @@ const StyledDisplayModeContainer = styled.div`
   align-items: center;
   background: transparent;
   border: none;
+  box-sizing: border-box;
+  cursor: pointer;
   display: flex;
   font-family: inherit;
+  height: 30px;
   padding-inline: ${themeCssVariables.spacing[2]};
   width: 100%;
-  height: 30px;
-  cursor: pointer;
-  box-sizing: border-box;
 
   &:hover,
   &[data-open='true'] {

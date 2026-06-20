@@ -1,11 +1,11 @@
 import { t } from '@lingui/core/macro';
 
 export const getStandardApplicationDescription =
-  (): string => t`The base data model every Fuse workspace runs on.
+  (): string => t`The base data model every Twenty workspace runs on.
 
 #### What "foundation" means
 
-Every Fuse workspace starts with this set of objects. They define the shape of your CRM, including relationships, activity, and reporting. Everything else, including marketplace apps, AI agents, and custom objects, plugs into them.
+Every Twenty workspace starts with this set of objects. They define the shape of your CRM, including relationships, activity, and reporting. Everything else, including marketplace apps, AI agents, and custom objects, plugs into them.
 
 #### Included objects
 - **People & Companies**: contact and account records
@@ -13,10 +13,21 @@ Every Fuse workspace starts with this set of objects. They define the shape of y
 - **Notes & Tasks**: activity and follow-ups
 - **Workflows & Dashboards**: automation and reporting
 
-Remove this app and the rest of Fuse has nothing to hang off.
+Remove this app and the rest of Twenty has nothing to hang off.
 
 #### Build your own app
 
-Extend Fuse with your own objects, fields, logic functions, or AI skills. Start from a Fuse app package, keep app identifiers stable, and publish it as a private app for Fuse workspaces.
+Extend Twenty with your own objects, fields, logic functions, or AI skills. Scaffold a new app in one command:
 
-See the [Fuse app development guide](https://docs.fusegtm.com/docs/developers/extend) for the manifest, install, and release flow.`;
+\`\`\`bash
+npx create-twenty-app@latest my-twenty-app
+\`\`\`
+
+Then inside the folder:
+
+\`\`\`bash
+cd my-twenty-app
+yarn twenty dev
+\`\`\`
+
+See the [Getting Started guide](https://twenty.com/developers/extend/apps/getting-started) for the full walkthrough, and [Building Apps](https://twenty.com/developers/extend/apps/building) for the \`defineApplication\` / \`defineEntity\` APIs.`;

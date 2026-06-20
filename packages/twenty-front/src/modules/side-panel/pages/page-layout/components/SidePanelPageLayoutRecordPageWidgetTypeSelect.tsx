@@ -31,7 +31,7 @@ import { useStore } from 'jotai';
 import { useCallback } from 'react';
 import { SidePanelPages } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
-import { IconApps, IconList } from 'twenty-ui/display';
+import { IconApps, IconList } from 'twenty-ui/icon';
 import { v4 as uuidv4 } from 'uuid';
 import {
   type FrontComponent,
@@ -299,7 +299,6 @@ export const SidePanelPageLayoutRecordPageWidgetTypeSelect = () => {
           index: positionIndex,
         },
         objectMetadataId: null,
-        isOverridden: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         deletedAt: null,

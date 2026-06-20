@@ -4,7 +4,7 @@ import {
   type PageLayoutTabLayoutMode,
   type PageLayoutWidgetConditionalDisplay,
   type PageLayoutWidgetUniversalConfiguration,
-} from '@/types/index';
+} from '@/types';
 
 export type PageLayoutWidgetManifest = SyncableEntityOptions & {
   title: string;
@@ -21,6 +21,7 @@ export type PageLayoutTabManifest = SyncableEntityOptions & {
   icon?: string;
   layoutMode?: PageLayoutTabLayoutMode;
   widgets?: PageLayoutWidgetManifest[];
+  pageLayoutUniversalIdentifier?: string;
 };
 
 export type PageLayoutManifest = SyncableEntityOptions & {

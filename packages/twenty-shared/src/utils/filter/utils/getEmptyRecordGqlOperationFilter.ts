@@ -15,13 +15,14 @@ import {
   type RelationFilter,
   type SelectFilter,
   type StringFilter,
-} from '../../../types';
-import { CustomError } from '../../errors';
-import { computeEmptyGqlOperationFilterForEmails } from '../computeEmptyGqlOperationFilterForEmails';
-import { computeEmptyGqlOperationFilterForLinks } from '../computeEmptyGqlOperationFilterForLinks';
-import { type RecordFilter } from '../turnRecordFilterGroupIntoGqlOperationFilter';
-import { generateILikeFiltersForCompositeFields } from './generateILikeFiltersForCompositeFields';
-import { getFilterTypeFromFieldType } from './getFilterTypeFromFieldType';
+  type UUIDFilter,
+} from '@/types';
+import { CustomError } from '@/utils/errors';
+import { computeEmptyGqlOperationFilterForEmails } from '@/utils/filter/computeEmptyGqlOperationFilterForEmails';
+import { computeEmptyGqlOperationFilterForLinks } from '@/utils/filter/computeEmptyGqlOperationFilterForLinks';
+import { type RecordFilter } from '@/utils/filter/turnRecordFilterGroupIntoGqlOperationFilter';
+import { generateILikeFiltersForCompositeFields } from '@/utils/filter/utils/generateILikeFiltersForCompositeFields';
+import { getFilterTypeFromFieldType } from '@/utils/filter/utils/getFilterTypeFromFieldType';
 import { isNonEmptyString } from '@sniptt/guards';
 
 type GetEmptyRecordGqlOperationFilterParams = {
@@ -306,6 +307,11 @@ export const getEmptyRecordGqlOperationFilter = ({
     case 'SELECT':
       emptyRecordFilter = {
         [correspondingField.name]: { is: 'NULL' } as SelectFilter,
+      };
+      break;
+    case 'UUID':
+      emptyRecordFilter = {
+        [correspondingField.name]: { is: 'NULL' } as UUIDFilter,
       };
       break;
     case 'MULTI_SELECT':

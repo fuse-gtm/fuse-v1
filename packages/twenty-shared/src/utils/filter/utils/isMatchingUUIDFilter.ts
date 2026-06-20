@@ -1,4 +1,4 @@
-import { type UUIDFilter, type UUIDFilterValue } from '../../../types';
+import { type UUIDFilter, type UUIDFilterValue } from '@/types';
 
 export const isMatchingUUIDFilter = ({
   uuidFilter,
@@ -14,6 +14,18 @@ export const isMatchingUUIDFilter = ({
     case uuidFilter.neq !== undefined: {
       return value !== uuidFilter.neq;
     }
+    case uuidFilter.gt !== undefined: {
+      return value > uuidFilter.gt;
+    }
+    case uuidFilter.gte !== undefined: {
+      return value >= uuidFilter.gte;
+    }
+    case uuidFilter.lt !== undefined: {
+      return value < uuidFilter.lt;
+    }
+    case uuidFilter.lte !== undefined: {
+      return value <= uuidFilter.lte;
+    }
     case uuidFilter.in !== undefined: {
       return uuidFilter.in.includes(value);
     }
@@ -26,7 +38,7 @@ export const isMatchingUUIDFilter = ({
     }
     default: {
       throw new Error(
-        `Unexpected value for string filter : ${JSON.stringify(uuidFilter)}`,
+        `Unexpected value for UUID filter: ${JSON.stringify(uuidFilter)}`,
       );
     }
   }

@@ -1,4 +1,4 @@
-import { isDefined } from '..';
+import { isDefined } from '@/utils';
 
 // https://github.com/microsoft/TypeScript/issues/34523
 // oxlint-disable-next-line prefer-arrow/prefer-arrow-functions

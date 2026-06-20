@@ -8,22 +8,20 @@ import {
 import { SettingsOptionIconCustomizer } from '@/settings/components/SettingsOptions/SettingsOptionIconCustomizer';
 import { styled } from '@linaria/react';
 import { useContext, useId } from 'react';
-import {
-  type IconComponent,
-  OverflowingTextWithTooltip,
-} from 'twenty-ui/display';
+import { type IconComponent } from 'twenty-ui/icon';
+import { OverflowingTextWithTooltip } from 'twenty-ui/surfaces';
 import { Toggle } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledSettingsCardToggleContent = styled.div<{ disabled?: boolean }>`
   align-items: center;
+  background-color: ${themeCssVariables.background.secondary};
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   display: flex;
   gap: ${themeCssVariables.spacing[3]};
-  background-color: ${themeCssVariables.background.secondary};
   padding: ${themeCssVariables.spacing[4]};
-  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  position: relative;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+  position: relative;
 
   &:hover {
     background: ${themeCssVariables.background.transparent.lighter};

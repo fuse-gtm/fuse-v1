@@ -15,13 +15,14 @@ import { useCanPersistViewChanges } from '@/views/hooks/useCanPersistViewChanges
 import { useGetCurrentViewOnly } from '@/views/hooks/useGetCurrentViewOnly';
 import { useUpdateCurrentView } from '@/views/hooks/useUpdateCurrentView';
 import { useLingui } from '@lingui/react/macro';
+import { createPortal } from 'react-dom';
 import {
-  AppTooltip,
   IconChevronLeft,
   IconCircle,
   IconCircleDashed,
   IconCopy,
-} from 'twenty-ui/display';
+} from 'twenty-ui/icon';
+import { AppTooltip } from 'twenty-ui/surfaces';
 import { MenuItem, MenuItemSelect } from 'twenty-ui/navigation';
 import {
   ViewVisibility,
@@ -89,11 +90,8 @@ export const ObjectOptionsDropdownVisibilityContent = () => {
               handleVisibilityChange(ViewVisibility.WORKSPACE)
             }
           >
-            <AppTooltip
-              content={t`Workspace views require manage views permission`}
-              hidden={hasViewsPermission}
-            >
-              <div>
+            <>
+              <div id="workspace-visibility-option">
                 <MenuItemSelect
                   LeftIcon={IconCircle}
                   text={t`Workspace`}
@@ -106,7 +104,16 @@ export const ObjectOptionsDropdownVisibilityContent = () => {
                   disabled={!hasViewsPermission || !canPersistChanges}
                 />
               </div>
-            </AppTooltip>
+              {!hasViewsPermission &&
+                createPortal(
+                  <AppTooltip
+                    anchorSelect="#workspace-visibility-option"
+                    content={t`Workspace views require manage views permission`}
+                    positionStrategy="fixed"
+                  />,
+                  document.body,
+                )}
+            </>
           </SelectableListItem>
           <SelectableListItem
             itemId={ViewVisibility.UNLISTED}

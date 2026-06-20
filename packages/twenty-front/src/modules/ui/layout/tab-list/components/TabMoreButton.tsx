@@ -1,13 +1,13 @@
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import { IconChevronDown } from 'twenty-ui/display';
+import { IconChevronDown } from 'twenty-ui/icon';
 import { TabButton } from 'twenty-ui/input';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
+
+import { TAB_LIST_HEIGHT } from '@/ui/layout/tab-list/constants/TabListHeight';
 
 const StyledTabMoreButtonContainer = styled.div`
-  > * {
-    height: ${themeCssVariables.spacing[10]};
-  }
+  display: flex;
+  height: ${TAB_LIST_HEIGHT};
 `;
 
 export const TabMoreButton = ({

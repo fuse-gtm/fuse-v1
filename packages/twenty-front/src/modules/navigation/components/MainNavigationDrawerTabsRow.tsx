@@ -1,17 +1,14 @@
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import {
-  IconComment,
-  IconHome,
-  IconMessageCirclePlus,
-  OverflowingTextWithTooltip,
-} from 'twenty-ui/display';
+import { IconComment, IconHome, IconMessageCirclePlus } from 'twenty-ui/icon';
+import { OverflowingTextWithTooltip } from 'twenty-ui/surfaces';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
 
 import { useContext } from 'react';
 
 import { useSwitchToNewAiChat } from '@/ai/hooks/useSwitchToNewAiChat';
+import { useHasPermissionFlag } from '@/settings/roles/hooks/useHasPermissionFlag';
 import { NavigationDrawerAnimatedCollapseWrapper } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerAnimatedCollapseWrapper';
 import { isNavigationDrawerExpandedState } from '@/ui/navigation/states/isNavigationDrawerExpanded';
 import { navigationDrawerActiveTabState } from '@/ui/navigation/states/navigationDrawerActiveTabState';
@@ -22,6 +19,7 @@ import {
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
+import { PermissionFlagType } from '~/generated-metadata/graphql';
 
 const StyledRow = styled.div<{ isExpanded: boolean }>`
   align-items: center;
@@ -118,7 +116,7 @@ const StyledNewChatButton = styled.div`
   justify-content: center;
   min-width: 0;
   overflow: hidden;
-  padding-inline: ${themeCssVariables.spacing[1]};
+  padding-inline: ${themeCssVariables.spacing[2]};
   transition:
     background calc(${themeCssVariables.animation.duration.fast} * 1s) ease,
     color calc(${themeCssVariables.animation.duration.fast} * 1s) ease;
@@ -142,8 +140,13 @@ export const MainNavigationDrawerTabsRow = () => {
   const setIsNavigationDrawerExpanded = useSetAtomState(
     isNavigationDrawerExpandedState,
   );
+  const hasAiPermission = useHasPermissionFlag(PermissionFlagType.AI);
 
   const isExpanded = isNavigationDrawerExpanded || isMobile;
+
+  if (!hasAiPermission) {
+    return null;
+  }
 
   const handleTabClick = (tab: NavigationDrawerActiveTab) => () => {
     setNavigationDrawerActiveTab(tab);

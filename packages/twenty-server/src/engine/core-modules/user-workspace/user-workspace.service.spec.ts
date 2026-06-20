@@ -20,7 +20,6 @@ import { UserWorkspaceService } from 'src/engine/core-modules/user-workspace/use
 import { UserEntity } from 'src/engine/core-modules/user/user.entity';
 import { WorkspaceInvitationService } from 'src/engine/core-modules/workspace-invitation/services/workspace-invitation.service';
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
-import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { PermissionsException } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { RoleTargetEntity } from 'src/engine/metadata-modules/role-target/role-target.entity';
@@ -53,6 +52,10 @@ describe('UserWorkspaceService', () => {
             exists: jest.fn(),
             findOne: jest.fn(),
             findOneOrFail: jest.fn(),
+            manager: {
+              connection: { driver: { options: { type: 'postgres' } } },
+            },
+            metadata: { columns: [] },
           },
         },
         {
@@ -77,12 +80,6 @@ describe('UserWorkspaceService', () => {
           provide: RoleValidationService,
           useValue: {
             validateRoleAssignableToUsersOrThrow: jest.fn(),
-          },
-        },
-        {
-          provide: DataSourceService,
-          useValue: {
-            getLastDataSourceMetadataFromWorkspaceIdOrFail: jest.fn(),
           },
         },
         {
@@ -255,7 +252,6 @@ describe('UserWorkspaceService', () => {
         email: 'test@example.com',
         firstName: 'John',
         lastName: 'Doe',
-        defaultAvatarUrl: 'avatar-url',
         locale: 'en',
         isEmailVerified: false,
         disabled: false,
@@ -279,7 +275,10 @@ describe('UserWorkspaceService', () => {
       ];
       const workspaceMemberRepository = {
         insert: jest.fn(),
-        find: jest.fn().mockResolvedValue(workspaceMember),
+        find: jest
+          .fn()
+          .mockResolvedValueOnce([])
+          .mockResolvedValue(workspaceMember),
       };
 
       jest
@@ -307,6 +306,31 @@ describe('UserWorkspaceService', () => {
         locale: 'en',
         avatarUrl: 'userWorkspace-avatar-url',
       });
+    });
+
+    it('should not create a workspace member when one already exists', async () => {
+      const workspaceId = 'workspace-id';
+      const user = {
+        id: 'user-id',
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        locale: 'en',
+      } as unknown as AuthContextUser;
+      const workspaceMemberRepository = {
+        insert: jest.fn(),
+        find: jest
+          .fn()
+          .mockResolvedValue([{ id: 'existing-member-id', userId: 'user-id' }]),
+      };
+
+      jest
+        .spyOn(globalWorkspaceOrmManager, 'getRepository')
+        .mockResolvedValue(workspaceMemberRepository as any);
+
+      await service.createWorkspaceMember(workspaceId, user);
+
+      expect(workspaceMemberRepository.insert).not.toHaveBeenCalled();
     });
   });
 

@@ -1,4 +1,4 @@
-import { findById } from './findById';
+import { findById } from '@/utils/array/findById';
 
 export const upsertPropertiesOfItemIntoArrayOfObjectsComparingId = <
   T extends { id: string },

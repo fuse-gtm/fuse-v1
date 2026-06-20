@@ -1,4 +1,4 @@
-import { assertUnreachable, type DateTimePeriod } from '../../..';
+import { assertUnreachable, type DateTimePeriod } from '@/utils';
 import { type Temporal } from 'temporal-polyfill';
 
 export const addUnitToZonedDateTime = (
