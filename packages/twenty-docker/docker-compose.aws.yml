@@ -1,0 +1,33 @@
+# AWS deployment override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.fuse.yml -f docker-compose.aws.yml --env-file .env up -d
+#
+# - Removes db dependency from server/worker (uses external RDS)
+# - Assigns db to "local-db" profile so it does not start in prod
+# - Mounts RDS CA bundle and enables proper SSL trust
+
+services:
+  server:
+    depends_on: !override
+      redis:
+        condition: service_healthy
+    volumes:
+      - /opt/fuse/certs/rds-combined-ca-bundle.pem:/app/certs/rds-ca.pem:ro
+    environment:
+      PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-db}:${PG_DATABASE_PORT:-5432}/${PG_DATABASE_NAME:-default}?sslmode=require
+      NODE_EXTRA_CA_CERTS: /app/certs/rds-ca.pem
+
+  worker:
+    depends_on: !override
+      redis:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+    volumes:
+      - /opt/fuse/certs/rds-combined-ca-bundle.pem:/app/certs/rds-ca.pem:ro
+    environment:
+      PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-db}:${PG_DATABASE_PORT:-5432}/${PG_DATABASE_NAME:-default}?sslmode=require
+      NODE_EXTRA_CA_CERTS: /app/certs/rds-ca.pem
+
+  db:
+    profiles:
+      - local-db
