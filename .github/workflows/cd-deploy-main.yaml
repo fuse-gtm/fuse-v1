@@ -202,13 +202,15 @@ jobs:
                   --arg github_sha "${GITHUB_SHA}" \
                   '{
                     commands: [
-                      "export IMAGE_REF=" + ($image_ref | @sh),
-                      "export PUBLIC_BASE_URL=" + ($public_base_url | @sh),
-                      "export REMOTE_ROOT=" + ($remote_root | @sh),
-                      "export REGISTER_CRONS=" + ($register_crons | @sh),
-                      "export VERIFY_PUBLIC_URL=" + ($verify_public_url | @sh),
-                      "export GITHUB_SHA=" + ($github_sha | @sh),
-                      $script
+                      "IMAGE_REF=" + ($image_ref | @sh) +
+                      " PUBLIC_BASE_URL=" + ($public_base_url | @sh) +
+                      " REMOTE_ROOT=" + ($remote_root | @sh) +
+                      " REGISTER_CRONS=" + ($register_crons | @sh) +
+                      " VERIFY_PUBLIC_URL=" + ($verify_public_url | @sh) +
+                      " GITHUB_SHA=" + ($github_sha | @sh) +
+                      " bash <<'\''FUSE_DEPLOY_SCRIPT'\''\n" +
+                      $script +
+                      "\nFUSE_DEPLOY_SCRIPT"
                     ]
                   }'
               )" \
