@@ -1,0 +1,59 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "allowUnreachableCode": false,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": false,
+    "target": "es2018",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "src/*": ["./src/*"],
+      "~/*": ["./*"],
+      "twenty-client-sdk/core": [
+        "../../../twenty-client-sdk/src/core/index.ts"
+      ],
+      "twenty-sdk/define": ["../../../twenty-sdk/src/sdk/define/index.ts"],
+      "twenty-shared/application": [
+        "../../../twenty-shared/src/application/index.ts"
+      ],
+      "twenty-shared/constants": [
+        "../../../twenty-shared/src/constants/index.ts"
+      ],
+      "twenty-shared/database-events": [
+        "../../../twenty-shared/src/database-events/index.ts"
+      ],
+      "twenty-shared/logic-function": [
+        "../../../twenty-shared/src/logic-function/index.ts"
+      ],
+      "twenty-shared/metadata": [
+        "../../../twenty-shared/src/metadata/index.ts"
+      ],
+      "twenty-shared/types": ["../../../twenty-shared/src/types/index.ts"],
+      "twenty-shared/utils": ["../../../twenty-shared/src/utils/index.ts"],
+      "@/*": [
+        "../../../twenty-sdk/src/*",
+        "../../../twenty-shared/src/*",
+        "../../../twenty-client-sdk/src/*"
+      ]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist", ".twenty", "**/*.integration-test.ts"]
+}
