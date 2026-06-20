@@ -26,7 +26,7 @@ export const fusePartnerCoreSpec: PartnerAppSpec = {
     packageJsonChecksum: null,
     yarnLockChecksum: null,
   },
-  version: '0.1.0',
+  version: '0.1.1',
   taxonomy: {
     partnerType: 'agency',
     programMechanics: [
@@ -131,9 +131,9 @@ export const fusePartnerCoreSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Fuse Referral Program',
-          programMechanic: 'referral',
+          programMechanic: 'REFERRAL',
           ecosystem: 'Fuse',
-          commercialModels: ['commission', 'co_marketing'],
+          commercialModels: ['COMMISSION', 'CO_MARKETING'],
         },
       ],
     },
@@ -145,9 +145,9 @@ export const fusePartnerCoreSpec: PartnerAppSpec = {
         {
           name: 'Example Agency Partner',
           primaryDomain: 'example-agency.com',
-          partnerType: 'agency',
-          programMechanics: ['referral', 'services'],
-          commercialModels: ['commission', 'certifications'],
+          partnerType: 'AGENCY',
+          programMechanics: ['REFERRAL', 'SERVICES'],
+          commercialModels: ['COMMISSION', 'CERTIFICATIONS'],
         },
       ],
     },
@@ -158,7 +158,7 @@ export const fusePartnerCoreSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Example Agency Partner - Fuse Referral Program',
-          status: 'active',
+          status: 'ACTIVE',
         },
       ],
     },

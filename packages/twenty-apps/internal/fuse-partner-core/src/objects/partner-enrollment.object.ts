@@ -35,7 +35,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: ENROLLMENT_STATUS_OPTIONS,
-      defaultValue: 'active',
+      defaultValue: "'ACTIVE'",
     },
     {
       universalIdentifier: FIELD_IDS.partnerEnrollment.startedAt,

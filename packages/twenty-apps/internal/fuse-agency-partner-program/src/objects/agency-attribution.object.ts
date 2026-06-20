@@ -62,7 +62,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: ATTRIBUTION_STATUS_OPTIONS,
-      defaultValue: 'pending',
+      defaultValue: "'PENDING'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyAttribution.partnerProfile,

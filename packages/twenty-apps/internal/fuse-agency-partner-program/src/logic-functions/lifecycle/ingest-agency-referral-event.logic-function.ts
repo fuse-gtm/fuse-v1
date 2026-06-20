@@ -25,7 +25,7 @@ const handler = async (
 
   if (!plan.accepted) {
     return {
-      status: 'duplicate',
+      status: 'DUPLICATE',
       duplicateReason: plan.duplicateReason,
       eventId: plan.eventData.eventId,
     };
@@ -65,11 +65,11 @@ const handler = async (
       __args: {
         data: {
           name: `enrollment:${plan.eventData.enrollmentId}`,
-          scopeType: 'enrollment',
+          scopeType: 'ENROLLMENT',
           scopeId: plan.eventData.enrollmentId,
           ...plan.rollupDelta,
           lastEventAt: plan.eventData.occurredAt,
-          repairStatus: 'fresh',
+          repairStatus: 'FRESH',
           partnerProfileId: plan.eventData.partnerProfileId,
           agencyGroupId: plan.eventData.agencyGroupId,
         },

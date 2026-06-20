@@ -64,7 +64,7 @@ const handler = async (
   }
 
   return {
-    status: plan.isDuplicate ? 'duplicate_detected' : 'submitted',
+    status: plan.isDuplicate ? 'DUPLICATE_DETECTED' : 'SUBMITTED',
     agencyApplicationId,
     companyId,
     personId,

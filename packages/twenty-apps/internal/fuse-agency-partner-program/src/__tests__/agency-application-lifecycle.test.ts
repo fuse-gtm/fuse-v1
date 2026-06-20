@@ -22,12 +22,14 @@ const submissionInput = {
 
   assert.equal(plan.isDuplicate, false);
   assert.equal(plan.duplicateKey, 'acmeagency.com:ada@acmeagency.com');
-  assert.equal(plan.applicationData.status, 'submitted');
-  assert.equal(plan.applicationData.riskState, 'clear');
+  assert.equal(plan.applicationData.status, 'SUBMITTED');
+  assert.equal(plan.applicationData.riskState, 'CLEAR');
+  assert.deepEqual(plan.applicationData.serviceBuckets, ['REVENUE_OPS']);
+  assert.equal(plan.applicationData.monthlyLeadVolumeBand, 'ELEVEN_TO_FIFTY');
   assert.equal(plan.applicationData.normalizedDomain, 'acmeagency.com');
   assert.equal(plan.companyData?.name, 'Acme Agency');
   assert.equal(plan.personData?.emails.primaryEmail, 'ada@acmeagency.com');
-  assert.equal(plan.reviewEventData.action, 'submitted');
+  assert.equal(plan.reviewEventData.action, 'SUBMITTED');
 }
 
 {
@@ -55,9 +57,9 @@ const submissionInput = {
   );
 
   assert.equal(plan.isDuplicate, true);
-  assert.equal(plan.applicationData.status, 'needs_review');
-  assert.equal(plan.applicationData.riskState, 'needs_review');
-  assert.equal(plan.reviewEventData.action, 'duplicate_detected');
+  assert.equal(plan.applicationData.status, 'NEEDS_REVIEW');
+  assert.equal(plan.applicationData.riskState, 'NEEDS_REVIEW');
+  assert.equal(plan.reviewEventData.action, 'DUPLICATE_DETECTED');
   assert.match(plan.reviewEventData.evidenceJson, /existing-application-id/);
 }
 
@@ -91,15 +93,15 @@ const submissionInput = {
 
   assert.equal(plan.needsPartnerProfile, true);
   assert.equal(plan.needsAgencyGroup, true);
-  assert.equal(plan.partnerProfileData?.partnerType, 'agency');
+  assert.equal(plan.partnerProfileData?.partnerType, 'AGENCY');
   assert.deepEqual(plan.partnerProfileData?.programMechanics, [
-    'referral',
-    'services',
+    'REFERRAL',
+    'SERVICES',
   ]);
   assert.equal(plan.agencyGroupData?.name, 'Default Agency Partners');
-  assert.equal(plan.enrollmentData.status, 'active');
-  assert.equal(plan.applicationUpdateData.status, 'approved');
-  assert.equal(plan.reviewEventData.action, 'approved');
+  assert.equal(plan.enrollmentData.status, 'ACTIVE');
+  assert.equal(plan.applicationUpdateData.status, 'APPROVED');
+  assert.equal(plan.reviewEventData.action, 'APPROVED');
   assert.match(plan.reviewEventData.evidenceJson, /reviewer-id/);
 }
 
@@ -114,13 +116,13 @@ const submissionInput = {
     occurredAt: now,
   });
 
-  assert.equal(plan.applicationUpdateData.status, 'rejected');
-  assert.equal(plan.applicationUpdateData.riskState, 'fraud_review');
+  assert.equal(plan.applicationUpdateData.status, 'REJECTED');
+  assert.equal(plan.applicationUpdateData.riskState, 'FRAUD_REVIEW');
   assert.equal(
     plan.applicationUpdateData.reviewDecisionReason,
     'Low-quality traffic source.',
   );
-  assert.equal(plan.reviewEventData.action, 'rejected');
+  assert.equal(plan.reviewEventData.action, 'REJECTED');
   assert.match(plan.reviewEventData.evidenceJson, /trafficSource/);
 }
 

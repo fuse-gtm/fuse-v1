@@ -104,7 +104,7 @@ const handler = async (
   } as any);
 
   return {
-    status: 'approved',
+    status: 'APPROVED',
     agencyApplicationId: plan.applicationId,
     partnerProfileId,
     agencyGroupId,

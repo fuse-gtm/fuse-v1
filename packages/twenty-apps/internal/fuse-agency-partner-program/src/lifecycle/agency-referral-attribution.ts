@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 export type AgencyReferralEventType = 'lead' | 'sale';
+type StoredAgencyReferralEventType = 'LEAD' | 'SALE';
 
 export type AgencyReferralEventInput = {
   eventId?: string;
@@ -25,9 +26,10 @@ export type AgencyReferralIdempotencyContext = {
 export type AgencyReferralAcceptedEvent = Required<
   Pick<
     AgencyReferralEventInput,
-    'eventId' | 'eventType' | 'enrollmentId' | 'customerId' | 'occurredAt'
+    'eventId' | 'enrollmentId' | 'customerId' | 'occurredAt'
   >
 > & {
+  eventType: StoredAgencyReferralEventType;
   amountCents: number;
   invoiceId?: string;
   partnerProfileId?: string;
@@ -111,15 +113,12 @@ const assertValidSignature = (
   }
 };
 
-const normalizeEvent = (
-  input: AgencyReferralEventInput,
-): AgencyReferralAcceptedEvent => {
-  const eventId = requireString(input.eventId, 'eventId');
-  const enrollmentId = requireString(input.enrollmentId, 'enrollmentId');
-  const customerId = requireString(input.customerId, 'customerId');
-  const occurredAt = input.occurredAt ?? new Date().toISOString();
+const normalizeEventType = (
+  eventType: AgencyReferralEventInput['eventType'],
+): StoredAgencyReferralEventType => {
+  const normalizedEventType = eventType?.trim().toLowerCase();
 
-  if (input.eventType !== 'lead' && input.eventType !== 'sale') {
+  if (normalizedEventType !== 'lead' && normalizedEventType !== 'sale') {
     throw new AgencyReferralAttributionError(
       'UNSUPPORTED_EVENT_TYPE',
       'eventType',
@@ -127,17 +126,29 @@ const normalizeEvent = (
     );
   }
 
-  if (input.eventType === 'sale') {
+  return normalizedEventType === 'lead' ? 'LEAD' : 'SALE';
+};
+
+const normalizeEvent = (
+  input: AgencyReferralEventInput,
+): AgencyReferralAcceptedEvent => {
+  const eventId = requireString(input.eventId, 'eventId');
+  const enrollmentId = requireString(input.enrollmentId, 'enrollmentId');
+  const customerId = requireString(input.customerId, 'customerId');
+  const occurredAt = input.occurredAt ?? new Date().toISOString();
+  const eventType = normalizeEventType(input.eventType);
+
+  if (eventType === 'SALE') {
     requireString(input.invoiceId, 'invoiceId');
   }
 
   return {
     eventId,
-    eventType: input.eventType,
+    eventType,
     enrollmentId,
     customerId,
     invoiceId: input.invoiceId,
-    amountCents: input.eventType === 'sale' ? (input.amountCents ?? 0) : 0,
+    amountCents: eventType === 'SALE' ? (input.amountCents ?? 0) : 0,
     occurredAt,
     partnerProfileId: input.partnerProfileId,
     agencyGroupId: input.agencyGroupId,
@@ -177,7 +188,7 @@ export const createAgencyReferralEventPlan = (
         invoiceId: event.invoiceId,
         enrollmentId: event.enrollmentId,
         amountCents: event.amountCents,
-        status: 'duplicate',
+        status: 'DUPLICATE',
         occurredAt: event.occurredAt,
         payloadJson: JSON.stringify(input.payload ?? {}),
         partnerProfileId: event.partnerProfileId,
@@ -200,7 +211,7 @@ export const createAgencyReferralEventPlan = (
       invoiceId: event.invoiceId,
       enrollmentId: event.enrollmentId,
       amountCents: event.amountCents,
-      status: 'accepted',
+      status: 'ACCEPTED',
       occurredAt: event.occurredAt,
       payloadJson: JSON.stringify(input.payload ?? {}),
       partnerProfileId: event.partnerProfileId,
@@ -209,16 +220,16 @@ export const createAgencyReferralEventPlan = (
     attributionData: {
       name: `${event.eventType}:${event.eventId}`,
       attributionType:
-        event.eventType === 'lead' ? 'referral' : 'services_influence',
+        event.eventType === 'LEAD' ? 'REFERRAL' : 'SERVICES_INFLUENCE',
       sourceEventId: event.eventId,
       amountCents: event.amountCents,
-      status: 'accepted',
+      status: 'ACCEPTED',
       partnerProfileId: event.partnerProfileId,
     },
     rollupDelta: {
-      leadCount: event.eventType === 'lead' ? 1 : 0,
-      saleCount: event.eventType === 'sale' ? 1 : 0,
-      revenueCents: event.eventType === 'sale' ? event.amountCents : 0,
+      leadCount: event.eventType === 'LEAD' ? 1 : 0,
+      saleCount: event.eventType === 'SALE' ? 1 : 0,
+      revenueCents: event.eventType === 'SALE' ? event.amountCents : 0,
     },
   };
 };
@@ -230,13 +241,13 @@ export const repairAgencyReferralRollups = (
     string,
     {
       name: string;
-      scopeType: 'partner_profile' | 'agency_group' | 'enrollment';
+      scopeType: 'PARTNER_PROFILE' | 'AGENCY_GROUP' | 'ENROLLMENT';
       scopeId: string;
       leadCount: number;
       saleCount: number;
       revenueCents: number;
       lastEventAt: string;
-      repairStatus: 'repaired';
+      repairStatus: 'REPAIRED';
       partnerProfileId?: string;
       agencyGroupId?: string;
     }
@@ -244,7 +255,7 @@ export const repairAgencyReferralRollups = (
 
   const applyEventToScope = (
     event: AgencyReferralAcceptedEvent,
-    scopeType: 'partner_profile' | 'agency_group' | 'enrollment',
+    scopeType: 'PARTNER_PROFILE' | 'AGENCY_GROUP' | 'ENROLLMENT',
     scopeId: string | undefined,
   ) => {
     if (!scopeId) {
@@ -262,15 +273,15 @@ export const repairAgencyReferralRollups = (
         saleCount: 0,
         revenueCents: 0,
         lastEventAt: event.occurredAt,
-        repairStatus: 'repaired',
+        repairStatus: 'REPAIRED',
         partnerProfileId: event.partnerProfileId,
         agencyGroupId: event.agencyGroupId,
       });
 
-    current.leadCount += event.eventType === 'lead' ? 1 : 0;
-    current.saleCount += event.eventType === 'sale' ? 1 : 0;
+    current.leadCount += event.eventType === 'LEAD' ? 1 : 0;
+    current.saleCount += event.eventType === 'SALE' ? 1 : 0;
     current.revenueCents +=
-      event.eventType === 'sale' ? event.amountCents : 0;
+      event.eventType === 'SALE' ? event.amountCents : 0;
     current.lastEventAt =
       event.occurredAt > current.lastEventAt
         ? event.occurredAt
@@ -280,9 +291,9 @@ export const repairAgencyReferralRollups = (
   };
 
   for (const event of events) {
-    applyEventToScope(event, 'partner_profile', event.partnerProfileId);
-    applyEventToScope(event, 'agency_group', event.agencyGroupId);
-    applyEventToScope(event, 'enrollment', event.enrollmentId);
+    applyEventToScope(event, 'PARTNER_PROFILE', event.partnerProfileId);
+    applyEventToScope(event, 'AGENCY_GROUP', event.agencyGroupId);
+    applyEventToScope(event, 'ENROLLMENT', event.enrollmentId);
   }
 
   return [...rollups.values()];

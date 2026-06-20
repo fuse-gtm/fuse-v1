@@ -38,7 +38,7 @@ export default defineObject({
       label: 'Tier',
       icon: 'IconAward',
       options: AGENCY_GROUP_TIER_OPTIONS,
-      defaultValue: 'standard',
+      defaultValue: "'STANDARD'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyGroup.status,
@@ -47,7 +47,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: AGENCY_GROUP_STATUS_OPTIONS,
-      defaultValue: 'active',
+      defaultValue: "'ACTIVE'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyGroup.partnerProfile,

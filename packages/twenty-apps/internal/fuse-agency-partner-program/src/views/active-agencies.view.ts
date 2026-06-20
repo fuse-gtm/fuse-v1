@@ -54,13 +54,13 @@ export default defineView({
       fieldMetadataUniversalIdentifier:
         CORE_FIELD_IDS.partnerProfile.partnerType,
       operand: ViewFilterOperand.IS,
-      value: 'agency',
+      value: 'AGENCY',
     },
     {
       universalIdentifier: VIEW_FILTER_IDS.activeAgenciesStatus,
       fieldMetadataUniversalIdentifier: CORE_FIELD_IDS.partnerProfile.status,
       operand: ViewFilterOperand.IS,
-      value: 'active',
+      value: 'ACTIVE',
     },
   ],
   sorts: [

@@ -43,7 +43,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: TASK_STATUS_OPTIONS,
-      defaultValue: 'open',
+      defaultValue: "'OPEN'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyTask.dueAt,

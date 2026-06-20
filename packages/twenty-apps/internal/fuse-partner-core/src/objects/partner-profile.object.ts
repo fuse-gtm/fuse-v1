@@ -89,7 +89,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: PARTNER_STATUS_OPTIONS,
-      defaultValue: 'candidate',
+      defaultValue: "'CANDIDATE'",
     },
     {
       universalIdentifier: FIELD_IDS.partnerProfile.company,

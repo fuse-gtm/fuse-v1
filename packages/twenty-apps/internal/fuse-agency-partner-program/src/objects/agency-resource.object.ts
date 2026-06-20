@@ -53,7 +53,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: RESOURCE_STATUS_OPTIONS,
-      defaultValue: 'draft',
+      defaultValue: "'DRAFT'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyResource.partnerProfile,

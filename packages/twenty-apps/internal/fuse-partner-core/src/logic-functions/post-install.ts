@@ -5,10 +5,10 @@ import { POST_INSTALL_UNIVERSAL_IDENTIFIER } from 'src/constants/universal-ident
 const SEED_PARTNER_PROGRAMS = [
   {
     name: 'Fuse Referral Program',
-    programMechanic: 'referral',
+    programMechanic: 'REFERRAL',
     ecosystem: 'Fuse',
     programBrandName: 'Fuse Partner Program',
-    commercialModels: ['commission', 'co_marketing'],
+    commercialModels: ['COMMISSION', 'CO_MARKETING'],
     tier: 'Standard',
   },
 ];
@@ -17,11 +17,11 @@ const SEED_PARTNER_PROFILES = [
   {
     name: 'Example Agency Partner',
     primaryDomain: 'example-agency.com',
-    partnerType: 'agency',
-    partnerSubtypes: ['revenue_ops'],
-    programMechanics: ['referral', 'services'],
-    commercialModels: ['commission', 'certifications'],
-    status: 'candidate',
+    partnerType: 'AGENCY',
+    partnerSubtypes: ['REVENUE_OPS'],
+    programMechanics: ['REFERRAL', 'SERVICES'],
+    commercialModels: ['COMMISSION', 'CERTIFICATIONS'],
+    status: 'CANDIDATE',
   },
 ];
 
@@ -52,7 +52,7 @@ const handler = async () => {
           data: [
             {
               name: 'Example Agency Partner - Fuse Referral Program',
-              status: 'active',
+              status: 'ACTIVE',
               startedAt: new Date().toISOString().slice(0, 10),
               notes: 'Seed enrollment installed by Fuse Partner Core.',
               partnerProgramId,

@@ -30,9 +30,9 @@ const withSignature = (
   const plan = createAgencyReferralEventPlan(withSignature(baseEvent), secret);
 
   assert.equal(plan.accepted, true);
-  assert.equal(plan.eventData.status, 'accepted');
-  assert.equal(plan.eventData.eventType, 'lead');
-  assert.equal(plan.attributionData?.attributionType, 'referral');
+  assert.equal(plan.eventData.status, 'ACCEPTED');
+  assert.equal(plan.eventData.eventType, 'LEAD');
+  assert.equal(plan.attributionData?.attributionType, 'REFERRAL');
   assert.deepEqual(plan.rollupDelta, {
     leadCount: 1,
     saleCount: 0,
@@ -129,14 +129,14 @@ const withSignature = (
     {
       ...baseEvent,
       eventId: 'evt-lead-1',
-      eventType: 'lead',
+      eventType: 'LEAD',
       amountCents: 0,
       occurredAt: '2026-06-20T12:00:00.000Z',
     },
     {
       ...baseEvent,
       eventId: 'evt-sale-1',
-      eventType: 'sale',
+      eventType: 'SALE',
       invoiceId: 'invoice-1',
       amountCents: 9900,
       occurredAt: '2026-06-20T12:05:00.000Z',
@@ -144,13 +144,13 @@ const withSignature = (
   ]);
 
   const enrollmentRollup = rollups.find(
-    (rollup) => rollup.scopeType === 'enrollment',
+    (rollup) => rollup.scopeType === 'ENROLLMENT',
   );
 
   assert.equal(enrollmentRollup?.leadCount, 1);
   assert.equal(enrollmentRollup?.saleCount, 1);
   assert.equal(enrollmentRollup?.revenueCents, 9900);
-  assert.equal(enrollmentRollup?.repairStatus, 'repaired');
+  assert.equal(enrollmentRollup?.repairStatus, 'REPAIRED');
 }
 
 console.log('Fuse Agency referral attribution validation passed.');

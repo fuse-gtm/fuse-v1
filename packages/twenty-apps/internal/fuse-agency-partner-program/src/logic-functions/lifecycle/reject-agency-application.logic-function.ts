@@ -32,7 +32,7 @@ const handler = async (
   } as any);
 
   return {
-    status: 'rejected',
+    status: 'REJECTED',
     agencyApplicationId: plan.applicationId,
     agencyReviewEventId: createAgencyReviewEvent?.id,
   };

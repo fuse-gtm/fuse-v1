@@ -15,11 +15,11 @@ const seedDueAt = () => {
 const SEED_APPLICATIONS = [
   {
     name: 'Example Agency Application',
-    status: 'needs_review',
+    status: 'NEEDS_REVIEW',
     submittedAt: seedSubmittedAt(),
     website: 'https://example-agency.com',
-    serviceBuckets: ['revenue_ops', 'technology_implementation'],
-    monthlyLeadVolumeBand: 'eleven_to_fifty',
+    serviceBuckets: ['REVENUE_OPS', 'TECHNOLOGY_IMPLEMENTATION'],
+    monthlyLeadVolumeBand: 'ELEVEN_TO_FIFTY',
     reviewDecisionReason: 'Seed application installed by Fuse Agency Partner Program.',
   },
 ];
@@ -27,35 +27,35 @@ const SEED_APPLICATIONS = [
 const SEED_SERVICE_CAPABILITIES = [
   {
     name: 'Revenue Ops Implementation',
-    serviceBucket: 'revenue_ops',
-    platformFocus: 'hubspot',
+    serviceBucket: 'REVENUE_OPS',
+    platformFocus: 'HUBSPOT',
     certifications: 'HubSpot Solutions Partner',
-    capacityBand: 'boutique',
+    capacityBand: 'BOUTIQUE',
   },
 ];
 
 const SEED_RESOURCES = [
   {
     name: 'Agency Referral Playbook',
-    resourceType: 'playbook',
+    resourceType: 'PLAYBOOK',
     url: 'https://fusegtm.com/docs/agency-referral-playbook',
-    status: 'draft',
+    status: 'DRAFT',
   },
 ];
 
 const SEED_GROUPS = [
   {
     name: 'Default Agency Partners',
-    tier: 'standard',
-    status: 'active',
+    tier: 'STANDARD',
+    status: 'ACTIVE',
   },
 ];
 
 const SEED_TASKS = [
   {
     name: 'Review Example Agency Application',
-    taskType: 'application_review',
-    status: 'open',
+    taskType: 'APPLICATION_REVIEW',
+    status: 'OPEN',
     dueAt: seedDueAt(),
   },
 ];

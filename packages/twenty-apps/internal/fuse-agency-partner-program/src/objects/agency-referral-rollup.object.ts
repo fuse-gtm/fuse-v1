@@ -83,7 +83,7 @@ export default defineObject({
       label: 'Repair Status',
       icon: 'IconRefresh',
       options: REFERRAL_ROLLUP_REPAIR_STATUS_OPTIONS,
-      defaultValue: 'fresh',
+      defaultValue: "'FRESH'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyReferralRollup.partnerProfile,

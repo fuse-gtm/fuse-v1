@@ -31,7 +31,13 @@ export type AgencyApplicationRejectionInput = {
   agencyName?: string;
   reviewerId?: string;
   reason?: string;
-  riskState?: 'needs_review' | 'fraud_review' | 'blocked';
+  riskState?:
+    | 'needs_review'
+    | 'fraud_review'
+    | 'blocked'
+    | 'NEEDS_REVIEW'
+    | 'FRAUD_REVIEW'
+    | 'BLOCKED';
   occurredAt?: string;
   evidence?: Record<string, unknown>;
 };
@@ -114,6 +120,12 @@ const stableJson = (value: Record<string, unknown>) =>
       }, {}),
   );
 
+const toStoredSelectValue = (value: string | undefined) =>
+  value?.trim().toUpperCase();
+
+const toStoredMultiSelectValues = (values: string[] | undefined) =>
+  values?.map((value) => value.trim().toUpperCase());
+
 export const createAgencySubmissionPlan = (
   input: AgencyApplicationSubmissionInput,
   now = new Date().toISOString(),
@@ -126,8 +138,8 @@ export const createAgencySubmissionPlan = (
   const normalizedDomain = normalizeDomain(website);
   const duplicateKey = `${normalizedDomain}:${applicantEmail}`;
   const isDuplicate = Boolean(input.existingApplicationId);
-  const riskState = isDuplicate ? 'needs_review' : 'clear';
-  const reviewAction = isDuplicate ? 'duplicate_detected' : 'submitted';
+  const riskState = isDuplicate ? 'NEEDS_REVIEW' : 'CLEAR';
+  const reviewAction = isDuplicate ? 'DUPLICATE_DETECTED' : 'SUBMITTED';
   const reviewReason = isDuplicate
     ? `Duplicate applicant for ${duplicateKey}; preserve review evidence.`
     : 'Application submitted for agency partner review.';
@@ -152,7 +164,7 @@ export const createAgencySubmissionPlan = (
         },
     applicationData: {
       name: `${agencyName} Application`,
-      status: isDuplicate ? 'needs_review' : 'submitted',
+      status: isDuplicate ? 'NEEDS_REVIEW' : 'SUBMITTED',
       submittedAt: now,
       website,
       applicantName: input.applicantName?.trim() || agencyName,
@@ -160,8 +172,10 @@ export const createAgencySubmissionPlan = (
       normalizedDomain,
       duplicateKey,
       riskState,
-      serviceBuckets: input.serviceBuckets ?? [],
-      monthlyLeadVolumeBand: input.monthlyLeadVolumeBand,
+      serviceBuckets: toStoredMultiSelectValues(input.serviceBuckets) ?? [],
+      monthlyLeadVolumeBand: toStoredSelectValue(
+        input.monthlyLeadVolumeBand,
+      ),
       reviewDecisionReason: reviewReason,
       companyId: input.existingCompanyId,
       personId: input.existingPersonId,
@@ -201,11 +215,11 @@ export const createAgencyApprovalPlan = (
       : {
           name: agencyName,
           primaryDomain: normalizedDomain,
-          partnerType: 'agency',
-          partnerSubtypes: ['revenue_ops'],
-          programMechanics: ['referral', 'services'],
-          commercialModels: ['commission', 'certifications'],
-          status: 'active',
+          partnerType: 'AGENCY',
+          partnerSubtypes: ['REVENUE_OPS'],
+          programMechanics: ['REFERRAL', 'SERVICES'],
+          commercialModels: ['COMMISSION', 'CERTIFICATIONS'],
+          status: 'ACTIVE',
           companyId: input.companyId,
           primaryContactId: input.personId,
         },
@@ -213,39 +227,39 @@ export const createAgencyApprovalPlan = (
       ? null
       : {
           name: 'Default Agency Partners',
-          tier: 'standard',
-          status: 'active',
+          tier: 'STANDARD',
+          status: 'ACTIVE',
         },
     enrollmentData: {
       name: `${agencyName} - Agency Partner Program`,
-      status: 'active',
+      status: 'ACTIVE',
       startedAt: occurredAt.slice(0, 10),
       notes: reviewReason,
       partnerProfileId: input.partnerProfileId,
       partnerProgramId: input.partnerProgramId,
     },
     applicationUpdateData: {
-      status: 'approved',
+      status: 'APPROVED',
       reviewedAt: occurredAt,
-      riskState: 'clear',
+      riskState: 'CLEAR',
       reviewDecisionReason: reviewReason,
       partnerProfileId: input.partnerProfileId,
       agencyGroupId: input.agencyGroupId,
     },
     starterResourceData: {
       name: `${agencyName} Agency Enablement Pack`,
-      resourceType: 'playbook',
-      status: 'draft',
+      resourceType: 'PLAYBOOK',
+      status: 'DRAFT',
     },
     starterTaskData: {
       name: `Complete ${agencyName} onboarding`,
-      taskType: 'enablement',
-      status: 'open',
+      taskType: 'ENABLEMENT',
+      status: 'OPEN',
       dueAt: occurredAt,
     },
     reviewEventData: {
       name: `${agencyName} approved`,
-      action: 'approved',
+      action: 'APPROVED',
       reason: reviewReason,
       occurredAt,
       evidenceJson: stableJson({
@@ -265,19 +279,19 @@ export const createAgencyRejectionPlan = (
   const agencyName = requireString(input.agencyName, 'agencyName');
   const reason = requireString(input.reason, 'reason');
   const occurredAt = input.occurredAt ?? new Date().toISOString();
-  const riskState = input.riskState ?? 'needs_review';
+  const riskState = toStoredSelectValue(input.riskState) ?? 'NEEDS_REVIEW';
 
   return {
     applicationId,
     applicationUpdateData: {
-      status: 'rejected',
+      status: 'REJECTED',
       reviewedAt: occurredAt,
       riskState,
       reviewDecisionReason: reason,
     },
     reviewEventData: {
       name: `${agencyName} rejected`,
-      action: 'rejected',
+      action: 'REJECTED',
       reason,
       occurredAt,
       evidenceJson: stableJson({

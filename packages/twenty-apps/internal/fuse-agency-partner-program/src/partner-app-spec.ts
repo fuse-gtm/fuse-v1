@@ -38,7 +38,7 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
     packageJsonChecksum: null,
     yarnLockChecksum: null,
   },
-  version: '0.1.0',
+  version: '0.1.1',
   requiredApplicationVariables: ['AGENCY_EVENT_SIGNING_SECRET'],
   taxonomy: {
     partnerType: 'agency',
@@ -233,14 +233,14 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Example Agency Application',
-          status: 'needs_review',
+          status: 'NEEDS_REVIEW',
           applicantName: 'Example Agency Partner',
           applicantEmail: 'partner@example-agency.com',
           normalizedDomain: 'example-agency.com',
           duplicateKey: 'example-agency.com:partner@example-agency.com',
-          riskState: 'clear',
-          serviceBuckets: ['revenue_ops', 'technology_implementation'],
-          monthlyLeadVolumeBand: 'eleven_to_fifty',
+          riskState: 'CLEAR',
+          serviceBuckets: ['REVENUE_OPS', 'TECHNOLOGY_IMPLEMENTATION'],
+          monthlyLeadVolumeBand: 'ELEVEN_TO_FIFTY',
         },
       ],
     },
@@ -251,9 +251,9 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Revenue Ops Implementation',
-          serviceBucket: 'revenue_ops',
-          platformFocus: 'hubspot',
-          capacityBand: 'boutique',
+          serviceBucket: 'REVENUE_OPS',
+          platformFocus: 'HUBSPOT',
+          capacityBand: 'BOUTIQUE',
         },
       ],
     },
@@ -264,8 +264,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Agency Referral Playbook',
-          resourceType: 'playbook',
-          status: 'draft',
+          resourceType: 'PLAYBOOK',
+          status: 'DRAFT',
         },
       ],
     },
@@ -276,8 +276,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Review Example Agency Application',
-          taskType: 'application_review',
-          status: 'open',
+          taskType: 'APPLICATION_REVIEW',
+          status: 'OPEN',
         },
       ],
     },
@@ -288,8 +288,8 @@ export const fuseAgencyPartnerProgramSpec: PartnerAppSpec = {
       records: [
         {
           name: 'Default Agency Partners',
-          tier: 'standard',
-          status: 'active',
+          tier: 'STANDARD',
+          status: 'ACTIVE',
         },
       ],
     },

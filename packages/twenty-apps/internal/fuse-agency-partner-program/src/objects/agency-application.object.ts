@@ -42,7 +42,7 @@ export default defineObject({
       label: 'Status',
       icon: 'IconProgressCheck',
       options: AGENCY_APPLICATION_STATUS_OPTIONS,
-      defaultValue: 'submitted',
+      defaultValue: "'SUBMITTED'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyApplication.submittedAt,
@@ -95,7 +95,7 @@ export default defineObject({
       label: 'Risk State',
       icon: 'IconShieldCheck',
       options: AGENCY_RISK_STATE_OPTIONS,
-      defaultValue: 'clear',
+      defaultValue: "'CLEAR'",
     },
     {
       universalIdentifier: FIELD_IDS.agencyApplication.serviceBuckets,

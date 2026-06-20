@@ -57,7 +57,7 @@ export default defineView({
       universalIdentifier: '82f3a0bb-f853-4fa4-90b0-3e22404e2d53',
       fieldMetadataUniversalIdentifier: FIELD_IDS.partnerEnrollment.status,
       operand: ViewFilterOperand.IS,
-      value: 'active',
+      value: 'ACTIVE',
     },
   ],
   sorts: [
