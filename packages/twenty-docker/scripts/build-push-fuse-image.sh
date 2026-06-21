@@ -7,7 +7,7 @@ SCRIPT_DIR="${SELF_DIR}"
 cd "$REPO_ROOT"
 
 IMAGE_REPO="${IMAGE_REPO:-ghcr.io/fuse-gtm/fuse-v1}"
-IMAGE_TAG="${IMAGE_TAG:-partner-os-$(git rev-parse --short HEAD)}"
+IMAGE_TAG="${IMAGE_TAG:-fuse-$(git rev-parse --short HEAD)}"
 PLATFORM="${PLATFORM:-linux/amd64}"
 BUILD_TARGET="${BUILD_TARGET:-twenty}"
 VERIFY_IMAGE_EXISTS="${VERIFY_IMAGE_EXISTS:-true}"

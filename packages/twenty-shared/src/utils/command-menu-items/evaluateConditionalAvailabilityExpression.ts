@@ -1,10 +1,11 @@
 import { isNonEmptyString } from '@sniptt/guards';
+import { type EvaluationContext } from 'expr-eval-fork';
 
 import { conditionalAvailabilityParser } from './conditionalAvailabilityParser';
 
 export const evaluateConditionalAvailabilityExpression = (
   expression: string | null | undefined,
-  context: Record<string, unknown>,
+  context: EvaluationContext,
 ): boolean => {
   if (!isNonEmptyString(expression)) {
     return true;
@@ -13,7 +14,7 @@ export const evaluateConditionalAvailabilityExpression = (
   try {
     const parsed = conditionalAvailabilityParser.parse(expression);
 
-    return parsed.evaluate(context as never) === true;
+    return parsed.evaluate(context) === true;
   } catch {
     return false;
   }

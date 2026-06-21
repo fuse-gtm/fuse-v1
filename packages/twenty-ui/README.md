@@ -19,21 +19,21 @@
 
 1. Publish as a standalone, versioned **npm package**.
 2. Replace `twenty-ui` in `twenty-front` with **no visual change** (same design, token for token).
-3. **Migrate every component** currently exported by `twenty-ui-deprecated`. _(Done — June 2026.)_
+3. **Migrate every component** currently exported by `twenty-ui-deprecated`. *(Done — June 2026.)*
 4. **Absorb the generic, reusable UI** currently living in `twenty-front/src/modules/ui` (dropdowns, modals, tab lists, side panels, navigation, field inputs/displays, etc.), decoupling it from application concerns so it ships from the library.
 5. Enforce a **quality bar in CI**: bundle size, render/load time, and accessibility, measured against the old library.
 
 ## Current state (`twenty-ui-deprecated`)
 
-| Aspect      | Today                                                                                                                                                                                                                                 |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Exports     | ~180 components across 13 subpath entry points (`display`, `input`, `layout`, `navigation`, `feedback`, `components`, `theme`, `theme-constants`, `utilities`, `accessibility`, `assets`, `json-visualizer`, `testing`) + 3 CSS files |
-| Styling     | Linaria (`@linaria/react`) compiled via `@wyw-in-js/vite`; theming via generated `--t-*` CSS variables                                                                                                                                |
-| Behavior    | Hand-rolled (modals, menus, tooltips, selects, etc.); `react-tooltip` for tooltips                                                                                                                                                    |
-| Build       | Vite library mode, dual ESM/CJS, `vite-plugin-dts`, auto-generated barrels                                                                                                                                                            |
-| Icons       | `@tabler/icons-react` re-exports + custom icons + Jotai-backed `IconsProvider`                                                                                                                                                        |
-| Consumption | ~1,730 files in `twenty-front` import it (mostly `display` and `theme-constants`), plus `twenty-front-component-renderer` and `twenty-sdk`; imported by package name                                                                  |
-| Published   | No (`private: true`)                                                                                                                                                                                                                  |
+| Aspect | Today |
+| --- | --- |
+| Exports | ~180 components across 13 subpath entry points (`display`, `input`, `layout`, `navigation`, `feedback`, `components`, `theme`, `theme-constants`, `utilities`, `accessibility`, `assets`, `json-visualizer`, `testing`) + 3 CSS files |
+| Styling | Linaria (`@linaria/react`) compiled via `@wyw-in-js/vite`; theming via generated `--t-*` CSS variables |
+| Behavior | Hand-rolled (modals, menus, tooltips, selects, etc.); `react-tooltip` for tooltips |
+| Build | Vite library mode, dual ESM/CJS, `vite-plugin-dts`, auto-generated barrels |
+| Icons | `@tabler/icons-react` re-exports + custom icons + Jotai-backed `IconsProvider` |
+| Consumption | ~1,730 files in `twenty-front` import it (mostly `display` and `theme-constants`), plus `twenty-front-component-renderer` and `twenty-sdk`; imported by package name |
+| Published | No (`private: true`) |
 
 `twenty-front/src/modules/ui/` (application-level UI) consumes `twenty-ui-deprecated` today. Its **generic, reusable**
 components are now **in scope** — they migrate into `twenty-ui` (see [Application-level UI migration](#application-level-ui-migration-twenty-frontsrcmodulesui)).
@@ -44,12 +44,12 @@ Adopt **Base UI** ([`mui/base-ui`](https://github.com/mui/base-ui), published to
 [`@base-ui/react`](https://base-ui.com), MIT) as the behavioral foundation; build Twenty's visual
 design on top of it.
 
-|               | Base UI                                       | shadcn/ui              | Radix                                     |
-| ------------- | --------------------------------------------- | ---------------------- | ----------------------------------------- |
-| Distribution  | npm package                                   | copy-paste source      | npm package                               |
-| Styling       | bring your own                                | Tailwind               | bring your own                            |
-| State styling | `data-*` + `className`-as-function            | (underlying primitive) | `data-*`                                  |
-| Maintenance   | MUI team, full-time; frequent stable releases | community              | WorkOS; slower cadence, creators departed |
+| | Base UI | shadcn/ui | Radix |
+| --- | --- | --- | --- |
+| Distribution | npm package | copy-paste source | npm package |
+| Styling | bring your own | Tailwind | bring your own |
+| State styling | `data-*` + `className`-as-function | (underlying primitive) | `data-*` |
+| Maintenance | MUI team, full-time; frequent stable releases | community | WorkOS; slower cadence, creators departed |
 
 **Rationale**
 
@@ -66,13 +66,13 @@ component APIs so upgrades stay localized.
 
 Use **SCSS Modules** (`*.module.scss`) over the existing CSS-variable theme. Drop Linaria.
 
-| Approach         | Runtime | Build complexity         | Scoping               | Verdict                           |
-| ---------------- | ------- | ------------------------ | --------------------- | --------------------------------- |
-| Linaria (today)  | zero    | high (Babel + wyw-in-js) | auto                  | overkill                          |
-| Plain global CSS | zero    | none                     | none (collision risk) | unsafe for a library              |
-| CSS Modules      | zero    | none (native Vite)       | auto                  | strong baseline                   |
-| **SCSS Modules** | zero    | low (`sass` only)        | auto                  | **recommended**                   |
-| vanilla-extract  | zero    | medium (TS compile)      | auto                  | viable alternative (typed tokens) |
+| Approach | Runtime | Build complexity | Scoping | Verdict |
+| --- | --- | --- | --- | --- |
+| Linaria (today) | zero | high (Babel + wyw-in-js) | auto | overkill |
+| Plain global CSS | zero | none | none (collision risk) | unsafe for a library |
+| CSS Modules | zero | none (native Vite) | auto | strong baseline |
+| **SCSS Modules** | zero | low (`sass` only) | auto | **recommended** |
+| vanilla-extract | zero | medium (TS compile) | auto | viable alternative (typed tokens) |
 
 **Rationale**
 
@@ -105,8 +105,8 @@ packages/twenty-ui/
 
 **Public API parity.** Keep the same subpath exports, component names, and prop signatures as
 `twenty-ui-deprecated` so the final swap is a codemod + dependency rename, not a rewrite of ~1,730 files.
-Keep auto-generated barrels and dual ESM/CJS + `dts` output. _(Achieved: the export-identifier sets of
-all 13 module barrels are identical between the two packages.)_
+Keep auto-generated barrels and dual ESM/CJS + `dts` output. *(Achieved: the export-identifier sets of
+all 13 module barrels are identical between the two packages.)*
 
 **Internal changes vs `twenty-ui-deprecated`:** Linaria → SCSS Modules; hand-rolled behavior + `react-tooltip`
 → Base UI; prefer Base UI/CSS transitions over `framer-motion` where possible; keep the icon system
@@ -124,25 +124,25 @@ diff cleanly against their sources).
 
 ## Component migration map
 
-Components split into two buckets. _(The migration is complete; see
-[Migration outcomes](#migration-outcomes-june-2026) below for where reality diverged from this map.)_
+Components split into two buckets. *(The migration is complete; see
+[Migration outcomes](#migration-outcomes-june-2026) below for where reality diverged from this map.)*
 
 **Backed by a Base UI primitive (behavioral):**
 
-| `twenty-ui-deprecated`                     | Base UI                             |
-| ------------------------------------------ | ----------------------------------- |
-| `Modal`                                    | `Dialog` / `AlertDialog`            |
+| `twenty-ui-deprecated` | Base UI |
+| --- | --- |
+| `Modal` | `Dialog` / `AlertDialog` |
 | `AppTooltip`, `OverflowingTextWithTooltip` | `Tooltip` (removes `react-tooltip`) |
-| `Toggle`                                   | `Switch`                            |
-| `Checkbox` / `Radio`                       | `Checkbox` / `Radio` (+ groups)     |
-| `Menu`, `MenuItem`                         | `Menu` / `ContextMenu` / `Menubar`  |
-| `TabButton`                                | `Tabs`                              |
-| `SearchInput`, text inputs                 | `Input` + `Field`                   |
-| `CardPicker`                               | `RadioGroup` / `ToggleGroup`        |
-| `ColorPicker`                              | `Popover` + custom                  |
-| `ProgressBar`                              | `Progress`                          |
-| `Avatar`, `AvatarGroup`                    | `Avatar`                            |
-| `AnimatedExpandableContainer`              | `Collapsible` / `Accordion`         |
+| `Toggle` | `Switch` |
+| `Checkbox` / `Radio` | `Checkbox` / `Radio` (+ groups) |
+| `Menu`, `MenuItem` | `Menu` / `ContextMenu` / `Menubar` |
+| `TabButton` | `Tabs` |
+| `SearchInput`, text inputs | `Input` + `Field` |
+| `CardPicker` | `RadioGroup` / `ToggleGroup` |
+| `ColorPicker` | `Popover` + custom |
+| `ProgressBar` | `Progress` |
+| `Avatar`, `AvatarGroup` | `Avatar` |
+| `AnimatedExpandableContainer` | `Collapsible` / `Accordion` |
 
 **Pure presentation, built in-house (SCSS Modules):** button family, typography, `Chip`/`Pill`/`Tag`/`LinkChip`,
 `Banner`/`Callout`/`Info`/`Status`, `Card`/`Section`/`Separator`, `Loader`, `TintedIconTile`,
@@ -208,18 +208,18 @@ and state-decoupling notes) is the remaining **Phase 4 prerequisite** (the `twen
 A predicted ranking of where the effort and risk concentrate, to inform sequencing and staffing. This
 is a hypothesis to validate during the Phase 0 inventory/triage, not a final list.
 
-### In `twenty-ui-deprecated` _(all migrated — predictions held; see Migration outcomes)_
+### In `twenty-ui-deprecated` *(all migrated — predictions held; see Migration outcomes)*
 
-| Component                                                                         | Why it's hard                                                                                                                                       | Migration shape                                                                                                                                             |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CodeEditor` (`input/code-editor`)                                                | Hard dependency on Monaco; Linaria theme defined via `defineTheme()` bound to Monaco lifecycle                                                      | Port Monaco integration ~verbatim; only re-skin via CSS vars — Base UI doesn't apply                                                                        |
+| Component | Why it's hard | Migration shape |
+| --- | --- | --- |
+| `CodeEditor` (`input/code-editor`) | Hard dependency on Monaco; Linaria theme defined via `defineTheme()` bound to Monaco lifecycle | Port Monaco integration ~verbatim; only re-skin via CSS vars — Base UI doesn't apply |
 | Button family — `Button` (~560 LOC), `IconButton` (~330), `AnimatedButton` (~520) | Huge Linaria style matrix (variant × accent × inverted × disabled × position, 140+ branches each); router `Link`; framer-motion on the animated one | Establish the canonical "computed class / `cva` + `data-*`" pattern here first; this trio is the project's key inflection point (~30–40% of library effort) |
-| `Modal` + `ModalBackdrop` (`layout/modal`)                                        | framer-motion `AnimatePresence`, portal + z-index layering, responsive Linaria sizing                                                               | Base UI `Dialog` + CSS transitions; backdrop animation has no direct Base UI equivalent                                                                     |
-| `AnimatedExpandableContainer`                                                     | scroll-height measurement + framer-motion height/opacity animation                                                                                  | Base UI `Collapsible` + CSS grid-rows / JS height fallback                                                                                                  |
-| `AppTooltip`, `OverflowingTextWithTooltip`                                        | `react-tooltip` dependency + overflow detection; Linaria `css` template                                                                             | Swap to Base UI `Tooltip` (+ Floating UI); behavioral divergence is likely and needs parity tests                                                           |
-| `JsonNestedNode` (`json-visualizer`)                                              | recursive tree with per-node framer-motion expand/collapse                                                                                          | Recursion is fine; replace animation, keep structure                                                                                                        |
-| `MenuItem`, `ProgressBar`/`CircularProgressBar`, `Avatar`/`AvatarGroup`           | framer-motion micro-animations; `Avatar` uses a Jotai atom for broken-image fallback                                                                | CSS transitions; `Avatar` → Base UI `Avatar`, Jotai → local state/props                                                                                     |
-| `IconsProvider`, `ThemeProvider`                                                  | Jotai-backed icon registry; runtime CSS-var parsing — **every** component depends on them                                                           | Low per-unit effort but high blast radius; freeze the public API, swap internals carefully                                                                  |
+| `Modal` + `ModalBackdrop` (`layout/modal`) | framer-motion `AnimatePresence`, portal + z-index layering, responsive Linaria sizing | Base UI `Dialog` + CSS transitions; backdrop animation has no direct Base UI equivalent |
+| `AnimatedExpandableContainer` | scroll-height measurement + framer-motion height/opacity animation | Base UI `Collapsible` + CSS grid-rows / JS height fallback |
+| `AppTooltip`, `OverflowingTextWithTooltip` | `react-tooltip` dependency + overflow detection; Linaria `css` template | Swap to Base UI `Tooltip` (+ Floating UI); behavioral divergence is likely and needs parity tests |
+| `JsonNestedNode` (`json-visualizer`) | recursive tree with per-node framer-motion expand/collapse | Recursion is fine; replace animation, keep structure |
+| `MenuItem`, `ProgressBar`/`CircularProgressBar`, `Avatar`/`AvatarGroup` | framer-motion micro-animations; `Avatar` uses a Jotai atom for broken-image fallback | CSS transitions; `Avatar` → Base UI `Avatar`, Jotai → local state/props |
+| `IconsProvider`, `ThemeProvider` | Jotai-backed icon registry; runtime CSS-var parsing — **every** component depends on them | Low per-unit effort but high blast radius; freeze the public API, swap internals carefully |
 
 Cross-cutting: **~120 files use Linaria prop interpolation** and **~26 use framer-motion** — the two
 systemic conversions (→ SCSS Modules, → CSS/Base UI transitions) dominate, not any single component.
@@ -228,19 +228,19 @@ systemic conversions (→ SCSS Modules, → CSS/Base UI transitions) dominate, n
 
 Here difficulty is **decoupling from app state**, not visuals. Ranked hardest:
 
-| Area                                                                  | Why it's hard                                                                                    | Decoupling needed                                                                                        |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `layout/dropdown`                                                     | Floating UI positioning + open-state atoms + hotkey scoping; foundational to many features       | Generic positioning wrapper; controlled open state; injectable keyboard handling                         |
-| `utilities/hotkey` + `utilities/focus`                                | Hand-rolled global hotkey **scope stack** and focus stack as shared runtime state                | Extract as an injectable system; the rest of the library must not assume the global stack                |
-| `navigation/navigation-drawer` (~40 files)                            | Deeply bound to `currentWorkspaceState`, auth, Apollo error handling, multi-workspace switching  | Mostly **app-specific** — migrate only the generic drawer shell, leave workspace logic in `twenty-front` |
-| `layout/selectable-list`                                              | 2D arrow-key navigation state machine over atom families                                         | Pure grid-position functions + a controlled selection API                                                |
-| `layout/expandable-list`                                              | Floating UI + DOM overflow measurement                                                           | Layout-agnostic overflow API, drop Floating UI coupling                                                  |
-| `layout/table`                                                        | Generic types but heavy sorting/metadata atoms                                                   | Make field-agnostic; lift state out                                                                      |
-| `layout/modal`                                                        | `ModalComponentInstanceContext`, click-outside + escape via hotkeys, stacking indices            | Injectable container; remove context coupling                                                            |
-| `layout/resizable-panel`, `utilities/drag-select`, `utilities/scroll` | Direct DOM/pointer manipulation, set CSS vars on `documentElement`, scroll-wrapper atom coupling | Callback/controlled APIs; pure geometry utils; optional scroll coupling                                  |
-| `feedback` (snackbar + dialog managers)                               | Snackbar formats **Apollo** errors; dialog uses framer-motion                                    | Generic error objects; CSS animations                                                                    |
-| `layout/tab-list`                                                     | Router `useNavigate`, measurement system, dropdown coupling                                      | Callback-based navigation; extract measurement                                                           |
-| `input` date pickers (`internal/date`, ~47 files)                     | `temporal-polyfill`, reads `currentWorkspaceMemberState` for tz/locale                           | Parameterize locale/timezone via props                                                                   |
+| Area | Why it's hard | Decoupling needed |
+| --- | --- | --- |
+| `layout/dropdown` | Floating UI positioning + open-state atoms + hotkey scoping; foundational to many features | Generic positioning wrapper; controlled open state; injectable keyboard handling |
+| `utilities/hotkey` + `utilities/focus` | Hand-rolled global hotkey **scope stack** and focus stack as shared runtime state | Extract as an injectable system; the rest of the library must not assume the global stack |
+| `navigation/navigation-drawer` (~40 files) | Deeply bound to `currentWorkspaceState`, auth, Apollo error handling, multi-workspace switching | Mostly **app-specific** — migrate only the generic drawer shell, leave workspace logic in `twenty-front` |
+| `layout/selectable-list` | 2D arrow-key navigation state machine over atom families | Pure grid-position functions + a controlled selection API |
+| `layout/expandable-list` | Floating UI + DOM overflow measurement | Layout-agnostic overflow API, drop Floating UI coupling |
+| `layout/table` | Generic types but heavy sorting/metadata atoms | Make field-agnostic; lift state out |
+| `layout/modal` | `ModalComponentInstanceContext`, click-outside + escape via hotkeys, stacking indices | Injectable container; remove context coupling |
+| `layout/resizable-panel`, `utilities/drag-select`, `utilities/scroll` | Direct DOM/pointer manipulation, set CSS vars on `documentElement`, scroll-wrapper atom coupling | Callback/controlled APIs; pure geometry utils; optional scroll coupling |
+| `feedback` (snackbar + dialog managers) | Snackbar formats **Apollo** errors; dialog uses framer-motion | Generic error objects; CSS animations |
+| `layout/tab-list` | Router `useNavigate`, measurement system, dropdown coupling | Callback-based navigation; extract measurement |
+| `input` date pickers (`internal/date`, ~47 files) | `temporal-polyfill`, reads `currentWorkspaceMemberState` for tz/locale | Parameterize locale/timezone via props |
 
 **Probably should NOT migrate (too app-coupled, keep in `twenty-front`):** `field/input` & `field/display`
 (bound to `FieldMetadata` / `object-record`), the full navigation-drawer workspace/auth UI, snackbar
@@ -252,9 +252,9 @@ Apollo error formatting, and the icon/theme-color pickers tied to Twenty's icon 
 - **Functional** — component/interaction tests via `@storybook/addon-vitest` (real browser); unit tests (Jest) for hooks/utilities; coverage gate via `@storybook/addon-coverage`.
 - **Accessibility** — Storybook a11y addon (axe-core) with `parameters.a11y.test = 'error'` so violations fail CI.
 - **Visual parity** — visual regression via Argos (self-hosted) plus a cross-package comparison project that diffs `twenty-ui` stories against `twenty-ui-deprecated` stories with identical names; a pixel-diff threshold is the per-component acceptance gate. See [Visual regression](#visual-regression) below.
-- **Performance & size** — `size-limit` per entry point with budgets; tree-shaking fixtures (importing one component must not pull the library); build-time tracking; render benchmarks via React Profiler; load-time via Lighthouse/Playwright on the built Storybook. As one concrete benchmark, a dedicated **stress story** renders a very large number of a single component (e.g. 10,000 buttons) and measures total render time — compared against the `twenty-ui-deprecated` equivalent and gated against a budget to catch per-instance overhead regressions. _(Stress story not yet built.)_
+- **Performance & size** — `size-limit` per entry point with budgets; tree-shaking fixtures (importing one component must not pull the library); build-time tracking; render benchmarks via React Profiler; load-time via Lighthouse/Playwright on the built Storybook. As one concrete benchmark, a dedicated **stress story** renders a very large number of a single component (e.g. 10,000 buttons) and measures total render time — compared against the `twenty-ui-deprecated` equivalent and gated against a budget to catch per-instance overhead regressions. *(Stress story not yet built.)*
 
-CI surfaces a per-PR diff table (`twenty-ui-deprecated` vs `twenty-ui`) for size, a11y, and visual changes. _(Not yet built.)_
+CI surfaces a per-PR diff table (`twenty-ui-deprecated` vs `twenty-ui`) for size, a11y, and visual changes. *(Not yet built.)*
 
 ## Visual regression
 
@@ -263,14 +263,13 @@ Two Argos projects (on argos.twenty-internal.com) provide visual regression in C
 1. **`twenty-ui`** — pixel diff of `twenty-ui` stories against the `main` branch baseline. Catches regressions introduced by a PR.
 2. **`twenty-ui-vs-new-ui`** — cross-package comparison. The baseline is always `twenty-ui-deprecated` screenshots from `main`; PR builds upload `twenty-ui` screenshots and diff them against that baseline. This shows exactly which components still differ between the two implementations.
 
-For the cross-package comparison to produce meaningful diffs, stories in `twenty-ui` must use the **same title hierarchy** as `twenty-ui-deprecated` (e.g. `UI/Input/Toggle/Toggle`). _(Done: all 70 story titles are byte-identical.)_
+For the cross-package comparison to produce meaningful diffs, stories in `twenty-ui` must use the **same title hierarchy** as `twenty-ui-deprecated` (e.g. `UI/Input/Toggle/Toggle`). *(Done: all 70 story titles are byte-identical.)*
 
 ### Local visual diff
 
 Run a pixel diff of `twenty-ui` components against `twenty-ui-deprecated` using the self-hosted Argos instance.
 
 **Prerequisites:**
-
 - AWS SSO configured and logged in (`aws sso login --profile twenty-dev`)
 - `twenty-infra/super-cli` cloned (sibling of this repo)
 
@@ -341,14 +340,14 @@ a passing visual-parity diff, and a within-budget size entry.
 
 ## Risks
 
-| Risk                                                                    | Mitigation                                                                                                |
-| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Base UI pre-1.0 API churn                                               | Pin exact version; gate GA on stable release; isolate behind component APIs                               |
-| Visual drift                                                            | Reuse exact tokens; visual-parity snapshots as the per-component gate                                     |
-| Theme API mismatch (~943 consumers)                                     | Freeze `theme-constants` contract; generated-CSS diff test                                                |
-| 1,721 import sites                                                      | Preserve subpaths/names; automate with a codemod                                                          |
-| No Base UI primitive for some components                                | Build in-house; use Base UI utilities where helpful                                                       |
-| Bundle regressions                                                      | `size-limit` budgets + PR diff; prefer CSS transitions over `framer-motion`                               |
+| Risk | Mitigation |
+| --- | --- |
+| Base UI pre-1.0 API churn | Pin exact version; gate GA on stable release; isolate behind component APIs |
+| Visual drift | Reuse exact tokens; visual-parity snapshots as the per-component gate |
+| Theme API mismatch (~943 consumers) | Freeze `theme-constants` contract; generated-CSS diff test |
+| 1,721 import sites | Preserve subpaths/names; automate with a codemod |
+| No Base UI primitive for some components | Build in-house; use Base UI utilities where helpful |
+| Bundle regressions | `size-limit` budgets + PR diff; prefer CSS transitions over `framer-motion` |
 | `modules/ui` components entangled with app state (Jotai/GraphQL/router) | Triage first; split headless core from app wrapper; controlled props only — no app imports in the library |
 
 ## Open questions

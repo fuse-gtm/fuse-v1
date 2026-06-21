@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/fuse-gtm/fuse-v1
-  tag: partner-os-latest
+  tag: main-latest
   pullPolicy: IfNotPresent
 
 server:

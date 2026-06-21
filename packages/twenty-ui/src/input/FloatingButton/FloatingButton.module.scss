@@ -77,8 +77,8 @@
 // box-shadow matrix from the legacy nested ternary: shadow, focus, and
 // shadow+focus — the combined rule comes last so it wins the cascade.
 .button[data-apply-shadow] {
-  --floating-button-box-shadow: 0px 2px 4px 0px
-      var(--t-background-transparent-light),
+  --floating-button-box-shadow:
+    0px 2px 4px 0px var(--t-background-transparent-light),
     0px 0px 4px 0px var(--t-background-transparent-medium);
 }
 
@@ -90,8 +90,8 @@
 }
 
 .button[data-apply-shadow][data-focus] {
-  --floating-button-box-shadow: 0px 2px 4px 0px
-      var(--t-background-transparent-light),
+  --floating-button-box-shadow:
+    0px 2px 4px 0px var(--t-background-transparent-light),
     0px 0px 4px 0px var(--t-background-transparent-medium),
     0 0 0 3px var(--t-color-blue3);
 }

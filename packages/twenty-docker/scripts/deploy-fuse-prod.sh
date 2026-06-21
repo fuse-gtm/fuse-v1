@@ -236,11 +236,4 @@ else
   echo "Post-deploy cron registration skipped (REGISTER_CRONS_POST_DEPLOY=${REGISTER_CRONS_POST_DEPLOY})"
 fi
 
-if [ -n "${WORKSPACE_ID:-}" ]; then
-  echo "Bootstrapping Partner OS for workspace ${WORKSPACE_ID}"
-  docker compose "${COMPOSE_ARGS[@]}" exec -T server \
-    yarn command:prod workspace:bootstrap:partner-os -w "${WORKSPACE_ID}"
-  echo "Partner OS bootstrap complete"
-else
-  echo "WORKSPACE_ID not set. Skipping Partner OS bootstrap."
-fi
+echo "Partner app bootstrap is intentionally not run from this deploy path."

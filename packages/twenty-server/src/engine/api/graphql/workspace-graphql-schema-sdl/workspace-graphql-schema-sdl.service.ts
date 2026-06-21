@@ -85,10 +85,9 @@ export class WorkspaceGraphqlSchemaSDLService {
           TWENTY_STANDARD_APPLICATION.universalIdentifier
         ];
 
-      const applicationIds = this.getApplicationSchemaDependencyIds({
-        applicationId,
-        twentyStandardApplicationId,
-      });
+      const applicationIds = isDefined(twentyStandardApplicationId)
+        ? [twentyStandardApplicationId, applicationId]
+        : [applicationId];
 
       flatObjectMetadataMaps = this.filterFlatEntityMapsByApplicationIds(
         allFlatObjectMetadataMaps,
@@ -211,24 +210,5 @@ export class WorkspaceGraphqlSchemaSDLService {
       applicationIds,
       flatEntityMaps,
     });
-  }
-
-  private getApplicationSchemaDependencyIds({
-    applicationId,
-    twentyStandardApplicationId,
-  }: {
-    applicationId: string;
-    twentyStandardApplicationId: string | undefined;
-  }): string[] {
-    if (applicationId === twentyStandardApplicationId) {
-      return [applicationId];
-    }
-
-    return [
-      ...(isDefined(twentyStandardApplicationId)
-        ? [twentyStandardApplicationId]
-        : []),
-      applicationId,
-    ];
   }
 }

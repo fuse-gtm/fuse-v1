@@ -7,17 +7,17 @@ describe('extractMessageBodyText', () => {
     const parsed: ParsedMail = {
       text: `Hi John,
 
-Thank you for contacting Developer Support, this is Erica again. I hope you are having a good day.
+Thank you for contacting Developer Support, this is Erica again. I hope you are having a good day. 
 
-I understand that you are unable to contact finance. Despite your account being expired, you should still be able to contact our finance team.
+I understand that you are unable to contact finance. Despite your account being expired, you should still be able to contact our finance team. 
 
-Follow the link below the link for contacting our finance team.
+Follow the link below the link for contacting our finance team. 
 
 https://idmsa.apple.com/IDMSWebAuth/signin.html?path=/contact/finance/
 
 Best Regards,
 
-Erica
+Erica 
 Developer Support
 
 >On Mar 26, 2025 at 6:59 PM, zef<john@gmail.com> wrote:
@@ -92,6 +92,7 @@ Developer Support
 `,
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({
@@ -118,17 +119,18 @@ Developer Support`);
   it('should handle email with reply quotations (Titan email style)', () => {
     const parsed: ParsedMail = {
       text: `just a follow up
-
-
+        
+        
           On Aug 18 2025, at 4:06 pm, neo@titanemailtest.xyz wrote:
-
-
-
+          
+        
+        
            Dear Colleagues,This is a reminder that the updated security policy goes into effect starting next Monday.  All employees must reset their corporate VPN credentials and enable two-factor authentication by then.  Please reach out to the IT helpdesk if you experience any issues during the setup.  Regards,  IT Department
-
+        
       `,
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({
@@ -153,6 +155,7 @@ Developer Support`);
       </div>`,
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({
@@ -167,6 +170,7 @@ Developer Support`);
     const parsed: ParsedMail = {
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({
@@ -181,6 +185,7 @@ Developer Support`);
     const parsed: ParsedMail = {
       attachments: [],
       headers: [],
+      headerLines: [],
       html: `<html><head><style>
   html, body {
     font-size: 14.5px;
@@ -222,7 +227,7 @@ Developer Support`);
   a:visited {
     color: #925b00;
   }
-
+  
   a img {
     border-bottom: 0;
   }
@@ -278,13 +283,13 @@ Developer Support`);
   ::-webkit-scrollbar-corner {
     background-color: transparent;
   }
-
+  
   ::-webkit-scrollbar {
     width: 14px;
     height: 14px;
     cursor: default;
   }
-
+  
   ::-webkit-scrollbar-thumb {
     border-radius: 14px;
     background-clip: content-box;
@@ -315,6 +320,7 @@ Developer Support`);
       html: '<html><body><p>HTML content</p></body></html>',
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({
@@ -330,6 +336,7 @@ Developer Support`);
       text: 'See https://example.com/path%2Fto%2Ffile and a 100%20 budget cut',
       attachments: [],
       headers: [],
+      headerLines: [],
     };
 
     const result = extractMessageBodyText({

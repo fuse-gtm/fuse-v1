@@ -123,4 +123,3 @@ const main = (): void => {
 };
 
 main();
-process.exit(0);

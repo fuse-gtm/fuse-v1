@@ -1,9 +1,7 @@
 import { validateConditionalAvailabilityUsage } from '@/cli/utilities/build/manifest/utils/validate-conditional-availability-usage';
 
-const validate = (
-  source: string,
-  filename = 'src/example.front-component.tsx',
-) => validateConditionalAvailabilityUsage(source, filename);
+const validate = (source: string, filename = 'src/example.front-component.tsx') =>
+  validateConditionalAvailabilityUsage(source, filename);
 
 describe('validateConditionalAvailabilityUsage', () => {
   describe('valid usage', () => {
