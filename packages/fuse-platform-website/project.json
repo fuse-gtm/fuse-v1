@@ -1,0 +1,65 @@
+{
+  "name": "fuse-platform-website",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/fuse-platform-website/src",
+  "projectType": "application",
+  "tags": ["scope:website"],
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "next dev --port 3002"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "next build --webpack"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.json --noEmit"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "jest --config=jest.config.mjs"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "node scripts/check-conventions.mjs && npx oxlint -c .oxlintrc.json . && npx oxfmt --check ."
+      },
+      "configurations": {
+        "fix": {
+          "command": "npx oxfmt ."
+        }
+      }
+    },
+    "lingui:extract": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "lingui extract --overwrite --clean"
+      }
+    },
+    "lingui:compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "lingui compile --typescript"
+      }
+    }
+  }
+}
